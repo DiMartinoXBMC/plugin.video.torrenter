@@ -4,7 +4,7 @@ Plugin requires python binding
 --- INSTALLATION ---
 
 1. Windows
-No installation required, it will download it with plugin from repository as module.
+No installation required, will be downloaded with plugin from repository as module.
 
 2. Linux
 2.1 Run at console 'sudo apt-get install python-libtorrent'
