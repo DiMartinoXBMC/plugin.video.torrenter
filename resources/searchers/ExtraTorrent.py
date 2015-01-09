@@ -85,10 +85,12 @@ class ExtraTorrent(SearcherABC.SearcherABC):
         if None != response and 0 < len(response):
             #print response
             dat = re.compile(
-                r'''<a href="/torrent_(download/\d+).+? title="Download (.+?) torrent".+?</a>.+?</td><td>(.+?)</td><td class="sy">(\d+)</td><td class="ly">(\d+)</td>''',
+                r'''<a href="/torrent_(download/\d+).+? title="Download (.+?) torrent".+?</a>.+?</td><td>(.+?)</td>.+?<td class="sy">(.+?)</td>.+?<td class="ly">(.+?)</td>''',
                 re.DOTALL).findall(response)
             for (link, title, size, seeds, leechers) in dat:
                 size = size.replace('&nbsp;', ' ')
+                seeds=seeds.replace('---', '0')
+                leechers=leechers.replace('---', '0')
                 image = sys.modules["__main__"].__root__ + self.searchIcon
                 link = 'http://extratorrent.cc/'+link
                 filesList.append((

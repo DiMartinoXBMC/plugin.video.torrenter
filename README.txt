@@ -1,4 +1,8 @@
-﻿Official library`s website is http://www.rasterbar.com/products/libtorrent/
+﻿Plugin helps you to watch videos from p2p torrent-networks, without full predownload (uses inner python-libtorrent) or Ace Stream. It also can add, control torrents and play downloaded files with external uTorrent, Transmisson or Vuse.
+Official forum thread: http://forum.kodi.tv/showthread.php?tid=214366
+
+[B]PYTHON-LIBTORRENT[/B]:
+Official library`s website is http://www.rasterbar.com/products/libtorrent/
 Plugin requires python binding
 
 --- INSTALLATION ---
@@ -12,7 +16,7 @@ No installation required, will be downloaded with plugin from repository as modu
 
 or you could compile it:
 
-sudo apt-get install libboost-dev libboost-python-dev libboost-system-dev g++ libssl openssl autotool automake subversion
+sudo apt-get build-dep python-libtorrent
 svn co https://libtorrent.svn.sourceforge.net/svnroot/libtorrent/trunk/ lt/
 cd lt/
 ./autotool.sh
@@ -37,7 +41,7 @@ ________________________________________________________________________________
 
 или компилируем:
 
-sudo apt-get install libboost-dev libboost-python-dev libboost-system-dev g++ libssl openssl autotool automake subversion
+sudo apt-get build-dep python-libtorrent
 svn co https://libtorrent.svn.sourceforge.net/svnroot/libtorrent/trunk/ lt/
 cd lt/
 ./autotool.sh
