@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.torrenter" name="Torrenter" version="2.0.8" provider-name="vadim.skorba, DiMartino">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+        <import addon="script.module.libtorrent"/>
+        <import addon="script.module.torrent.ts"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" provides="video" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <summary lang='en'>Plugin helps you to watch videos from p2p torrent-networks, without full predownload.
+        </summary>
+        <description lang='en'>Plugin helps you to watch videos from p2p torrent-networks, without full predownload (uses inner python-libtorrent) or Ace Stream. It also can add, control torrents and play downloaded files with external uTorrent, Transmisson or Vuse.
+        </description>
+        <disclaimer lang='en'>GNU GPLv3 http://www.gnu.org/licenses/</disclaimer>
+        <summary lang='ru'>Плагин позволяет просматривать видео из пиринговых торрент-сетей, не дожидаясь полного скачивания.
+        </summary>
+        <description lang='ru'>Плагин позволяет просматривать видео из пиринговых торрент-сетей, не дожидаясь полного скачивания. Использует внутренюю библиотеку python-libtorrent или Ace Stream. Так же плагин может добавлять, проигрывать и управлять скачками в uTorrent, Transmisson и Vuse.
+        </description>
+        <disclaimer lang='ru'>GNU GPLv3 http://www.gnu.org/licenses/</disclaimer>
+    </extension>
+</addon>

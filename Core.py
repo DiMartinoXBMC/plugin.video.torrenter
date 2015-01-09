@@ -1,0 +1,1579 @@
+﻿# -*- coding: utf-8 -*-
+'''
+    Torrenter plugin for XBMC
+    Copyright (C) 2012 Vadim Skorba
+    vadim.skorba@gmail.com
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+'''
+
+import StringIO
+import gzip, thread
+import tempfile
+
+import Downloader
+import xbmc
+import xbmcaddon
+import xbmcgui
+import xbmcplugin
+import xbmcvfs
+import Content
+from Player import TorrentPlayer
+from functions import *
+from resources.utorrent.net import *
+from resources.scrapers.scrapers import Scrapers
+
+
+class Core:
+    __plugin__ = sys.modules["__main__"].__plugin__
+    __settings__ = sys.modules["__main__"].__settings__
+    ROOT = sys.modules["__main__"].__root__  #.decode('utf-8').encode(sys.getfilesystemencoding())
+    userStorageDirectory = file_encode(__settings__.getSetting("storage"))
+    USERAGENT = "Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0"
+    torrentFilesDirectory = 'torrents'
+    debug = __settings__.getSetting('debug') == 'true'
+    torrent_player=__settings__.getSetting("torrent_player")
+    history_bool = __settings__.getSetting('history') == 'true'
+    language = {0: 'en', 1: 'ru'}.get(int(__settings__.getSetting("language")))
+    htmlCodes = (
+        ('&', '&amp;'),
+        ('<', '&lt;'),
+        ('>', '&gt;'),
+        ('"', '&quot;'),
+        ("'", '&#39;'),
+    )
+    stripPairs = (
+        ('<p>', '\n'),
+        ('<li>', '\n'),
+        ('<br>', '\n'),
+        ('<.+?>', ' '),
+        ('</.+?>', ' '),
+        ('&nbsp;', ' '),
+        ('&laquo;', '"'),
+        ('&raquo;', '"'),
+    )
+    HistoryDB_name, HistoryDB_ver = 'history', 1.1
+    scrapperDB_ver = {'en':'1.0', 'ru':'1.2'}
+
+    print 'SYS ARGV: ' + str(sys.argv)
+
+    def __init__(self):
+        if 0 == len(self.userStorageDirectory):
+            try:
+                temp_dir = tempfile.gettempdir()
+            except:
+                temp_dir = tempdir()
+        else:
+            temp_dir = self.userStorageDirectory
+        self.userStorageDirectory = os.path.join(temp_dir, 'Torrenter')
+
+    def sectionMenu(self):
+        if self.__settings__.getSetting('plugin_name')!=self.__plugin__:
+            if self.__settings__.getSetting('delete_russian')!='false':
+                not_russian=delete_russian(self.__settings__.getSetting('delete_russian')=='true')
+                if not_russian:
+                    self.__settings__.setSetting('delete_russian', 'true')
+                    self.__settings__.setSetting('language', '0')
+                else:
+                    self.__settings__.setSetting('delete_russian', 'false')
+            self.__settings__.setSetting('plugin_name',self.__plugin__)
+        ListString = 'XBMC.RunPlugin(%s)' % (sys.argv[0] + '?action=%s&action2=%s&%s=%s')
+        if self.history_bool:
+            contextMenu = [(self.localize('Search Control Window'),
+                            'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
+            contextMenu.append(
+                (self.localize('Clear Search History'), ListString % ('History', 'clear', 'addtime', '')))
+            self.drawItem('< %s >' % self.localize('Search History'), 'History',
+                          image=self.ROOT + '/icons/history2.png', contextMenu=contextMenu, replaceMenu=False)
+        self.drawItem('< %s >' % self.localize('Search'), 'search', image=self.ROOT + '/icons/search.png', )
+        contextMenu = [
+            (self.localize('Search Control Window'), 'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
+        contextMenu.append((self.localize('Reset All Cache DBs'),
+                            ListString % ('full_download', '', 'url', json.dumps({'action': 'delete'}))))
+        self.drawItem('< %s >' % self.localize('Content Lists'), 'openContent', image=self.ROOT + '/icons/media.png',
+                      contextMenu=contextMenu, replaceMenu=False)
+        self.drawItem('< %s >' % self.localize('Personal List'), 'List', image=self.ROOT + '/icons/list.png',
+                      contextMenu=contextMenu, replaceMenu=False)
+        self.drawItem('< %s >' % self.localize('Torrent-client Browser'), 'uTorrentBrowser',
+                      image=self.ROOT + '/icons/torrent-client.png')
+        self.drawItem('< %s >' % self.localize('.torrent Player'), 'torrentPlayer',
+                      image=self.ROOT + '/icons/torrentPlayer.png')
+        self.drawItem('< %s >' % self.localize('Search Control Window'), 'controlCenter',
+                      image=self.ROOT + '/icons/settings.png', isFolder=False)
+        if self.torrent_player!='1':self.drawItem('< %s >' % self.localize('Magnet-link Player'), 'magentPlayer',
+                      image=self.ROOT + '/icons/magnet.png')
+        if self.debug:
+            self.drawItem('full_download', 'full_download', image=self.ROOT + '/icons/magnet.png')
+            self.drawItem('test', 'test', image=self.ROOT + '/icons/magnet.png')
+
+        '''self.drawItem(self.localize('< Popular >'), 'getPopular', image=self.ROOT + '/icons/video.png')
+        self.drawItem(self.localize('< Ratings >'), 'getRatings', image=self.ROOT + '/icons/video.png')
+        self.drawItem(self.localize('< Recent Materials >'), 'recentMaterilas', image=self.ROOT + '/icons/video.png')
+        if self.__settings__.getSetting("auth"):
+            self.drawItem(self.localize('< Bookmarks >'), 'getBookmarks', image=self.ROOT + '/icons/bookmarks.png')
+            self.drawItem(self.localize('< History >'), 'getHistory', image=self.ROOT + '/icons/history.png')
+            self.drawItem(self.localize('< Logout >'), 'logoutUser', image=self.ROOT + '/icons/logout.png')
+        else:
+            self.drawItem(self.localize('< Login >'), 'loginUser', image=self.ROOT + '/icons/login.png')
+            self.drawItem(self.localize('< Register >'), 'registerUser', image=self.ROOT + '/icons/register.png')'''
+        if 'true' == self.__settings__.getSetting("keep_files"):
+            self.drawItem(self.localize('Clear Storage'), 'clearStorage', isFolder=True,
+                          image=self.ROOT + '/icons/clear.png')
+        view_style('sectionMenu')
+        xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+
+    def test_scrapper(self):
+        ok = xbmcgui.Dialog().yesno(self.localize('Content Lists'),
+                                    self.localize('Reset All Cache DBs'), )
+        if ok:
+            dirname = xbmc.translatePath('special://temp')
+            dirname = os.path.join(dirname, 'xbmcup', 'plugin.video.torrenter')
+            scrapers = {'tvdb': 'TheTVDB.com', 'tmdb': 'TheMovieDB.org', 'kinopoisk': 'KinoPoisk.ru'}
+            for i in scrapers.keys():
+                xbmcvfs.delete(os.path.join(dirname, i +'.'+ self.language + '.db'))
+                xbmcvfs.copy(os.path.join(dirname, i+'.'+ self.language + ' - копия.db'), os.path.join(dirname, i+'.'+ self.language + '.db'))
+
+        test = [(15, u'Mujaki no Rakue', u'\u041d\u0435\u0432\u0438\u043d\u043d\u044b\u0439 \u0440\u0430\u0439', 2014,
+                 u'http://media9.fast-torrent.ru/media/files/s4/lz/jx/cache/nevinnyij-raj_video_list.jpg',
+                 {'year': 2014, 'title': u'\u041d\u0435\u0432\u0438\u043d\u043d\u044b\u0439 \u0440\u0430\u0439',
+                  'link': u'/film/nevinnyij-raj.html',
+                  'label': u'\u041d\u0435\u0432\u0438\u043d\u043d\u044b\u0439 \u0440\u0430\u0439'}), (
+                14, u'Appleseed Alpha', u'\u041f\u0440\u043e\u0435\u043a\u0442 \u0410\u043b\u044c\u0444\u0430', 2014,
+                u'http://media9.fast-torrent.ru/media/files/s2/qr/wm/cache/proekt-alfa_video_list.jpg',
+                {'year': 2014, 'title': u'\u041f\u0440\u043e\u0435\u043a\u0442 \u0410\u043b\u044c\u0444\u0430',
+                 'link': u'/film/proekt-alfa.html',
+                 'label': u'\u041f\u0440\u043e\u0435\u043a\u0442 \u0410\u043b\u044c\u0444\u0430'}), (
+                13, u'Omoide no Marnie',
+                u'\u0412\u0441\u043f\u043e\u043c\u0438\u043d\u0430\u044f \u041c\u0430\u0440\u043d\u0438', 2014,
+                u'http://media9.fast-torrent.ru/media/files/s1/qs/oy/cache/vspominaya-marni_video_list.jpg',
+                {'year': 2014,
+                 'title': u'\u0412\u0441\u043f\u043e\u043c\u0438\u043d\u0430\u044f \u041c\u0430\u0440\u043d\u0438',
+                 'link': u'/film/vspominaya-marni.html',
+                 'label': u'\u0412\u0441\u043f\u043e\u043c\u0438\u043d\u0430\u044f \u041c\u0430\u0440\u043d\u0438'}), (
+                12, u'Sakasama no Patema: Beginning of the Day',
+                u'\u041f\u0430\u0442\u044d\u043c\u0430 \u043d\u0430\u043e\u0431\u043e\u0440\u043e\u0442', 2014,
+                u'http://media9.fast-torrent.ru/media/files/s4/bh/ii/cache/perevyornutaya-patema-nachalo-_video_list.jpg',
+                {'year': 2014,
+                 'title': u'\u041f\u0430\u0442\u044d\u043c\u0430 \u043d\u0430\u043e\u0431\u043e\u0440\u043e\u0442',
+                 'link': u'/film/perevyornutaya-patema-nachalo-dnya.html',
+                 'label': u'\u041f\u0430\u0442\u044d\u043c\u0430 \u043d\u0430\u043e\u0431\u043e\u0440\u043e\u0442'}), (
+                11, u'Tsubasa to Hotaru',
+                u'\u0426\u0443\u0431\u0430\u0441\u0430 \u0438 \u0441\u0432\u0435\u0442\u043b\u044f\u0447\u043a\u0438',
+                2014, u'http://media9.fast-torrent.ru/media/files/s1/ou/tj/cache/tsubasa-i-svetlyachki_video_list.jpg',
+                {'year': 2014,
+                 'title': u'\u0426\u0443\u0431\u0430\u0441\u0430 \u0438 \u0441\u0432\u0435\u0442\u043b\u044f\u0447\u043a\u0438',
+                 'link': u'/film/tsubasa-i-svetlyachki.html',
+                 'label': u'\u0426\u0443\u0431\u0430\u0441\u0430 \u0438 \u0441\u0432\u0435\u0442\u043b\u044f\u0447\u043a\u0438'}),
+                (10, u'Harmonie', u'\u0413\u0430\u0440\u043c\u043e\u043d\u0438\u044f', 2014,
+                 u'http://media9.fast-torrent.ru/media/files/s4/os/it/cache/garmonija_video_list.jpg',
+                 {'year': 2014, 'title': u'\u0413\u0430\u0440\u043c\u043e\u043d\u0438\u044f',
+                  'link': u'/film/garmonija.html', 'label': u'\u0413\u0430\u0440\u043c\u043e\u043d\u0438\u044f'}), (
+                9, u'Z-Kai: Cross Road', u'\u041f\u0435\u0440\u0435\u043f\u0443\u0442\u044c\u0435', 2014,
+                u'http://media9.fast-torrent.ru/media/files/s4/rr/mc/cache/perepute_video_list.png',
+                {'year': 2014, 'title': u'\u041f\u0435\u0440\u0435\u043f\u0443\u0442\u044c\u0435',
+                 'link': u'/film/perepute.html', 'label': u'\u041f\u0435\u0440\u0435\u043f\u0443\u0442\u044c\u0435'}), (
+                8, u'Giovanni no Shima',
+                u'\u041e\u0441\u0442\u0440\u043e\u0432 \u0414\u0436\u043e\u0432\u0430\u043d\u043d\u0438', 2014,
+                u'http://media9.fast-torrent.ru/media/files/s3/gi/rq/cache/ostrov-dzhovanni_video_list.jpg',
+                {'year': 2014,
+                 'title': u'\u041e\u0441\u0442\u0440\u043e\u0432 \u0414\u0436\u043e\u0432\u0430\u043d\u043d\u0438',
+                 'link': u'/film/ostrov-dzhovanni.html',
+                 'label': u'\u041e\u0441\u0442\u0440\u043e\u0432 \u0414\u0436\u043e\u0432\u0430\u043d\u043d\u0438'}), (
+                7, u'Kaze tachinu', u'\u0412\u0435\u0442\u0435\u0440 \u043a\u0440\u0435\u043f\u0447\u0430\u0435\u0442',
+                2014, u'http://media9.fast-torrent.ru/media/files/s2/ol/br/cache/veter-krepchaet-1_video_list.jpg',
+                {'year': 2014,
+                 'title': u'\u0412\u0435\u0442\u0435\u0440 \u043a\u0440\u0435\u043f\u0447\u0430\u0435\u0442',
+                 'link': u'/film/veter-krepchaet-1.html',
+                 'label': u'\u0412\u0435\u0442\u0435\u0440 \u043a\u0440\u0435\u043f\u0447\u0430\u0435\u0442'}), (
+                6, u'Majokko Shimai no Yoyo to Nene',
+                u'\u0421\u0435\u0441\u0442\u0440\u044b-\u043a\u043e\u043b\u0434\u0443\u043d\u044c\u0438 \u0419\u043e-\u0439\u043e \u0438 \u041d\u044d\u043d\u044d',
+                2013,
+                u'http://media9.fast-torrent.ru/media/files/s1/nt/rq/cache/sestryi-kolduni-jo-jo-i-nene_video_list.jpg',
+                {'year': 2013,
+                 'title': u'\u0421\u0435\u0441\u0442\u0440\u044b-\u043a\u043e\u043b\u0434\u0443\u043d\u044c\u0438 \u0419\u043e-\u0439\u043e \u0438 \u041d\u044d\u043d\u044d',
+                 'link': u'/film/sestryi-kolduni-jo-jo-i-nene.html',
+                 'label': u'\u0421\u0435\u0441\u0442\u0440\u044b-\u043a\u043e\u043b\u0434\u0443\u043d\u044c\u0438 \u0419\u043e-\u0439\u043e \u0438 \u041d\u044d\u043d\u044d'}),
+                (5, u'Bayonetta: Bloody Fate',
+                 u'\u0411\u0430\u0439\u043e\u043d\u0435\u0442\u0442\u0430: \u041a\u0440\u043e\u0432\u0430\u0432\u0430\u044f \u0441\u0443\u0434\u044c\u0431\u0430',
+                 2013,
+                 u'http://media9.fast-torrent.ru/media/files/s1/ho/ba/cache/bajonetta-krovavaya-sudba_video_list.jpg',
+                 {'year': 2013,
+                  'title': u'\u0411\u0430\u0439\u043e\u043d\u0435\u0442\u0442\u0430: \u041a\u0440\u043e\u0432\u0430\u0432\u0430\u044f \u0441\u0443\u0434\u044c\u0431\u0430',
+                  'link': u'/film/bajonetta-krovavaya-sudba.html',
+                  'label': u'\u0411\u0430\u0439\u043e\u043d\u0435\u0442\u0442\u0430: \u041a\u0440\u043e\u0432\u0430\u0432\u0430\u044f \u0441\u0443\u0434\u044c\u0431\u0430'}),
+                (4, u'Lupin III: Princess of the Breeze',
+                 u'\u041b\u044e\u043f\u0435\u043d III: \u041f\u0440\u0438\u043d\u0446\u0435\u0441\u0441\u0430 \u043c\u043e\u0440\u0441\u043a\u043e\u0433\u043e \u0431\u0440\u0438\u0437\u0430',
+                 2013,
+                 u'http://media9.fast-torrent.ru/media/files/s1/oz/ox/cache/lyupen-iii-printsessa-morskogo_video_list.jpg',
+                 {'year': 2013,
+                  'title': u'\u041b\u044e\u043f\u0435\u043d III: \u041f\u0440\u0438\u043d\u0446\u0435\u0441\u0441\u0430 \u043c\u043e\u0440\u0441\u043a\u043e\u0433\u043e \u0431\u0440\u0438\u0437\u0430',
+                  'link': u'/film/lyupen-iii-printsessa-morskogo-briza.html',
+                  'label': u'\u041b\u044e\u043f\u0435\u043d III: \u041f\u0440\u0438\u043d\u0446\u0435\u0441\u0441\u0430 \u043c\u043e\u0440\u0441\u043a\u043e\u0433\u043e \u0431\u0440\u0438\u0437\u0430'}),
+                (3, u'Ansatsu Kyoushitsu',
+                 u'\u0423\u0431\u0438\u0439\u0441\u0442\u0432\u043e \u0432 \u043a\u043b\u0430\u0441\u0441\u043d\u043e\u0439 \u043a\u043e\u043c\u043d\u0430\u0442\u0435',
+                 2013,
+                 u'http://media9.fast-torrent.ru/media/files/s4/fl/td/cache/ubijstvo-v-klassnoj-komnate_video_list.jpg',
+                 {'year': 2013,
+                  'title': u'\u0423\u0431\u0438\u0439\u0441\u0442\u0432\u043e \u0432 \u043a\u043b\u0430\u0441\u0441\u043d\u043e\u0439 \u043a\u043e\u043c\u043d\u0430\u0442\u0435',
+                  'link': u'/film/ubijstvo-v-klassnoj-komnate.html',
+                  'label': u'\u0423\u0431\u0438\u0439\u0441\u0442\u0432\u043e \u0432 \u043a\u043b\u0430\u0441\u0441\u043d\u043e\u0439 \u043a\u043e\u043c\u043d\u0430\u0442\u0435'}),
+                (2, u'Kobayashi ga Kawai Sugite Tsurai!',
+                 u'\u041a\u043e\u0431\u0430\u044f\u0448\u0438 \u043d\u0430\u0441\u0442\u043e\u043b\u044c\u043a\u043e \u043c\u0438\u043b\u044b, \u0447\u0442\u043e \u0430\u0436 \u0434\u0443\u0448\u0443 \u0442\u0435\u0440\u0435\u0431\u0438\u0442!!',
+                 2013,
+                 u'http://media9.fast-torrent.ru/media/files/s2/st/ya/cache/kobayashi-nastolko-milyi-chto-_video_list.jpg',
+                 {'year': 2013,
+                  'title': u'\u041a\u043e\u0431\u0430\u044f\u0448\u0438 \u043d\u0430\u0441\u0442\u043e\u043b\u044c\u043a\u043e \u043c\u0438\u043b\u044b, \u0447\u0442\u043e \u0430\u0436 \u0434\u0443\u0448\u0443 \u0442\u0435\u0440\u0435\u0431\u0438\u0442!!',
+                  'link': u'/film/kobayashi-nastolko-milyi-chto-azh-dushu-terebit.html',
+                  'label': u'\u041a\u043e\u0431\u0430\u044f\u0448\u0438 \u043d\u0430\u0441\u0442\u043e\u043b\u044c\u043a\u043e \u043c\u0438\u043b\u044b, \u0447\u0442\u043e \u0430\u0436 \u0434\u0443\u0448\u0443 \u0442\u0435\u0440\u0435\u0431\u0438\u0442!!'}),
+                (1, u'Rescue Me!', u'\u0421\u043f\u0430\u0441\u0438 \u043c\u0435\u043d\u044f!', 2013,
+                 u'http://media9.fast-torrent.ru/media/files/s4/eh/tl/cache/spasi-menya-2_video_list.jpg',
+                 {'year': 2013, 'title': u'\u0421\u043f\u0430\u0441\u0438 \u043c\u0435\u043d\u044f!',
+                  'link': u'/film/spasi-menya-2.html',
+                  'label': u'\u0421\u043f\u0430\u0441\u0438 \u043c\u0435\u043d\u044f!'})]
+        test = [(1, u'Rescue Me!', u'\u0421\u043f\u0430\u0441\u0438 \u043c\u0435\u043d\u044f!', 2013,
+                 u'http://media9.fast-torrent.ru/media/files/s4/eh/tl/cache/spasi-menya-2_video_list.jpg',
+                 {'year': 2013, 'title': u'\u0421\u043f\u0430\u0441\u0438 \u043c\u0435\u043d\u044f!',
+                  'link': u'/film/spasi-menya-2.html',
+                  'label': u'\u0421\u043f\u0430\u0441\u0438 \u043c\u0435\u043d\u044f!'}), (
+                9, u'Z-Kai: Cross Road', u'\u041f\u0435\u0440\u0435\u043f\u0443\u0442\u044c\u0435', 2014,
+                u'http://media9.fast-torrent.ru/media/files/s4/rr/mc/cache/perepute_video_list.png',
+                {'year': 2014, 'title': u'\u041f\u0435\u0440\u0435\u043f\u0443\u0442\u044c\u0435',
+                 'link': u'/film/perepute.html', 'label': u'\u041f\u0435\u0440\u0435\u043f\u0443\u0442\u044c\u0435'}), (
+                8, u'Giovanni no Shima',
+                u'\u041e\u0441\u0442\u0440\u043e\u0432 \u0414\u0436\u043e\u0432\u0430\u043d\u043d\u0438', 2014,
+                u'http://media9.fast-torrent.ru/media/files/s3/gi/rq/cache/ostrov-dzhovanni_video_list.jpg',
+                {'year': 2014,
+                 'title': u'\u041e\u0441\u0442\u0440\u043e\u0432 \u0414\u0436\u043e\u0432\u0430\u043d\u043d\u0438',
+                 'link': u'/film/ostrov-dzhovanni.html',
+                 'label': u'\u041e\u0441\u0442\u0440\u043e\u0432 \u0414\u0436\u043e\u0432\u0430\u043d\u043d\u0438'}), ]
+        self.drawcontentList(test)
+        xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+        lockView('wide')
+
+    def test(self, params={}):
+        #xbmc.executebuiltin('XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.torrenter/?'
+        #                                                'action=torrentPlayer&url=D%3A%5Ctest.torrent')
+        #self.test_scrapper()
+        thread.exit()
+
+    def History(self, params={}):
+        db = HistoryDB(self.HistoryDB_name, self.HistoryDB_ver)
+        get = params.get
+        action2 = get('action2')
+        url = get('url')
+        addtime = get('addtime')
+
+        if action2 == 'add':
+            db.add(url)
+            xbmc.executebuiltin('Container.Refresh')
+            showMessage(self.localize('Search History'), self.localize('Added!'))
+
+        if action2 == 'delete':
+            db.delete(addtime)
+            xbmc.executebuiltin('Container.Refresh')
+            showMessage(self.localize('Search History'), self.localize('Deleted!'))
+
+        if action2 == 'fav':
+            db.fav(addtime)
+            xbmc.executebuiltin('Container.Refresh')
+            showMessage(self.localize('Favourites'), self.localize('Added!'))
+
+        if action2 == 'unfav':
+            db.unfav(addtime)
+            xbmc.executebuiltin('Container.Refresh')
+            showMessage(self.localize('Favourites'), self.localize('Deleted!'))
+
+        if action2 == 'clear':
+            db.clear()
+            showMessage(self.localize('Search History'), self.localize('Clear!'))
+
+        if not action2:
+            items = db.get_all()
+            favlist = [(1, '[B]%s[/B]'), (0, '%s')]
+            if items:
+                ListString = 'XBMC.RunPlugin(%s)' % (sys.argv[0] + '?action=History&action2=%s&%s=%s')
+                for favbool, bbstring in favlist:
+                    for addtime, string, fav in items:
+                        if favbool == int(fav):
+                            title = string.encode('utf-8')
+                            contextMenu = [(self.localize('Search Control Window'),
+                                            'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
+
+                            contextMenu.append((self.localize('Individual Tracker Options'),
+                                                    'XBMC.RunScript(%s)' % (os.path.join(ROOT, 'controlcenter.py,') + 'addtime=%s&title=%s' % (str(addtime), title))))
+                            if int(fav) == 1:
+                                contextMenu.append((self.localize('Delete from %s') % self.localize('Favourites SH'),
+                                                    ListString % ('unfav', 'addtime', str(addtime))))
+                                img = self.ROOT + '/icons/fav.png'
+                            else:
+                                contextMenu.append((self.localize('Add to %s') % self.localize('Favourites SH'),
+                                                    ListString % ('fav', 'addtime', str(addtime)),))
+                                img = self.ROOT + '/icons/unfav.png'
+                            contextMenu.append((self.localize('Delete from %s') % self.localize('Search History'),
+                                                ListString % ('delete', 'addtime', str(addtime))))
+
+                            link = {'url': title, 'addtime': str(addtime)}
+                            self.drawItem(bbstring % title, 'search', link, image=img, contextMenu=contextMenu)
+            view_style('History')
+            xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+
+    def List(self, params={}):
+        db = ListDB()
+        get = params.get
+        action2 = get('action2')
+        info = get('info')
+        addtime = get('addtime')
+
+        if action2 == 'add':
+            db.add(info)
+            showMessage(self.localize('Personal List'), self.localize('Added!'))
+
+        if action2 == 'delete':
+            db.delete(addtime)
+            showMessage(self.localize('Personal List'), self.localize('Deleted!'))
+
+        if not action2:
+            items = db.get_all()
+            contentList = []
+            if items:
+                for addtime, info in items:
+                    num = addtime * -1
+                    jinfo = json.loads(urllib.unquote_plus(info))
+                    title = jinfo.get('title')
+                    original_title = jinfo.get('original_title')
+                    year = jinfo.get('year')
+                    img = jinfo.get('img')
+                    info = jinfo.get('info')
+
+                    contentList.append((
+                        (int(num)), original_title, title, int(year), img, info,
+                    ))
+            self.drawcontentList(contentList, params)
+            view_style('List')
+            xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+
+    def drawContent(self, category_dict, provider=None, category=None, subcategory=None):
+
+        if not category and not provider:
+            for cat in category_dict.keys():
+                cat_con = category_dict[cat]
+                if isinstance(cat_con, dict):
+                    link = json.dumps({'category': cat})
+                else:
+                    link = json.dumps({'category': cat, 'subcategory': True})
+                self.drawItem('< %s >' % self.Content.translate(cat), 'openContent', link, isFolder=True)
+
+        if category == 'sites' and not provider:
+            for cat in category_dict.keys():
+                link = json.dumps({'provider': cat})
+                self.drawItem('[B]%s[/B]' % cat if self.contenterObject.get(cat).isScrappable() else cat, 'openContent',
+                              link, isFolder=True)
+        elif category == 'search' and not provider:
+            keyboard = xbmc.Keyboard('', self.localize('Search Phrase') + ':')
+            keyboard.doModal()
+            query = keyboard.getText()
+            if not query:
+                return
+            elif keyboard.isConfirmed():
+                subcategory = query
+            if subcategory:
+                for cat in self.Contenters.get_active():
+                    if self.contenterObject[cat].has_category(category):
+                        link = json.dumps({'category': category, 'subcategory': subcategory, 'provider': cat})
+                        title = '< %s - %s >' % (cat.encode('utf-8'), subcategory)
+                        self.drawItem('[B]%s[/B]' % title if self.contenterObject.get(cat).isScrappable() else title,
+                                      'openContent', link, isFolder=True)
+        elif category and not provider and not subcategory:
+            if isinstance(category_dict.get(category), dict):
+                for cat in category_dict[category].keys():
+                    if not cat == category:
+                        link = json.dumps({'category': category, 'subcategory': cat, 'provider': provider})
+                        self.drawItem('< %s >' % self.Content.translate(category, cat), 'openContent', link,
+                                      isFolder=True)
+            else:
+                for cat in self.Contenters.get_active():
+                    if self.contenterObject[cat].has_category(category):
+                        link = json.dumps({'category': category, 'subcategory': subcategory, 'provider': cat})
+                        self.drawItem('[B]%s[/B]' % cat if self.contenterObject.get(cat).isScrappable() else cat,
+                                      'openContent', link, isFolder=True)
+
+        if category and subcategory and not provider:
+            for cat in category_dict.keys():
+                if self.contenterObject.get(cat).has_category(category, subcategory):
+                    link = json.dumps({'category': category, 'subcategory': subcategory, 'provider': cat})
+                    self.drawItem('[B]%s[/B]' % cat if self.contenterObject.get(cat).isScrappable() else cat,
+                                  'openContent', link, isFolder=True)
+
+        if provider and not category:
+            for cat in category_dict.keys():
+                if isinstance(category_dict.get(cat), dict):
+                    link = json.dumps({'category': cat, 'provider': provider})
+                else:
+                    link = json.dumps({'category': cat, 'subcategory': True, 'provider': provider})
+                self.drawItem('< %s - %s >' % (provider.encode('utf-8'), self.Content.translate(cat)), 'openContent',
+                              link, isFolder=True)
+
+        if provider and category and not subcategory:
+            for cat in category_dict[category].keys():
+                if not cat == category:
+                    link = json.dumps({'category': category, 'subcategory': cat, 'provider': provider})
+                    self.drawItem('< %s - %s >' % (provider.encode('utf-8'), self.Content.translate(category, cat)),
+                                  'openContent', link, isFolder=True)
+
+        view_style('drawContent')
+        xbmcplugin.addSortMethod(handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_VIDEO_TITLE)
+        xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+
+    def openContent(self, params={}):
+        self.contenterObject = {}
+        self.Content = Content.Content()
+        self.Contenters = Contenters()
+        self.Contenters.first_time(self.scrapperDB_ver, self.language)
+        get = params.get
+        try:
+            apps = json.loads(urllib.unquote_plus(get("url")))
+        except:
+            apps = {}
+        category = apps.get('category')
+        subcategory = apps.get('subcategory')
+        provider = apps.get('provider')
+
+        contenters = self.Contenters.list()
+        for contenter in contenters:
+            if ROOT + os.sep + 'resources' + os.sep + 'contenters' not in sys.path:
+                sys.path.insert(0, ROOT + os.sep + 'resources' + os.sep + 'contenters')
+            try:
+                self.contenterObject[contenter] = getattr(__import__(contenter), contenter)()
+            except Exception, e:
+                print 'Unable to use contenter: ' + contenter + ' at ' + ' Content(). Exception: ' + str(e)
+
+        if not subcategory:
+            if not category and not provider:
+                self.drawContent(category_dict=self.Content.category_dict)
+
+            if category and not provider:
+                category_dict = self.Content.category_dict
+                if category == 'sites':
+                    category_dict = self.Contenters.get_activedic()
+                self.drawContent(category_dict=category_dict, category=category)
+
+            if provider:
+                self.Content = self.contenterObject[provider]
+                self.drawContent(category_dict=self.Content.category_dict, category=category, provider=provider)
+        else:
+            if provider:
+                self.Content = self.contenterObject[provider]
+                if not self.Content.isLabel():
+                    self.draw(apps, mode='content')
+                else:
+                    self.draw(apps, mode='tracker')
+            elif not provider:
+                category_dict = self.Contenters.get_activedic()
+                self.drawContent(category_dict=category_dict, category=category, subcategory=subcategory)
+
+    def draw(self, apps, mode):
+        category = apps.get('category')
+        subcategory = apps.get('subcategory')
+        provider = apps.get('provider')
+        page = apps.get('page') if apps.get('page') else 1
+        property = self.Content.get_property(category, subcategory)
+        contentList = self.Content.get_contentList(category, subcategory, page)
+        if property and property.get('page'):
+            apps['page'] = page + 1
+            #print str(apps)
+            self.drawItem('[COLOR FFFFFFFF][B]%s[/B][/COLOR]' % self.localize('Next Page'), 'openContent',
+                          json.dumps(apps), isFolder=True)
+
+        if mode == 'tracker':
+            self.drawtrackerList(provider, contentList)
+            view_style('drawtrackerList')
+        elif mode == 'content':
+            self.drawcontentList(contentList)
+            view_style('drawcontentList')
+            #if not self.debug: view_style('drawcontentList')
+
+        xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+
+    def full_download(self, params={}):
+        self.contenterObject = {}
+        self.Content = Content.Content()
+        self.Contenters = Contenters()
+        self.Contenters.first_time(self.scrapperDB_ver, self.language)
+        self.breakdown = False
+
+        get = params.get
+        try:
+            apps = json.loads(urllib.unquote_plus(get("url")))
+        except:
+            apps = {}
+        provider = apps.get('provider')
+        action = apps.get('action')
+
+        if action == 'delete':
+            dirname = xbmc.translatePath('special://temp')
+            dirname = os.path.join(dirname, 'xbmcup', 'plugin.video.torrenter')
+            scrapers = {'tvdb': 'TheTVDB.com', 'tmdb': 'TheMovieDB.org', 'kinopoisk': 'KinoPoisk.ru'}
+            for i in scrapers.keys():
+                xbmcvfs.delete(os.path.join(dirname, i +'.'+self.language+ '.db'))
+            showMessage(self.localize('Reset All Cache DBs'), self.localize('Deleted!'))
+            return
+
+        if action == 'reset':
+            self.__settings__.setSetting('oldc_metadata', 'false')
+            self.__settings__.setSetting('metadata', 'false')
+            showMessage('Done', 'Reset')
+            return
+
+        contenters = self.Contenters.list()
+        for contenter in contenters:
+            if ROOT + os.sep + 'resources' + os.sep + 'contenters' not in sys.path:
+                sys.path.insert(0, ROOT + os.sep + 'resources' + os.sep + 'contenters')
+            try:
+                self.contenterObject[contenter] = getattr(__import__(contenter), contenter)()
+            except Exception, e:
+                print 'Unable to use contenter: ' + contenter + ' at ' + ' Content(). Exception: ' + str(e)
+
+        if provider:
+            for cat in self.Contenters.get_activedic().keys():
+                if provider == 'all' or cat == provider:
+                    self.Content = self.contenterObject[cat]
+                    if self.Content.isScrappable():
+                        self.provider = cat
+                        category_dict = self.Content.category_dict
+                        for category in category_dict.keys():
+                            if category not in ['search']:
+                                if isinstance(category_dict.get(category), dict):
+                                    for subcategory in category_dict.get(category).keys():
+                                        if subcategory != category and not subcategory == True:
+                                            if self.Content.isPages() and self.Content.get_property(category,
+                                                                                                    subcategory):
+                                                for i in range(1, 5 if category!='year' else 2):
+                                                    contentList = self.Content.get_contentList(category, subcategory, i)
+                                                    self.drawcontentList(contentList)
+                                                    if self.breakdown: break
+                                            else:
+                                                contentList = self.Content.get_contentList(category, subcategory)
+                                                self.drawcontentList(contentList)
+                                        if self.breakdown: break
+                                if not isinstance(category_dict.get(category), dict):
+                                    contentList = self.Content.get_contentList(category, subcategory=True)
+                                    self.drawcontentList(contentList)
+
+                                if self.breakdown: break
+                        showMessage('','')
+                        xbmc.sleep(1000)
+                        showMessage('','')
+                        xbmc.sleep(1000)
+                        showMessage('','')
+
+        else:
+            self.drawItem('[B]%s[/B]' % "Download All", 'full_download', json.dumps({'provider': "all"}), isFolder=True)
+            for cat in self.Contenters.get_activedic().keys():
+                link = json.dumps({'provider': cat})
+                if self.contenterObject.get(cat).isScrappable():
+                    self.drawItem('[B]%s[/B]' % cat, 'full_download', link, isFolder=True)
+            self.drawItem(self.localize('Reset All Cache DBs'), 'full_download', json.dumps({'action': 'delete'}),
+                          isFolder=True)
+            self.drawItem('Reset metadata config', 'full_download', json.dumps({'action': 'reset'}), isFolder=True)
+            xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+
+    def drawcontentList(self, contentList, params={}):
+        contentList = sorted(contentList, key=lambda x: x[0], reverse=True)
+        self.Scraper = Scrapers()
+        progressBar = xbmcgui.DialogProgress()
+        progressBar.create(self.localize('Please Wait'), self.localize('Waiting for website response...'))
+        i = 0
+        debug = 0
+        ListString = 'XBMC.RunPlugin(%s)' % (sys.argv[0] + '?action=List&action2=%s&%s=%s')
+        meta = None
+        scrapers = {'tvdb': 'TheTVDB.com', 'tmdb': 'TheMovieDB.org', 'kinopoisk': 'KinoPoisk.ru'}
+        for num, originaltitle, title, year, img, info in contentList:
+            i = i + 1
+            time.sleep(0.005)
+            ListInfo = {u'title': title, u'original_title': originaltitle, u'year': year, u'img': img, u'info': info}
+            iterator = int((float(i) / len(contentList)) * 100)
+            dialogText = self.localize('Search and cache information for:')
+            label = title
+            title = contenter_title = title.encode('utf-8', 'ignore')
+            search_url = {}
+            if title:               search_url['title'] = title
+            if img:                 search_url['img'] = img
+            if originaltitle:       search_url['originaltitle'] = originaltitle
+            if year:                search_url['year'] = str(year)
+            if info.get('episode'): search_url['episode'] = str(info.get('episode'))
+            if info.get('season'):  search_url['season'] = str(info.get('season'))
+
+            if self.__settings__.getSetting("metadata") == 'true':
+
+                if originaltitle:
+                    search = [originaltitle, label]
+                else:
+                    search = [label]
+
+                if info.get('tvshowtitle'):
+                    scraper = 'tvdb'
+                else:
+                    scraper = 'tmdb'
+
+                progressBar.update(iterator, dialogText, title, scrapers[scraper])
+                meta = self.Scraper.scraper(scraper, {'label': title, 'search': search, 'year': year}, self.language)
+                #print 'meta:'+str(meta)
+                if self.language == 'ru':
+                    if not meta.get('info').get('title') or \
+                            not meta.get('properties').get('fanart_image') or not meta.get('icon'):
+                        scraper = 'kinopoisk'
+                        progressBar.update(iterator, dialogText, title, scrapers[scraper])
+                        if info.get('tvshowtitle'):
+                            if originaltitle:
+                                search = [originaltitle, label + u' (сериал)']
+                            else:
+                                search = [label + u' (сериал)']
+                        kinometa = self.Scraper.scraper(scraper, {'label': title, 'search': search,
+                                                                  'year': year}, self.language)
+
+                        #print 'kinometa:'+str(kinometa)
+
+                        for section in kinometa.keys():
+                            if isinstance(kinometa[section], dict):
+                                if not meta.get(section):
+                                    meta[section] = kinometa[section]
+                                    continue
+                                else:
+                                    for sitem in kinometa[section].keys():
+                                        meta[section][sitem] = kinometa[section][sitem]
+                            elif not meta.get(section):
+                                meta[section] = kinometa[section]
+
+                #print 'meta:'+str(meta)
+                #if self.debug and meta.get('info').get('title') and meta.get('info').get('title').encode('utf-8')==title: continue
+
+                #print 'meta: '+str((scraper, {'label': title, 'search': [label, originaltitle],
+                #                                 'year': year}))
+                debug = 0
+                if meta.get('info').get('title'):
+                    if self.debug and 1 == debug:
+                        title = meta.get('info').get('title').encode('utf-8') + '/' + title + '/'
+                        if originaltitle: title += originaltitle.encode('utf-8')
+                    else:
+                        title = meta.get('info').get('title')
+
+            listitem = xbmcgui.ListItem(title, iconImage=img, thumbnailImage=img)
+            listitem.setInfo(type='Video', infoLabels=info)
+            if meta:
+                self.itemScrap(listitem, meta)
+                if meta.get('icon'):
+                    search_url['img'] = meta.get('icon')
+                if meta.get('info').get('title'):
+                    search_url['title'] = meta.get('info').get('title').encode('utf-8')
+                    if search_url['title'] != contenter_title:
+                        search_url['contenter_title'] = contenter_title
+                if meta.get('info').get('originaltitle'):
+                    search_url['originaltitle'] = meta.get('info').get('originaltitle').encode('utf-8')
+
+            contextMenu = [(self.localize('Search Control Window'),
+                            'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
+            if params.get('action') == 'List':
+                contextMenu.append((self.localize('Delete from %s') % self.localize('Personal List'),
+                                    ListString % ('delete', 'addtime', str(num * -1))))
+            else:
+                contextMenu.append((self.localize('Add to %s') % self.localize('Personal List'),
+                                    ListString % ('add', 'info', urllib.quote_plus(json.dumps(ListInfo)))), )
+
+            contextMenu.append((self.localize('Information'), 'xbmc.Action(Info)'))
+
+            listitem.addContextMenuItems(contextMenu, replaceItems=False)
+            url = '%s?action=%s&url=%s' % (sys.argv[0], 'searchOption', urllib.quote_plus(json.dumps(search_url)))
+            xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=url, listitem=listitem, isFolder=True)
+
+            if progressBar.iscanceled():
+                self.breakdown = True
+                showMessage('< %s >' % self.localize('Content Lists'), self.localize('Canceled by User'))
+                break
+                #break
+
+        progressBar.update(0)
+        progressBar.close()
+        if self.debug and 1 == debug: lockView('wide')
+
+    def itemScrap(self, item, kwarg):
+        # Debug('[itemTVDB]:meta '+str(kwarg))
+        if 'title' in kwarg and kwarg['title']:
+            item.setLabel(kwarg['title'])
+
+        if 'label' in kwarg and kwarg['label']:
+            item.setLabel2(kwarg['label'])
+
+        if 'icon' in kwarg and kwarg['icon']:
+            item.setIconImage(kwarg['icon'])
+
+        if 'thumbnail' in kwarg and kwarg['thumbnail']:
+            item.setThumbnailImage(kwarg['thumbnail'])
+
+        if 'properties' in kwarg and kwarg['properties']:
+            for key, value in kwarg['properties'].iteritems():
+                item.setProperty(key, str(value))
+
+        if 'info' in kwarg and kwarg['properties']:
+            item.setInfo(type='Video', infoLabels=kwarg['info'])
+
+        return item
+
+    def drawtrackerList(self, provider, contentList):
+        contentList = sorted(contentList, key=lambda x: x[0], reverse=True)
+        for num, originaltitle, title, year, img, info in contentList:
+            if not info.get('label'):
+                continue
+
+            title = title.encode('utf-8', 'ignore')
+            label = info.get('label').encode('utf-8', 'ignore')
+
+            if self.contenterObject[provider].isInfoLink() and info.get('link'):
+                link = {'url': '%s::%s' % (provider, info.get('link')), 'thumbnail': img}
+            elif self.contenterObject[provider].isLabel():
+                link = {'url': '%s::%s' % (provider, urllib.quote_plus(label)), 'thumbnail': img}
+
+            contextMenu = [
+                    (self.localize('Download'),
+                     'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
+                     sys.argv[0], 'downloadFilesList', urllib.quote_plus('%s::%s' % (provider, info.get('link')))))
+                ]
+            self.drawItem(title, 'openTorrent', link, img, info=info, contextMenu=contextMenu, replaceMenu=False)
+
+    def searchOption(self, params={}):
+        try:
+            apps = json.loads(urllib.unquote_plus(params.get("url")))
+            get = apps.get
+        except:
+            return
+
+        options = []
+
+        img = ''
+        if get('img'): img = get('img')
+
+        if get('title'):
+            options.append(get('title'))
+
+        if get('originaltitle') and get('originaltitle') != get('title'):
+            options.append(get('originaltitle'))
+
+        if get('contenter_title') and get('contenter_title') != get('title') and get('originaltitle') != get(
+                'contenter_title'):
+            options.append(get('contenter_title'))
+
+        if get('year'):
+            if get('title'): options.append('%s %s' % (get('title'), get('year')))
+            if get('originaltitle') and get('originaltitle') != get('title'): options.append(
+                '%s %s' % (get('originaltitle'), get('year')))
+            if get('contenter_title') and get('contenter_title') != get('title') and get('originaltitle') != get(
+                    'contenter_title'): options.append('%s %s' % (get('contenter_title'), get('year')))
+
+        if get('episode') and get('season'):
+            if get('title'): options.append('%s S%sE%s' % (get('title'), get('season'), get('episode')))
+            if get('original_title'): options.append(
+                '%s S%sE%s' % (get('original_title'), get('season'), get('episode')))
+
+        for title in options:
+            link = {'url': title.encode('utf-8', 'ignore'), 'thumbnail': img}
+            self.drawItem(title.encode('utf-8', 'ignore'), 'search', link, img)
+
+        view_style('searchOption')
+        xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+
+    def drawItem(self, title, action, link='', image='', isFolder=True, contextMenu=None, replaceMenu=True, action2='',
+                 info={}):
+        listitem = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
+        if not info: info = {"Title": title, "plot": title}
+        if isinstance(link, dict):
+            link_url = ''
+            for key in link.keys():
+                link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(str(link.get(key))))
+            url = '%s?action=%s' % (sys.argv[0], action) + link_url
+        else:
+            url = '%s?action=%s&url=%s' % (sys.argv[0], action, urllib.quote_plus(link))
+        if action2:
+            url = url + '&url2=%s' % urllib.quote_plus(action2)
+        if not contextMenu:
+            contextMenu = [(self.localize('Search Control Window'),
+                            'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
+            replaceMenu = False
+        if contextMenu:
+            listitem.addContextMenuItems(contextMenu, replaceItems=replaceMenu)
+        if isFolder:
+            listitem.setProperty("Folder", "true")
+            listitem.setInfo(type='Video', infoLabels=info)
+        else:
+            listitem.setInfo(type='Video', infoLabels=info)
+        xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=url, listitem=listitem, isFolder=isFolder)
+
+    def getParameters(self, parameterString):
+        commands = {}
+        splitCommands = parameterString[parameterString.find('?') + 1:].split('&')
+        for command in splitCommands:
+            if (len(command) > 0):
+                splitCommand = command.split('=')
+                if (len(splitCommand) > 1):
+                    name = splitCommand[0]
+                    value = splitCommand[1]
+                    commands[name] = value
+        return commands
+
+    def unescape(self, string):
+        for (symbol, code) in self.htmlCodes:
+            string = re.sub(code, symbol, string)
+        return string
+
+    def stripHtml(self, string):
+        for (html, replacement) in self.stripPairs:
+            string = re.sub(html, replacement, string)
+        return string
+
+    def executeAction(self, params={}):
+        get = params.get
+        if hasattr(self, get("action")):
+            getattr(self, get("action"))(params)
+        else:
+            self.sectionMenu()
+
+    def uTorrentBrowser(self, params={}):
+
+        menu, dirs = [], []
+        contextMenustring = 'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (sys.argv[0], 'uTorrentBrowser', '%s')
+        try:
+            get = params.get
+            apps = json.loads(urllib.unquote_plus(get("url")))
+        except:
+            apps = {}
+        action = apps.get('action')
+        hash = apps.get('hash')
+        ind = apps.get('ind')
+        tdir = apps.get('tdir')
+
+        #print str(action)+str(hash)+str(ind)+str(tdir)
+
+        DownloadList = Download().list()
+        if DownloadList == False:
+            showMessage(self.localize('Error'), self.localize('No connection! Check settings!'), forced=True)
+            return
+
+        if action:
+            if action == 'context':
+                xbmc.executebuiltin("Action(ContextMenu)")
+                return
+            if (ind or ind == 0) and action in ('0', '3'):
+                Download().setprio_simple(hash, action, ind)
+            elif (ind or ind == 0) and action == 'play':
+                p, dllist, i, folder, filename = DownloadList, Download().listfiles(hash), 0, None, None
+                for data in p:
+                    if data['id'] == hash:
+                        folder = data['dir']
+                        break
+                for data in dllist:
+                    if data[2] == int(ind):
+                        filename = data[0]
+                        break
+                if isRemoteTorr():
+                    t_dir = self.__settings__.getSetting("torrent_dir")
+                    torrent_replacement = self.__settings__.getSetting("torrent_replacement")
+                    empty = [None, '']
+                    if t_dir in empty or torrent_replacement in empty:
+                        if xbmcgui.Dialog().yesno(
+                                self.localize('Remote Torrent-client'),
+                                self.localize('You didn\'t set up replacement path in setting.'),
+                                self.localize('For example /media/dl_torr/ to smb://SERVER/dl_torr/. Setup now?')):
+                            if t_dir in empty:
+                                torrent_dir()
+                            self.__settings__.openSettings()
+                        return
+                    #print str(folder)+str(torrent_dir)+str(torrent_replacement)+str(tdir)
+                    folder = folder.replace(t_dir, torrent_replacement)
+                filename = os.path.join(folder, filename)
+                xbmc.executebuiltin('xbmc.PlayMedia("' + filename.encode('utf-8') + '")')
+            elif not tdir and action not in ('0', '3'):
+                Download().action_simple(action, hash)
+            elif action in ('0', '3'):
+                dllist = sorted(Download().listfiles(hash), key=lambda x: x[0])
+                for name, percent, ind, size in dllist:
+                    if tdir:
+                        if '/' in name and tdir in name:
+                            menu.append((hash, action, str(ind)))
+                    else:
+                        menu.append((hash, action, str(ind)))
+                for hash, action, ind in menu: Download().setprio_simple(hash, action, ind)
+                return
+            xbmc.executebuiltin('Container.Refresh')
+            return
+
+        if not hash:
+            for data in DownloadList:
+                status = " "
+                if data['status'] in ('seed_pending', 'stopped'):
+                    status = TextBB(' [||] ', 'b')
+                elif data['status'] in ('seeding', 'downloading'):
+                    status = TextBB(' [>] ', 'b')
+                menu.append(
+                    {"title": '[' + str(data['progress']) + '%]' + status + data['name'] + ' [' + str(
+                        data['ratio']) + ']',
+                     "argv": {'hash': str(data['id'])}})
+        elif not tdir:
+            dllist = sorted(Download().listfiles(hash), key=lambda x: x[0])
+            for name, percent, ind, size in dllist:
+                if '/' not in name:
+                    menu.append({"title": '[' + str(percent) + '%]' + '[' + str(size) + '] ' + name,
+                                 "argv": {'hash': hash, 'ind': str(ind), 'action': 'context'}})
+                else:
+                    tdir = name.split('/')[0]
+                    # tfile=name[len(tdir)+1:]
+                    if tdir not in dirs: dirs.append(tdir)
+        elif tdir:
+            dllist = sorted(Download().listfiles(hash), key=lambda x: x[0])
+            for name, percent, ind, size in dllist:
+                if '/' in name and tdir in name:
+                    menu.append(
+                        {"title": '[' + str(percent) + '%]' + '[' + str(size) + '] ' + name[len(tdir) + 1:],
+                         "argv": {'hash': hash, 'ind': str(ind), 'action': 'context'}})
+
+        for i in dirs:
+            app = {'hash': hash, 'tdir': i}
+            link = json.dumps(app)
+            popup = []
+            folder = True
+            actions = [('3', self.localize('Start All Files')), ('0', self.localize('Stop All Files'))]
+            for a, title in actions:
+                app['action'] = a
+                popup.append((self.localize(title), contextMenustring % urllib.quote_plus(json.dumps(app))))
+            self.drawItem(unicode(i), 'uTorrentBrowser', link, isFolder=folder, contextMenu=popup, replaceMenu=True)
+
+        for i in menu:
+            app = i['argv']
+            link = json.dumps(app)
+            popup = []
+            if not hash:
+                actions = [('start', self.localize('Start')), ('stop', self.localize('Stop')),
+                           ('remove', self.localize('Remove')),
+                           ('3', self.localize('High Priority All Files')), ('0', self.localize('Skip All Files')),
+                           ('removedata', self.localize('Remove with files'))]
+
+                folder = True
+            else:
+                actions = [('3', self.localize('High Priority')), ('0', self.localize('Skip File')),
+                           ('play', self.localize('Play File'))]
+                folder = False
+            for a, title in actions:
+                app['action'] = a
+                popup.append((self.localize(title), contextMenustring % urllib.quote_plus(json.dumps(app))))
+
+            self.drawItem(unicode(i['title']), 'uTorrentBrowser', link, isFolder=folder, contextMenu=popup,
+                          replaceMenu=True)
+        view_style('uTorrentBrowser')
+        xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+
+    def clearStorage(self, params={}):
+        clearStorage(self.userStorageDirectory)
+
+    def magentPlayer(self, params={}):
+        defaultKeyword = params.get('url')
+        if not defaultKeyword:
+            defaultKeyword = ''
+            keyboard = xbmc.Keyboard(defaultKeyword, self.localize('Magnet-link (magnet:...)') + ':')
+            keyboard.doModal()
+            query = keyboard.getText()
+            if not query:
+                return
+            if not re.match("^magnet\:.+$", query):
+                showMessage(self.localize('Error'), self.localize('Not a magnet-link!'))
+                return
+            elif keyboard.isConfirmed():
+                params["url"] = urllib.quote_plus(self.unescape(urllib.unquote_plus(query)))
+        else:
+            params["url"] = urllib.quote_plus(self.unescape(urllib.unquote_plus(defaultKeyword)))
+        #print str(params)
+        self.torrentPlayer(params)
+
+    def torrentPlayer(self, params={}):
+        get = params.get
+        try:
+            url = urllib.unquote_plus(get("url"))
+        except:
+            url = None
+        try:
+            tdir = urllib.unquote_plus(get("url2"))
+        except:
+            tdir = None
+
+        #url="D:\\[rutracker.org].t4563731.torrent"
+
+        if not url:
+            action = xbmcgui.Dialog()
+            url = action.browse(1, self.localize('Choose .torrent in video library'), 'video', '.torrent')
+        if url:
+            self.__settings__.setSetting("lastTorrentUrl", url)
+            torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
+            if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
+                                                         torrentFilesDirectory=self.torrentFilesDirectory)
+            self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
+            contentList = []
+            #filename='Suzumiya Haruhi no Yuuutsu - 05 [DVDrip 1280x720 x264 FLAC].mkv'
+            #print str(torrent.getSubsIds(filename))
+            for filedict in torrent.getContentList():
+                fileTitle = filedict.get('title')
+                #print fileTitle
+                if filedict.get('size'):
+                    fileTitle += ' [%d MB]' % (filedict.get('size') / 1024 / 1024)
+                contentList.append((self.unescape(fileTitle), str(filedict.get('ind'))))
+            contentList = sorted(contentList, key=lambda x: x[0])
+
+            #print str(contentList)
+
+            dirList, contentListNew = self.cutFolder(contentList, tdir)
+
+            for title in dirList:
+                self.drawItem(title, 'openTorrent', url, isFolder=True, action2=title)
+
+            ids_video = ''
+            for title, identifier in contentListNew:
+                try:
+                    ext = title.split('.')[-1]
+                    if re.match('avi|mp4|mkV|flv|mov|vob|wmv|ogm|asx|mpg|mpeg|avc|vp3|fli|flc|m4v', ext, re.I):
+                        ids_video = ids_video + str(identifier) + ','
+                except:
+                    pass
+
+            for title, identifier in contentListNew:
+                contextMenu = [(self.localize('Download'),
+                                'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
+                                sys.argv[0], 'downloadopenTorrent', str(identifier)))
+                ]
+                self.drawItem(title, 'playTorrent', identifier, isFolder=False, action2=ids_video.rstrip(','),
+                              contextMenu=contextMenu, replaceMenu=False)
+            view_style('torrentPlayer')
+            xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+
+    def playTorrent(self, params={}):
+        torrentUrl = self.__settings__.getSetting("lastTorrent")
+        if self.torrent_player == '0':
+            if 0 != len(torrentUrl):
+                self.Player = TorrentPlayer(torrentUrl=torrentUrl, params=params)
+            else:
+                print self.__plugin__ + " Unexpected access to method playTorrent() without torrent content"
+        elif self.torrent_player == '1':
+            __ASsettings__ = xbmcaddon.Addon(id='script.module.torrent.ts')
+            folder=__ASsettings__.getSetting("folder")
+            save=__ASsettings__.getSetting("save")
+            __ASsettings__.setSetting("folder", self.__settings__.getSetting("storage"))
+            __ASsettings__.setSetting("save", self.__settings__.getSetting("keep_files"))
+            xbmc.sleep(1000)
+            torrent = Downloader.Torrent(self.userStorageDirectory, torrentUrl, self.torrentFilesDirectory)
+            get = params.get
+            ind = get("url")
+            icon = get("thumbnail") if get("thumbnail") else ''
+            path = torrent.getFilePath(int(ind))
+            label = os.path.basename(path)
+            try:
+                label = urllib.unquote_plus(get("label"))
+            except:
+                print 'except'
+            torrent.play_url_ind(int(ind), label, icon)
+            torrent.__exit__()
+            __ASsettings__.setSetting("folder", folder)
+            __ASsettings__.setSetting("save", save)
+
+    def saveUrlTorrent(self, url):
+        torrentFile = self.userStorageDirectory + os.sep + self.torrentFilesDirectory + os.sep + md5(url) + '.torrent'
+        try:
+            request = urllib2.Request(url)
+            request.add_header('Referer', url)
+            request.add_header('Accept-encoding', 'gzip')
+            localFile = xbmcvfs.File(torrentFile, "w+b")
+            result = urllib2.urlopen(request)
+            if result.info().get('Content-Encoding') == 'gzip':
+                buf = StringIO(result.read())
+                f = gzip.GzipFile(fileobj=buf)
+                content = f.read()
+            else:
+                content = result.read()
+            localFile.write(content)
+            localFile.close()
+            return torrentFile
+        except:
+            print 'Unable to save torrent file from "' + url + '" to "' + torrentFile + '" in Torrent::saveTorrent'
+            return
+
+    def openTorrent(self, params={}):
+        get = params.get
+        try:
+            external = urllib.unquote_plus(get("external"))
+        except:
+            external = None
+        silent = get("silent")
+        not_download_only = get("not_download_only") == 'False'
+        try:
+            tdir = urllib.unquote_plus(get("url2"))
+        except:
+            tdir = None
+        try:
+            thumbnail = urllib.unquote_plus(get("thumbnail"))
+        except:
+            thumbnail = ''
+        url = urllib.unquote_plus(get("url"))
+        self.__settings__.setSetting("lastTorrentUrl", url)
+        classMatch = re.search('(\w+)::(.+)', url)
+        if classMatch:
+            searcher = classMatch.group(1)
+            if self.ROOT + os.sep + 'resources' + os.sep + 'searchers' not in sys.path:
+                sys.path.insert(0, self.ROOT + os.sep + 'resources' + os.sep + 'searchers')
+            try:
+                searcherObject = getattr(__import__(searcher), searcher)()
+            except Exception, e:
+                print 'Unable to use searcher: ' + searcher + ' at ' + self.__plugin__ + ' openTorrent(). Exception: ' + str(
+                    e)
+                return
+            url = searcherObject.getTorrentFile(classMatch.group(2))
+        self.__settings__.setSetting("lastTorrentUrl", url)
+        if not_download_only:
+            if re.match("^http.+$", url):
+                torrentFile = self.saveUrlTorrent(url)
+                if torrentFile: url = torrentFile
+            self.__settings__.setSetting("lastTorrent", url)
+            return
+        torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
+        if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
+                                                     torrentFilesDirectory=self.torrentFilesDirectory)
+        self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
+        if silent != 'true':
+            contentId = 0
+            if external:
+                myshows_setting = xbmcaddon.Addon(id='plugin.video.myshows')
+                myshows_lang = myshows_setting.getLocalizedString
+                myshows_items = []
+                myshows_files = []
+                contentList = []
+                for filedict in torrent.getContentList():
+                    fileTitle = ''
+                    if filedict.get('size'):
+                        fileTitle = '[%d MB] ' % (filedict.get('size') / 1024 / 1024)
+                    title = filedict.get('title')
+                    fileTitle = fileTitle + '[%s]%s' % (title[len(title) - 3:], title)
+                    contentList.append((self.unescape(fileTitle), str(filedict.get('ind'))))
+                contentList = sorted(contentList, key=lambda x: x[0])
+                for title, identifier in contentList:
+                    if re.search('.*?\.avi|mp4|mkv|flv|mov|vob|wmv|ogm|asx|mpg|mpeg|avc|vp3|fli|flc|m4v$', title,
+                                 re.I | re.DOTALL):
+                        myshows_items.append(title)
+                        myshows_files.append('plugin://plugin.video.torrenter/?action=playTorrent&url=' + identifier)
+                if len(myshows_items) > 1: myshows_items = self.cutFileNames(myshows_items)
+                myshows_items.append(unicode(myshows_lang(30400)))
+                myshows_files.append('')
+                dialog = xbmcgui.Dialog()
+                if len(myshows_items) == 2:
+                    ret = 0
+                else:
+                    ret = dialog.select(unicode(myshows_lang(30401)), myshows_items)
+                if ret > -1:
+                    xbmc.executebuiltin('xbmc.RunPlugin("' + myshows_files[ret] + '")')
+            else:
+                contentList = []
+                for filedict in torrent.getContentList():
+                    fileTitle = filedict.get('title')
+                    if filedict.get('size'):
+                        fileTitle += ' [%d MB]' % (filedict.get('size') / 1024 / 1024)
+                    contentList.append((self.unescape(fileTitle), str(filedict.get('ind'))))
+                contentList = sorted(contentList, key=lambda x: x[0])
+
+                dirList, contentListNew = self.cutFolder(contentList, tdir)
+
+                for title in dirList:
+                    self.drawItem(title, 'openTorrent', url, image=thumbnail, isFolder=True, action2=title)
+
+                ids_video = ''
+                for title, identifier in contentListNew:
+                    try:
+                        ext = title.split('.')[-1]
+                        if re.match('avi|mp4|mkV|flv|mov|vob|wmv|ogm|asx|mpg|mpeg|avc|vp3|fli|flc|m4v', ext, re.I):
+                            ids_video = ids_video + str(identifier) + ','
+                    except:
+                        pass
+
+                for title, identifier in contentListNew:
+                    contextMenu = [
+                        (self.localize('Download'),
+                         'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
+                         sys.argv[0], 'downloadopenTorrent', str(identifier)))
+                    ]
+                    link = {'url': identifier, 'thumbnail': thumbnail}
+                    self.drawItem(title, 'playTorrent', link, image=thumbnail, isFolder=False,
+                                  action2=ids_video.rstrip(','), contextMenu=contextMenu, replaceMenu=False)
+                view_style('openTorrent')
+                xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+
+    def downloadopenTorrent(self, params={}):
+        url = self.__settings__.getSetting("lastTorrent")
+        self.downloadFilesList({'url': url, 'ind': params.get("url")})
+
+    def cutFolder(self, contentList, tdir=None):
+        dirList, contentListNew = [], []
+
+        if len(contentList) > 1:
+            common_folder = contentList[0][0]
+            if '\\' in common_folder:
+                common_folder = common_folder.split('\\')[0]
+            elif '/' in common_folder:
+                common_folder = common_folder.split('/')[0]
+
+            common = True
+            for fileTitle, contentId in contentList:
+                if common_folder not in fileTitle:
+                    print 'no common'
+                    common = False
+                    break
+
+            #print common_folder
+            for fileTitle, contentId in contentList:
+                dir = None
+                if common:
+                    fileTitle = fileTitle[len(common_folder) + 1:]
+
+                #print fileTitle
+
+                if '\\' in fileTitle:
+                    dir = fileTitle.split('\\')[0]
+                elif '/' in fileTitle:
+                    dir = fileTitle.split('/')[0]
+                elif not tdir:
+                    contentListNew.append((fileTitle, contentId))
+
+                if tdir and dir == tdir:
+                    contentListNew.append((fileTitle[len(dir) + 1:], contentId))
+
+                if not tdir and dir and dir not in dirList:
+                    dirList.append(dir)
+
+            return dirList, contentListNew
+        else:
+            return dirList, contentList
+
+    def cutFileNames(self, l):
+        from difflib import Differ
+
+        d = Differ()
+        i = -1
+        m = self.getDirList(None, l)
+        if len(m) < 2: return l
+        text1 = str(m[0])
+        text2 = str(m[1])
+
+        seps = ['.|:| ', '.|:|x', ' |:|x', ' |:|-', '_|:|', ]
+        for s in seps:
+            sep_file = str(s).split('|:|')[0]
+            result = list(d.compare(text1.split(sep_file), text2.split(sep_file)))
+            if len(result) > 5:
+                break
+
+        print list(d.compare(text1.split(sep_file), text2.split(sep_file)))
+
+        start = ''
+        end = ''
+
+        for res in result:
+            if str(res).startswith('-') or str(res).startswith('+') or str(res).startswith('.?'):
+                break
+            start = start + str(res).strip() + sep_file
+        result.reverse()
+        for res in result:
+            if str(res).startswith('-') or str(res).startswith('+') or str(res).startswith('?'):
+                break
+            end = sep_file + str(res).strip() + end
+
+        newl = l
+        l = []
+        for fl in newl:
+            if fl[0:len(start)] == start: fl = fl[len(start):]
+            if fl[len(fl) - len(end):] == end: fl = fl[0:len(fl) - len(end)]
+            #fl=fl[len(start):len(fl)-len(end)] только это вместо 2 сверху
+            l.append(fl)
+        return l
+
+    def getDirList(self, path, newl=None):
+        l = []
+        try:
+            if not newl: newl = os.listdir(path)
+        except:
+            if not newl: newl = os.listdir(path.decode('utf-8').encode('cp1251'))
+        for fl in newl:
+            match = re.match('.avi|.mp4|.mkV|.flv|.mov|.vob|.wmv|.ogm|.asx|.mpg|mpeg|.avc|.vp3|.fli|.flc|.m4v',
+                             fl[int(len(fl)) - 4:len(fl)], re.I)
+            if match:
+                l.append(fl)
+        return l
+
+    def openSection(self, params={}):
+        get = params.get
+        url = urllib.unquote_plus(get("url"))
+        addtime=get("addtime")
+        if not addtime and self.__settings__.getSetting('history')=='true':
+            HistoryDB(self.HistoryDB_name, self.HistoryDB_ver).add(url)
+        try:
+            external = urllib.unquote_plus(get("external"))
+        except:
+            external = None
+        filesList = []
+        if None == get('isApi'):
+            progressBar = xbmcgui.DialogProgress()
+            progressBar.create(self.localize('Please Wait'), self.localize('Materials are loading now.'))
+            iterator = 0
+        searchersList = []
+        if not external or external == 'torrenterall':
+            if addtime:
+                providers=HistoryDB(self.HistoryDB_name, self.HistoryDB_ver).get_providers(addtime)
+                if providers:
+                    for searcher in providers:
+                        searchersList.append(searcher + '.py')
+            if not addtime or not searchersList:
+                searchersList = Searchers().get_active()
+        else:
+            searchersList.append(external + '.py')
+        for searcherFile in searchersList:
+            searcher = re.search('^(\w+)\.py$', searcherFile).group(1)
+            if searcher:
+                if None == get('isApi'):
+                    progressBar.update(int(iterator), searcher)
+                    iterator += 100 / len(searchersList)
+                filesList += self.searchWithSearcher(url, searcher)
+            if None == get('isApi') and progressBar.iscanceled():
+                progressBar.update(0)
+                progressBar.close()
+                return
+        if None == get('isApi'):
+            progressBar.update(0)
+            progressBar.close()
+        filesList = sorted(filesList, key=lambda x: x[0], reverse=True)
+        self.showFilesList(filesList, params)
+
+    def controlCenter(self, params={}):
+        xbmc.executebuiltin(
+            'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))
+
+    def searchWithSearcher(self, keyword, searcher):
+        filesList = []
+        if self.ROOT + os.sep + 'resources' + os.sep + 'searchers' not in sys.path:
+            sys.path.insert(0, self.ROOT + os.sep + 'resources' + os.sep + 'searchers')
+        try:
+            searcherObject = getattr(__import__(searcher), searcher)()
+            filesList = searcherObject.search(keyword)
+        except Exception, e:
+            print 'Unable to use searcher: ' + searcher + ' at ' + self.__plugin__ + ' searchWithSearcher(). Exception: ' + str(
+                e)
+        return filesList
+
+    def showFilesList(self, filesList, params={}):  #myshows
+        get = params.get
+        try:
+            external = urllib.unquote_plus(get("external"))
+        except:
+            external = None
+        try:
+            silent = get("silent")
+        except:
+            silent = None
+        try:
+            thumbnail = urllib.unquote_plus(get("thumbnail"))
+        except:
+            thumbnail = ''
+        if external:
+            try:
+                s = json.loads(json.loads(urllib.unquote_plus(get("sdata"))))
+                if len(filesList) < 1:
+                    xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+                    if not silent:
+                        xbmc.executebuiltin(
+                            'XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.myshows/?mode=3013')
+                    else:
+                        xbmc.executebuiltin(
+                            'XBMC.Notification("%s", "%s", %s)' % ("Поиск", "Ничего не найдено :(", "2500"))
+                    return
+                myshows_setting = xbmcaddon.Addon(id='plugin.video.myshows')
+                myshows_lang = myshows_setting.getLocalizedString
+                if silent:
+                    order, seeds, leechers, size, title, link, image = filesList[0]
+                    xbmc.executebuiltin('XBMC.RunPlugin(%s)' % (
+                    'plugin://plugin.video.myshows/?mode=3010&sort=activate&action=silent&stringdata=' + urllib.quote_plus(
+                        '{"filename":"%s", "stype":%s, "showId":%s, "seasonId":%s, "id":%s, "episodeId":%s}' % (
+                        link, jstr(s['stype']), jstr(s['showId']), jstr(s['seasonId']), jstr(s['id']),
+                        jstr(s['episodeId'])))))
+                    return
+                else:
+                    for (order, seeds, leechers, size, title, link, image) in filesList:
+                        contextMenu = [
+                            (myshows_lang(30409),
+                             'XBMC.RunPlugin(%s)' % (
+                             'plugin://plugin.video.myshows/?mode=3010&sort=activate&stringdata=' + urllib.quote_plus(
+                                 '{"filename":"%s", "stype":%s, "showId":%s, "seasonId":%s, "id":%s, "episodeId":%s}' % (
+                                 link, jstr(s['stype']), jstr(s['showId']), jstr(s['seasonId']), jstr(s['id']),
+                                 jstr(s['episodeId']))))),
+                            (myshows_lang(30400),
+                             'XBMC.ActivateWindow(%s)' % ('Videos,plugin://plugin.video.myshows/?mode=3013')),
+                        ]
+                        title = self.titleMake(seeds, leechers, size, title)
+                        self.drawItem(title, 'context', link, image, contextMenu=contextMenu)
+            except:
+                showMessage(self.localize('Information'), self.localize('Torrent list is empty.'))
+                xbmc.executebuiltin('XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.myshows/?mode=3013')
+                return
+        else:
+            for (order, seeds, leechers, size, title, link, image) in filesList:
+                contextMenu = [
+                    (self.localize('Download'),
+                     'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
+                     sys.argv[0], 'downloadFilesList', urllib.quote_plus(link)))
+                ]
+                title = self.titleMake(seeds, leechers, size, title)
+                link = {'url': link, 'thumbnail': thumbnail}
+                self.drawItem(title, 'openTorrent', link, image, contextMenu=contextMenu, replaceMenu=False)
+        view_style('showFilesList')
+        xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+
+    def context(self, params={}):
+        xbmc.executebuiltin("Action(ContextMenu)")
+
+    def downloadFilesList(self, params={}):
+        dirname = None
+        dat = Download().listdirs()
+        if dat == False:
+            showMessage(self.localize('Error'), self.localize('No connection! Check settings!'), forced=True)
+            return
+        items, clean = dat
+
+        if self.__settings__.getSetting("torrent_save") == '0':
+            if items and clean:
+                if self.__settings__.getSetting("torrent") == '0':
+                    if len(items) > 1:
+                        dialog = xbmcgui.Dialog()
+                        dirid = dialog.select(self.localize('Choose directory:'), items)
+                    else:
+                        dirid = 0
+                    if dirid == -1: return
+                    dirname = clean[dirid]
+                elif self.__settings__.getSetting("torrent") == '1':
+                    dirname = clean[0]
+        else:
+            dirname = self.__settings__.getSetting("torrent_dir")
+
+        get = params.get
+        url = urllib.unquote_plus(get("url"))
+        ind = None
+        try:
+            ind = get("ind")
+        except:
+            pass
+        if not ind:
+            self.__settings__.setSetting("lastTorrentUrl", url)
+            classMatch = re.search('(\w+)::(.+)', url)
+            if classMatch:
+                searcher = classMatch.group(1)
+                if self.ROOT + os.sep + 'resources' + os.sep + 'searchers' not in sys.path:
+                    sys.path.insert(0, self.ROOT + os.sep + 'resources' + os.sep + 'searchers')
+                try:
+                    searcherObject = getattr(__import__(searcher), searcher)()
+                except Exception, e:
+                    print 'Unable to use searcher: ' + searcher + ' at ' + self.__plugin__ + ' openTorrent(). Exception: ' + str(
+                        e)
+                    return
+                url = searcherObject.getTorrentFile(classMatch.group(2))
+
+                torrent = Downloader.Torrent(self.userStorageDirectory,
+                                             torrentFilesDirectory=self.torrentFilesDirectory)
+                if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
+                                                             torrentFilesDirectory=self.torrentFilesDirectory)
+
+                if re.match("^magnet\:.+$", url):
+                    if not dirname:
+                        torrent.magnetToTorrent(url)
+                        url = torrent.torrentFile
+                    else:
+                        Download().add_url(url, dirname)
+                        return
+                else:
+                    url = torrent.saveTorrent(url)
+
+        f = open(url, 'rb')
+        torrent = f.read()
+        success = Download().add(torrent, dirname)
+        if success and ind:
+            id = self.chooseHASH()[0]
+            Download().setprio(id, ind)
+
+    def titleMake(self, seeds, leechers, size, title):
+
+        #AARRGGBB
+        clGreen = '[COLOR FF008000]%s[/COLOR]'
+        clDodgerblue = '[COLOR FF1E90FF]%s[/COLOR]'
+        clDimgray = '[COLOR FF696969]%s[/COLOR]'
+        clWhite = '[COLOR FFFFFFFF]%s[/COLOR]'
+        clAliceblue = '[COLOR FFF0F8FF]%s[/COLOR]'
+        clRed = '[COLOR FFFF0000]%s[/COLOR]'
+
+        title = title.replace('720p', '[B]720p[/B]')
+        title = clWhite % title + chr(10)
+        second = '[I](%s) [S/L: %d/%d] [/I]' % (size, seeds, leechers) + chr(10)
+        space = ''
+        for i in range(0, 180 - len(second)):
+            space += ' '
+        title += space + second
+        return title
+
+    def search(self, params={}):
+        defaultKeyword = params.get('url')
+        try:
+            myshows_setting = xbmcaddon.Addon(id='plugin.video.myshows')
+            showKey = myshows_setting.getSetting("torrenter_keyboard")
+        except:
+            showKey = None
+        if showKey == "true" or defaultKeyword == '' or not defaultKeyword:
+            if not defaultKeyword:
+                defaultKeyword = ''
+            keyboard = xbmc.Keyboard(defaultKeyword, self.localize('Search Phrase') + ':')
+            keyboard.doModal()
+            query = keyboard.getText()
+            if not query:
+                return
+            elif keyboard.isConfirmed():
+                params["url"] = urllib.quote_plus(query)
+                self.openSection(params)
+        else:
+            self.openSection(params)
+
+    def chooseHASH(self):
+        dialog_items, dialog_items_clean = [], []
+        dialog_files = []
+        dat = Download().list()
+        if dat == False:
+            showMessage(self.localize('Error'), self.localize('No connection! Check settings!'), forced=True)
+            return
+        for data in dat:
+            dialog_files.append((data['id'], data['dir'].encode('utf-8')))
+            dialog_items.append('[' + str(data['progress']) + '%] ' + data['name'])
+        if len(dialog_items) > 1:
+            ret = xbmcgui.Dialog().select(self.localize('Choose in torrent-client:'), dialog_items)
+            if ret > -1 and ret < len(dialog_files):
+                hash = dialog_files[ret]
+                return hash
+        elif len(dialog_items) == 1:
+            hash = dialog_files[0]
+            return hash
+
+    def localize(self, string):
+        try:
+            return Localization.localize(string)
+        except:
+            return string

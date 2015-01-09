@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="56e91349-2444-4553-bc78-90c2bab49e9c" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/AddonWindow/ContentPanel.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/AddonWindow/DialogCloseButton-focus.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/AddonWindow/DialogCloseButton.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/icons/EZTV.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/icons/ExtraTorrent.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/Button/KeyboardKey.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/Button/KeyboardKeyNF.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/icons/KickAssSo.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/icons/KinoZalTV.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/List/MenuItemFO.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/RadioButton/MenuItemFO.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/List/MenuItemNF.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/RadioButton/MenuItemNF.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/icons/Nyaa.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/icons/OldPirateBay3.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/icons/OpenSharing.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/icons/RiperAM.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/AddonWindow/SKINDEFAULT.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/icons/TFileME.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/Edit/black-back2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/images/black.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/Edit/button-focus.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/icons/clear.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/AddonWindow/dialogheader.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/icons/fav.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/icons/history2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/icon.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/icons/list.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/icons/magnet.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/icons/media.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/icons/nnm-club.ru.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/Slider/osd_slider_bg.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/Slider/osd_slider_bg_2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/Slider/osd_slider_nib.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/Slider/osd_slider_nibNF.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/RadioButton/radiobutton-focus.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/textures/default/RadioButton/radiobutton-nofocus.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/icons/rutor.org.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/icons/rutracker.org.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/icons/search.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/icons/settings.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/icons/thepiratebay.se.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/icons/torrent-client.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/icons/torrentPlayer.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/icons/unfav.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/icons/video.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AceStream.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeautifulSoup.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/contenters/CXZ.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Content.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Core.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Downloader.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/contenters/EZTV.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/EZTV.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/ExtraTorrent.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/contenters/FastTorrent.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/kinopoisk/HTTP.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/contenters/IMDB.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/KickAssSo.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/contenters/KinoPoisk.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/unused/KinoZalTV.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/kinopoisk/LOGGER.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Libtorrent.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Localization.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/NNMClubRu.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/Nyaa.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/OldPirateBay.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/OpenSharing.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Player.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Proxier.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/README.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Rates.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/contenters/RiperAM.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/RiperAM.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/RuTorOrg.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/RuTrackerOrg.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/SearcherABC.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/fuzzywuzzy/StringMatcher.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/TFileME.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/searchers/ThePirateBaySe.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/fuzzywuzzy/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/kinopoisk/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/contrib/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/packages/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/packages/ssl_match_hostname/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/util/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/_collections.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/packages/ssl_match_hostname/_implementation.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/adapters.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/addon.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/pyxbmct/addonwindow.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/api.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/auth.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/aztypes.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/big5freq.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/big5prober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/cacert.pem" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/cache.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cal.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/certs.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/changelog.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/chardetect.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/chardistribution.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/charsetgroupprober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/charsetprober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/class_defs.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/classes.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/codingstatemachine.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/kinopoisk/common.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/compat.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/compat.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/connection.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/util/connection.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/connectionpool.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/constants.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/controlcenter.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/convert.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/cookies.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/core.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/cp949prober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/debug.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/default.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/errors.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/escprober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/escsm.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/eucjpprober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/euckrfreq.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/euckrprober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/euctwfreq.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/euctwprober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/exceptions.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/exceptions.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/fields.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/filepost.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/functions.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/fuzzywuzzy/fuzz.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/gb2312freq.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/gb2312prober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/hebrewprober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/hooks.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/html.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/interact.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/jisfreq.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/jpcntx.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/kinopoisks.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/langbulgarianmodel.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/langcyrillicmodel.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/langgreekmodel.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/langhebrewmodel.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/langhungarianmodel.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/langthaimodel.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/latin1prober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/logutils.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/main.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/mbcharsetprober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/mbcsgroupprober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/mbcssm.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/models.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/net.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/net.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/contrib/ntlmpool.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/obj_impl.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/objects.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/packages/ordered_dict.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/kinopoisk/pageparser.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/persistency.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/kinopoisk/pluginsettings.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/poolmanager.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/fuzzywuzzy/process.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/contrib/pyopenssl.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/request.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/util/request.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/response.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/util/response.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/util/retry.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/sbcharsetprober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/sbcsgroupprober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/scrapers.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/scripting.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/sessions.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/settings.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/packages/six.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/sjisprober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/util/ssl_.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/status_codes.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/fuzzywuzzy/string_processing.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/language/English/strings.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/language/Russian/strings.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/structures.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/util/timeout.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/tmdb.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/tmdbs.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/kinopoisk/translit.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/tvdb.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/universaldetector.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/urllib3/util/url.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/packages/chardet/utf8prober.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/fuzzywuzzy/utils.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/scrapers/requests/utils.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/utils.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/xmlutils.py" />
+    </list>
+    <ignored path="plugin.video.torrenter.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <ignored path=".idea/modules.xml" />
+    <ignored path=".idea/vcs.xml" />
+    <ignored path=".idea/encodings.xml" />
+    <ignored path=".idea/misc.xml" />
+    <ignored path=".idea/plugin.video.torrenter.iml" />
+    <ignored path=".idea/scopes/scope_settings.xml" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="DaemonCodeAnalyzer">
+    <disable_hints />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="plugin.video.torrenter" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="0" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="plugin.video.torrenter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="plugin.video.torrenter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="plugin.video.torrenter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RunManager">
+    <list size="0" />
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="56e91349-2444-4553-bc78-90c2bab49e9c" name="Default" comment="" />
+      <created>1420801533300</created>
+      <updated>1420801533300</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TodoView" selected-index="0">
+    <todo-panel id="selected-file">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+    <todo-panel id="default-changelist">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="false" />
+    <layout>
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32925472" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24973656" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="myTodoPanelSettings">
+      <TodoPanelSettings />
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+  </component>
+</project>
+

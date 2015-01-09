@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="30001">Язык интерфейса</string>
+    <string id="30002">Удерживать стиль отображения</string>
+    <string id="30003">Отключено</string>
+    <string id="30004">Сохранять файлы в директорию</string>
+    <string id="30007">Использовать магнет-ссылки</string>
+    <string id="30008">Хранить загруженные файлы</string>
+    <string id="30009">Оставаться на раздаче скачанных файлов</string>
+    <string id="30010">Ограничить скорость раздачи МБит/сек (0 - неограничено)</string>
+    <string id="30011">Ограничить скорость закачки МБит/сек (0 - неограничено)</string>
+    <string id="30012">Использовать только пользовательский libtorrent</string>
+    <string id="30013">Скачать и запустить следующий эпизод</string>
+    <string id="30014">Загружать мета-данные для Списков Медиа</string>
+    <string id="30015">Дебаг (Разработчик)</string>
+    <string id="30016">Confluence (от slng)</string>
+    <string id="30017">Transperency (от slng)</string>
+    <string id="30018">Confluence (от DiMartino)</string>
+    <string id="30019">Confluence (от RussakHH)</string>
+    <string id="30020">Включить Историю Поиска</string>
+    <string id="30021">Python-Libtorrent (предпочтительно)</string>
+    <string id="30022">Ace Stream (без магнит-ссылок)</string>
+    <string id="30023">P2P Проигрыватель</string>
+    <string id="30024">Остальные настройки в "Программы - AceStream Client"</string>
+    <string id="30025">Ожидание ответа сервера при Поиске</string>
+    <string id="30026">Короткое (10с)</string>
+    <string id="30027">Среднее (20с)</string>
+    <string id="30028">Долгое (30с)</string>
+    <string id="30029">Предзакачать и подключить субтитры</string>
+    <string id="30030">Сидировать до полного выключения Kodi</string>
+    <string id="30101">Интерфейс</string>
+    <string id="30102">P2P Сеть</string>
+    <string id="50301">Директория для сохранения файлов</string>
+    <string id="50302">Вызывать диалог</string>
+    <string id="50303">Задать по умолчанию</string>
+    <string id="50304">Путь к директории</string>
+    <string id="50305">Создавать поддиректорию для скрапера</string>
+    <string id="50312">Хост</string>
+    <string id="50313">Порт</string>
+    <string id="50314">URL</string>
+    <string id="50315">Логин</string>
+    <string id="50316">Пароль</string>
+    <string id="50311">Торрент-клиент</string>
+    <string id="30426">Замена пути (remote only)</string>
+    <string id="30412">Закрыть</string>
+    <string id="30413">Открыть Настройки</string>
+    <string id="30414">Браузер Торрент-клиента</string>
+
+    <string id="30146">Статус Плагина</string>
+</strings>

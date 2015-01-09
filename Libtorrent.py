@@ -1,0 +1,399 @@
+# -*- coding: utf-8 -*-
+'''
+    Torrenter plugin for XBMC
+    Copyright (C) 2012 Vadim Skorba
+    vadim.skorba@gmail.com
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+'''
+
+#import time
+import thread
+import os
+import urllib2
+import hashlib
+import re
+import sys
+import platform
+from StringIO import StringIO
+import gzip
+from functions import file_decode, file_encode, isSubtitle
+
+import xbmc
+import xbmcgui
+import xbmcvfs
+import Localization
+
+
+class Libtorrent:
+    torrentFile = None
+    magnetLink = None
+    storageDirectory = ''
+    torrentFilesDirectory = 'torrents'
+    startPart = 0
+    endPart = 0
+    partOffset = 0
+    torrentHandle = None
+    session = None
+    downloadThread = None
+    threadComplete = False
+    threadSeeding = False
+    seedingHandle = None
+    lt = None
+
+    def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
+
+        try:
+            import libtorrent
+
+            print 'Imported libtorrent v' + libtorrent.version + ' from system'
+        except Exception, e:
+            print 'Error importing from system. Exception: ' + str(e)
+
+            if platform.system() != 'Windows':
+                if sys.maxsize > 2 ** 32:
+                    system = 'linux_x86_64'
+                else:
+                    system = 'linux_x86'
+            else:
+                system = 'windows'
+
+            dirname = os.path.join(xbmc.translatePath('special://home'), 'addons', 'script.module.libtorrent',
+                                   'python_libtorrent', system)
+            sys.path.insert(0, dirname)
+            try:
+                import libtorrent
+
+                print 'Imported libtorrent v' + libtorrent.version + ' from python_libtorrent.' + system
+            except Exception, e:
+                print 'Error importing python_libtorrent.' + system + '. Exception: ' + str(e)
+                pass
+
+        self.lt = libtorrent
+        del libtorrent
+        self.torrentFilesDirectory = torrentFilesDirectory
+        self.storageDirectory = storageDirectory
+        _path=os.path.join(self.storageDirectory, self.torrentFilesDirectory)+os.sep
+        if not xbmcvfs.exists(_path):
+            xbmcvfs.mkdirs(_path)
+        if xbmcvfs.exists(torrentFile):
+            self.torrentFile = torrentFile
+            self.torrentFileInfo = self.lt.torrent_info(file_decode(self.torrentFile))
+        elif re.match("^magnet\:.+$", torrentFile):
+            self.magnetLink = torrentFile
+
+    def saveTorrent(self, torrentUrl):
+        if re.match("^magnet\:.+$", torrentUrl):
+            self.magnetLink = torrentUrl
+            self.magnetToTorrent(torrentUrl)
+            return self.torrentFile
+        else:
+            torrentFile = self.storageDirectory + os.sep + self.torrentFilesDirectory + os.sep + self.md5(
+                torrentUrl) + '.torrent'
+            try:
+                if not re.match("^http\:.+$", torrentUrl):
+                    content = xbmcvfs.File(file_decode(torrentUrl), "rb").read()
+                else:
+                    request = urllib2.Request(torrentUrl)
+                    request.add_header('Referer', torrentUrl)
+                    request.add_header('Accept-encoding', 'gzip')
+                    result = urllib2.urlopen(request)
+                    if result.info().get('Content-Encoding') == 'gzip':
+                        buf = StringIO(result.read())
+                        f = gzip.GzipFile(fileobj=buf)
+                        content = f.read()
+                    else:
+                        content = result.read()
+
+                localFile = xbmcvfs.File(torrentFile, "w+b")
+                localFile.write(content)
+                localFile.close()
+            except Exception, e:
+                print 'Unable to save torrent file from "' + torrentUrl + '" to "' + torrentFile + '" in Torrent::saveTorrent' + '. Exception: ' + str(e)
+                return
+            if xbmcvfs.exists(torrentFile):
+                try:
+                    self.torrentFileInfo = self.lt.torrent_info(file_decode(torrentFile))
+                except Exception, e:
+                    print 'Exception: ' + str(e)
+                    xbmcvfs.delete(torrentFile)
+                    return
+                baseName = file_encode(os.path.basename(self.getFilePath()))
+                newFile = self.storageDirectory + os.sep + self.torrentFilesDirectory + os.sep + baseName + '.' + self.md5(
+                    torrentUrl) + '.torrent'
+
+                xbmcvfs.delete(newFile)
+                if not xbmcvfs.exists(newFile):
+                    try:
+                        xbmcvfs.rename(torrentFile, newFile)
+                    except Exception, e:
+                        print 'Unable to rename torrent file from "' + torrentFile + '" to "' + newFile + '" in Torrent::renameTorrent'+ '. Exception: ' + str(e)
+                        return
+                self.torrentFile = newFile
+                if not self.torrentFileInfo:
+                    self.torrentFileInfo = self.lt.torrent_info(file_decode(self.torrentFile))
+                return self.torrentFile
+
+    def getMagnetInfo(self):
+        magnetSettings = {
+            'save_path': self.storageDirectory,
+            'storage_mode': self.lt.storage_mode_t(0),
+            'paused': True,
+            'auto_managed': True,
+            'duplicate_is_error': True
+        }
+        progressBar = xbmcgui.DialogProgress()
+        progressBar.create(Localization.localize('Please Wait'), Localization.localize('Magnet-link is converting.'))
+        self.torrentHandle = self.lt.add_magnet_uri(self.session, self.magnetLink, magnetSettings)
+        iterator = 0
+        while not self.torrentHandle.has_metadata() and iterator != 100:
+            progressBar.update(iterator)
+            iterator += 1
+            if progressBar.iscanceled():
+                progressBar.update(0)
+                progressBar.close()
+                return
+            xbmc.sleep(500)
+        progressBar.update(0)
+        progressBar.close()
+        if self.torrentHandle.has_metadata():
+            return self.torrentHandle.get_torrent_info()
+
+    def magnetToTorrent(self, magnet):
+        self.magnetLink = magnet
+        self.initSession()
+        torrentInfo = self.getMagnetInfo()
+        try:
+            torrentFile = self.lt.create_torrent(torrentInfo)
+            baseName = file_encode(os.path.basename(self.storageDirectory + os.sep + torrentInfo.files()[0].path))
+            self.torrentFile = self.storageDirectory + os.sep + self.torrentFilesDirectory + os.sep + baseName + '.torrent'
+            torentFileHandler = xbmcvfs.File(self.torrentFile, "w+b")
+            torentFileHandler.write(self.lt.bencode(torrentFile.generate()))
+            torentFileHandler.close()
+            self.torrentFileInfo = self.lt.torrent_info(file_decode(self.torrentFile))
+        except:
+            xbmc.executebuiltin("Notification(%s, %s, 7500)" % (Localization.localize('Error'), Localization.localize(
+                'Can\'t download torrent, probably no seeds available.')))
+            self.torrentFileInfo = torrentInfo
+
+    def getUploadRate(self):
+        if None == self.torrentHandle:
+            return 0
+        else:
+            return self.torrentHandle.status().upload_payload_rate
+
+    def getDownloadRate(self):
+        if None == self.torrentHandle:
+            return 0
+        else:
+            return self.torrentHandle.status().download_payload_rate
+
+    def getPeers(self):
+        if None == self.torrentHandle:
+            return 0
+        else:
+            return self.torrentHandle.status().num_peers
+
+    def getSeeds(self):
+        if None == self.torrentHandle:
+            return 0
+        else:
+            return self.torrentHandle.status().num_seeds
+
+    def getFileSize(self, contentId=0):
+        return self.getContentList()[contentId]['size']
+
+    def getFilePath(self, contentId=0):
+        return os.path.join(self.storageDirectory,self.getContentList()[contentId]['title'])#.decode('utf8')
+
+    def getContentList(self):
+        filelist = []
+        for contentId, contentFile in enumerate(self.torrentFileInfo.files()):
+            stringdata = {"title": contentFile.path, "size": contentFile.size, "ind": int(contentId),
+                          'offset': contentFile.offset}
+            filelist.append(stringdata)
+        return filelist
+
+    def getSubsIds(self, filename):
+        subs=[]
+        for i in self.getContentList():
+            if isSubtitle(filename, i['title']):
+                subs.append((i['ind'], i['title']))
+        return subs
+
+    def setUploadLimit(self, bytesPerSecond):
+        self.session.set_upload_rate_limit(int(bytesPerSecond))
+
+    def setDownloadLimit(self, bytesPerSecond):
+        self.session.set_download_rate_limit(int(bytesPerSecond))
+
+    def md5(self, string):
+        hasher = hashlib.md5()
+        try:
+            hasher.update(string)
+        except:
+            hasher.update(string.encode('utf-8', 'ignore'))
+        return hasher.hexdigest()
+
+    def downloadProcess(self, contentId):
+        pass
+        #for part in range(self.startPart, self.endPart + 1):
+        #    print 'getPiece'+str(part)
+        #    self.getPiece(part)
+        #    time.sleep(0.5)
+        #    self.checkThread()
+        #self.threadComplete = True
+
+    def initSession(self):
+        try:
+            self.session.remove_torrent(self.torrentHandle)
+        except:
+            pass
+        self.session = self.lt.session()
+        self.session.start_dht()
+        self.session.add_dht_router("router.bittorrent.com", 6881)
+        self.session.add_dht_router("router.utorrent.com", 6881)
+        self.session.add_dht_router("router.bitcomet.com", 6881)
+        self.session.listen_on(6881, 6891)
+        self.session.set_alert_mask(self.lt.alert.category_t.storage_notification)
+
+    def startSession(self):
+        self.initSession()
+        if None == self.magnetLink:
+            self.torrentHandle = self.session.add_torrent({'ti': self.torrentFileInfo,
+                                                           'save_path': self.storageDirectory,
+                                                           'flags': 0x300,
+                                                           #'storage_mode': self.lt.storage_mode_t.storage_mode_allocate,
+            })
+        else:
+            self.torrentFileInfo = self.getMagnetInfo()
+        self.torrentHandle.set_sequential_download(True)
+        self.stopSession()
+
+    def stopSession(self):
+        for i in range(self.torrentFileInfo.num_pieces()):
+            self.torrentHandle.piece_priority(i, 0)
+
+    def continueSession(self, contentId=0, Offset=0, seeding=False):
+        self.piece_length = self.torrentFileInfo.piece_length()
+        selectedFileInfo = self.getContentList()[contentId]
+        if not Offset:
+            Offset = selectedFileInfo['size'] / (1024 * 1024)
+        self.partOffset = (Offset * 1024 * 1024 / self.piece_length) + 1
+        #print 'partOffset ' + str(self.partOffset)+str(' ')
+        self.startPart = selectedFileInfo['offset'] / self.piece_length
+        self.endPart = int((selectedFileInfo['offset'] + selectedFileInfo['size']) / self.piece_length)
+        #print 'part ' + str(self.startPart)+ str(' ')+ str(self.endPart)
+        for i in range(self.startPart, self.startPart + self.partOffset):
+            if i <= self.endPart:
+                self.torrentHandle.piece_priority(i, 7)
+                #print str(i)
+        self.torrentHandle.piece_priority(self.endPart - 1, 7)
+        self.torrentHandle.piece_priority(self.endPart, 7)
+        #thread.start_new_thread(self.checkProcess, ())
+        #thread.start_new_thread(self.downloadProcess, (contentId,))
+        if seeding:# and None == self.magnetLink:
+            thread.start_new_thread(self.addToSeeding, (contentId,))
+
+    def addToSeeding(self, contentId):
+        print 'addToSeeding!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1'
+        if self.torrentHandle:
+            print 'addToSeeding torrentHandle OK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1'
+            info = self.torrentHandle.get_torrent_info()
+            fileSettings = {
+                'ti': info,
+                'save_path': self.storageDirectory,
+                'flags': 0x300
+            }
+            self.seedingHandle= self.session.add_torrent(fileSettings)
+            piece_length = info.piece_length()
+            filelist=[]
+            for contentId, contentFile in enumerate(info.files()):
+                stringdata = {"title": contentFile.path, "size": contentFile.size, "ind": int(contentId),
+                              'offset': contentFile.offset}
+                filelist.append(stringdata)
+            selectedFileInfo = filelist[contentId]
+            Offset = selectedFileInfo['size'] / (1024 * 1024)
+            partOffset = (Offset * 1024 * 1024 / piece_length) + 1
+            #print 'partOffset ' + str(self.partOffset)+str(' ')
+            startPart = selectedFileInfo['offset'] / piece_length
+            endPart = int((selectedFileInfo['offset'] + selectedFileInfo['size']) / piece_length)
+            #print 'part ' + str(self.startPart)+ str(' ')+ str(self.endPart)
+            for i in range(startPart, startPart + partOffset):
+                if i <= endPart:
+                    self.seedingHandle.piece_priority(i, 7)
+                    #print str(i)
+            self.seedingHandle.piece_priority(endPart - 1, 7)
+            self.seedingHandle.piece_priority(endPart, 7)
+            while self.seedingHandle:
+                xbmc.sleep(5000)
+                self.debug(seeding=True)
+
+    def fetchParts(self):
+        priorities = self.torrentHandle.piece_priorities()
+        status = self.torrentHandle.status()
+        if len(status.pieces) == 0:
+            return
+        if priorities[self.startPart] == 0:
+            self.torrentHandle.piece_priority(self.startPart, 2)
+        for part in range(self.startPart, self.endPart + 1):
+            if priorities[part] == 0:
+                self.torrentHandle.piece_priority(part, 1)
+
+    def checkThread(self):
+        if self.threadComplete == True:
+            print 'checkThread KIIIIIIIIIIILLLLLLLLLLLLLLL'
+            self.session.remove_torrent(self.torrentHandle)
+            if self.threadSeeding == True and self.seedingHandle:
+                print 'Seeding KIIIIIIIIIIILLLLLLLLLLLLLLL'
+                self.session.remove_torrent(self.seedingHandle)
+                thread.exit()
+
+    def debug(self, seeding=False):
+        try:
+            #print str(self.getFilePath(0))
+            if seeding:
+                s = self.seedingHandle.status()
+            else:
+                s = self.torrentHandle.status()
+            #get_settings=self.torrentHandle.status
+            #print s.num_pieces
+            #priorities = self.torrentHandle.piece_priorities()
+            #self.dump(priorities)
+            #print str('anonymous_mode '+str(get_settings['anonymous_mode']))
+
+            state_str = ['queued', 'checking', 'downloading metadata',
+                         'downloading', 'finished', 'seeding', 'allocating']
+            print '[%s;%s] %.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s' % \
+                  (self.lt.version, str(seeding), s.progress * 100, s.download_rate / 1000,
+                   s.upload_rate / 1000,
+                   s.num_peers, state_str[s.state])
+            i = 0
+            #for t in s.pieces:
+            #    if t: i=i+1
+            #print str(self.session.pop_alert())
+            #print str(s.pieces[self.startPart:self.endPart])
+            #print 'True pieces: %d' % i
+            #print s.current_tracker
+            #print str(s.pieces)
+        except:
+            print 'debug error'
+            pass
+
+    def dump(self, obj):
+        for attr in dir(obj):
+            try:
+                print "'%s':'%s'," % (attr, getattr(obj, attr))
+            except:
+                pass
