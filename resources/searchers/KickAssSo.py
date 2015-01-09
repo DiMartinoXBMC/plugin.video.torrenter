@@ -86,7 +86,7 @@ class KickAssSo(SearcherABC.SearcherABC):
                 leechers = item.find('{%s}peers' % torrent).text
                 link = item.find('enclosure').attrib['url']
                 image = sys.modules["__main__"].__root__ + self.searchIcon
-                print link
+                #print link
                 filesList.append((
                     int(int(self.sourceWeight) * int(seeds)),
                     int(seeds), int(leechers), size,

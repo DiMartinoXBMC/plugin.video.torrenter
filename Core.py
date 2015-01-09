@@ -1464,18 +1464,21 @@ class Core:
                         dirid = 0
                     if dirid == -1: return
                     dirname = clean[dirid]
-                elif self.__settings__.getSetting("torrent") == '1':
+            if self.__settings__.getSetting("torrent") == '1':
+                default = self.__settings__.getSetting("torrent_dir")
+                keyboard = xbmc.Keyboard(default, self.localize('Save to path') + ':')
+                keyboard.doModal()
+                dirname = keyboard.getText()
+                if not keyboard.isConfirmed():
+                    return
+                if not dirname and len(clean)>0:
                     dirname = clean[0]
         else:
             dirname = self.__settings__.getSetting("torrent_dir")
 
         get = params.get
         url = urllib.unquote_plus(get("url"))
-        ind = None
-        try:
-            ind = get("ind")
-        except:
-            pass
+        ind = get("ind")
         if not ind:
             self.__settings__.setSetting("lastTorrentUrl", url)
             classMatch = re.search('(\w+)::(.+)', url)
@@ -1486,8 +1489,7 @@ class Core:
                 try:
                     searcherObject = getattr(__import__(searcher), searcher)()
                 except Exception, e:
-                    print 'Unable to use searcher: ' + searcher + ' at ' + self.__plugin__ + ' openTorrent(). Exception: ' + str(
-                        e)
+                    print 'Unable to use searcher: ' + searcher + ' at ' + self.__plugin__ + ' openTorrent(). Exception: ' + str(e)
                     return
                 url = searcherObject.getTorrentFile(classMatch.group(2))
 

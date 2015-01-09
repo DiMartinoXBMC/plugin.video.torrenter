@@ -195,7 +195,8 @@ dictionary = {
         'Individual Tracker Options':'Выбор Трекеров',
         'Downloading and copy subtitles. Please wait.':'Скачиваю и копирую субтитры. Пожалуйста подождите.',
         'International Check - First Run':'International Check - Первый запуск',
-        'Delete Russian stuff?':'Удалить русские трекеры?'
+        'Delete Russian stuff?':'Удалить русские трекеры?',
+        'Save to path':'Сохранить в папку',
     }
 }
 
