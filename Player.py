@@ -108,22 +108,14 @@ class TorrentPlayer(xbmc.Player):
     __plugin__ = sys.modules["__main__"].__plugin__
     __settings__ = sys.modules["__main__"].__settings__
     ROOT = sys.modules["__main__"].__root__  #.decode('utf-8').encode(sys.getfilesystemencoding())
-    userStorageDirectory = __settings__.getSetting("storage")
     USERAGENT = "Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0"
     torrentFilesDirectory = 'torrents'
     debug = __settings__.getSetting('debug') == 'true'
     subs_dl = __settings__.getSetting('subs_dl') == 'true'
     seeding = __settings__.getSetting('keep_seeding') == 'true'
 
-    def __init__(self, torrentUrl, params={}):
-        if 0 == len(self.userStorageDirectory):
-            try:
-                temp_dir = tempfile.gettempdir()
-            except:
-                temp_dir = tempdir()
-            self.userStorageDirectory = temp_dir + os.path.sep + 'Torrenter'
-        else:
-            self.userStorageDirectory = self.userStorageDirectory + 'Torrenter'
+    def __init__(self, userStorageDirectory, torrentUrl, params={}):
+        self.userStorageDirectory = userStorageDirectory
         xbmc.Player.__init__(self)
         print ("[TorrentPlayer] Initalized")
         self.params = params

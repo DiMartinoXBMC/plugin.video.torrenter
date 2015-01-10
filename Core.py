@@ -128,7 +128,7 @@ class Core:
             self.drawItem(self.localize('< Login >'), 'loginUser', image=self.ROOT + '/icons/login.png')
             self.drawItem(self.localize('< Register >'), 'registerUser', image=self.ROOT + '/icons/register.png')'''
         if 'true' == self.__settings__.getSetting("keep_files"):
-            self.drawItem(self.localize('Clear Storage'), 'clearStorage', isFolder=True,
+            self.drawItem('< %s >' % self.localize('Clear Storage'), 'clearStorage', isFolder=True,
                           image=self.ROOT + '/icons/clear.png')
         view_style('sectionMenu')
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
@@ -759,10 +759,11 @@ class Core:
 
         options = []
 
-        img = ''
+        img, save_folder = '',''
         if get('img'): img = get('img')
 
         if get('title'):
+            save_folder=get('title')
             options.append(get('title'))
 
         if get('originaltitle') and get('originaltitle') != get('title'):
@@ -773,6 +774,7 @@ class Core:
             options.append(get('contenter_title'))
 
         if get('year'):
+            save_folder=save_folder+' ('+get('year')+')'
             if get('title'): options.append('%s %s' % (get('title'), get('year')))
             if get('originaltitle') and get('originaltitle') != get('title'): options.append(
                 '%s %s' % (get('originaltitle'), get('year')))
@@ -780,12 +782,12 @@ class Core:
                     'contenter_title'): options.append('%s %s' % (get('contenter_title'), get('year')))
 
         if get('episode') and get('season'):
-            if get('title'): options.append('%s S%sE%s' % (get('title'), get('season'), get('episode')))
+            if get('title'): options.append('%s S%2dE%2d' % (get('title'), int(get('season')), int(get('episode'))))
             if get('original_title'): options.append(
-                '%s S%sE%s' % (get('original_title'), get('season'), get('episode')))
+                '%s S%2dE%2d' % (get('original_title'), int(get('season')), int(get('episode'))))
 
         for title in options:
-            link = {'url': title.encode('utf-8', 'ignore'), 'thumbnail': img}
+            link = {'url': title.encode('utf-8', 'ignore'), 'thumbnail': img, 'save_folder':save_folder.encode('utf-8', 'ignore')}
             self.drawItem(title.encode('utf-8', 'ignore'), 'search', link, img)
 
         view_style('searchOption')
@@ -1062,9 +1064,26 @@ class Core:
 
     def playTorrent(self, params={}):
         torrentUrl = self.__settings__.getSetting("lastTorrent")
+        if self.__settings__.getSetting("keep_files")=='true' \
+            and self.__settings__.getSetting("ask_dir")=='true':
+            try:
+                save_folder = urllib.unquote_plus(params.get('save_folder'))
+            except:
+                save_folder = ''
+            if len(save_folder)>0:
+                default=os.path.join(self.userStorageDirectory, save_folder)
+            else:
+                default=self.userStorageDirectory
+            keyboard = xbmc.Keyboard(default, self.localize('Save to path') + ':')
+            keyboard.doModal()
+            dirname = keyboard.getText()
+            if not keyboard.isConfirmed():
+                return
+            if len(dirname)>0:
+                self.userStorageDirectory=dirname
         if self.torrent_player == '0':
             if 0 != len(torrentUrl):
-                self.Player = TorrentPlayer(torrentUrl=torrentUrl, params=params)
+                self.Player = TorrentPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
             else:
                 print self.__plugin__ + " Unexpected access to method playTorrent() without torrent content"
         elif self.torrent_player == '1':
@@ -1126,6 +1145,10 @@ class Core:
             thumbnail = urllib.unquote_plus(get("thumbnail"))
         except:
             thumbnail = ''
+        try:
+            save_folder = urllib.unquote_plus(get("save_folder"))
+        except:
+            save_folder = ''
         url = urllib.unquote_plus(get("url"))
         self.__settings__.setSetting("lastTorrentUrl", url)
         classMatch = re.search('(\w+)::(.+)', url)
@@ -1211,7 +1234,7 @@ class Core:
                          'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
                          sys.argv[0], 'downloadopenTorrent', str(identifier)))
                     ]
-                    link = {'url': identifier, 'thumbnail': thumbnail}
+                    link = {'url': identifier, 'thumbnail': thumbnail, 'save_folder':save_folder}
                     self.drawItem(title, 'playTorrent', link, image=thumbnail, isFolder=False,
                                   action2=ids_video.rstrip(','), contextMenu=contextMenu, replaceMenu=False)
                 view_style('openTorrent')
@@ -1382,14 +1405,15 @@ class Core:
             external = urllib.unquote_plus(get("external"))
         except:
             external = None
-        try:
-            silent = get("silent")
-        except:
-            silent = None
+        silent = get("silent")
         try:
             thumbnail = urllib.unquote_plus(get("thumbnail"))
         except:
             thumbnail = ''
+        try:
+            save_folder = urllib.unquote_plus(get("save_folder"))
+        except:
+            save_folder = ''
         if external:
             try:
                 s = json.loads(json.loads(urllib.unquote_plus(get("sdata"))))
@@ -1438,7 +1462,7 @@ class Core:
                      sys.argv[0], 'downloadFilesList', urllib.quote_plus(link)))
                 ]
                 title = self.titleMake(seeds, leechers, size, title)
-                link = {'url': link, 'thumbnail': thumbnail}
+                link = {'url': link, 'thumbnail': thumbnail, 'save_folder':save_folder}
                 self.drawItem(title, 'openTorrent', link, image, contextMenu=contextMenu, replaceMenu=False)
         view_style('showFilesList')
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)

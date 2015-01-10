@@ -40,7 +40,6 @@ class Libtorrent:
     torrentFile = None
     magnetLink = None
     storageDirectory = ''
-    torrentFilesDirectory = 'torrents'
     startPart = 0
     endPart = 0
     partOffset = 0
@@ -82,11 +81,8 @@ class Libtorrent:
 
         self.lt = libtorrent
         del libtorrent
-        self.torrentFilesDirectory = torrentFilesDirectory
         self.storageDirectory = storageDirectory
-        _path=os.path.join(self.storageDirectory, self.torrentFilesDirectory)+os.sep
-        if not xbmcvfs.exists(_path):
-            xbmcvfs.mkdirs(_path)
+        self.torrentFilesPath=os.path.join(self.storageDirectory, torrentFilesDirectory)+os.sep
         if xbmcvfs.exists(torrentFile):
             self.torrentFile = torrentFile
             self.torrentFileInfo = self.lt.torrent_info(file_decode(self.torrentFile))
@@ -99,7 +95,9 @@ class Libtorrent:
             self.magnetToTorrent(torrentUrl)
             return self.torrentFile
         else:
-            torrentFile = self.storageDirectory + os.sep + self.torrentFilesDirectory + os.sep + self.md5(
+            if not xbmcvfs.exists(self.torrentFilesPath):
+                xbmcvfs.mkdirs(self.torrentFilesPath)
+            torrentFile = self.torrentFilesPath + self.md5(
                 torrentUrl) + '.torrent'
             try:
                 if not re.match("^http\:.+$", torrentUrl):
@@ -130,8 +128,9 @@ class Libtorrent:
                     xbmcvfs.delete(torrentFile)
                     return
                 baseName = file_encode(os.path.basename(self.getFilePath()))
-                newFile = self.storageDirectory + os.sep + self.torrentFilesDirectory + os.sep + baseName + '.' + self.md5(
-                    torrentUrl) + '.torrent'
+                if not xbmcvfs.exists(self.torrentFilesPath):
+                    xbmcvfs.mkdirs(self.torrentFilesPath)
+                newFile = self.torrentFilesPath + baseName + '.' + self.md5(torrentUrl) + '.torrent'
 
                 xbmcvfs.delete(newFile)
                 if not xbmcvfs.exists(newFile):
@@ -177,7 +176,9 @@ class Libtorrent:
         try:
             torrentFile = self.lt.create_torrent(torrentInfo)
             baseName = file_encode(os.path.basename(self.storageDirectory + os.sep + torrentInfo.files()[0].path))
-            self.torrentFile = self.storageDirectory + os.sep + self.torrentFilesDirectory + os.sep + baseName + '.torrent'
+            if not xbmcvfs.exists(self.torrentFilesPath):
+                xbmcvfs.mkdirs(self.torrentFilesPath)
+            self.torrentFile = self.torrentFilesPath + baseName + '.torrent'
             torentFileHandler = xbmcvfs.File(self.torrentFile, "w+b")
             torentFileHandler.write(self.lt.bencode(torrentFile.generate()))
             torentFileHandler.close()

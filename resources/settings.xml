@@ -61,39 +61,46 @@
                 default="true"
                 />
         <setting
+                id="ask_dir"
+                type="bool"
+                label="30031"
+                enable="eq(-1,true)"
+                default="false"
+                />
+        <setting
                 id="next_dl"
                 type="bool"
                 label="30013"
                 default="true"
-                visible="eq(-3,0)"
+                visible="eq(-4,0)"
                 />
         <setting
                 id="upload_limit"
                 type="number"
                 label="30010"
                 default="0"
-                visible="eq(-4,0)"
+                visible="eq(-5,0)"
                 />
         <setting
                 id="download_limit"
                 type="number"
                 label="30011"
                 default="0"
-                visible="eq(-5,0)"
+                visible="eq(-6,0)"
                 />
         <setting
                 id="blank"
                 type="text"
                 label="30024"
                 default=""
-                visible="eq(-6,1)"
+                visible="eq(-7,1)"
                 />
         <setting
                 id="subs_dl"
                 type="bool"
                 label="30029"
                 default="true"
-                visible="eq(-7,0)"
+                visible="eq(-8,0)"
                 />
         <setting
                 id="keep_seeding"
