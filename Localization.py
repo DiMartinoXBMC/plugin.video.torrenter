@@ -197,6 +197,8 @@ dictionary = {
         'International Check - First Run':'International Check - Первый запуск',
         'Delete Russian stuff?':'Удалить русские трекеры?',
         'Save to path':'Сохранить в папку',
+        'Return Russian stuff':'Вернуть русские трекеры',
+        '%d files have been returned':'%d файлов возвращено',
     }
 }
 

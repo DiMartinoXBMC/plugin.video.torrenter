@@ -8,6 +8,17 @@
                 default="1"
                 />
         <setting
+                id="delete_russian"
+                type="bool"
+                label="30032"
+                default=""
+                />
+        <setting
+                type="action"
+                label="30033"
+                action="RunPlugin(plugin://plugin.video.torrenter/?action=returnRussian)"
+                visible="eq(-1,false)"/>
+        <setting
                 id="metadata"
                 type="bool"
                 label="30014"

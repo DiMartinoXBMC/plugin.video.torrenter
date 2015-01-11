@@ -81,7 +81,7 @@ class Core:
     def sectionMenu(self):
         if self.__settings__.getSetting('plugin_name')!=self.__plugin__:
             if self.__settings__.getSetting('delete_russian')!='false':
-                not_russian=delete_russian(self.__settings__.getSetting('delete_russian')=='true')
+                not_russian=delete_russian(ok=self.__settings__.getSetting('delete_russian')=='true', action='delete')
                 if not_russian:
                     self.__settings__.setSetting('delete_russian', 'true')
                     self.__settings__.setSetting('language', '0')
@@ -1603,3 +1603,7 @@ class Core:
             return Localization.localize(string)
         except:
             return string
+
+    def returnRussian(self, params={}):
+        i=delete_russian(ok=True, action='return')
+        showMessage(self.localize('Return Russian stuff'),self.localize('%d files have been returned')%i)

@@ -1563,7 +1563,8 @@ def isSubtitle(filename, filename2):
         return True
     return False
 
-def delete_russian(ok=False):
+def delete_russian(ok=False, action='delete'):
+    i=0
     if not ok:
         ok = xbmcgui.Dialog().yesno('< %s >' % Localization.localize('International Check - First Run'),
                                         'Delete Russian stuff?',
@@ -1576,11 +1577,22 @@ def delete_russian(ok=False):
 
         for path in fileList.keys():
             for filename in fileList[path]:
-                filepath=os.path.join(ROOT,'resources', path,filename)
-                if xbmcvfs.exists(filepath):
-                    newfilepath=os.path.join(ROOT,'resources', path,'unused',filename)
-                    xbmcvfs.copy(filepath, newfilepath)
-                    xbmcvfs.delete(filepath)
+                if action=='delete':
+                    filepath=os.path.join(ROOT,'resources', path,filename)
+                    if xbmcvfs.exists(filepath):
+                        newfilepath=os.path.join(ROOT,'resources', path,'unused',filename)
+                        xbmcvfs.copy(filepath, newfilepath)
+                        xbmcvfs.delete(filepath)
+                elif action=='return':
+                    filepath=os.path.join(ROOT,'resources', path,'unused',filename)
+                    if xbmcvfs.exists(filepath):
+                        newfilepath=os.path.join(ROOT,'resources',path,filename)
+                        xbmcvfs.copy(filepath, newfilepath)
+                        xbmcvfs.delete(filepath)
+                        i=i+1
+
+        if action=='return':
+            return i
         return True
     else:
         return False
