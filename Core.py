@@ -1038,7 +1038,7 @@ class Core:
 
             #print str(contentList)
 
-            dirList, contentListNew = self.cutFolder(contentList, tdir)
+            dirList, contentListNew = cutFolder(contentList, tdir)
 
             for title in dirList:
                 self.drawItem(title, 'openTorrent', url, isFolder=True, action2=title)
@@ -1175,7 +1175,6 @@ class Core:
                                                      torrentFilesDirectory=self.torrentFilesDirectory)
         self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
         if silent != 'true':
-            contentId = 0
             if external:
                 myshows_setting = xbmcaddon.Addon(id='plugin.video.myshows')
                 myshows_lang = myshows_setting.getLocalizedString
@@ -1195,7 +1194,7 @@ class Core:
                                  re.I | re.DOTALL):
                         myshows_items.append(title)
                         myshows_files.append('plugin://plugin.video.torrenter/?action=playTorrent&url=' + identifier)
-                if len(myshows_items) > 1: myshows_items = self.cutFileNames(myshows_items)
+                if len(myshows_items) > 1: myshows_items = cutFileNames(myshows_items)
                 myshows_items.append(unicode(myshows_lang(30400)))
                 myshows_files.append('')
                 dialog = xbmcgui.Dialog()
@@ -1214,7 +1213,7 @@ class Core:
                     contentList.append((self.unescape(fileTitle), str(filedict.get('ind'))))
                 contentList = sorted(contentList, key=lambda x: x[0])
 
-                dirList, contentListNew = self.cutFolder(contentList, tdir)
+                dirList, contentListNew = cutFolder(contentList, tdir)
 
                 for title in dirList:
                     self.drawItem(title, 'openTorrent', url, image=thumbnail, isFolder=True, action2=title)
@@ -1243,102 +1242,6 @@ class Core:
     def downloadopenTorrent(self, params={}):
         url = self.__settings__.getSetting("lastTorrent")
         self.downloadFilesList({'url': url, 'ind': params.get("url")})
-
-    def cutFolder(self, contentList, tdir=None):
-        dirList, contentListNew = [], []
-
-        if len(contentList) > 1:
-            common_folder = contentList[0][0]
-            if '\\' in common_folder:
-                common_folder = common_folder.split('\\')[0]
-            elif '/' in common_folder:
-                common_folder = common_folder.split('/')[0]
-
-            common = True
-            for fileTitle, contentId in contentList:
-                if common_folder not in fileTitle:
-                    print 'no common'
-                    common = False
-                    break
-
-            #print common_folder
-            for fileTitle, contentId in contentList:
-                dir = None
-                if common:
-                    fileTitle = fileTitle[len(common_folder) + 1:]
-
-                #print fileTitle
-
-                if '\\' in fileTitle:
-                    dir = fileTitle.split('\\')[0]
-                elif '/' in fileTitle:
-                    dir = fileTitle.split('/')[0]
-                elif not tdir:
-                    contentListNew.append((fileTitle, contentId))
-
-                if tdir and dir == tdir:
-                    contentListNew.append((fileTitle[len(dir) + 1:], contentId))
-
-                if not tdir and dir and dir not in dirList:
-                    dirList.append(dir)
-
-            return dirList, contentListNew
-        else:
-            return dirList, contentList
-
-    def cutFileNames(self, l):
-        from difflib import Differ
-
-        d = Differ()
-        i = -1
-        m = self.getDirList(None, l)
-        if len(m) < 2: return l
-        text1 = str(m[0])
-        text2 = str(m[1])
-
-        seps = ['.|:| ', '.|:|x', ' |:|x', ' |:|-', '_|:|', ]
-        for s in seps:
-            sep_file = str(s).split('|:|')[0]
-            result = list(d.compare(text1.split(sep_file), text2.split(sep_file)))
-            if len(result) > 5:
-                break
-
-        print list(d.compare(text1.split(sep_file), text2.split(sep_file)))
-
-        start = ''
-        end = ''
-
-        for res in result:
-            if str(res).startswith('-') or str(res).startswith('+') or str(res).startswith('.?'):
-                break
-            start = start + str(res).strip() + sep_file
-        result.reverse()
-        for res in result:
-            if str(res).startswith('-') or str(res).startswith('+') or str(res).startswith('?'):
-                break
-            end = sep_file + str(res).strip() + end
-
-        newl = l
-        l = []
-        for fl in newl:
-            if fl[0:len(start)] == start: fl = fl[len(start):]
-            if fl[len(fl) - len(end):] == end: fl = fl[0:len(fl) - len(end)]
-            #fl=fl[len(start):len(fl)-len(end)] только это вместо 2 сверху
-            l.append(fl)
-        return l
-
-    def getDirList(self, path, newl=None):
-        l = []
-        try:
-            if not newl: newl = os.listdir(path)
-        except:
-            if not newl: newl = os.listdir(path.decode('utf-8').encode('cp1251'))
-        for fl in newl:
-            match = re.match('.avi|.mp4|.mkV|.flv|.mov|.vob|.wmv|.ogm|.asx|.mpg|mpeg|.avc|.vp3|.fli|.flc|.m4v',
-                             fl[int(len(fl)) - 4:len(fl)], re.I)
-            if match:
-                l.append(fl)
-        return l
 
     def openSection(self, params={}):
         get = params.get

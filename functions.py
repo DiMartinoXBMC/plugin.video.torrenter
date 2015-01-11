@@ -567,6 +567,48 @@ def sortext(filelist):
     return result
 
 
+def cutFolder(contentList, tdir=None):
+    dirList, contentListNew = [], []
+
+    if len(contentList) > 1:
+        common_folder = contentList[0][0]
+        if '\\' in common_folder:
+            common_folder = common_folder.split('\\')[0]
+        elif '/' in common_folder:
+            common_folder = common_folder.split('/')[0]
+
+        common = True
+        for fileTitle, contentId in contentList:
+            if common_folder not in fileTitle:
+                print 'no common'
+                common = False
+                break
+
+        #print common_folder
+        for fileTitle, contentId in contentList:
+            dir = None
+            if common:
+                fileTitle = fileTitle[len(common_folder) + 1:]
+
+            #print fileTitle
+
+            if '\\' in fileTitle:
+                dir = fileTitle.split('\\')[0]
+            elif '/' in fileTitle:
+                dir = fileTitle.split('/')[0]
+            elif not tdir:
+                contentListNew.append((fileTitle, contentId))
+
+            if tdir and dir == tdir:
+                contentListNew.append((fileTitle[len(dir) + 1:], contentId))
+
+            if not tdir and dir and dir not in dirList:
+                dirList.append(dir)
+
+        return dirList, contentListNew
+    else:
+        return dirList, contentList
+
 def sweetpair(l):
     from difflib import SequenceMatcher
 
