@@ -63,7 +63,6 @@ class Core:
         ('&laquo;', '"'),
         ('&raquo;', '"'),
     )
-    HistoryDB_name, HistoryDB_ver = 'history', 1.1
     scrapperDB_ver = {'en':'1.0', 'ru':'1.2'}
 
     print 'SYS ARGV: ' + str(sys.argv)
@@ -88,23 +87,31 @@ class Core:
                 else:
                     self.__settings__.setSetting('delete_russian', 'false')
             self.__settings__.setSetting('plugin_name',self.__plugin__)
+
         ListString = 'XBMC.RunPlugin(%s)' % (sys.argv[0] + '?action=%s&action2=%s&%s=%s')
+        contextMenu = [(self.localize('Search Control Window'),
+                'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
+
         if self.history_bool:
-            contextMenu = [(self.localize('Search Control Window'),
-                            'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
-            contextMenu.append(
-                (self.localize('Clear Search History'), ListString % ('History', 'clear', 'addtime', '')))
+            HistorycontextMenu=[]
+            HistorycontextMenu.extend(contextMenu)
+            HistorycontextMenu.append(
+                (self.localize('Clear %s') % self.localize('Search History'), ListString % ('History', 'clear', 'addtime', '')))
             self.drawItem('< %s >' % self.localize('Search History'), 'History',
-                          image=self.ROOT + '/icons/history2.png', contextMenu=contextMenu, replaceMenu=False)
+                          image=self.ROOT + '/icons/history2.png', contextMenu=HistorycontextMenu, replaceMenu=False)
         self.drawItem('< %s >' % self.localize('Search'), 'search', image=self.ROOT + '/icons/search.png', )
-        contextMenu = [
-            (self.localize('Search Control Window'), 'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
-        contextMenu.append((self.localize('Reset All Cache DBs'),
+        CLcontextMenu=[]
+        CLcontextMenu.extend(contextMenu)
+        CLcontextMenu.append((self.localize('Reset All Cache DBs'),
                             ListString % ('full_download', '', 'url', json.dumps({'action': 'delete'}))))
         self.drawItem('< %s >' % self.localize('Content Lists'), 'openContent', image=self.ROOT + '/icons/media.png',
-                      contextMenu=contextMenu, replaceMenu=False)
-        self.drawItem('< %s >' % self.localize('Personal List'), 'List', image=self.ROOT + '/icons/list.png',
-                      contextMenu=contextMenu, replaceMenu=False)
+                      contextMenu=CLcontextMenu, replaceMenu=False)
+        DLScontextMenu=[]
+        DLScontextMenu.extend(contextMenu)
+        DLScontextMenu.append(
+                (self.localize('Clear %s') % self.localize('Download Status'), ListString % ('DownloadStatus', 'clear', 'addtime', '')))
+        self.drawItem('< %s >' % self.localize('Download Status'), 'DownloadStatus', image=self.ROOT + '/icons/download.png',
+                      contextMenu=DLScontextMenu, replaceMenu=False)
         self.drawItem('< %s >' % self.localize('Torrent-client Browser'), 'uTorrentBrowser',
                       image=self.ROOT + '/icons/torrent-client.png')
         self.drawItem('< %s >' % self.localize('.torrent Player'), 'torrentPlayer',
@@ -262,13 +269,78 @@ class Core:
         lockView('wide')
 
     def test(self, params={}):
-        #xbmc.executebuiltin('XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.torrenter/?'
-        #                                                'action=torrentPlayer&url=D%3A%5Ctest.torrent')
-        #self.test_scrapper()
-        thread.exit()
+        #db=DownloadDB()
+        #db.add(u'XXX2', 'file', json.dumps({'seeds':1,'leechers':1}), 20)
+        #url='magnet:?xt=urn:btih:MZLDDZU5MWZWICIGQN6YDVAXJNNISU5W&dn=Jimmy.Fallon.2015.01.09.Don.Cheadle.HDTV.x264-CROOKS&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80'
+        #filename='D:\\torrents\\Torrenter\\torrents\\Jimmy.Fallon.2015.01.09.Don.Cheadle.HDTV.x264-CROOKS.mp4.torrent'
+        #torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
+        #self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(filename))
+        #torrent.downloadProcess()
+        self.DownloadStatus()
+
+    def DownloadStatus(self, params={}):
+        db = DownloadDB()
+        get = params.get
+        action2 = get('action2')
+        type = get('type')
+        path = get('path')
+        addtime = get('addtime')
+
+        if action2 == 'notfinished':
+            showMessage(self.localize('Download Status'), self.localize('Download has not finished yet'))
+
+        if action2 == 'play':
+            if type=='file':
+                xbmc.Player().play(urllib.unquote_plus(path))
+            else:
+                path=urllib.unquote_plus(path)
+                dirs, files=xbmcvfs.listdir(path+os.sep)
+                if len(dirs)>0:
+                    for dir in dirs:
+                        link={'action2':'play', 'type':'folder', 'path':os.path.join(path,dir)}
+                        self.drawItem(dir, 'DownloadStatus', link, image='', isFolder=True)
+                for file in files:
+                    link={'action2':'play', 'type':'file', 'path':os.path.join(path,file)}
+                    self.drawItem(file, 'DownloadStatus', link, image='', isFolder=False)
+                view_style('DownloadStatus')
+                xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+                return
+
+        if action2 == 'delete':
+            db.delete(addtime)
+            xbmc.executebuiltin('Container.Refresh')
+            showMessage(self.localize('Download Status'), self.localize('Deleted! It will not stop download'))
+
+        if action2 == 'clear':
+            db.clear()
+            showMessage(self.localize('Download Status'), self.localize('Clear!'))
+
+        if not action2:
+            items = db.get_all()
+            if items:
+                ListString = 'XBMC.RunPlugin(%s)' % (sys.argv[0] + '?action=DownloadStatus&action2=%s&%s=%s')
+                for addtime, title, path, type, info in items:
+                    jsoninfo=json.loads(urllib.unquote_plus(info))
+                    progress=int(jsoninfo.get('progress'))
+                    title = '[%d%%] %s'  % (progress, title)
+                    if progress<100:
+                        if jsoninfo.get('seeds')!=None and jsoninfo.get('peers')!=None and \
+                                jsoninfo.get('download')!=None and jsoninfo.get('upload')!=None:
+                            d,u=int(jsoninfo['download']/ 1000000), int(jsoninfo['upload'] / 1000000)
+                            s,p=str(jsoninfo['seeds']),str(jsoninfo['peers'])
+                            title='%s [S/L %s/%s][D/U %s/%s (MB/s)]' %(title,s,p,d,u)
+                        link={'action2':'notfinished'}
+                        contextMenu=[((self.localize('Delete from %s') % self.localize('Download Status'), ListString % ('delete', 'addtime', str(addtime))))]
+                        self.drawItem(title, 'DownloadStatus', link, image='', contextMenu=contextMenu, replaceMenu=True)
+                    else:
+                        contextMenu=[((self.localize('Delete from %s') % self.localize('Download Status'), ListString % ('delete', 'addtime', str(addtime))))]
+                        link={'action2':'play', 'type':type, 'path':path.encode('utf-8')}
+                        self.drawItem('[B]%s[/B]' % title, 'DownloadStatus', link, image='', contextMenu=contextMenu, replaceMenu=False, isFolder=type=='folder')
+            view_style('DownloadStatus')
+            xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
     def History(self, params={}):
-        db = HistoryDB(self.HistoryDB_name, self.HistoryDB_ver)
+        db = HistoryDB()
         get = params.get
         action2 = get('action2')
         url = get('url')
@@ -366,6 +438,7 @@ class Core:
     def drawContent(self, category_dict, provider=None, category=None, subcategory=None):
 
         if not category and not provider:
+            self.drawItem('[COLOR FFFFFFFF][B]< %s >[/B][/COLOR]' % self.localize('Personal List'), 'List', image=self.ROOT + '/icons/list.png')
             for cat in category_dict.keys():
                 cat_con = category_dict[cat]
                 if isinstance(cat_con, dict):
@@ -744,9 +817,12 @@ class Core:
                 link = {'url': '%s::%s' % (provider, urllib.quote_plus(label)), 'thumbnail': img}
 
             contextMenu = [
-                    (self.localize('Download'),
+                    (self.localize('Download via T-client'),
                      'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
-                     sys.argv[0], 'downloadFilesList', urllib.quote_plus('%s::%s' % (provider, info.get('link')))))
+                     sys.argv[0], 'downloadFilesList', urllib.quote_plus('%s::%s' % (provider, info.get('link'))))),
+                    (self.localize('Download via Libtorrent'),
+                     'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
+                     sys.argv[0], 'downloadLibtorrent', urllib.quote_plus('%s::%s' % (provider, info.get('link')))))
                 ]
             self.drawItem(title, 'openTorrent', link, img, info=info, contextMenu=contextMenu, replaceMenu=False)
 
@@ -787,8 +863,13 @@ class Core:
                 '%s S%2dE%2d' % (get('original_title'), int(get('season')), int(get('episode'))))
 
         for title in options:
-            link = {'url': title.encode('utf-8', 'ignore'), 'thumbnail': img, 'save_folder':save_folder.encode('utf-8', 'ignore')}
-            self.drawItem(title.encode('utf-8', 'ignore'), 'search', link, img)
+            try:
+                title=title.encode('utf-8')
+                save_folder=save_folder.encode('utf-8')
+            except: pass
+            link = {'url': title, 'thumbnail': img, 'save_folder':save_folder}
+            #print str(link)
+            self.drawItem(title, 'search', link, img)
 
         view_style('searchOption')
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
@@ -800,7 +881,8 @@ class Core:
         if isinstance(link, dict):
             link_url = ''
             for key in link.keys():
-                link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(str(link.get(key))))
+                if link.get(key):
+                    link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(link.get(key)))
             url = '%s?action=%s' % (sys.argv[0], action) + link_url
         else:
             url = '%s?action=%s&url=%s' % (sys.argv[0], action, urllib.quote_plus(link))
@@ -1053,17 +1135,20 @@ class Core:
                     pass
 
             for title, identifier in contentListNew:
-                contextMenu = [(self.localize('Download'),
-                                'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
-                                sys.argv[0], 'downloadopenTorrent', str(identifier)))
+                contextMenu = [
+                    (self.localize('Download via T-client'),
+                    'XBMC.RunPlugin(%s)' % ('%s?action=%s&ind=%s') % (
+                    sys.argv[0], 'downloadFilesList', str(identifier))),
+                    (self.localize('Download via Libtorrent'),
+                    'XBMC.RunPlugin(%s)' % ('%s?action=%s&ind=%s') % (
+                    sys.argv[0], 'downloadLibtorrent', str(identifier))),
                 ]
                 self.drawItem(title, 'playTorrent', identifier, isFolder=False, action2=ids_video.rstrip(','),
                               contextMenu=contextMenu, replaceMenu=False)
             view_style('torrentPlayer')
             xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
-    def playTorrent(self, params={}):
-        torrentUrl = self.__settings__.getSetting("lastTorrent")
+    def userStorage(self, params):
         if self.__settings__.getSetting("keep_files")=='true' \
             and self.__settings__.getSetting("ask_dir")=='true':
             try:
@@ -1081,6 +1166,10 @@ class Core:
                 return
             if len(dirname)>0:
                 self.userStorageDirectory=dirname
+
+    def playTorrent(self, params={}):
+        torrentUrl = self.__settings__.getSetting("lastTorrent")
+        self.userStorage(params)
         if self.torrent_player == '0':
             if 0 != len(torrentUrl):
                 self.Player = TorrentPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
@@ -1229,9 +1318,12 @@ class Core:
 
                 for title, identifier in contentListNew:
                     contextMenu = [
-                        (self.localize('Download'),
-                         'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
-                         sys.argv[0], 'downloadopenTorrent', str(identifier)))
+                        (self.localize('Download via T-client'),
+                         'XBMC.RunPlugin(%s)' % ('%s?action=%s&ind=%s') % (
+                         sys.argv[0], 'downloadFilesList', str(identifier))),
+                        (self.localize('Download via Libtorrent'),
+                         'XBMC.RunPlugin(%s)' % ('%s?action=%s&ind=%s') % (
+                         sys.argv[0], 'downloadLibtorrent', str(identifier))),
                     ]
                     link = {'url': identifier, 'thumbnail': thumbnail, 'save_folder':save_folder}
                     self.drawItem(title, 'playTorrent', link, image=thumbnail, isFolder=False,
@@ -1239,16 +1331,12 @@ class Core:
                 view_style('openTorrent')
                 xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
-    def downloadopenTorrent(self, params={}):
-        url = self.__settings__.getSetting("lastTorrent")
-        self.downloadFilesList({'url': url, 'ind': params.get("url")})
-
     def openSection(self, params={}):
         get = params.get
         url = urllib.unquote_plus(get("url"))
         addtime=get("addtime")
         if not addtime and self.__settings__.getSetting('history')=='true':
-            HistoryDB(self.HistoryDB_name, self.HistoryDB_ver).add(url)
+            HistoryDB().add(url)
         try:
             external = urllib.unquote_plus(get("external"))
         except:
@@ -1261,7 +1349,7 @@ class Core:
         searchersList = []
         if not external or external == 'torrenterall':
             if addtime:
-                providers=HistoryDB(self.HistoryDB_name, self.HistoryDB_ver).get_providers(addtime)
+                providers=HistoryDB().get_providers(addtime)
                 if providers:
                     for searcher in providers:
                         searchersList.append(searcher + '.py')
@@ -1360,9 +1448,12 @@ class Core:
         else:
             for (order, seeds, leechers, size, title, link, image) in filesList:
                 contextMenu = [
-                    (self.localize('Download'),
+                    (self.localize('Download via T-client'),
                      'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
-                     sys.argv[0], 'downloadFilesList', urllib.quote_plus(link)))
+                     sys.argv[0], 'downloadFilesList', urllib.quote_plus(link))),
+                    (self.localize('Download via Libtorrent'),
+                     'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
+                     sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(link)))
                 ]
                 title = self.titleMake(seeds, leechers, size, title)
                 link = {'url': link, 'thumbnail': thumbnail, 'save_folder':save_folder}
@@ -1404,7 +1495,10 @@ class Core:
             dirname = self.__settings__.getSetting("torrent_dir")
 
         get = params.get
-        url = urllib.unquote_plus(get("url"))
+        try:
+            url = urllib.unquote_plus(get("url"))
+        except:
+            url = self.__settings__.getSetting("lastTorrent").decode('utf-8')
         ind = get("ind")
         if not ind:
             self.__settings__.setSetting("lastTorrentUrl", url)
@@ -1441,6 +1535,38 @@ class Core:
         if success and ind:
             id = self.chooseHASH()[0]
             Download().setprio(id, ind)
+
+    def downloadLibtorrent(self, params={}):
+        get = params.get
+        self.userStorage(params)
+        try:
+            url = urllib.unquote_plus(get("url"))
+        except:
+            url = self.__settings__.getSetting("lastTorrent").decode('utf-8')
+        ind = get("ind")
+        if not ind:
+            self.__settings__.setSetting("lastTorrentUrl", url)
+            classMatch = re.search('(\w+)::(.+)', url)
+            if classMatch:
+                searcher = classMatch.group(1)
+                if self.ROOT + os.sep + 'resources' + os.sep + 'searchers' not in sys.path:
+                    sys.path.insert(0, self.ROOT + os.sep + 'resources' + os.sep + 'searchers')
+                try:
+                    searcherObject = getattr(__import__(searcher), searcher)()
+                except Exception, e:
+                    print 'Unable to use searcher: ' + searcher + ' at ' + self.__plugin__ + ' openTorrent(). Exception: ' + str(e)
+                    return
+                url = searcherObject.getTorrentFile(classMatch.group(2))
+        torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
+        torrent.initSession()
+        self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
+        if 0 < int(self.__settings__.getSetting("upload_limit")):
+            torrent.setUploadLimit(int(self.__settings__.getSetting("upload_limit")) * 1000000 / 8)  #MBits/second
+        if 0 < int(self.__settings__.getSetting("download_limit")):
+            torrent.setDownloadLimit(
+                int(self.__settings__.getSetting("download_limit")) * 1000000 / 8)  #MBits/second
+        torrent.downloadProcess(ind)
+        showMessage(self.localize('Download Status'), self.localize('Added!'))
 
     def titleMake(self, seeds, leechers, size, title):
 

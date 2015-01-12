@@ -97,8 +97,8 @@ class Torrent():
             hasher.update(string.encode('utf-8', 'ignore'))
         return hasher.hexdigest()
 
-    def downloadProcess(self, contentId):
-        pass
+    def downloadProcess(self, contentId=None):
+        return self.player.downloadProcess(contentId)
 
     def initSession(self):
         return self.player.initSession()

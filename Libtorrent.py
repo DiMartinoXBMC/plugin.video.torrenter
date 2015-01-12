@@ -28,7 +28,7 @@ import sys
 import platform
 from StringIO import StringIO
 import gzip
-from functions import file_decode, file_encode, isSubtitle
+from functions import file_decode, file_encode, isSubtitle, DownloadDB
 
 import xbmc
 import xbmcgui
@@ -248,13 +248,44 @@ class Libtorrent:
         return hasher.hexdigest()
 
     def downloadProcess(self, contentId):
-        pass
-        #for part in range(self.startPart, self.endPart + 1):
-        #    print 'getPiece'+str(part)
-        #    self.getPiece(part)
-        #    time.sleep(0.5)
-        #    self.checkThread()
-        #self.threadComplete = True
+        self.startSession()
+        db=DownloadDB()
+        ContentList=self.getContentList()
+        if len(ContentList)==1 or contentId:
+            if not contentId: contentId=0
+            title=os.path.basename(ContentList[int(contentId)]['title'])
+            path=os.path.join(self.storageDirectory, ContentList[int(contentId)]['title'])
+            type='file'
+        else:
+            title=ContentList[0]['title'].split('\\')[0]
+            path=os.path.join(self.storageDirectory, title)
+            type='folder'
+
+        add=db.add(title, path, type, {'progress':0})
+        if add:
+            if None!=contentId:
+                self.continueSession(int(contentId), Offset=0, seeding=False)
+            else:
+                for i in range(self.torrentFileInfo.num_pieces()):
+                    self.torrentHandle.piece_priority(i, 6)
+            thread.start_new_thread(self.downloadLoop, (title,))
+
+
+    def downloadLoop(self, title):
+        iterator=0
+        db=DownloadDB()
+        while iterator<100:
+            xbmc.sleep(1000)
+            status = self.torrentHandle.status()
+            info={}
+            info['upload']=status.upload_payload_rate
+            info['download']=status.download_payload_rate
+            info['peers']=status.num_peers
+            info['seeds']=status.num_seeds
+            iterator = int(status.progress * 100)
+            info['progress']=iterator
+            db.update(title, info)
+            self.debug()
 
     def initSession(self):
         try:
@@ -304,8 +335,8 @@ class Libtorrent:
         self.torrentHandle.piece_priority(self.endPart, 7)
         #thread.start_new_thread(self.checkProcess, ())
         #thread.start_new_thread(self.downloadProcess, (contentId,))
-        if seeding:# and None == self.magnetLink:
-            thread.start_new_thread(self.addToSeeding, (contentId,))
+        #if seeding:# and None == self.magnetLink:
+        #    thread.start_new_thread(self.addToSeeding, (contentId,))
 
     def addToSeeding(self, contentId):
         print 'addToSeeding!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1'

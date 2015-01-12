@@ -17,6 +17,7 @@ No installation required, will be downloaded with plugin from repository as modu
 or you could compile it:
 
 sudo apt-get build-dep python-libtorrent
+sudo apt-get install subversion
 svn co https://libtorrent.svn.sourceforge.net/svnroot/libtorrent/trunk/ lt/
 cd lt/
 ./autotool.sh
@@ -42,6 +43,7 @@ ________________________________________________________________________________
 или компилируем:
 
 sudo apt-get build-dep python-libtorrent
+sudo apt-get install subversion
 svn co https://libtorrent.svn.sourceforge.net/svnroot/libtorrent/trunk/ lt/
 cd lt/
 ./autotool.sh

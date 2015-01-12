@@ -173,7 +173,7 @@ dictionary = {
         'Search History': 'История Поиска',
         'Favourites': 'Избранное',
         'Favourites SH': 'Избранное ИП',
-        'Clear Search History': 'Очистить Историю Поиска',
+        'Clear %s': 'Очистить %s',
         'Clear!': 'Очищено!',
         'kb/s': 'Кб/с',
         'Queued': 'В очереди',
@@ -199,6 +199,11 @@ dictionary = {
         'Save to path':'Сохранить в папку',
         'Return Russian stuff':'Вернуть русские трекеры',
         '%d files have been returned':'%d файлов возвращено',
+        'Download via T-client':'Скачать Торр-клиентом',
+        'Download via Libtorrent':'Скачать Libtorrent\'ом',
+        'Download Status':'Статус Загрузки',
+        'Download has not finished yet':'Загрука не завершена',
+        'Deleted! It will not stop download':'Удалено! Это не остановит загрузку',
     }
 }
 

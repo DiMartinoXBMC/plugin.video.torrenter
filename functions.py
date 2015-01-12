@@ -54,6 +54,7 @@ def clearStorage(userStorageDirectory):
         shutil.rmtree(userStorageDirectory, ignore_errors=True)
         xbmcvfs.mkdir(userStorageDirectory)
         shutil.move(os.path.join(temp, 'torrents'), os.path.join(userStorageDirectory, 'torrents'))
+    DownloadDB().clear()
     showMessage(Localization.localize('Storage'), Localization.localize('Storage was cleared'), forced=True)
 
 
@@ -258,224 +259,6 @@ def calculate(full):
         repl_const = max_const
 
     return repl_const
-
-
-def auto_scan():
-    from torrents import ScanAll
-
-    scan = CacheDB('autoscan')
-    if not scan.get(): scan.add()
-    try:
-        if scan.get() \
-                and int(time.time()) - scan.get() > refresh_period * 3600:
-            scan.delete()
-            scan.add()
-            ScanAll()
-    except:
-        showMessage(__language__(30279), __language__(30277))
-
-
-def DownloadCache():
-    useTVDB = getSettingAsBool('tvdb')
-    urls = [__baseurl__ + '/profile/shows/',
-            __baseurl__ + '/profile/episodes/next/',
-            __baseurl__ + '/profile/episodes/unwatched/',
-            __baseurl__ + '/shows/top/all/',
-            __baseurl__ + '/shows/top/male/',
-            __baseurl__ + '/shows/top/female/', ]
-    titles = []
-    lang = [30100, 30107, 30106, 30108, 30109, 30110]
-    for l in lang: titles.append(__language__(l))
-
-    data = Data(cookie_auth, __baseurl__ + '/profile/shows/').get()
-    if data:
-        jdata = json.loads(data)
-        count = len(jdata)
-
-        dialog = xbmcgui.Dialog()
-        ok = dialog.yesno(__language__(30548), __language__(30517) % count, __language__(30518))
-        if ok:
-            for showId in jdata:
-                if ruName == 'true' and jdata[showId]['ruTitle']:
-                    title = jdata[showId]['ruTitle'].encode('utf-8')
-                else:
-                    title = jdata[showId]['title']
-                titles.append(title)
-                urls.append(__baseurl__ + '/shows/' + showId)
-                titles.append(title)
-                urls.append(__baseurl__ + '/profile/shows/' + showId + '/')
-
-            if useTVDB:
-                from search.scrapers import Scrapers
-
-                TVDB = Scrapers()
-
-            full_count = len(urls)
-            progressBar = xbmcgui.DialogProgress()
-            progressBar.create(__language__(30548), __language__(30518))
-            for i in range(0, len(urls)):
-                dat = Data(cookie_auth, urls[i]).get()
-                if useTVDB:
-                    match = re.compile(__baseurl__ + '/shows/(\d{1,20}?$)').findall(urls[i])
-                    if match:
-                        jdat = json.loads(dat)
-                        TVDB.scraper('tvdb', {'label': titles[i], 'search': [jdat['title'], titles[i]],
-                                              'year': str(jdat['year'])})
-                iterator = int(round(i * 100 / full_count))
-                progressBar.update(iterator, __language__(30549) % (i, full_count), titles[i])
-                if progressBar.iscanceled():
-                    progressBar.update(0)
-                    progressBar.close()
-                    break
-    return
-
-
-class Data():
-    def __init__(self, cookie_auth, url, refresh_url=None):
-        if not xbmcvfs.exists(__tmppath__):
-            xbmcvfs.mkdirs(__tmppath__)
-        self.cookie = cookie_auth
-        self.filename = self.url2filename(url)
-        self.refresh = False
-        if refresh_url:
-            CacheDB(unicode(refresh_url)).delete()
-            if re.search('profile', refresh_url):
-                CacheDB(unicode(__baseurl__ + '/profile/episodes/unwatched/')).delete()
-        self.url = url
-        self.cache = CacheDB(self.url)
-        if self.filename:
-            if not xbmcvfs.exists(self.filename) \
-                    or getSettingAsBool('forced_refresh_data') \
-                    or not self.cache.get() \
-                    or int(time.time()) - self.cache.get() > refresh_period * 3600 \
-                    or str(refresh_always) == 'true':
-                self.refresh = True
-                __settings__.setSetting("forced_refresh_data", "false")
-
-    def get(self, force_cache=False):
-        if self.filename:
-            if self.refresh == True and force_cache == False or not xbmcvfs.File(self.filename,
-                                                                                 'r').size() or not re.search(
-                                    '=' + __settings__.getSetting("username") + ';', cookie_auth):
-                self.write()
-            self.fg = xbmcvfs.File(self.filename, 'r')
-            try:
-                self.data = self.fg.read()
-            except:
-                self.fg.close()
-                self.fg = open(self.filename, 'r')
-                self.data = self.fg.read()
-            self.fg.close()
-            x = re.match('.*?}$', self.data)
-            if not x: self.data = self.data[0:len(self.data) - 1]
-            return self.data
-        else:
-            return get_url(self.cookie, self.url)
-
-    def write(self):
-        if self.cache.get(): self.cache.delete()
-        self.data = get_url(self.cookie, self.url)
-        if self.data:
-            try:
-                self.fw = xbmcvfs.File(self.filename, 'w')
-            except:
-                self.fw = open(self.filename, 'w')
-            self.fw.write(self.data)
-            self.fw.close()
-            self.cache.add()
-        elif self.data == False:
-            Debug('[Data][write] Going offline cuz no self.data ' + str(self.data) + ' self.filename ' + self.filename)
-            TimeOut().go_offline()
-
-    def url2filename(self, url):
-        self.files = [r'shows.txt', r'showId_%s.txt', r'watched_showId_%s.txt', r'action_%s.txt', r'top_%s.txt']
-        self.urls = [__baseurl__ + '/profile/shows/$', __baseurl__ + '/shows/(\d{1,20}?$)',
-                     __baseurl__ + '/profile/shows/(\d{1,20}?)/$', __baseurl__ + '/profile/episodes/(unwatched|next)/',
-                     __baseurl__ + '/shows/top/(all|male|female)/']
-        self.i = -1
-        for file in self.urls:
-            self.i = self.i + 1
-            self.match = re.compile(str(file)).findall(url)
-            if self.match:
-                self.var = str(self.match[0])
-                if str(self.files[self.i]).endswith('%s.txt'):
-                    return os.path.join(__tmppath__, self.files[self.i] % (self.var))
-                else:
-                    return os.path.join(__tmppath__, self.files[self.i])
-        return None
-
-
-def friend_xbmc():
-    login = __settings__.getSetting("username").decode('utf-8', 'ignore')
-    filename = os.path.join(__tmppath__, '%s.txt' % (login))
-    if xbmcvfs.File(filename, 'r').size():
-        return True
-    socket.setdefaulttimeout(3)
-    scan = CacheDB(login)
-    if scan.get() and int(time.time()) - scan.get() > refresh_period * 3600 or not scan.get():
-        scan.delete()
-        scan.add()
-        url = 'http://myshows.me/xbmchub'
-        ok = Data(cookie_auth, url, '').get()
-        try:
-            token = re.compile('<script type="text/javascript">var __token = \'(\w+)\'; </script>').findall(ok)[-1]
-            post = '{"jsonrpc":"2.0","method":"ToggleFriendship","id":1,"params":{"userId":274684,"add":1,"__token":"' + token + '"}}'
-            Debug('[friend_xbmc]: token is %s' % (token))
-            ok = post_url_json(cookie_auth, __rpcurl__, post)
-            if ok or not ok:
-                try:
-                    fw = xbmcvfs.File(filename, 'w')
-                except:
-                    fw = open(filename, 'w')
-                fw.write(str(ok))
-                fw.close()
-                return True
-            else:
-                return False
-        except:
-            Debug('[friend_xbmc] Something went wrong!')
-            return False
-
-
-def ontop(action='get', ontop=None):
-    from torrents import prefix
-
-    if action in ('update'):
-        if ontop:
-            jdata = json.loads(Data(cookie_auth, __baseurl__ + '/profile/shows/').get())
-            jstringdata = json.loads(ontop)
-            showId = str(jstringdata['showId'])
-            pre = prefix(showId=int(showId), seasonId=jstringdata['seasonId'])
-            # if ruName=='true' and jdata[showId]['ruTitle']: title=pre+jdata[showId]['ruTitle']
-            # else:
-            title = pre + jdata[showId]['title']
-            if jstringdata['seasonId']:
-                mode = "25"
-                title += ' Season ' + str(jstringdata['seasonId'])
-            else:
-                mode = "20"
-            ontop = {'title': title, 'mode': mode, 'argv': {'stringdata': ontop}}
-            #print unicode(ontop)
-        __settings__.setSetting("ontop", str(ontop).encode('utf-8'))
-    elif action == 'get':
-        x = __settings__.getSetting("ontop")
-        if x != "None" and x:
-            y = {}
-            y['mode'] = re.compile("'%s': '(\d+)'" % ('mode')).findall(x)[0]
-            y['argv'] = {}
-            y['argv']['stringdata'] = re.compile("{'%s': '(.+?)'}" % ('stringdata')).findall(x)[0]
-            y['argv']['showId'] = re.compile('"%s": (\d+),' % ('showId')).findall(y['argv']['stringdata'])[0]
-            try:
-                y['argv']['seasonNumber'] = re.compile('"%s": (\d+),' % ('seasonId')).findall(y['argv']['stringdata'])[
-                    0]
-            except:
-                pass
-            y['title'] = re.compile("'%s': u'(.+?)'" % ('title')).findall(x)[0].encode('utf-8')
-            # print unicode(y)
-            return y
-        else:
-            return None
-
 
 def getDirList(path, newl=None):
     l = []
@@ -730,7 +513,7 @@ def view_style(func):
         styles['List'] = styles['drawcontentList'] = 'info3'
 
     if view_style == 1:
-        styles['uTorrentBrowser'] = styles['torrentPlayer'] = styles['openTorrent'] = styles['History'] = 'wide'
+        styles['uTorrentBrowser'] = styles['torrentPlayer'] = styles['openTorrent'] = styles['History'] = styles['DownloadStatus'] = 'wide'
         styles['sectionMenu'] = 'icons'
 
     if view_style in [1, 3, 4]:
@@ -1118,8 +901,8 @@ class ListDB:
 
 
 class HistoryDB:
-    def __init__(self, name, version=1.0):
-        self.name = name + '.db3'
+    def __init__(self, version=1.1):
+        self.name = 'history.db3'
         self.version = version
 
     def get_all(self):
@@ -1638,3 +1421,109 @@ def delete_russian(ok=False, action='delete'):
         return True
     else:
         return False
+
+class DownloadDB:
+    def __init__(self, version=1.1):
+        self.name = 'download.db3'
+        self.version = version
+
+    def get_all(self):
+        self._connect()
+        self.cur.execute('select addtime, title, path, type, jsoninfo from downloads order by addtime DESC')
+        x = self.cur.fetchall()
+        self._close()
+        return x if x else None
+
+    def get(self, title):
+        self._connect()
+        self.cur.execute('select addtime from downloads where title="' + title + '"')
+        x = self.cur.fetchone()
+        self._close()
+        return x[0] if x else None
+
+    def add(self, title, path, type, info):
+        try:
+            title = title.decode('utf-8')
+        except:
+            pass
+        try:
+            path = path.decode('utf-8')
+        except:
+            pass
+        if not self.get(title):
+            self._connect()
+            self.cur.execute('insert into downloads(addtime, title, path, type, jsoninfo)'
+                             ' values(?,?,?,?,?)', (int(time.time()), title, path, type, json.dumps(info)))
+            self.db.commit()
+            self._close()
+            return True
+        else:
+            return False
+
+    def update(self, title, info={}):
+        try:
+            title = title.decode('utf-8')
+        except:
+            pass
+        self._connect()
+        self.cur.execute('UPDATE downloads SET jsoninfo = "' + urllib.quote_plus(json.dumps(info)) + '" where title="' + title+'"')
+        self.db.commit()
+        self._close()
+
+    def delete(self, addtime):
+        self._connect()
+        self.cur.execute('delete from downloads where addtime="' + addtime + '"')
+        self.db.commit()
+        self._close()
+
+    def clear(self):
+        self._connect()
+        self.cur.execute('delete from downloads')
+        self.db.commit()
+        self._close()
+
+    def _connect(self):
+        dirname = xbmc.translatePath('special://temp')
+        for subdir in ('xbmcup', 'plugin.video.torrenter'):
+            dirname = os.path.join(dirname, subdir)
+            if not xbmcvfs.exists(dirname):
+                xbmcvfs.mkdir(dirname)
+
+        self.filename = os.path.join(dirname, self.name)
+
+        first = False
+        if not xbmcvfs.exists(self.filename):
+            first = True
+
+        self.db = sqlite.connect(self.filename, check_same_thread=False)
+        if not first:
+            self.cur = self.db.cursor()
+            try:
+                self.cur.execute('select version from db_ver')
+                row = self.cur.fetchone()
+                if not row or float(row[0]) != self.version:
+                    self.cur.execute('drop table downloads')
+                    self.cur.execute('drop table if exists db_ver')
+                    first = True
+                    self.db.commit()
+                    self.cur.close()
+            except:
+                self.cur.execute('drop table downloads')
+                first = True
+                self.db.commit()
+                self.cur.close()
+
+        if first:
+            cur = self.db.cursor()
+            cur.execute('pragma auto_vacuum=1')
+            cur.execute('create table db_ver(version real)')
+            cur.execute(
+                'create table downloads(addtime integer PRIMARY KEY, title varchar(32), path varchar(32), type varchar(32), jsoninfo varchar(32))')
+            cur.execute('insert into db_ver(version) values(?)', (self.version, ))
+            self.db.commit()
+            cur.close()
+            self.cur = self.db.cursor()
+
+    def _close(self):
+        self.cur.close()
+        self.db.close()

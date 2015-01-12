@@ -19,9 +19,6 @@
 '''
 
 import re
-import os
-#import time
-import tempfile
 import sys
 
 import SearcherABC

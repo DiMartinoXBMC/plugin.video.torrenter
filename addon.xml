@@ -12,12 +12,12 @@
         <platform>all</platform>
         <summary lang='en'>Plugin helps you to watch videos from p2p torrent-networks, without full predownload.
         </summary>
-        <description lang='en'>Plugin helps you to watch videos from p2p torrent-networks, without full predownload (uses inner python-libtorrent) or Ace Stream. It also can add, control torrents and play downloaded files with external uTorrent, Transmisson or Vuse.
+        <description lang='en'>Plugin helps you to watch videos from p2p torrent-networks, without full predownload (uses python-libtorrent or Ace Stream). It also can add, control torrents and play downloaded files with external uTorrent, Transmisson or Vuse.
         </description>
         <disclaimer lang='en'>GNU GPLv3 http://www.gnu.org/licenses/</disclaimer>
         <summary lang='ru'>Плагин позволяет просматривать видео из пиринговых торрент-сетей, не дожидаясь полного скачивания.
         </summary>
-        <description lang='ru'>Плагин позволяет просматривать видео из пиринговых торрент-сетей, не дожидаясь полного скачивания. Использует внутренюю библиотеку python-libtorrent или Ace Stream. Так же плагин может добавлять, проигрывать и управлять скачками в uTorrent, Transmisson и Vuse.
+        <description lang='ru'>Плагин позволяет просматривать видео из пиринговых торрент-сетей, не дожидаясь полного скачивания. Использует библиотеку python-libtorrent или Ace Stream. Так же плагин может добавлять, проигрывать и управлять скачками в uTorrent, Transmisson и Vuse.
         </description>
         <disclaimer lang='ru'>GNU GPLv3 http://www.gnu.org/licenses/</disclaimer>
     </extension>

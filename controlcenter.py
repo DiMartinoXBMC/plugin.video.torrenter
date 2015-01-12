@@ -13,7 +13,6 @@ __language__ = __settings__.getLocalizedString
 __version__ = __settings__.getAddonInfo('version')
 __plugin__ = __settings__.getAddonInfo('name') + " v." + __version__
 __root__ = __settings__.getAddonInfo('path')
-HistoryDB_name, HistoryDB_ver = 'history', 1.1
 
 print 'SYS ARGV: ' + str(sys.argv)
 
@@ -176,7 +175,7 @@ class ControlCenter(AddonDialogWindow):
         self.keys = self.dic.keys()
         if addtime:
             self.addtime=addtime
-            self.db = HistoryDB(HistoryDB_name, HistoryDB_ver)
+            self.db = HistoryDB()
             providers = self.db.get_providers(addtime)
             if not providers:
                 self.db.set_providers(addtime, self.dic)
@@ -364,7 +363,7 @@ class ControlCenter(AddonDialogWindow):
 
 
 def main():
-    title='Global Torrenter Control Center'
+    title='Torrenter Global Control Center'
     addtime=None
     if params.get('title'):
         title=str(params.get('title'))

@@ -230,4 +230,14 @@ class Content:
         else:
             return 'Empty string'
 
-            #print str(Content().has_category('x'))
+    def sizeConvert(self, sizeBytes):
+        if long(sizeBytes) >= 1024 * 1024 * 1024:
+            size = str(long(sizeBytes) / (1024 * 1024 * 1024)) + 'GB'
+        elif long(sizeBytes) >= 1024 * 1024:
+            size = str(long(sizeBytes) / (1024 * 1024)) + 'MB'
+        elif sizeBytes >= 1024:
+            size = str(long(sizeBytes) / 1024) + 'KB'
+        else:
+            size = str(long(sizeBytes)) + 'B'
+
+        return size
