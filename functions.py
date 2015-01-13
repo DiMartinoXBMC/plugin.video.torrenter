@@ -504,16 +504,17 @@ def view_style(func):
         styles['drawContent'] = styles['drawtrackerList'] = styles['drawcontentList'] = 'info'
         styles['sectionMenu'] = styles['Seasons'] = 'list'
         styles['uTorrentBrowser'] = styles['torrentPlayer'] = styles['openTorrent'] = 'wide'
-        styles['showFilesList'] = 'wide'
+        styles['showFilesList'] = styles['DownloadStatus'] = 'wide'
     elif view_style in [1, 4]:
         styles['searchOption'] = 'info'
         styles['drawContent'] = styles['torrentPlayer'] = styles['openTorrent'] = styles['drawtrackerList'] = 'info'
-        styles['uTorrentBrowser'] = styles['History'] = 'wide'
+        styles['uTorrentBrowser'] = styles['History'] = styles['DownloadStatus'] = 'wide'
         styles['showFilesList'] = styles['sectionMenu'] = 'wide'
         styles['List'] = styles['drawcontentList'] = 'info3'
 
     if view_style == 1:
-        styles['uTorrentBrowser'] = styles['torrentPlayer'] = styles['openTorrent'] = styles['History'] = styles['DownloadStatus'] = 'wide'
+        styles['uTorrentBrowser'] = styles['torrentPlayer'] = 'wide'
+        styles['openTorrent'] = styles['History'] = styles['DownloadStatus'] = 'wide'
         styles['sectionMenu'] = 'icons'
 
     if view_style in [1, 3, 4]:

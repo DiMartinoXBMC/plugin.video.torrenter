@@ -45,6 +45,7 @@ class Core:
     debug = __settings__.getSetting('debug') == 'true'
     torrent_player=__settings__.getSetting("torrent_player")
     history_bool = __settings__.getSetting('history') == 'true'
+    context_open = __settings__.getSetting('context_open') == 'true'
     language = {0: 'en', 1: 'ru'}.get(int(__settings__.getSetting("language")))
     htmlCodes = (
         ('&', '&amp;'),
@@ -374,14 +375,14 @@ class Core:
 
                     if status=='pause':
                         contextMenu=[(self.localize('Unpause'), ListString+'unpause)'),
-                                     (self.localize('Delete and Stop'), ListString+'delete)'),]
+                                     (self.localize('Delete'), ListString+'delete)'),]
                     elif status=='stopped':
                         contextMenu=[(self.localize('Start'), ListString+'start)'),
                                      (self.localize('Delete'), ListString+'delete)'),]
                     else:
                         contextMenu=[(self.localize('Pause'), ListString+'pause)'),
                                      (self.localize('Stop'), ListString+'stop)'),
-                                     (self.localize('Delete and Stop'), ListString+'delete)'),]
+                                     (self.localize('Delete'), ListString+'delete)'),]
 
                     if progress==100 or progress>30 and type=='file':
                         link={'action2':'play', 'type':type, 'path':path.encode('utf-8')}
@@ -1123,6 +1124,8 @@ class Core:
                           replaceMenu=True)
         view_style('uTorrentBrowser')
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+        xbmc.sleep(30000)
+        xbmc.executebuiltin('Container.Refresh')
 
     def clearStorage(self, params={}):
         clearStorage(self.userStorageDirectory)
@@ -1508,7 +1511,14 @@ class Core:
                 return
         else:
             for (order, seeds, leechers, size, title, link, image) in filesList:
+                link_dict = {'url': link, 'thumbnail': thumbnail, 'save_folder':save_folder}
+                link_url=''
+                for key in link_dict.keys():
+                    link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(link_dict.get(key)))
                 contextMenu = [
+                    (self.localize('Open (no return)'),
+                     'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
+                     sys.argv[0], 'openTorrent', link_url)),
                     (self.localize('Download via T-client'),
                      'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
                      sys.argv[0], 'downloadFilesList', urllib.quote_plus(link))),
@@ -1517,13 +1527,17 @@ class Core:
                      sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(link)))
                 ]
                 title = self.titleMake(seeds, leechers, size, title)
-                link = {'url': link, 'thumbnail': thumbnail, 'save_folder':save_folder}
-                self.drawItem(title, 'openTorrent', link, image, contextMenu=contextMenu, replaceMenu=False)
+
+                if self.context_open:
+                    self.drawItem(title, 'context', link, image, contextMenu=contextMenu, replaceMenu=False)
+                else:
+                    self.drawItem(title, 'openTorrent', link_dict, image, contextMenu=contextMenu, replaceMenu=False)
         view_style('showFilesList')
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
     def context(self, params={}):
         xbmc.executebuiltin("Action(ContextMenu)")
+        sys.exit()
 
     def downloadFilesList(self, params={}):
         dirname = None
@@ -1601,7 +1615,7 @@ class Core:
         get = params.get
         storage=get('storage')
         if not storage: self.userStorage(params)
-        else: self.userStorageDirectory=urllib.unquote_plus(storage).decode('utf-8')
+        else: self.userStorageDirectory=urllib.unquote_plus(storage)
         try:
             url = urllib.unquote_plus(get("url"))
         except:

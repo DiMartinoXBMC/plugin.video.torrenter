@@ -212,6 +212,7 @@ dictionary = {
         'Unpause':'Возобновить',
         'Pause':'Пауза',
         'Delete':'Удалить',
+        'Open (no return)':'Открыть (без возврата)',
     }
 }
 

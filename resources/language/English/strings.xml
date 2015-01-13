@@ -31,8 +31,10 @@
     <string id="30031">Ask to change storage before play</string>
     <string id="30032">Delete Russian stuff</string>
     <string id="30033">Return Russian stuff</string>
+    <string id="30034">Open context menu instead of torrent</string>
     <string id="30101">Interface</string>
     <string id="30102">P2P Network</string>
+    <string id="30103">Advanced</string>
     <string id="50301">Save path</string>
     <string id="50302">Call dialog</string>
     <string id="50303">Default</string>
