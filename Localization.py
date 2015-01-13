@@ -205,10 +205,13 @@ dictionary = {
         'Download has not finished yet':'Загрука не завершена',
         'Deleted and Stopped!':'Загрузка удалена и остановлена!',
         'Unpaused!':'Возобновлено!',
-        'Paused!':'Остановлено!',
+        'Paused!':'Приостановлено!',
+        'Stopped!':'Остановлено!',
+        'Started!':'Начинается загрузка!',
         'Delete and Stop':'Удалить и Остановить',
         'Unpause':'Возобновить',
         'Pause':'Пауза',
+        'Delete':'Удалить',
     }
 }
 

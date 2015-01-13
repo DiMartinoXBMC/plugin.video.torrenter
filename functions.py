@@ -1423,52 +1423,43 @@ def delete_russian(ok=False, action='delete'):
         return False
 
 class DownloadDB:
-    def __init__(self, version=1.2):
+    def __init__(self, version=1.41):
         self.name = 'download.db3'
         self.version = version
 
     def get_all(self):
         self._connect()
-        self.cur.execute('select addtime, title, path, type, jsoninfo, status from downloads order by addtime DESC')
+        self.cur.execute('select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads order by addtime DESC')
         x = self.cur.fetchall()
         self._close()
         return x if x else None
 
     def get(self, title):
-        try:
-            title = title.decode('utf-8')
-        except:
-            pass
         self._connect()
-        self.cur.execute('select addtime from downloads where title="' + title + '"')
+        self.cur.execute('select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads where title="' + decode(title) + '"')
         x = self.cur.fetchone()
         self._close()
-        return x[0] if x else None
+        return x if x else None
+
+    def get_byaddtime(self, addtime):
+        self._connect()
+        self.cur.execute('select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads where addtime="' + str(addtime) + '"')
+        x = self.cur.fetchone()
+        self._close()
+        return x if x else None
 
     def get_status(self, title):
-        try:
-            title = title.decode('utf-8')
-        except:
-            pass
         self._connect()
-        self.cur.execute('select status from downloads where title="' + title + '"')
+        self.cur.execute('select status from downloads where title="' + decode(title) + '"')
         x = self.cur.fetchone()
         self._close()
         return x[0] if x else None
 
-    def add(self, title, path, type, info, status):
-        try:
-            title = title.decode('utf-8')
-        except:
-            pass
-        try:
-            path = path.decode('utf-8')
-        except:
-            pass
+    def add(self, title, path, type, info, status, torrent, ind, storage):
         if not self.get(title):
             self._connect()
-            self.cur.execute('insert into downloads(addtime, title, path, type, jsoninfo, status)'
-                             ' values(?,?,?,?,?,?)', (int(time.time()), title, path, type, json.dumps(info), status))
+            self.cur.execute('insert into downloads(addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage)'
+                             ' values(?,?,?,?,?,?,?,?,?,?)', (int(time.time()), decode(title), decode(path), type, json.dumps(info), status, decode(torrent), ind, int(time.time()), decode(storage)))
             self.db.commit()
             self._close()
             return True
@@ -1481,19 +1472,19 @@ class DownloadDB:
         except:
             pass
         self._connect()
-        self.cur.execute('UPDATE downloads SET jsoninfo = "' + urllib.quote_plus(json.dumps(info)) + '" where title="' + title+'"')
+        self.cur.execute('UPDATE downloads SET jsoninfo = "' + urllib.quote_plus(json.dumps(info)) + '", lastupdate='+str(int(time.time()))+' where title="' + title+'"')
         self.db.commit()
         self._close()
 
     def update_status(self, addtime, status):
         self._connect()
-        self.cur.execute('UPDATE downloads SET status = "' + status + '" where addtime="' + addtime+'"')
+        self.cur.execute('UPDATE downloads SET status = "' + status + '" where addtime="' + str(addtime)+'"')
         self.db.commit()
         self._close()
 
     def delete(self, addtime):
         self._connect()
-        self.cur.execute('delete from downloads where addtime="' + addtime + '"')
+        self.cur.execute('delete from downloads where addtime="' + str(addtime) + '"')
         self.db.commit()
         self._close()
 
@@ -1539,7 +1530,7 @@ class DownloadDB:
             cur.execute('pragma auto_vacuum=1')
             cur.execute('create table db_ver(version real)')
             cur.execute(
-                'create table downloads(addtime integer PRIMARY KEY, title varchar(32), path varchar(32), type varchar(32), jsoninfo varchar(32), status varchar(32))')
+                'create table downloads(addtime integer PRIMARY KEY, title varchar(32), path varchar(32), type varchar(32), jsoninfo varchar(32), status varchar(32), torrent varchar(32), ind integer, lastupdate integer, storage varchar(32))')
             cur.execute('insert into db_ver(version) values(?)', (self.version, ))
             self.db.commit()
             cur.close()
@@ -1548,3 +1539,13 @@ class DownloadDB:
     def _close(self):
         self.cur.close()
         self.db.close()
+
+def decode(string, ret=None):
+        try:
+            string = string.decode('utf-8')
+            return string
+        except:
+            if ret:
+                return ret
+            else:
+                return string

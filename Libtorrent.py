@@ -93,6 +93,7 @@ class Libtorrent:
         if re.match("^magnet\:.+$", torrentUrl):
             self.magnetLink = torrentUrl
             self.magnetToTorrent(torrentUrl)
+            self.magnetLink=None
             return self.torrentFile
         else:
             if not xbmcvfs.exists(self.torrentFilesPath):
@@ -252,19 +253,24 @@ class Libtorrent:
         self.paused=False
         db=DownloadDB()
         ContentList=self.getContentList()
-        if len(ContentList)==1 or contentId:
+        if contentId!=None: contentId=int(contentId)
+        if len(ContentList)==1 or contentId not in [None, -1]:
             if not contentId: contentId=0
-            title=os.path.basename(ContentList[int(contentId)]['title'])
-            path=os.path.join(self.storageDirectory, ContentList[int(contentId)]['title'])
+            title=os.path.basename(ContentList[contentId]['title'])
+            path=os.path.join(self.storageDirectory, ContentList[contentId]['title'])
             type='file'
         else:
+            contentId=-1
             title=ContentList[0]['title'].split('\\')[0]
             path=os.path.join(self.storageDirectory, title)
             type='folder'
 
-        add=db.add(title, path, type, {'progress':0}, 'downloading')
-        if add:
-            if None!=contentId:
+        add=db.add(title, path, type, {'progress':0}, 'downloading', self.torrentFile, contentId, self.storageDirectory)
+        get=db.get(title)
+        if add or get[5]=='stopped':
+            if get[5]=='stopped':
+                db.update_status(get[0], 'downloading')
+            if contentId not in [None, -1]:
                 self.continueSession(int(contentId), Offset=0, seeding=False)
             else:
                 for i in range(self.torrentFileInfo.num_pieces()):
@@ -272,19 +278,17 @@ class Libtorrent:
             thread.start_new_thread(self.downloadLoop, (title,))
 
     def downloadLoop(self, title):
-        i=1
         db=DownloadDB()
-        while db.get(title):
-            xbmc.sleep(1000*i)
+        status='downloading'
+        while db.get(title) and status!='stopped':
+            xbmc.sleep(1000)
             status=db.get_status(title)
             if not self.paused:
                 if status=='pause':
-                    i=10
                     self.paused=True
                     self.session.pause()
             else:
                 if status!='pause':
-                    i=1
                     self.paused=False
                     self.session.resume()
             s = self.torrentHandle.status()
@@ -294,11 +298,10 @@ class Libtorrent:
             info['peers']=s.num_peers
             info['seeds']=s.num_seeds
             iterator = int(s.progress * 100)
-            if iterator==100 and status!='seeding':
-                db.update_status(str(db.get(title)), 'seeding')
             info['progress']=iterator
             db.update(title, info)
             self.debug()
+        self.session.remove_torrent(self.torrentHandle)
 
     def initSession(self):
         try:

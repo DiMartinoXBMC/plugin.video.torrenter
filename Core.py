@@ -316,6 +316,21 @@ class Core:
             xbmc.executebuiltin('Container.Refresh')
             showMessage(self.localize('Download Status'), self.localize('Paused!'))
 
+        if action2 == 'stop':
+            db.update_status(addtime, 'stopped')
+            xbmc.executebuiltin('Container.Refresh')
+            showMessage(self.localize('Download Status'), self.localize('Stopped!'))
+
+        if action2 == 'start':
+            start=db.get_byaddtime(addtime)
+            link, ind=start[6], start[7]
+            storage=get('storage') if get('storage') else ''
+            start_exec='XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s&ind=%s&storage=%s') % (
+                     sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(link.encode('utf-8')), str(ind), storage)
+            xbmc.executebuiltin(start_exec)
+            xbmc.executebuiltin('Container.Refresh')
+            showMessage(self.localize('Download Status'), self.localize('Started!'))
+
         if action2 == 'unpause':
             db.update_status(addtime, 'downloading')
             xbmc.executebuiltin('Container.Refresh')
@@ -328,33 +343,56 @@ class Core:
         if not action2:
             items = db.get_all()
             if items:
-                ListString = 'XBMC.RunPlugin(%s)' % (sys.argv[0] + '?action=DownloadStatus&action2=%s&%s=%s')
-                for addtime, title, path, type, info, status in items:
+                for addtime, title, path, type, info, status, torrent, ind, lastupdate, storage in items:
+                    ListString = 'XBMC.RunPlugin('+sys.argv[0] + '?action=DownloadStatus&storage='+urllib.quote_plus(storage.encode('utf-8'))+'&addtime='+str(addtime)+'&action2='
                     jsoninfo=json.loads(urllib.unquote_plus(info))
+
+                    if status!='stopped' and int(lastupdate)<int(time.time())-10:
+                        status='stopped'
+                        db.update_status(addtime, status)
+
                     progress=int(jsoninfo.get('progress'))
-                    if status=='pause': status_sign='[||]'
-                    else:status_sign='[>]'
+                    if status=='pause':
+                        status_sign='[||]'
+                        img=self.ROOT + '/icons/pause-icon.png'
+                    elif status=='stopped':
+                        status_sign='[X]'
+                        img=self.ROOT + '/icons/stop-icon.png'
+                    else:
+                        status_sign='[>]'
+                        if progress==100:
+                            img=self.ROOT + '/icons/upload-icon.png'
+                        else:
+                            img=self.ROOT + '/icons/download-icon.png'
+
                     title = '[%d%%]%s %s'  % (progress, status_sign, title)
                     if jsoninfo.get('seeds')!=None and jsoninfo.get('peers')!=None and \
                                 jsoninfo.get('download')!=None and jsoninfo.get('upload')!=None:
                             d,u=int(jsoninfo['download']/ 1000000), int(jsoninfo['upload'] / 1000000)
                             s,p=str(jsoninfo['seeds']),str(jsoninfo['peers'])
                             title='%s [S/L %s/%s][D/U %s/%s (MB/s)]' %(title,s,p,d,u)
-                    if status!='pause':
-                        contextMenu=[((self.localize('Delete and Stop'), ListString % ('delete', 'addtime', str(addtime)))),
-                                     ((self.localize('Pause'), ListString % ('pause', 'addtime', str(addtime)))),]
+
+                    if status=='pause':
+                        contextMenu=[(self.localize('Unpause'), ListString+'unpause)'),
+                                     (self.localize('Delete and Stop'), ListString+'delete)'),]
+                    elif status=='stopped':
+                        contextMenu=[(self.localize('Start'), ListString+'start)'),
+                                     (self.localize('Delete'), ListString+'delete)'),]
                     else:
-                        contextMenu=[((self.localize('Delete and Stop'), ListString % ('delete', 'addtime', str(addtime)))),
-                                     ((self.localize('Unpause'), ListString % ('unpause', 'addtime', str(addtime)))),]
+                        contextMenu=[(self.localize('Pause'), ListString+'pause)'),
+                                     (self.localize('Stop'), ListString+'stop)'),
+                                     (self.localize('Delete and Stop'), ListString+'delete)'),]
 
                     if progress==100 or progress>30 and type=='file':
                         link={'action2':'play', 'type':type, 'path':path.encode('utf-8')}
-                        self.drawItem('[B]%s[/B]' % title, 'DownloadStatus', link, image='', contextMenu=contextMenu, replaceMenu=False, isFolder=type=='folder')
+                        self.drawItem('[B]%s[/B]' % title, 'DownloadStatus', link, image=img, contextMenu=contextMenu, replaceMenu=False, isFolder=type=='folder')
                     else:
                         link={'action2':'notfinished'}
-                        self.drawItem(title, 'DownloadStatus', link, image='', contextMenu=contextMenu, replaceMenu=False)
+                        self.drawItem(title, 'DownloadStatus', link, image=img, contextMenu=contextMenu, replaceMenu=False)
             view_style('DownloadStatus')
             xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+            xbmc.sleep(30000)
+            xbmc.executebuiltin('Container.Refresh')
 
     def History(self, params={}):
         db = HistoryDB()
@@ -1019,13 +1057,18 @@ class Core:
         if not hash:
             for data in DownloadList:
                 status = " "
+                img=''
                 if data['status'] in ('seed_pending', 'stopped'):
                     status = TextBB(' [||] ', 'b')
                 elif data['status'] in ('seeding', 'downloading'):
                     status = TextBB(' [>] ', 'b')
+                if data['status']=='seed_pending':img=self.ROOT + '/icons/pause-icon.png'
+                elif data['status']=='stopped': img=self.ROOT + '/icons/stop-icon.png'
+                elif data['status']=='seeding':img=self.ROOT + '/icons/upload-icon.png'
+                elif data['status']=='downloading':img=self.ROOT + '/icons/download-icon.png'
                 menu.append(
                     {"title": '[' + str(data['progress']) + '%]' + status + data['name'] + ' [' + str(
-                        data['ratio']) + ']',
+                        data['ratio']) + ']', "image":img,
                      "argv": {'hash': str(data['id'])}})
         elif not tdir:
             dllist = sorted(Download().listfiles(hash), key=lambda x: x[0])
@@ -1059,6 +1102,7 @@ class Core:
         for i in menu:
             app = i['argv']
             link = json.dumps(app)
+            img = i['image']
             popup = []
             if not hash:
                 actions = [('start', self.localize('Start')), ('stop', self.localize('Stop')),
@@ -1075,7 +1119,7 @@ class Core:
                 app['action'] = a
                 popup.append((self.localize(title), contextMenustring % urllib.quote_plus(json.dumps(app))))
 
-            self.drawItem(unicode(i['title']), 'uTorrentBrowser', link, isFolder=folder, contextMenu=popup,
+            self.drawItem(unicode(i['title']), 'uTorrentBrowser', link, image=img, isFolder=folder, contextMenu=popup,
                           replaceMenu=True)
         view_style('uTorrentBrowser')
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
@@ -1555,7 +1599,9 @@ class Core:
 
     def downloadLibtorrent(self, params={}):
         get = params.get
-        self.userStorage(params)
+        storage=get('storage')
+        if not storage: self.userStorage(params)
+        else: self.userStorageDirectory=urllib.unquote_plus(storage).decode('utf-8')
         try:
             url = urllib.unquote_plus(get("url"))
         except:
@@ -1576,7 +1622,8 @@ class Core:
                 url = searcherObject.getTorrentFile(classMatch.group(2))
         torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
         torrent.initSession()
-        self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
+        url=torrent.saveTorrent(url)
+        self.__settings__.setSetting("lastTorrent", url)
         if 0 < int(self.__settings__.getSetting("upload_limit")):
             torrent.setUploadLimit(int(self.__settings__.getSetting("upload_limit")) * 1000000 / 8)  #MBits/second
         if 0 < int(self.__settings__.getSetting("download_limit")):
