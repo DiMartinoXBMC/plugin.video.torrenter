@@ -309,7 +309,17 @@ class Core:
         if action2 == 'delete':
             db.delete(addtime)
             xbmc.executebuiltin('Container.Refresh')
-            showMessage(self.localize('Download Status'), self.localize('Deleted! It will not stop download'))
+            showMessage(self.localize('Download Status'), self.localize('Deleted and Stopped!'))
+
+        if action2 == 'pause':
+            db.update_status(addtime, 'pause')
+            xbmc.executebuiltin('Container.Refresh')
+            showMessage(self.localize('Download Status'), self.localize('Paused!'))
+
+        if action2 == 'unpause':
+            db.update_status(addtime, 'downloading')
+            xbmc.executebuiltin('Container.Refresh')
+            showMessage(self.localize('Download Status'), self.localize('Unpaused!'))
 
         if action2 == 'clear':
             db.clear()
@@ -319,23 +329,30 @@ class Core:
             items = db.get_all()
             if items:
                 ListString = 'XBMC.RunPlugin(%s)' % (sys.argv[0] + '?action=DownloadStatus&action2=%s&%s=%s')
-                for addtime, title, path, type, info in items:
+                for addtime, title, path, type, info, status in items:
                     jsoninfo=json.loads(urllib.unquote_plus(info))
                     progress=int(jsoninfo.get('progress'))
-                    title = '[%d%%] %s'  % (progress, title)
-                    if progress<100:
-                        if jsoninfo.get('seeds')!=None and jsoninfo.get('peers')!=None and \
+                    if status=='pause': status_sign='[||]'
+                    else:status_sign='[>]'
+                    title = '[%d%%]%s %s'  % (progress, status_sign, title)
+                    if jsoninfo.get('seeds')!=None and jsoninfo.get('peers')!=None and \
                                 jsoninfo.get('download')!=None and jsoninfo.get('upload')!=None:
                             d,u=int(jsoninfo['download']/ 1000000), int(jsoninfo['upload'] / 1000000)
                             s,p=str(jsoninfo['seeds']),str(jsoninfo['peers'])
                             title='%s [S/L %s/%s][D/U %s/%s (MB/s)]' %(title,s,p,d,u)
-                        link={'action2':'notfinished'}
-                        contextMenu=[((self.localize('Delete from %s') % self.localize('Download Status'), ListString % ('delete', 'addtime', str(addtime))))]
-                        self.drawItem(title, 'DownloadStatus', link, image='', contextMenu=contextMenu, replaceMenu=True)
+                    if status!='pause':
+                        contextMenu=[((self.localize('Delete and Stop'), ListString % ('delete', 'addtime', str(addtime)))),
+                                     ((self.localize('Pause'), ListString % ('pause', 'addtime', str(addtime)))),]
                     else:
-                        contextMenu=[((self.localize('Delete from %s') % self.localize('Download Status'), ListString % ('delete', 'addtime', str(addtime))))]
+                        contextMenu=[((self.localize('Delete and Stop'), ListString % ('delete', 'addtime', str(addtime)))),
+                                     ((self.localize('Unpause'), ListString % ('unpause', 'addtime', str(addtime)))),]
+
+                    if progress==100 or progress>30 and type=='file':
                         link={'action2':'play', 'type':type, 'path':path.encode('utf-8')}
                         self.drawItem('[B]%s[/B]' % title, 'DownloadStatus', link, image='', contextMenu=contextMenu, replaceMenu=False, isFolder=type=='folder')
+                    else:
+                        link={'action2':'notfinished'}
+                        self.drawItem(title, 'DownloadStatus', link, image='', contextMenu=contextMenu, replaceMenu=False)
             view_style('DownloadStatus')
             xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 

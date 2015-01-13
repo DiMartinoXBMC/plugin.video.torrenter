@@ -249,6 +249,7 @@ class Libtorrent:
 
     def downloadProcess(self, contentId):
         self.startSession()
+        self.paused=False
         db=DownloadDB()
         ContentList=self.getContentList()
         if len(ContentList)==1 or contentId:
@@ -261,7 +262,7 @@ class Libtorrent:
             path=os.path.join(self.storageDirectory, title)
             type='folder'
 
-        add=db.add(title, path, type, {'progress':0})
+        add=db.add(title, path, type, {'progress':0}, 'downloading')
         if add:
             if None!=contentId:
                 self.continueSession(int(contentId), Offset=0, seeding=False)
@@ -270,19 +271,31 @@ class Libtorrent:
                     self.torrentHandle.piece_priority(i, 6)
             thread.start_new_thread(self.downloadLoop, (title,))
 
-
     def downloadLoop(self, title):
-        iterator=0
+        i=1
         db=DownloadDB()
-        while iterator<100:
-            xbmc.sleep(1000)
-            status = self.torrentHandle.status()
+        while db.get(title):
+            xbmc.sleep(1000*i)
+            status=db.get_status(title)
+            if not self.paused:
+                if status=='pause':
+                    i=10
+                    self.paused=True
+                    self.session.pause()
+            else:
+                if status!='pause':
+                    i=1
+                    self.paused=False
+                    self.session.resume()
+            s = self.torrentHandle.status()
             info={}
-            info['upload']=status.upload_payload_rate
-            info['download']=status.download_payload_rate
-            info['peers']=status.num_peers
-            info['seeds']=status.num_seeds
-            iterator = int(status.progress * 100)
+            info['upload']=s.upload_payload_rate
+            info['download']=s.download_payload_rate
+            info['peers']=s.num_peers
+            info['seeds']=s.num_seeds
+            iterator = int(s.progress * 100)
+            if iterator==100 and status!='seeding':
+                db.update_status(str(db.get(title)), 'seeding')
             info['progress']=iterator
             db.update(title, info)
             self.debug()

@@ -203,7 +203,12 @@ dictionary = {
         'Download via Libtorrent':'Скачать Libtorrent\'ом',
         'Download Status':'Статус Загрузки',
         'Download has not finished yet':'Загрука не завершена',
-        'Deleted! It will not stop download':'Удалено! Это не остановит загрузку',
+        'Deleted and Stopped!':'Загрузка удалена и остановлена!',
+        'Unpaused!':'Возобновлено!',
+        'Paused!':'Остановлено!',
+        'Delete and Stop':'Удалить и Остановить',
+        'Unpause':'Возобновить',
+        'Pause':'Пауза',
     }
 }
 
