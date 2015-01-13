@@ -21,8 +21,6 @@
 import urllib
 import re
 import sys
-import urllib2
-import xml.etree.ElementTree as ET
 
 import SearcherABC
 
@@ -65,35 +63,31 @@ class KickAssSo(SearcherABC.SearcherABC):
 
     def search(self, keyword):
         filesList = []
-        url = "http://kickass.so/usearch/%s/?rss=1" % urllib.quote_plus(keyword)
-        headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 YaBrowser/14.10.2062.12061 Safari/537.36',
-        'Referer': 'http://kickass.so/', }
-        response = urllib2.Request(url, headers=headers)
-        response = urllib2.urlopen(response)
-
-        if None != response:
-            response = response.read()
+        url = "http://kickass.so/usearch/%s/?field=seeders&sorder=desc" % urllib.quote_plus(keyword)
+        headers = [('User-Agent',
+            'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 YaBrowser/14.10.2062.12061 Safari/537.36'),
+           ('Referer', 'http://kickass.so/'), ('Accept-encoding', 'gzip'), ]
+        response = self.makeRequest(url, headers=headers)
 
         if None != response and 0 < len(response):
             #print response
-            torrent = re.compile('xmlns:torrent="(.+?)"').findall(response)[0]
-            dat = ET.fromstring(response)
-            for item in dat.findall('channel')[0].findall('item'):
-                torrentTitle = item.find('title').text
-                size = self.sizeConvert(long(item.find('{%s}contentLength' % torrent).text))
-                seeds = item.find('{%s}seeds' % torrent).text
-                leechers = item.find('{%s}peers' % torrent).text
-                link = item.find('enclosure').attrib['url']
-                image = sys.modules["__main__"].__root__ + self.searchIcon
-                #print link
-                filesList.append((
-                    int(int(self.sourceWeight) * int(seeds)),
-                    int(seeds), int(leechers), size,
-                    self.unescape(self.stripHtml(torrentTitle)),
-                    self.__class__.__name__ + '::' + link,
-                    image,
-                ))
+            good_forums=['TV','Anime','Movies']
+            result = re.compile(
+                    r'''<a title="Download torrent file" href="(.+?)\?.+?" class=".+?"><i.+?<a.+?<a.+?<a href=".+?html" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>.+?<td class="nobr center">(.+?)</td>.+?<td class="green center">(\d+?)</td>.+?<td class="red lasttd center">(\d+?)</td>''',
+                    re.DOTALL).findall(response)
+            for link,title,forum,size,seeds,leechers in result:
+                if forum in good_forums:
+                    torrentTitle = self.unescape(self.stripHtml(title))
+                    size = self.unescape(self.stripHtml(size))
+                    image = sys.modules["__main__"].__root__ + self.searchIcon
+                    #print link
+                    filesList.append((
+                        int(int(self.sourceWeight) * int(seeds)),
+                        int(seeds), int(leechers), size,
+                        torrentTitle,
+                        self.__class__.__name__ + '::' + link,
+                        image,
+                    ))
         #print str(filesList)
         return filesList
 
