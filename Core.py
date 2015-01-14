@@ -18,8 +18,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import StringIO
-import gzip, thread
+from StringIO import StringIO
+import gzip
 import tempfile
 
 import Downloader
@@ -64,7 +64,7 @@ class Core:
         ('&laquo;', '"'),
         ('&raquo;', '"'),
     )
-    scrapperDB_ver = {'en':'1.0', 'ru':'1.2'}
+    scrapperDB_ver = {'en':'1.1', 'ru':'1.2'}
 
     print 'SYS ARGV: ' + str(sys.argv)
 
@@ -107,10 +107,11 @@ class Core:
                             ListString % ('full_download', '', 'url', json.dumps({'action': 'delete'}))))
         self.drawItem('< %s >' % self.localize('Content Lists'), 'openContent', image=self.ROOT + '/icons/media.png',
                       contextMenu=CLcontextMenu, replaceMenu=False)
-        DLScontextMenu=[]
-        DLScontextMenu.extend(contextMenu)
+        DLScontextMenu=[(self.localize('Start All'), ListString % ('DownloadStatus', 'startall', 'addtime', '')),
+                        (self.localize('Stop All'), ListString % ('DownloadStatus', 'stopall', 'addtime', '')),]
         DLScontextMenu.append(
                 (self.localize('Clear %s') % self.localize('Download Status'), ListString % ('DownloadStatus', 'clear', 'addtime', '')))
+        DLScontextMenu.extend(contextMenu)
         self.drawItem('< %s >' % self.localize('Download Status'), 'DownloadStatus', image=self.ROOT + '/icons/download.png',
                       contextMenu=DLScontextMenu, replaceMenu=False)
         self.drawItem('< %s >' % self.localize('Torrent-client Browser'), 'uTorrentBrowser',
@@ -324,13 +325,31 @@ class Core:
 
         if action2 == 'start':
             start=db.get_byaddtime(addtime)
-            link, ind=start[6], start[7]
+            torrent, ind=start[6], start[7]
             storage=get('storage') if get('storage') else ''
             start_exec='XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s&ind=%s&storage=%s') % (
-                     sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(link.encode('utf-8')), str(ind), storage)
+                     sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(torrent.encode('utf-8')), str(ind), storage)
             xbmc.executebuiltin(start_exec)
             xbmc.executebuiltin('Container.Refresh')
             showMessage(self.localize('Download Status'), self.localize('Started!'))
+
+        if action2 == 'startall':
+            items = db.get_all()
+            if items:
+                for addtime, title, path, type, info, status, torrent, ind, lastupdate, storage in items:
+                    start_exec='XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s&ind=%s&storage=%s') % (
+                    sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(torrent.encode('utf-8')), str(ind), urllib.quote_plus(storage.encode('utf-8')))
+                    xbmc.executebuiltin(start_exec)
+                    xbmc.sleep(1000)
+            showMessage(self.localize('Download Status'), self.localize('Started All!'))
+
+        if action2 == 'stopall':
+            items = db.get_all()
+            if items:
+                for addtime, title, path, type, info, status, torrent, ind, lastupdate, storage in items:
+                    db.update_status(addtime, 'stopped')
+                    xbmc.sleep(1000)
+            showMessage(self.localize('Download Status'), self.localize('Stopped All!'))
 
         if action2 == 'unpause':
             db.update_status(addtime, 'downloading')
@@ -369,9 +388,9 @@ class Core:
                     title = '[%d%%]%s %s'  % (progress, status_sign, title)
                     if jsoninfo.get('seeds')!=None and jsoninfo.get('peers')!=None and \
                                 jsoninfo.get('download')!=None and jsoninfo.get('upload')!=None:
-                            d,u=int(jsoninfo['download']/ 1000000), int(jsoninfo['upload'] / 1000000)
+                            d,u=float(jsoninfo['download'])/ 1000000, float(jsoninfo['upload']) / 1000000
                             s,p=str(jsoninfo['seeds']),str(jsoninfo['peers'])
-                            title='%s [S/L %s/%s][D/U %s/%s (MB/s)]' %(title,s,p,d,u)
+                            title='%s [D/U %.2f/%.2f (MB/s)][S/L %s/%s]' %(title,d,u,s,p)
 
                     if status=='pause':
                         contextMenu=[(self.localize('Unpause'), ListString+'unpause)'),
@@ -492,7 +511,6 @@ class Core:
             xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
     def drawContent(self, category_dict, provider=None, category=None, subcategory=None):
-
         if not category and not provider:
             self.drawItem('[COLOR FFFFFFFF][B]< %s >[/B][/COLOR]' % self.localize('Personal List'), 'List', image=self.ROOT + '/icons/list.png')
             for cat in category_dict.keys():
@@ -1075,7 +1093,7 @@ class Core:
             dllist = sorted(Download().listfiles(hash), key=lambda x: x[0])
             for name, percent, ind, size in dllist:
                 if '/' not in name:
-                    menu.append({"title": '[' + str(percent) + '%]' + '[' + str(size) + '] ' + name,
+                    menu.append({"title": '[' + str(percent) + '%]' + '[' + str(size) + '] ' + name, "image":'',
                                  "argv": {'hash': hash, 'ind': str(ind), 'action': 'context'}})
                 else:
                     tdir = name.split('/')[0]
@@ -1086,7 +1104,7 @@ class Core:
             for name, percent, ind, size in dllist:
                 if '/' in name and tdir in name:
                     menu.append(
-                        {"title": '[' + str(percent) + '%]' + '[' + str(size) + '] ' + name[len(tdir) + 1:],
+                        {"title": '[' + str(percent) + '%]' + '[' + str(size) + '] ' + name[len(tdir) + 1:], "image":'',
                          "argv": {'hash': hash, 'ind': str(ind), 'action': 'context'}})
 
         for i in dirs:
@@ -1151,14 +1169,8 @@ class Core:
 
     def torrentPlayer(self, params={}):
         get = params.get
-        try:
-            url = urllib.unquote_plus(get("url"))
-        except:
-            url = None
-        try:
-            tdir = urllib.unquote_plus(get("url2"))
-        except:
-            tdir = None
+        url = unquote(get("url"),None)
+        tdir = unquote(get("url2"),None)
 
         #url="D:\\[rutracker.org].t4563731.torrent"
 
@@ -1267,7 +1279,6 @@ class Core:
             request = urllib2.Request(url)
             request.add_header('Referer', url)
             request.add_header('Accept-encoding', 'gzip')
-            localFile = xbmcvfs.File(torrentFile, "w+b")
             result = urllib2.urlopen(request)
             if result.info().get('Content-Encoding') == 'gzip':
                 buf = StringIO(result.read())
@@ -1275,6 +1286,7 @@ class Core:
                 content = f.read()
             else:
                 content = result.read()
+            localFile = xbmcvfs.File(torrentFile, "wb+")
             localFile.write(content)
             localFile.close()
             return torrentFile
@@ -1284,24 +1296,12 @@ class Core:
 
     def openTorrent(self, params={}):
         get = params.get
-        try:
-            external = urllib.unquote_plus(get("external"))
-        except:
-            external = None
+        external = unquote(get("external"),None)
         silent = get("silent")
         not_download_only = get("not_download_only") == 'False'
-        try:
-            tdir = urllib.unquote_plus(get("url2"))
-        except:
-            tdir = None
-        try:
-            thumbnail = urllib.unquote_plus(get("thumbnail"))
-        except:
-            thumbnail = ''
-        try:
-            save_folder = urllib.unquote_plus(get("save_folder"))
-        except:
-            save_folder = ''
+        tdir = unquote(get("url2"),None)
+        thumbnail = unquote(get("thumbnail"),'')
+        save_folder = unquote(get("save_folder"),'')
         url = urllib.unquote_plus(get("url"))
         self.__settings__.setSetting("lastTorrentUrl", url)
         classMatch = re.search('(\w+)::(.+)', url)

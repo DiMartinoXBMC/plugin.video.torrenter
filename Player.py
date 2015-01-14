@@ -12,7 +12,7 @@ import Downloader
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import calculate, showMessage, clearStorage, tempdir
+from functions import calculate, showMessage, clearStorage, DownloadDB
 
 
 ROOT = sys.modules["__main__"].__root__
@@ -112,10 +112,13 @@ class TorrentPlayer(xbmc.Player):
     torrentFilesDirectory = 'torrents'
     debug = __settings__.getSetting('debug') == 'true'
     subs_dl = __settings__.getSetting('subs_dl') == 'true'
-    seeding = __settings__.getSetting('keep_seeding') == 'true'
+    seeding = __settings__.getSetting('keep_seeding') == 'true' and __settings__.getSetting('keep_files') == 'true'
+    seeding_status=False
+    seeding_run=False
 
     def __init__(self, userStorageDirectory, torrentUrl, params={}):
         self.userStorageDirectory = userStorageDirectory
+        self.torrentUrl=torrentUrl
         xbmc.Player.__init__(self)
         print ("[TorrentPlayer] Initalized")
         self.params = params
@@ -126,19 +129,19 @@ class TorrentPlayer(xbmc.Player):
             #print str(self.ids_video)
         except:
             self.ids_video = None
-        self.torrent = Downloader.Torrent(self.userStorageDirectory, torrentUrl, self.torrentFilesDirectory).player
+        self.torrent = Downloader.Torrent(self.userStorageDirectory, self.torrentUrl, self.torrentFilesDirectory).player
         self.init()
         self.setup_torrent()
         if self.buffer():
             while True:
                 if self.setup_play():
                     #print '************************************* GOING LOOP'
-                    self.torrent.continueSession(self.contentId, seeding=self.seeding)
+                    self.torrent.continueSession(self.contentId)
                     self.loop()
                 else:
                     break
                 #print '************************************* GO NEXT?'
-                if self.next_dl and self.next_dling and self.next_contentId and self.iterator == 100:
+                if self.next_dl and self.next_dling and (self.next_contentId or self.next_contentId==0) and self.iterator == 100:
                     self.contentId = self.next_contentId
                     continue
                 #print '************************************* NO! break'
@@ -150,7 +153,12 @@ class TorrentPlayer(xbmc.Player):
             if 'false' == self.__settings__.getSetting("keep_files"):
                 clearStorage(self.userStorageDirectory)
             else:
-                showMessage(Localization.localize('Information'),
+                if self.seeding_status:
+                    showMessage(Localization.localize('Information'),
+                            Localization.localize('Torrent is seeding. To stop it use Download Status.'), forced=True)
+                else:
+                    if self.seeding: self.db_delete()
+                    showMessage(Localization.localize('Information'),
                             Localization.localize('Torrent downloading is stopped.'), forced=True)
 
 
@@ -176,8 +184,7 @@ class TorrentPlayer(xbmc.Player):
         self.fullSize = self.torrent.getFileSize(self.contentId)
         Offset = calculate(self.fullSize)
         #print 'Offset: '+str(Offset)
-        self.torrent.threadSeeding = self.seeding
-        self.torrent.continueSession(self.contentId, Offset=Offset, seeding=self.seeding)
+        self.torrent.continueSession(self.contentId, Offset=Offset)
 
     def buffer(self):
         iterator = 0
@@ -258,6 +265,8 @@ class TorrentPlayer(xbmc.Player):
         self.iterator=0
         path = self.torrent.getFilePath(self.contentId)
         label = os.path.basename(path)
+        self.basename=label
+        self.seeding_run=False
         listitem = xbmcgui.ListItem(label, path=path)
 
         if self.subs_dl:
@@ -346,16 +355,19 @@ class TorrentPlayer(xbmc.Player):
                     overlay.text = "\n".join(self._get_status_lines(status))
                     #downloadedSize = torrent.torrentHandle.file_progress()[contentId]
                     self.iterator = int(status.progress * 100)
-                    if self.iterator == 100 and not self.next_dling and self.next_contentId:
+                    if not self.seeding_run and self.iterator == 100:
+                        self.seeding_run=True
+                        xbmc.sleep(1000)
+                        self.seed(self.contentId)
+                        self.seeding_status=True
+                    if self.iterator == 100 and not self.next_dling and (self.next_contentId or self.next_contentId==0):
                         showMessage(Localization.localize('Torrent Downloading'),
                                     Localization.localize('Starting download next episode!'), forced=True)
                         self.torrent.stopSession()
                         xbmc.sleep(1000)
-                        self.torrent.threadSeeding = self.seeding
-                        self.torrent.continueSession(self.next_contentId, seeding=self.seeding)
-
                         path = self.torrent.getFilePath(self.next_contentId)
-                        self.display_name = os.path.basename(path)
+                        self.basename=self.display_name = os.path.basename(path)
+                        self.torrent.continueSession(self.next_contentId)
                         self.next_dling = True
                     xbmc.sleep(1000)
 
@@ -367,3 +379,17 @@ class TorrentPlayer(xbmc.Player):
                                              s.upload_rate / 1000, Localization.localize('kb/s').decode('utf-8'),
                                              s.num_seeds, s.num_peers)
         ]
+
+    def db_delete(self):
+        db=DownloadDB()
+        get=db.get(self.basename)
+        if get:
+            db.delete(get[0])
+
+    def seed(self, contentId):
+        self.db_delete()
+        exec_str='XBMC.RunPlugin(%s)' % \
+                 ('%s?action=%s&url=%s&storage=%s&ind=%s') % \
+                 (sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(self.torrentUrl),
+                  urllib.quote_plus(self.userStorageDirectory), str(contentId))
+        xbmc.executebuiltin(exec_str)

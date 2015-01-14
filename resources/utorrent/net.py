@@ -11,11 +11,11 @@ import base64
 import mimetools
 import json
 import itertools
+from StringIO import StringIO
+import gzip
 
 import xbmc
-import xbmcaddon
 import xbmcgui
-import xbmcplugin
 import xbmcvfs
 
 
@@ -153,7 +153,12 @@ class HTTP:
         if self.request.download:
             self._download()
         else:
-            self.response.body = self.con.read()
+            if not self.response.headers.get('content-encoding')=='gzip':
+                self.response.body = self.con.read()
+            else:
+                buf = StringIO(self.con.read())
+                f = gzip.GzipFile(fileobj=buf)
+                self.response.body = f.read()
 
         if self.request.cookies:
             self.cookies.save(self.request.cookies)
@@ -826,6 +831,269 @@ class Transmission:
         return mapping[code]
 
 
+class Deluge:
+    def config(self, login, password, host, port, url):
+        self.login = login
+        self.password = password
+
+        self.url = ['http://','https://'][int(url)] + host
+        if port:
+            self.url += ':' + str(port)
+
+        self.http = HTTP()
+
+        self.token = '0'
+
+    def list(self):
+        obj = self.action({"method":"web.update_ui",
+                           "params":[["queue","name","total_wanted","state","progress",
+                                      "num_seeds","total_seeds","num_peers","total_peers",
+                                      "download_payload_rate","upload_payload_rate","eta",
+                                      "ratio","distributed_copies","is_auto_managed",
+                                      "time_added","tracker_host","save_path","total_done",
+                                      "total_uploaded","max_download_speed","max_upload_speed",
+                                      "seeds_peers_ratio"],{}],"id":1})
+        if obj is None:
+            return False
+
+        res = []
+        if len(obj['result'].get('torrents'))>0:
+            for k in obj['result'].get('torrents').keys():
+                r=obj['result']['torrents'][k]
+                res.append({
+                        'id': str(k),
+                        'status': self.get_status(r['state']),
+                        'name': r['name'],
+                        'size': r['total_wanted'],
+                        'progress': round(r['progress'], 2),
+                        'download': r['total_done'],
+                        'upload': r['total_uploaded'],
+                        'upspeed': r['upload_payload_rate'],
+                        'downspeed': r['download_payload_rate'],
+                        'ratio': round(r['ratio'], 2),
+                        'eta': r['eta'],
+                        'peer': r['total_peers'],
+                        'seed': r['num_seeds'],
+                        'leech': r['num_peers'],
+                        'add': r['time_added'],
+                        #'finish': r['doneDate'],
+                        'dir': r['save_path']
+                })
+
+            '''if len(r['fileStats']) > 1:
+                res.append({
+                    'id': str(r['id']),
+                    'status': self.get_status(r['status']),
+                    'name': r['name'],
+                    'size': r['totalSize'],
+                    'progress': 0 if not r['sizeWhenDone'] else int(
+                        100.0 * float(r['sizeWhenDone'] - r['leftUntilDone']) / float(r['sizeWhenDone'])),
+                    'download': r['downloadedEver'],
+                    'upload': r['uploadedEver'],
+                    'upspeed': r['rateUpload'],
+                    'downspeed': r['rateDownload'],
+                    'ratio': float(r['uploadRatio']),
+                    'eta': r['eta'],
+                    'peer': r['peersConnected'],
+                    'seed': r['peersSendingToUs'],
+                    'leech': r['peersGettingFromUs'],
+                    'add': r['addedDate'],
+                    'finish': r['doneDate'],
+                    'dir': os.path.join(r['downloadDir'], r['name'])
+                })
+            else:
+                res.append({
+                    'id': str(r['id']),
+                    'status': self.get_status(r['status']),
+                    'name': r['name'],
+                    'size': r['totalSize'],
+                    'progress': 0 if not r['sizeWhenDone'] else int(
+                        100.0 * float(r['sizeWhenDone'] - r['leftUntilDone']) / float(r['sizeWhenDone'])),
+                    'download': r['downloadedEver'],
+                    'upload': r['uploadedEver'],
+                    'upspeed': r['rateUpload'],
+                    'downspeed': r['rateDownload'],
+                    'ratio': float(r['uploadRatio']),
+                    'eta': r['eta'],
+                    'peer': r['peersConnected'],
+                    'seed': r['peersSendingToUs'],
+                    'leech': r['peersGettingFromUs'],
+                    'add': r['addedDate'],
+                    'finish': r['doneDate'],
+                    'dir': r['downloadDir']
+                })'''
+
+        return res
+
+    def listdirs(self):
+        obj = self.action({'method': 'session-get'})
+        if obj is None:
+            return False
+
+        res = [obj['arguments'].get('download-dir')]
+        # Debug('[Transmission][listdirs]: %s' % (str(res)))
+        return res, res
+
+    def listfiles(self, id):
+        obj = self.action({"method":"web.get_torrent_files","params":[id],"id":2})
+        if obj is None:
+            return None
+
+        print str(obj)
+
+        res = []
+        i = -1
+        obj=obj['result']
+
+        content=obj['contents']
+        while content.get('contents'):
+            for k in obj['contents'].keys():
+
+                res_new, i=self.contents(obj['contents'])
+                res.extend(res_new)
+        return res
+
+    def contents(self, contents={}, i=-1):
+        res = []
+        i = -1
+        for k in contents.keys():
+            x=contents[k]
+            i += 1
+            if x['size'] >= 1024 * 1024 * 1024:
+                size = str(x['size'] / (1024 * 1024 * 1024)) + 'GB'
+            elif x['size'] >= 1024 * 1024:
+                size = str(x['size'] / (1024 * 1024)) + 'MB'
+            elif x['size'] >= 1024:
+                size = str(x['size'] / 1024) + 'KB'
+            else:
+                size = str(x['size']) + 'B'
+            res.append([x['path'], round(x['progress'], 2), i, size])
+
+        return res, i
+
+    def add(self, torrent, dirname):
+        if self.action({'method': 'torrent-add',
+                        'arguments': {'download-dir': dirname, 'metainfo': base64.b64encode(torrent)}}) is None:
+            return None
+        return True
+
+    def add_url(self, torrent, dirname):
+        if self.action({'method': 'torrent-add', 'arguments': {'download-dir': dirname, 'filename': torrent}}) is None:
+            return None
+        return True
+
+    def delete(self, id):
+        pass
+
+    def setprio(self, id, ind):
+        obj = self.action({"method": "torrent-get", "arguments": {"fields": ["id", "fileStats", "files"],
+                                                                  "ids": [int(id)]}})['arguments']['torrents'][0]
+        if not obj or ind == None:
+            return None
+
+        inds = []
+        i = -1
+
+        for x in obj['fileStats']:
+            i += 1
+            if x['wanted'] == True and x['priority'] == 0:
+                inds.append(i)
+
+        if len(inds) > 1: self.action(
+            {"method": "torrent-set", "arguments": {"ids": [int(id)], "priority-high": inds, "files-unwanted": inds}})
+
+        res = self.setprio_simple(id, '3', ind)
+
+        # self.action_simple('start',id)
+
+        return True if res else None
+
+    def setprio_simple(self, id, prio, ind):
+        if ind == None:
+            return None
+
+        res = None
+        inds = [int(ind)]
+
+        if prio == '3':
+            res = self.action(
+                {"method": "torrent-set", "arguments": {"ids": [int(id)], "priority-high": inds, "files-wanted": inds}})
+        elif prio == '0':
+            res = self.action({"method": "torrent-set",
+                               "arguments": {"ids": [int(id)], "priority-high": inds, "files-unwanted": inds}})
+
+        return True if res else None
+
+    def action(self, request):
+        cookie = self.get_auth()
+        if not cookie:
+            return None
+
+        try:
+            jsobj = json.dumps(request)
+        except:
+            return None
+        else:
+
+            while True:
+                # пробуем сделать запрос
+                response = self.http.fetch(self.url + '/json', method='POST', params=jsobj,
+                                               headers={'X-Requested-With': 'XMLHttpRequest', 'Cookie': cookie,
+                                               'Content-Type': 'application/json; charset=UTF-8'})
+
+                if response.error:
+                    return None
+
+                else:
+                    try:
+                        obj = json.loads(response.body)
+                    except:
+                        return None
+                    else:
+                        return obj
+
+    def action_simple(self, action, id):
+        actions = {'start': {"method": "torrent-start", "arguments": {"ids": [int(id)]}},
+                   'stop': {"method": "torrent-stop", "arguments": {"ids": [int(id)]}},
+                   'remove': {"method": "torrent-remove", "arguments": {"ids": [int(id)], "delete-local-data": False}},
+                   'removedata': {"method": "torrent-remove",
+                                  "arguments": {"ids": [int(id)], "delete-local-data": True}}}
+        obj = self.action(actions[action])
+        return True if obj else None
+
+    def get_auth(self):
+        params=json.dumps({"method":"auth.login","params":[self.password],"id":0})
+        response = self.http.fetch(self.url + '/json', method='POST', params=params, gzip=True,
+                                       headers={'X-Requested-With': 'XMLHttpRequest',
+                                                'Content-Type': 'application/json; charset=UTF-8'})
+        if response.error:
+            return None
+
+        auth=json.loads(response.body)
+        if auth["result"]==False:
+            return False
+        else:
+            #	_session_id=7167aae78e7cbdff694571f640ee2cd02351
+            r = re.compile('_session_id=([^;]+);').search(response.headers.get('set-cookie', ''))
+            if r:
+                cookie = r.group(1).strip()
+                return '_session_id=' + cookie
+
+
+
+    def get_status(self, code):
+        mapping = {
+            'Queued': 'stopped',
+            'Error': 'check_pending',
+            'Checking': 'checking',
+            'Paused': 'download_pending',
+            'Downloading': 'downloading',
+            'Active': 'seed_pending',
+            'Seeding': 'seeding'
+        }
+        return mapping[code]
+
+
 class Vuze:
     def config(self, login, password, host, port, url):
         self.login = login
@@ -996,6 +1264,9 @@ class Download():
         elif self.client == 'vuze':
             self.client = Vuze()
 
+        elif self.client == 'deluge':
+            self.client = Deluge()
+
         self.client.config(host=config['host'], port=config['port'], login=config['login'], password=config['password'],
                            url=config['url'])
         # print(self.client.list())
@@ -1031,6 +1302,15 @@ class Download():
                 'url': '',
                 'login': self.setting.getSetting("torrent_vuze_login"),
                 'password': self.setting.getSetting("torrent_vuze_password")
+            }
+        elif client == '3':
+            self.client = 'deluge'
+            config = {
+                'host': self.setting.getSetting("torrent_deluge_host"),
+                'port': self.setting.getSetting("torrent_deluge_port"),
+                'url': self.setting.getSetting("torrent_deluge_url"),
+                'login': '',
+                'password': self.setting.getSetting("torrent_deluge_password")
             }
 
         return config

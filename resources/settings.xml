@@ -125,9 +125,8 @@
                 id="keep_seeding"
                 type="bool"
                 label="30030"
-                enable="false"
                 default="false"
-                visible="false"
+                enable="eq(-7,true)"
                 />
     </category>
     <category label="Torrent-client">

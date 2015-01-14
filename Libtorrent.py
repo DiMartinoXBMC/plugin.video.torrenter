@@ -47,8 +47,6 @@ class Libtorrent:
     session = None
     downloadThread = None
     threadComplete = False
-    threadSeeding = False
-    seedingHandle = None
     lt = None
 
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
@@ -281,7 +279,7 @@ class Libtorrent:
         db=DownloadDB()
         status='downloading'
         while db.get(title) and status!='stopped':
-            xbmc.sleep(1000)
+            xbmc.sleep(3000)
             status=db.get_status(title)
             if not self.paused:
                 if status=='pause':
@@ -354,7 +352,7 @@ class Libtorrent:
         #if seeding:# and None == self.magnetLink:
         #    thread.start_new_thread(self.addToSeeding, (contentId,))
 
-    def addToSeeding(self, contentId):
+    '''def addToSeeding(self, contentId):
         print 'addToSeeding!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1'
         if self.torrentHandle:
             print 'addToSeeding torrentHandle OK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1'
@@ -386,7 +384,7 @@ class Libtorrent:
             self.seedingHandle.piece_priority(endPart, 7)
             while self.seedingHandle:
                 xbmc.sleep(5000)
-                self.debug(seeding=True)
+                self.debug(seeding=True)'''
 
     def fetchParts(self):
         priorities = self.torrentHandle.piece_priorities()
@@ -403,18 +401,11 @@ class Libtorrent:
         if self.threadComplete == True:
             print 'checkThread KIIIIIIIIIIILLLLLLLLLLLLLLL'
             self.session.remove_torrent(self.torrentHandle)
-            if self.threadSeeding == True and self.seedingHandle:
-                print 'Seeding KIIIIIIIIIIILLLLLLLLLLLLLLL'
-                self.session.remove_torrent(self.seedingHandle)
-                thread.exit()
 
-    def debug(self, seeding=False):
+    def debug(self):
         try:
             #print str(self.getFilePath(0))
-            if seeding:
-                s = self.seedingHandle.status()
-            else:
-                s = self.torrentHandle.status()
+            s = self.torrentHandle.status()
             #get_settings=self.torrentHandle.status
             #print s.num_pieces
             #priorities = self.torrentHandle.piece_priorities()
@@ -423,8 +414,8 @@ class Libtorrent:
 
             state_str = ['queued', 'checking', 'downloading metadata',
                          'downloading', 'finished', 'seeding', 'allocating']
-            print '[%s;%s] %.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s' % \
-                  (self.lt.version, str(seeding), s.progress * 100, s.download_rate / 1000,
+            print '[%s] %.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s' % \
+                  (self.lt.version, s.progress * 100, s.download_rate / 1000,
                    s.upload_rate / 1000,
                    s.num_peers, state_str[s.state])
             i = 0

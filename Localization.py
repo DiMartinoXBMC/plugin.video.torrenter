@@ -213,6 +213,11 @@ dictionary = {
         'Pause':'Пауза',
         'Delete':'Удалить',
         'Open (no return)':'Открыть (без возврата)',
+        'Torrent is seeding. To stop it use Download Status.':'Сидирование. Для остановки используйте Статус Загрузки.',
+        'Start All':'Запустить Все',
+        'Started All!':'Все Запущены!',
+        'Stopped All!':'Все Остановлено!',
+        'Stop All':'Остановить Все',
     }
 }
 

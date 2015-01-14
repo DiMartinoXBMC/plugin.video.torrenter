@@ -854,16 +854,6 @@ class ListDB:
         self.db.commit()
         self._close()
 
-    def ClearCache(self, silent=False):
-        self._connect()
-        self.cur.execute('delete from cache')
-        self.db.commit()
-        self._close()
-        if not silent:
-            xbmcgui.Dialog().ok(__language__(30208), __language__(30236))
-            ontop('update')
-            xbmc.executebuiltin("Action(back)")
-
     def get(self, addtime):
         self._connect()
         self.cur.execute('select info from list where addtime="' + addtime + '"')
@@ -945,26 +935,23 @@ class HistoryDB:
         self._connect()
         providers=self.get_providers(addtime)
         keys=Searchers().dic().keys()
-        if searcher in providers:
-            providers.remove(searcher)
-        else:
-            providers.append(searcher)
-        for i in providers:
-            if i not in keys:
-                providers.remove(i)
-        self.set_providers(addtime, providers)
-        self.db.commit()
-        self._close()
+        if len(providers)>0:
+            if searcher in providers:
+                providers.remove(searcher)
+            else:
+                providers.append(searcher)
+            for i in providers:
+                if i not in keys:
+                    providers.remove(i)
+            self.set_providers(addtime, providers)
+            self.db.commit()
+            self._close()
 
     def add(self, url):
-        try:
-            url = url.decode('utf-8')
-        except:
-            pass
         if not self.get(url):
             self._connect()
             self.cur.execute('insert into history(addtime,string,fav,providers)'
-                             ' values(?,?,?,?)', (int(time.time()), url, 0, ""))
+                             ' values(?,?,?,?)', (int(time.time()), decode(url), 0, ""))
             self.db.commit()
             self._close()
 
@@ -1542,11 +1529,20 @@ class DownloadDB:
         self.db.close()
 
 def decode(string, ret=None):
-        try:
-            string = string.decode('utf-8')
+    try:
+        string = string.decode('utf-8')
+        return string
+    except:
+        if ret:
+            return ret
+        else:
             return string
-        except:
-            if ret:
-                return ret
-            else:
-                return string
+
+def unquote(string, ret=None):
+    try:
+        return urllib.unquote_plus(string)
+    except:
+        if ret:
+            return ret
+        else:
+            return string
