@@ -901,7 +901,16 @@ class Core:
                      'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
                      sys.argv[0], 'downloadLibtorrent', urllib.quote_plus('%s::%s' % (provider, info.get('link')))))
                 ]
-            self.drawItem(title, 'openTorrent', link, img, info=info, contextMenu=contextMenu, replaceMenu=False)
+
+            if self.open_option==0:
+                self.drawItem(title, 'openTorrent', link, info=info, contextMenu=contextMenu, replaceMenu=False)
+            elif self.open_option==1:
+                self.drawItem(title, 'context', link, info=info, contextMenu=contextMenu, replaceMenu=False)
+            elif self.open_option==2:
+                self.drawItem(title, 'downloadFilesList', link, info=info, contextMenu=contextMenu, replaceMenu=False)
+            elif self.open_option==3:
+                self.drawItem(title, 'downloadLibtorrent', link, info=info, contextMenu=contextMenu, replaceMenu=False)
+            #self.drawItem(title, 'openTorrent', link, img, info=info, contextMenu=contextMenu, replaceMenu=False)
 
     def searchOption(self, params={}):
         try:
