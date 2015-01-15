@@ -218,6 +218,7 @@ dictionary = {
         'Started All!':'Все Запущены!',
         'Stopped All!':'Все Остановлено!',
         'Stop All':'Остановить Все',
+        'Keyboard':'Клавиатура',
     }
 }
 

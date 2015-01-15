@@ -1071,7 +1071,7 @@ class Contenters():
         pass
 
     def first_time(self, scrapperDB_ver, language='ru'):
-        searcher = 'metadata'+language
+        searcher = 'metadata'
         redl = False
         scrapperDB_ver=scrapperDB_ver[language]
         if scrapperDB_ver != __settings__.getSetting('scrapperDB_ver'+language) and self.getBoolSetting(searcher):
@@ -1092,8 +1092,8 @@ class Contenters():
                                     Localization.localize(
                                         'You can always restart this by deleting DBs via Context Menu'), )
 
-        if not self.getBoolSetting('oldc_' + searcher):
-            self.setBoolSetting('oldc_' + searcher, True)
+        if not self.getBoolSetting('oldc_' + searcher + language):
+            self.setBoolSetting('oldc_' + searcher+ language, True)
             __settings__.setSetting('scrapperDB_ver'+language, scrapperDB_ver)
             ok = xbmcgui.Dialog().yesno('< %s >' % Localization.localize('Content Lists'),
                                         Localization.localize('Do you want to search and cache full metadata + arts?'),

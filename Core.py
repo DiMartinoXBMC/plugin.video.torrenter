@@ -45,7 +45,7 @@ class Core:
     debug = __settings__.getSetting('debug') == 'true'
     torrent_player=__settings__.getSetting("torrent_player")
     history_bool = __settings__.getSetting('history') == 'true'
-    context_open = __settings__.getSetting('context_open') == 'true'
+    open_option = int(__settings__.getSetting('open_option'))
     language = {0: 'en', 1: 'ru'}.get(int(__settings__.getSetting("language")))
     htmlCodes = (
         ('&', '&amp;'),
@@ -411,8 +411,9 @@ class Core:
                         self.drawItem(title, 'DownloadStatus', link, image=img, contextMenu=contextMenu, replaceMenu=False)
             view_style('DownloadStatus')
             xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
-            xbmc.sleep(30000)
-            xbmc.executebuiltin('Container.Refresh')
+            #xbmc.sleep(30000)
+            #xbmc.executebuiltin('Container.Refresh')
+            return
 
     def History(self, params={}):
         db = HistoryDB()
@@ -449,7 +450,7 @@ class Core:
             items = db.get_all()
             favlist = [(1, '[B]%s[/B]'), (0, '%s')]
             if items:
-                ListString = 'XBMC.RunPlugin(%s)' % (sys.argv[0] + '?action=History&action2=%s&%s=%s')
+                ListString = 'XBMC.RunPlugin(%s)' % (sys.argv[0] + '?action=%s&action2=%s&%s=%s')
                 for favbool, bbstring in favlist:
                     for addtime, string, fav in items:
                         if favbool == int(fav):
@@ -459,19 +460,21 @@ class Core:
 
                             contextMenu.append((self.localize('Individual Tracker Options'),
                                                     'XBMC.RunScript(%s)' % (os.path.join(ROOT, 'controlcenter.py,') + 'addtime=%s&title=%s' % (str(addtime), title))))
+                            contextMenu.append((self.localize('Keyboard'),
+                                                    ListString % ('search', '&showKey=true', 'url', urllib.quote_plus(title))))
                             if int(fav) == 1:
                                 contextMenu.append((self.localize('Delete from %s') % self.localize('Favourites SH'),
-                                                    ListString % ('unfav', 'addtime', str(addtime))))
+                                                    ListString % ('History', 'unfav', 'addtime', str(addtime))))
                                 img = self.ROOT + '/icons/fav.png'
                             else:
                                 contextMenu.append((self.localize('Add to %s') % self.localize('Favourites SH'),
-                                                    ListString % ('fav', 'addtime', str(addtime)),))
+                                                    ListString % ('History', 'fav', 'addtime', str(addtime)),))
                                 img = self.ROOT + '/icons/unfav.png'
                             contextMenu.append((self.localize('Delete from %s') % self.localize('Search History'),
-                                                ListString % ('delete', 'addtime', str(addtime))))
+                                                ListString % ('History', 'delete', 'addtime', str(addtime))))
 
                             link = {'url': title, 'addtime': str(addtime)}
-                            self.drawItem(bbstring % title, 'search', link, image=img, contextMenu=contextMenu)
+                            self.drawItem(bbstring % title, 'search', link, image=img, contextMenu=contextMenu, replaceMenu=False)
             view_style('History')
             xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
@@ -1068,7 +1071,7 @@ class Core:
                             menu.append((hash, action, str(ind)))
                     else:
                         menu.append((hash, action, str(ind)))
-                for hash, action, ind in menu: Download().setprio_simple(hash, action, ind)
+                Download().setprio_simple_multi(menu)
                 return
             xbmc.executebuiltin('Container.Refresh')
             return
@@ -1142,8 +1145,9 @@ class Core:
                           replaceMenu=True)
         view_style('uTorrentBrowser')
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
-        xbmc.sleep(30000)
-        xbmc.executebuiltin('Container.Refresh')
+        #xbmc.sleep(30000)
+        #xbmc.executebuiltin('Container.Refresh')
+        return
 
     def clearStorage(self, params={}):
         clearStorage(self.userStorageDirectory)
@@ -1456,19 +1460,10 @@ class Core:
 
     def showFilesList(self, filesList, params={}):  #myshows
         get = params.get
-        try:
-            external = urllib.unquote_plus(get("external"))
-        except:
-            external = None
+        external = unquote(get("external"), None)
         silent = get("silent")
-        try:
-            thumbnail = urllib.unquote_plus(get("thumbnail"))
-        except:
-            thumbnail = ''
-        try:
-            save_folder = urllib.unquote_plus(get("save_folder"))
-        except:
-            save_folder = ''
+        thumbnail = unquote(get("thumbnail"),'')
+        save_folder = unquote(get("save_folder"),'')
         if external:
             try:
                 s = json.loads(json.loads(urllib.unquote_plus(get("sdata"))))
@@ -1493,7 +1488,14 @@ class Core:
                     return
                 else:
                     for (order, seeds, leechers, size, title, link, image) in filesList:
-                        contextMenu = [
+                        link_dict = {'url': link, 'thumbnail': thumbnail, 'save_folder':save_folder}
+                        link_url=''
+                        for key in link_dict.keys():
+                            if link_dict.get(key):
+                                link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(link_dict.get(key)))
+                        contextMenu = [(self.localize('Open (no return)'),
+                     'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
+                     sys.argv[0], 'openTorrent', link_url)),
                             (myshows_lang(30409),
                              'XBMC.RunPlugin(%s)' % (
                              'plugin://plugin.video.myshows/?mode=3010&sort=activate&stringdata=' + urllib.quote_plus(
@@ -1514,7 +1516,8 @@ class Core:
                 link_dict = {'url': link, 'thumbnail': thumbnail, 'save_folder':save_folder}
                 link_url=''
                 for key in link_dict.keys():
-                    link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(link_dict.get(key)))
+                    if link_dict.get(key):
+                        link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(link_dict.get(key)))
                 contextMenu = [
                     (self.localize('Open (no return)'),
                      'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
@@ -1528,16 +1531,21 @@ class Core:
                 ]
                 title = self.titleMake(seeds, leechers, size, title)
 
-                if self.context_open:
-                    self.drawItem(title, 'context', link, image, contextMenu=contextMenu, replaceMenu=False)
-                else:
+                if self.open_option==0:
                     self.drawItem(title, 'openTorrent', link_dict, image, contextMenu=contextMenu, replaceMenu=False)
+                elif self.open_option==1:
+                    self.drawItem(title, 'context', link, image, contextMenu=contextMenu, replaceMenu=False)
+                elif self.open_option==2:
+                    self.drawItem(title, 'downloadFilesList', link_dict, image, contextMenu=contextMenu, replaceMenu=False)
+                elif self.open_option==3:
+                    self.drawItem(title, 'downloadLibtorrent', link_dict, image, contextMenu=contextMenu, replaceMenu=False)
+
         view_style('showFilesList')
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
     def context(self, params={}):
         xbmc.executebuiltin("Action(ContextMenu)")
-        sys.exit()
+        return
 
     def downloadFilesList(self, params={}):
         dirname = None
@@ -1549,7 +1557,7 @@ class Core:
 
         if self.__settings__.getSetting("torrent_save") == '0':
             if items and clean:
-                if self.__settings__.getSetting("torrent") == '0':
+                if self.__settings__.getSetting("torrent") in ['0','3']:
                     if len(items) > 1:
                         dialog = xbmcgui.Dialog()
                         dirid = dialog.select(self.localize('Choose directory:'), items)
@@ -1557,7 +1565,7 @@ class Core:
                         dirid = 0
                     if dirid == -1: return
                     dirname = clean[dirid]
-            if self.__settings__.getSetting("torrent") == '1':
+            if self.__settings__.getSetting("torrent") in ['1','2']:
                 default = self.__settings__.getSetting("torrent_dir")
                 keyboard = xbmc.Keyboard(default, self.localize('Save to path') + ':')
                 keyboard.doModal()
@@ -1606,6 +1614,7 @@ class Core:
 
         f = open(url, 'rb')
         torrent = f.read()
+        f.close()
         success = Download().add(torrent, dirname)
         if success and ind:
             id = self.chooseHASH()[0]
@@ -1645,6 +1654,7 @@ class Core:
                 int(self.__settings__.getSetting("download_limit")) * 1000000 / 8)  #MBits/second
         torrent.downloadProcess(ind)
         showMessage(self.localize('Download Status'), self.localize('Added!'))
+        xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
     def titleMake(self, seeds, leechers, size, title):
 
@@ -1672,9 +1682,13 @@ class Core:
             showKey = myshows_setting.getSetting("torrenter_keyboard")
         except:
             showKey = None
+
+        if params.get('showKey'): showKey=params.get('showKey')
+
         if showKey == "true" or defaultKeyword == '' or not defaultKeyword:
             if not defaultKeyword:
                 defaultKeyword = ''
+            defaultKeyword=unquote(defaultKeyword)
             keyboard = xbmc.Keyboard(defaultKeyword, self.localize('Search Phrase') + ':')
             keyboard.doModal()
             query = keyboard.getText()

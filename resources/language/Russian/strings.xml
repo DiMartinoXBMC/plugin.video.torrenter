@@ -31,7 +31,11 @@
     <string id="30031">Предлагать изменить место хранения</string>
     <string id="30032">Удалить русские трекеры</string>
     <string id="30033">Вернуть русские трекеры</string>
-    <string id="30034">Открывать контекстное меню вместо торрента</string>
+    <string id="30034">Действие при нажатии на торрент</string>
+    <string id="30035">Открыть Торрент Файл</string>
+    <string id="30036">Открыть Контекстное меню</string>
+    <string id="30037">Скачать Торрент-клиентом</string>
+    <string id="30038">Скачать Python-Libtorrent</string>
     <string id="30101">Интерфейс</string>
     <string id="30102">P2P Сеть</string>
     <string id="30103">Дополнительные</string>

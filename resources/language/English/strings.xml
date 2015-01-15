@@ -31,7 +31,11 @@
     <string id="30031">Ask to change storage before play</string>
     <string id="30032">Delete Russian stuff</string>
     <string id="30033">Return Russian stuff</string>
-    <string id="30034">Open context menu instead of torrent</string>
+    <string id="30034">Action onClick for torrent</string>
+    <string id="30035">Open Torrent File</string>
+    <string id="30036">Open Context Menu</string>
+    <string id="30037">Download via Torrent-client</string>
+    <string id="30038">Download via Python-Libtorrent (Download Status)</string>
     <string id="30101">Interface</string>
     <string id="30102">P2P Network</string>
     <string id="30103">Advanced</string>

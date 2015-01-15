@@ -355,7 +355,7 @@ class TorrentPlayer(xbmc.Player):
                     overlay.text = "\n".join(self._get_status_lines(status))
                     #downloadedSize = torrent.torrentHandle.file_progress()[contentId]
                     self.iterator = int(status.progress * 100)
-                    if not self.seeding_run and self.iterator == 100:
+                    if not self.seeding_run and self.iterator == 100 and self.seeding:
                         self.seeding_run=True
                         xbmc.sleep(1000)
                         self.seed(self.contentId)

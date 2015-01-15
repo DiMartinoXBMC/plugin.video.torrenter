@@ -459,6 +459,10 @@ class UTorrent:
 
         return True if obj else None
 
+    def setprio_simple_multi(self, menu):
+        for hash, action, ind in menu:
+            self.setprio_simple(hash, action, ind)
+
     def delete(self, id):
         pass
 
@@ -751,6 +755,22 @@ class Transmission:
 
         return True if res else None
 
+    def setprio_simple_multi(self, menu):
+        id=menu[0][0]
+        prio=menu[0][1]
+
+        inds=[]
+        for hash, action, ind in menu:
+            inds.append(int(ind))
+
+        if prio == '3':
+            res = self.action(
+                {"method": "torrent-set", "arguments": {"ids": [int(id)], "priority-high": inds, "files-wanted": inds}})
+        elif prio == '0':
+            res = self.action({"method": "torrent-set",
+                               "arguments": {"ids": [int(id)], "priority-high": inds, "files-unwanted": inds}})
+        return True if res else None
+
     def action(self, request):
         try:
             jsobj = json.dumps(request)
@@ -842,17 +862,13 @@ class Deluge:
 
         self.http = HTTP()
 
-        self.token = '0'
+    def get_info(self):
+        obj = self.action({"method":"web.update_ui",
+                           "params":[[],{}],"id":1})
+        return obj
 
     def list(self):
-        obj = self.action({"method":"web.update_ui",
-                           "params":[["queue","name","total_wanted","state","progress",
-                                      "num_seeds","total_seeds","num_peers","total_peers",
-                                      "download_payload_rate","upload_payload_rate","eta",
-                                      "ratio","distributed_copies","is_auto_managed",
-                                      "time_added","tracker_host","save_path","total_done",
-                                      "total_uploaded","max_download_speed","max_upload_speed",
-                                      "seeds_peers_ratio"],{}],"id":1})
+        obj=self.get_info()
         if obj is None:
             return False
 
@@ -860,7 +876,7 @@ class Deluge:
         if len(obj['result'].get('torrents'))>0:
             for k in obj['result'].get('torrents').keys():
                 r=obj['result']['torrents'][k]
-                res.append({
+                add={
                         'id': str(k),
                         'status': self.get_status(r['state']),
                         'name': r['name'],
@@ -876,89 +892,34 @@ class Deluge:
                         'seed': r['num_seeds'],
                         'leech': r['num_peers'],
                         'add': r['time_added'],
-                        #'finish': r['doneDate'],
                         'dir': r['save_path']
-                })
-
-            '''if len(r['fileStats']) > 1:
-                res.append({
-                    'id': str(r['id']),
-                    'status': self.get_status(r['status']),
-                    'name': r['name'],
-                    'size': r['totalSize'],
-                    'progress': 0 if not r['sizeWhenDone'] else int(
-                        100.0 * float(r['sizeWhenDone'] - r['leftUntilDone']) / float(r['sizeWhenDone'])),
-                    'download': r['downloadedEver'],
-                    'upload': r['uploadedEver'],
-                    'upspeed': r['rateUpload'],
-                    'downspeed': r['rateDownload'],
-                    'ratio': float(r['uploadRatio']),
-                    'eta': r['eta'],
-                    'peer': r['peersConnected'],
-                    'seed': r['peersSendingToUs'],
-                    'leech': r['peersGettingFromUs'],
-                    'add': r['addedDate'],
-                    'finish': r['doneDate'],
-                    'dir': os.path.join(r['downloadDir'], r['name'])
-                })
-            else:
-                res.append({
-                    'id': str(r['id']),
-                    'status': self.get_status(r['status']),
-                    'name': r['name'],
-                    'size': r['totalSize'],
-                    'progress': 0 if not r['sizeWhenDone'] else int(
-                        100.0 * float(r['sizeWhenDone'] - r['leftUntilDone']) / float(r['sizeWhenDone'])),
-                    'download': r['downloadedEver'],
-                    'upload': r['uploadedEver'],
-                    'upspeed': r['rateUpload'],
-                    'downspeed': r['rateDownload'],
-                    'ratio': float(r['uploadRatio']),
-                    'eta': r['eta'],
-                    'peer': r['peersConnected'],
-                    'seed': r['peersSendingToUs'],
-                    'leech': r['peersGettingFromUs'],
-                    'add': r['addedDate'],
-                    'finish': r['doneDate'],
-                    'dir': r['downloadDir']
-                })'''
-
+                }
+                if len(r['files'])>1: add['dir']=os.path.join(r['save_path'],r['name'])
+                res.append(add)
         return res
 
     def listdirs(self):
-        obj = self.action({'method': 'session-get'})
+        obj = self.action({"method":"core.get_config","params":[],"id":5})
         if obj is None:
             return False
 
-        res = [obj['arguments'].get('download-dir')]
-        # Debug('[Transmission][listdirs]: %s' % (str(res)))
+        res = [obj['result'].get('download_location')]
         return res, res
 
     def listfiles(self, id):
-        obj = self.action({"method":"web.get_torrent_files","params":[id],"id":2})
+        obj = self.get_info()
         if obj is None:
             return None
 
-        print str(obj)
-
         res = []
-        i = -1
-        obj=obj['result']
+        obj=obj['result']['torrents'][id]
+        #print str(obj)
+        if len(obj['files'])==1:
+            strip_path=None
+        else:
+            strip_path=obj['name']
 
-        content=obj['contents']
-        while content.get('contents'):
-            for k in obj['contents'].keys():
-
-                res_new, i=self.contents(obj['contents'])
-                res.extend(res_new)
-        return res
-
-    def contents(self, contents={}, i=-1):
-        res = []
-        i = -1
-        for k in contents.keys():
-            x=contents[k]
-            i += 1
+        for x in obj['files']:
             if x['size'] >= 1024 * 1024 * 1024:
                 size = str(x['size'] / (1024 * 1024 * 1024)) + 'GB'
             elif x['size'] >= 1024 * 1024:
@@ -967,62 +928,92 @@ class Deluge:
                 size = str(x['size'] / 1024) + 'KB'
             else:
                 size = str(x['size']) + 'B'
-            res.append([x['path'], round(x['progress'], 2), i, size])
+            if strip_path:
+                path=x['path'].lstrip(strip_path).lstrip('/')
+            else:
+                path=x['path']
 
-        return res, i
+            if x.get('progress'):
+                percent=int(x['progress']*100)
+            else:percent=0
+
+            res.append([path, percent, x['index'], size])
+
+        return res
+
+    def get_prio(self, id):
+        obj = self.get_info()
+        if obj is None:
+            return None
+        res=obj['result']['torrents'][id]['file_priorities']
+        return res
 
     def add(self, torrent, dirname):
-        if self.action({'method': 'torrent-add',
-                        'arguments': {'download-dir': dirname, 'metainfo': base64.b64encode(torrent)}}) is None:
+        torrentFile=os.path.join(self.http._dirname,'deluge.torrent')
+        if self.action({'method': 'core.add_torrent_file',
+                        'params': [torrentFile,
+                base64.b64encode(torrent), {"download_path": dirname}],"id":3}) is None:
             return None
         return True
 
     def add_url(self, torrent, dirname):
-        if self.action({'method': 'torrent-add', 'arguments': {'download-dir': dirname, 'filename': torrent}}) is None:
-            return None
+        if re.match("^magnet\:.+$", torrent):
+            if self.action({'method': 'core.add_torrent_magnet', 'params':[torrent,
+                {'download_path': dirname}],"id":3}) is None:
+                return None
+        else:
+            if self.action({"method": "core.add_torrent_url", "params":[torrent, {'download_path': dirname}],"id":3}) is None:
+                return None
         return True
 
     def delete(self, id):
         pass
 
     def setprio(self, id, ind):
-        obj = self.action({"method": "torrent-get", "arguments": {"fields": ["id", "fileStats", "files"],
-                                                                  "ids": [int(id)]}})['arguments']['torrents'][0]
-        if not obj or ind == None:
-            return None
-
-        inds = []
         i = -1
+        prios=self.get_prio(id)
 
-        for x in obj['fileStats']:
-            i += 1
-            if x['wanted'] == True and x['priority'] == 0:
-                inds.append(i)
+        for p in prios:
+            i=i+1
+            if p==1:
+                prios.pop(i)
+                prios.insert(i,0)
 
-        if len(inds) > 1: self.action(
-            {"method": "torrent-set", "arguments": {"ids": [int(id)], "priority-high": inds, "files-unwanted": inds}})
+        prios.pop(int(ind))
+        prios.insert(int(ind),7)
 
-        res = self.setprio_simple(id, '3', ind)
+        if self.action({"method": "core.set_torrent_file_priorities", "params":[id, prios],"id":6}) is None:
+                return None
 
-        # self.action_simple('start',id)
-
-        return True if res else None
+        return True
 
     def setprio_simple(self, id, prio, ind):
-        if ind == None:
+        prios=self.get_prio(id)
+
+        if ind!=None:
+            prios.pop(int(ind))
+            if prio == '3':
+                prios.insert(int(ind),7)
+            elif prio == '0':
+                prios.insert(int(ind),0)
+
+        if self.action({"method": "core.set_torrent_file_priorities", "params":[id, prios],"id":6}) is None:
             return None
+        return True
 
-        res = None
-        inds = [int(ind)]
+    def setprio_simple_multi(self, menu):
+        id=menu[0][0]
+        prios=self.get_prio(id)
 
-        if prio == '3':
-            res = self.action(
-                {"method": "torrent-set", "arguments": {"ids": [int(id)], "priority-high": inds, "files-wanted": inds}})
-        elif prio == '0':
-            res = self.action({"method": "torrent-set",
-                               "arguments": {"ids": [int(id)], "priority-high": inds, "files-unwanted": inds}})
+        for hash, action, ind in menu:
+            prios.pop(int(ind))
+            if action == '3':
+                prios.insert(int(ind),7)
+            elif action == '0':
+                prios.insert(int(ind),0)
 
-        return True if res else None
+        if self.action({"method": "core.set_torrent_file_priorities", "params":[id, prios],"id":6}) is None:
+            return None
 
     def action(self, request):
         cookie = self.get_auth()
@@ -1034,30 +1025,26 @@ class Deluge:
         except:
             return None
         else:
+            response = self.http.fetch(self.url + '/json', method='POST', params=jsobj,
+                                           headers={'X-Requested-With': 'XMLHttpRequest', 'Cookie': cookie,
+                                           'Content-Type': 'application/json; charset=UTF-8'})
 
-            while True:
-                # пробуем сделать запрос
-                response = self.http.fetch(self.url + '/json', method='POST', params=jsobj,
-                                               headers={'X-Requested-With': 'XMLHttpRequest', 'Cookie': cookie,
-                                               'Content-Type': 'application/json; charset=UTF-8'})
+            if response.error:
+                return None
 
-                if response.error:
+            else:
+                try:
+                    obj = json.loads(response.body)
+                except:
                     return None
-
                 else:
-                    try:
-                        obj = json.loads(response.body)
-                    except:
-                        return None
-                    else:
-                        return obj
+                    return obj
 
     def action_simple(self, action, id):
-        actions = {'start': {"method": "torrent-start", "arguments": {"ids": [int(id)]}},
-                   'stop': {"method": "torrent-stop", "arguments": {"ids": [int(id)]}},
-                   'remove': {"method": "torrent-remove", "arguments": {"ids": [int(id)], "delete-local-data": False}},
-                   'removedata': {"method": "torrent-remove",
-                                  "arguments": {"ids": [int(id)], "delete-local-data": True}}}
+        actions = {'start': {"method":"core.resume_torrent","params":[[id]],"id":4},
+                   'stop': {"method":"core.pause_torrent","params":[[id]],"id":4},
+                   'remove': {"method":"core.remove_torrent","params":[id, False],"id":4},
+                   'removedata': {"method":"core.remove_torrent", "params":[id, True],"id":4}}
         obj = self.action(actions[action])
         return True if obj else None
 
@@ -1073,20 +1060,17 @@ class Deluge:
         if auth["result"]==False:
             return False
         else:
-            #	_session_id=7167aae78e7cbdff694571f640ee2cd02351
             r = re.compile('_session_id=([^;]+);').search(response.headers.get('set-cookie', ''))
             if r:
                 cookie = r.group(1).strip()
                 return '_session_id=' + cookie
 
-
-
     def get_status(self, code):
         mapping = {
             'Queued': 'stopped',
-            'Error': 'check_pending',
+            'Error': 'stopped',
             'Checking': 'checking',
-            'Paused': 'download_pending',
+            'Paused': 'seed_pending',
             'Downloading': 'downloading',
             'Active': 'seed_pending',
             'Seeding': 'seeding'
@@ -1228,6 +1212,10 @@ class Vuze:
         time.sleep(0.1)
         return True if obj else None
 
+    def setprio_simple_multi(self, menu):
+        for hash, action, ind in menu:
+            self.setprio_simple(hash, action, ind)
+
     def action_simple(self, action, id):
         torrent = self.downloads[int(id)]
         obj = None
@@ -1339,6 +1327,9 @@ class Download():
     def setprio_simple(self, id, prio, ind):
         # Debug('[setprio_simple] '+str((id, prio, ind)))
         return self.client.setprio_simple(id, prio, ind)
+
+    def setprio_simple_multi(self, prio_list):
+        return self.client.setprio_simple_multi(prio_list)
 
     def action_simple(self, action, id):
         return self.client.action_simple(action, id)
