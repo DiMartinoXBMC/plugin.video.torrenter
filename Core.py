@@ -885,7 +885,10 @@ class Core:
             if not info.get('label'):
                 continue
 
-            title = title.encode('utf-8', 'ignore')
+            try:#spanish non utf-8 fix
+                title = title.encode('utf-8', 'ignore')
+            except:
+                continue
             label = info.get('label').encode('utf-8', 'ignore')
 
             if self.contenterObject[provider].isInfoLink() and info.get('link'):
@@ -1625,9 +1628,11 @@ class Core:
         torrent = f.read()
         f.close()
         success = Download().add(torrent, dirname)
-        if success and ind:
-            id = self.chooseHASH()[0]
-            Download().setprio(id, ind)
+        if success:
+            showMessage(self.localize('Torrent-client Browser'), self.localize('Added!'), forced=True)
+            if ind:
+                id = self.chooseHASH()[0]
+                Download().setprio(id, ind)
 
     def downloadLibtorrent(self, params={}):
         get = params.get
