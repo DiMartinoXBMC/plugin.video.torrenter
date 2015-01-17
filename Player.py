@@ -163,8 +163,8 @@ class TorrentPlayer(xbmc.Player):
 
 
     def init(self):
-        self.next_dl = True if self.__settings__.getSetting('next_dl') == 'true' else False
-        self.next_contentId = None
+        self.next_dl = True if self.__settings__.getSetting('next_dl') == 'true' and self.ids_video else False
+        self.next_contentId = False
         self.display_name = ''
         self.downloadedSize = 0
         self.dialog = xbmcgui.Dialog()
@@ -272,13 +272,6 @@ class TorrentPlayer(xbmc.Player):
         if self.subs_dl:
             self.setup_subs(label, path)
 
-        if self.next_dl and self.ids_video:
-            next_contentId_index = self.ids_video.index(str(self.contentId)) + 1
-            if len(self.ids_video) > next_contentId_index:
-                self.next_contentId = int(self.ids_video[next_contentId_index])
-            else:
-                self.next_contentId = False
-
         if not self.ids_video:
             seasonId = self.get("seasonId")
             episodeId = self.get("episodeId")
@@ -349,17 +342,24 @@ class TorrentPlayer(xbmc.Player):
             with nested(self.attach(overlay.show, self.on_playback_paused),
                         self.attach(overlay.hide, self.on_playback_resumed, self.on_playback_stopped)):
                 while not xbmc.abortRequested and self.isPlaying():
+                    xbmc.sleep(2000)
                     self.torrent.checkThread()
                     self.torrent.debug()
                     status = self.torrent.torrentHandle.status()
                     overlay.text = "\n".join(self._get_status_lines(status))
                     #downloadedSize = torrent.torrentHandle.file_progress()[contentId]
                     self.iterator = int(status.progress * 100)
+                    if self.iterator == 100 and self.next_dl:
+                        next_contentId_index = self.ids_video.index(str(self.contentId)) + 1
+                        if len(self.ids_video) > next_contentId_index:
+                            self.next_contentId = int(self.ids_video[next_contentId_index])
+                        else:
+                            self.next_contentId = False
                     if not self.seeding_run and self.iterator == 100 and self.seeding:
                         self.seeding_run=True
-                        xbmc.sleep(1000)
                         self.seed(self.contentId)
                         self.seeding_status=True
+                        xbmc.sleep(7000)
                     if self.iterator == 100 and not self.next_dling and (self.next_contentId or self.next_contentId==0):
                         showMessage(Localization.localize('Torrent Downloading'),
                                     Localization.localize('Starting download next episode!'), forced=True)
@@ -369,7 +369,6 @@ class TorrentPlayer(xbmc.Player):
                         self.basename=self.display_name = os.path.basename(path)
                         self.torrent.continueSession(self.next_contentId)
                         self.next_dling = True
-                    xbmc.sleep(1000)
 
     def _get_status_lines(self, s):
         return [

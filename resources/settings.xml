@@ -127,6 +127,7 @@
                 type="bool"
                 label="30030"
                 default="false"
+                visible="eq(-9,0)"
                 enable="eq(-7,true)"
                 />
     </category>

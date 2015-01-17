@@ -461,7 +461,7 @@ class Core:
                             contextMenu.append((self.localize('Individual Tracker Options'),
                                                     'XBMC.RunScript(%s)' % (os.path.join(ROOT, 'controlcenter.py,') + 'addtime=%s&title=%s' % (str(addtime), title))))
                             contextMenu.append((self.localize('Keyboard'),
-                                                    ListString % ('search', '&showKey=true', 'url', urllib.quote_plus(title))))
+                                                    'XBMC.ActivateWindow(Videos,%s)' % (sys.argv[0] + '?action=%s&action2=%s&%s=%s') % ('search', '&showKey=true', 'url', urllib.quote_plus(title))))
                             if int(fav) == 1:
                                 contextMenu.append((self.localize('Delete from %s') % self.localize('Favourites SH'),
                                                     ListString % ('History', 'unfav', 'addtime', str(addtime))))

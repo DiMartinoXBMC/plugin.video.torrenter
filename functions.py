@@ -935,7 +935,7 @@ class HistoryDB:
         self._connect()
         providers=self.get_providers(addtime)
         keys=Searchers().dic().keys()
-        if len(providers)>0:
+        if providers and len(providers)>0:
             if searcher in providers:
                 providers.remove(searcher)
             else:
