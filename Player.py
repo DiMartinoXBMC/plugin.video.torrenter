@@ -2,7 +2,6 @@
 import os
 import urllib
 import json
-import tempfile
 import sys
 from contextlib import contextmanager, closing, nested
 
@@ -12,7 +11,7 @@ import Downloader
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import calculate, showMessage, clearStorage, DownloadDB
+from functions import calculate, showMessage, clearStorage, DownloadDB, cutFolder
 
 
 ROOT = sys.modules["__main__"].__root__
@@ -115,6 +114,8 @@ class TorrentPlayer(xbmc.Player):
     seeding = __settings__.getSetting('keep_seeding') == 'true' and __settings__.getSetting('keep_files') == 'true'
     seeding_status=False
     seeding_run=False
+    ids_video = None
+    episodeId = None
 
     def __init__(self, userStorageDirectory, torrentUrl, params={}):
         self.userStorageDirectory = userStorageDirectory
@@ -124,12 +125,14 @@ class TorrentPlayer(xbmc.Player):
         self.params = params
         self.get = self.params.get
         self.contentId = int(self.get("url"))
-        try:
-            self.ids_video = urllib.unquote_plus(self.get("url2")).split(',')
-            #print str(self.ids_video)
-        except:
-            self.ids_video = None
         self.torrent = Downloader.Torrent(self.userStorageDirectory, self.torrentUrl, self.torrentFilesDirectory).player
+        try:
+            if self.get("url2"):
+                self.ids_video = urllib.unquote_plus(self.get("url2")).split(',')
+            else:
+                self.ids_video = self.get_ids()
+        except:
+            pass
         self.init()
         self.setup_torrent()
         if self.buffer():
@@ -271,25 +274,26 @@ class TorrentPlayer(xbmc.Player):
 
         if self.subs_dl:
             self.setup_subs(label, path)
-
-        if not self.ids_video:
+        try:
             seasonId = self.get("seasonId")
-            episodeId = self.get("episodeId")
-            title = self.get("title")
+            self.episodeId = self.get("episodeId") if not self.episodeId else int(self.episodeId)+1
+            title = urllib.unquote_plus(self.get("title")) if self.get("title") else None
 
-            try:
+            if self.get("label") and self.episodeId == self.get("episodeId"):
                 label = urllib.unquote_plus(self.get("label"))
-                print 'ok'
-            except:
-                print 'except'
+            elif seasonId and self.episodeId and title:
+                label = '%s S%02dE%02d.%s (%s)' % (title, int(seasonId), int(self.episodeId), self.basename.split('.')[-1], self.basename)
 
-            if seasonId and episodeId and label and title:
+            if seasonId and self.episodeId and label and title:
                 listitem = xbmcgui.ListItem(label, path=path)
 
                 listitem.setInfo(type='video', infoLabels={'title': label,
-                                                           'episode': int(episodeId),
+                                                           'episode': int(self.episodeId),
                                                            'season': int(seasonId),
-                                                           'tvshowtitle': urllib.unquote_plus(title)})
+                                                           'tvshowtitle': title})
+        except:
+            print '[TorrentPlayer] Operation INFO failed!'
+
         thumbnail = self.get("thumbnail")
         if thumbnail:
             listitem.setThumbnailImage(urllib.unquote_plus(thumbnail))
@@ -342,13 +346,13 @@ class TorrentPlayer(xbmc.Player):
             with nested(self.attach(overlay.show, self.on_playback_paused),
                         self.attach(overlay.hide, self.on_playback_resumed, self.on_playback_stopped)):
                 while not xbmc.abortRequested and self.isPlaying():
-                    xbmc.sleep(2000)
                     self.torrent.checkThread()
                     self.torrent.debug()
                     status = self.torrent.torrentHandle.status()
                     overlay.text = "\n".join(self._get_status_lines(status))
                     #downloadedSize = torrent.torrentHandle.file_progress()[contentId]
                     self.iterator = int(status.progress * 100)
+                    xbmc.sleep(1000)
                     if self.iterator == 100 and self.next_dl:
                         next_contentId_index = self.ids_video.index(str(self.contentId)) + 1
                         if len(self.ids_video) > next_contentId_index:
@@ -359,12 +363,12 @@ class TorrentPlayer(xbmc.Player):
                         self.seeding_run=True
                         self.seed(self.contentId)
                         self.seeding_status=True
-                        xbmc.sleep(7000)
-                    if self.iterator == 100 and not self.next_dling and (self.next_contentId or self.next_contentId==0):
+                        #xbmc.sleep(7000)
+                    if self.iterator == 100 and self.next_dl and not self.next_dling and isinstance(self.next_contentId, int):
                         showMessage(Localization.localize('Torrent Downloading'),
                                     Localization.localize('Starting download next episode!'), forced=True)
                         self.torrent.stopSession()
-                        xbmc.sleep(1000)
+                        #xbmc.sleep(1000)
                         path = self.torrent.getFilePath(self.next_contentId)
                         self.basename=self.display_name = os.path.basename(path)
                         self.torrent.continueSession(self.next_contentId)
@@ -392,3 +396,22 @@ class TorrentPlayer(xbmc.Player):
                  (sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(self.torrentUrl),
                   urllib.quote_plus(self.userStorageDirectory), str(contentId))
         xbmc.executebuiltin(exec_str)
+
+    def get_ids(self):
+        contentList = []
+        for filedict in self.torrent.getContentList():
+            contentList.append((filedict.get('title'), str(filedict.get('ind'))))
+        contentList = sorted(contentList, key=lambda x: x[0])
+
+        dirList, contentListNew = cutFolder(contentList)
+
+        ids_video = []
+        for title, identifier in contentListNew:
+            try:
+                ext = title.split('.')[-1]
+                if ext.lower() in ['avi','mp4','mkv','flv','mov','vob','wmv','ogm','asx','mpg','mpeg','avc','vp3','fli','flc','m4v','iso']:
+                    ids_video.append(str(identifier))
+            except:
+                pass
+
+        return ids_video

@@ -906,13 +906,13 @@ class Core:
                 ]
 
             if self.open_option==0:
-                self.drawItem(title, 'openTorrent', link, info=info, contextMenu=contextMenu, replaceMenu=False)
+                self.drawItem(title, 'openTorrent', link, image=img, info=info, contextMenu=contextMenu, replaceMenu=False)
             elif self.open_option==1:
-                self.drawItem(title, 'context', link, info=info, contextMenu=contextMenu, replaceMenu=False)
+                self.drawItem(title, 'context', link, image=img, info=info, contextMenu=contextMenu, replaceMenu=False)
             elif self.open_option==2:
-                self.drawItem(title, 'downloadFilesList', link, info=info, contextMenu=contextMenu, replaceMenu=False)
+                self.drawItem(title, 'downloadFilesList', link, image=img, info=info, contextMenu=contextMenu, replaceMenu=False)
             elif self.open_option==3:
-                self.drawItem(title, 'downloadLibtorrent', link, info=info, contextMenu=contextMenu, replaceMenu=False)
+                self.drawItem(title, 'downloadLibtorrent', link, image=img, info=info, contextMenu=contextMenu, replaceMenu=False)
             #self.drawItem(title, 'openTorrent', link, img, info=info, contextMenu=contextMenu, replaceMenu=False)
 
     def searchOption(self, params={}):
@@ -1391,7 +1391,7 @@ class Core:
                 for title, identifier in contentListNew:
                     try:
                         ext = title.split('.')[-1]
-                        if re.match('avi|mp4|mkV|flv|mov|vob|wmv|ogm|asx|mpg|mpeg|avc|vp3|fli|flc|m4v', ext, re.I):
+                        if ext.lower() in ['avi','mp4','mkv','flv','mov','vob','wmv','ogm','asx','mpg','mpeg','avc','vp3','fli','flc','m4v','iso']:
                             ids_video = ids_video + str(identifier) + ','
                     except:
                         pass

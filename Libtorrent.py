@@ -300,6 +300,7 @@ class Libtorrent:
             db.update(title, info)
             self.debug()
         self.session.remove_torrent(self.torrentHandle)
+        return
 
     def initSession(self):
         try:
