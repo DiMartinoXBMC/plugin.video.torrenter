@@ -25,11 +25,11 @@ class EZTV(Content.Content):
         'hot': ('Hot & New', '/', {'page': '/page_%d', 'increase': 1, 'second_page': 1}),
     }
 
-    baseurl = "https://eztv.it"
+    baseurl = "https://eztv.ch"
     headers = [('User-Agent',
                 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124' + \
                 ' YaBrowser/14.10.2062.12061 Safari/537.36'),
-               ('Referer', 'https://eztv.it/'), ('Accept-Encoding', 'gzip')]
+               ('Referer', 'https://eztv.ch/'), ('Accept-Encoding', 'gzip')]
     '''
     Weight of source with this searcher provided.
     Will be multiplied on default weight.

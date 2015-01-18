@@ -63,7 +63,7 @@ class EZTV(SearcherABC.SearcherABC):
 
     def search(self, keyword):
         filesList = []
-        url="https://eztv.it/search/"
+        url="https://eztv.ch/search/"
         data = {'SearchString1':urllib.quote_plus(keyword),
                                 'SearchString':'',
                                 'search':'Search'}
