@@ -247,21 +247,18 @@ class TorrentPlayer(xbmc.Player):
                 self.torrent.debug()
                 status = self.torrent.torrentHandle.status()
                 iterator = int(status.progress * 100)
-            xbmc.sleep(2000)
+            #xbmc.sleep(2000)
             for ind, title in subs:
-                newFileName=os.path.join(self.userStorageDirectory,os.path.dirname(path),os.path.basename(title))
-                if xbmcvfs.exists(newFileName):
-                    newFileName=None
-                    for i in range(1,9):
-                        temp=os.path.basename(title)
-                        ext=temp.split('.')[-1]
-                        temp = temp[:len(temp) - len(temp.split('.')[-1]) - 1]+'.'+str(i)+'.'+ext
-                        if not xbmcvfs.exists(os.path.join(self.userStorageDirectory,os.path.dirname(path),temp)):
-                            newFileName=os.path.join(self.userStorageDirectory,os.path.dirname(path),temp)
-                            break
-                if newFileName:
-                    #print str((os.path.join(self.userStorageDirectory,title),newFileName))
-                    xbmcvfs.copy(os.path.join(self.userStorageDirectory,title),newFileName)
+                folder=title.split(os.sep)[0]
+                temp=os.path.basename(title)
+                addition=os.path.dirname(title).lstrip(folder+os.sep).replace(os.sep,'.').replace(' ','_').strip()
+                ext=temp.split('.')[-1]
+                temp = temp[:len(temp) - len(ext) - 1]+'.'+addition+'.'+ext
+                newFileName=os.path.join(os.path.dirname(path),temp)
+                #print str((os.path.join(os.path.dirname(os.path.dirname(path)),title),newFileName))
+                if not xbmcvfs.exists(newFileName):
+                    xbmcvfs.copy(os.path.join(os.path.dirname(os.path.dirname(path)),title),newFileName)
+
 
     def setup_play(self):
         self.next_dling = False
