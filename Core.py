@@ -1138,7 +1138,7 @@ class Core:
             link = json.dumps(app)
             popup = []
             folder = True
-            actions = [('3', self.localize('High Priority All Files')), ('copy', self.localize('Copy Files in Root')), ('0', self.localize('Skip All Files'))]
+            actions = [('3', self.localize('High Priority Files')), ('copy', self.localize('Copy Files in Root')), ('0', self.localize('Skip All Files'))]
             for a, title in actions:
                 app['action'] = a
                 popup.append((self.localize(title), contextMenustring % urllib.quote_plus(json.dumps(app))))

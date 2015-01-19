@@ -97,7 +97,7 @@ class AceStream:
             torrentFile = self.storageDirectory + os.sep + self.torrentFilesDirectory + os.sep + self.md5(
                 torrentUrl) + '.torrent'
             try:
-                if xbmcvfs.exists(file_decode(torrentUrl)):
+                if not re.match("^http\:.+$", torrentUrl):
                     content = xbmcvfs.File(file_decode(torrentUrl), "rb").read()
                 else:
                     request = urllib2.Request(torrentUrl)
@@ -115,7 +115,7 @@ class AceStream:
                 localFile.write(content)
                 localFile.close()
             except Exception, e:
-                print 'Unable to save torrent file from "' + torrentUrl + '" to "' + torrentFile + '" in AceStream::saveTorrent' + '. Exception: ' + str(e)
+                print 'Unable to save torrent file from "' + torrentUrl + '" to "' + torrentFile + '" in Torrent::saveTorrent' + '. Exception: ' + str(e)
                 return
             if xbmcvfs.exists(torrentFile):
                 self.torrentFile = torrentFile
