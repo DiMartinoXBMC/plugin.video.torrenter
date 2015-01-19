@@ -1023,8 +1023,8 @@ class Core:
 
         menu, dirs = [], []
         contextMenustring = 'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (sys.argv[0], 'uTorrentBrowser', '%s')
+        get = params.get
         try:
-            get = params.get
             apps = json.loads(urllib.unquote_plus(get("url")))
         except:
             apps = {}
@@ -1046,15 +1046,11 @@ class Core:
                 return
             if (ind or ind == 0) and action in ('0', '3'):
                 Download().setprio_simple(hash, action, ind)
-            elif (ind or ind == 0) and action == 'play':
+            elif action in ['play','copy']:
                 p, dllist, i, folder, filename = DownloadList, Download().listfiles(hash), 0, None, None
                 for data in p:
                     if data['id'] == hash:
                         folder = data['dir']
-                        break
-                for data in dllist:
-                    if data[2] == int(ind):
-                        filename = data[0]
                         break
                 if isRemoteTorr():
                     t_dir = self.__settings__.getSetting("torrent_dir")
@@ -1071,8 +1067,23 @@ class Core:
                         return
                     #print str(folder)+str(torrent_dir)+str(torrent_replacement)+str(tdir)
                     folder = folder.replace(t_dir, torrent_replacement)
-                filename = os.path.join(folder, filename)
-                xbmc.executebuiltin('xbmc.PlayMedia("' + filename.encode('utf-8') + '")')
+                if (ind or ind == 0) and action == 'play':
+                    for data in dllist:
+                        if data[2] == int(ind):
+                            filename = data[0]
+                            break
+                    filename = os.path.join(folder, filename)
+                    xbmc.executebuiltin('xbmc.PlayMedia("' + filename.encode('utf-8') + '")')
+                elif tdir and action == 'copy':
+                    path=os.path.join(folder, tdir)
+                    dirs, files=xbmcvfs.listdir(path)
+                    for file in files:
+                        if not xbmcvfs.exists(os.path.join(path,file)):
+                            xbmcvfs.delete(os.path.join(path,file))
+                        xbmcvfs.copy(os.path.join(path,file),os.path.join(folder,file))
+                        i=i+1
+                    showMessage(self.localize('Torrent-client Browser'), self.localize('Copied %d files!') % i, forced=True)
+                return
             elif not tdir and action not in ('0', '3'):
                 Download().action_simple(action, hash)
             elif action in ('0', '3'):
@@ -1127,7 +1138,7 @@ class Core:
             link = json.dumps(app)
             popup = []
             folder = True
-            actions = [('3', self.localize('Start All Files')), ('0', self.localize('Stop All Files'))]
+            actions = [('3', self.localize('High Priority All Files')), ('copy', self.localize('Copy Files in Root')), ('0', self.localize('Skip All Files'))]
             for a, title in actions:
                 app['action'] = a
                 popup.append((self.localize(title), contextMenustring % urllib.quote_plus(json.dumps(app))))
@@ -1375,9 +1386,7 @@ class Core:
                         x=-1
                         for i in myshows_files:
                             x=x+1
-                            fileTitle = ''
-                            fileTitle=myshows_sizes[str(i)]
-                            fileTitle+=myshows_cut[x]
+                            fileTitle=myshows_sizes[str(i)]+myshows_cut[x]
                             myshows_items.append(fileTitle)
                     myshows_items.append(unicode(myshows_lang(30400)))
                     myshows_files.append('')

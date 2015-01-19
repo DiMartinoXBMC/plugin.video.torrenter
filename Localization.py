@@ -83,7 +83,7 @@ dictionary = {
         'Retry': 'Повторная попытка',
         '%ds has left': 'Осталось %d попыток',
         'File failed to play! Do you want to RETRY and buffer more?': 'Ошибка проигрывания файла! Хотите предзагрузить больше и повторить?',
-        'High Priority All Files': 'Высокий Приоритет Всем Файлам',
+        'High Priority Files': 'Высокий Приоритет Файлам',
         'Skip All Files': 'Пропустить Все Файлы',
         'Start': 'Пуск',
         'Stop': 'Стоп',
@@ -219,6 +219,8 @@ dictionary = {
         'Stopped All!':'Все Остановлено!',
         'Stop All':'Остановить Все',
         'Keyboard':'Клавиатура',
+        'Copy Files in Root':'Скопировать файлы в Корень',
+        'Copied %d files!':'Скопировано %d файлов!',
     }
 }
 
