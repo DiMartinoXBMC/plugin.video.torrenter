@@ -144,7 +144,7 @@ class TorrentPlayer(xbmc.Player):
                 else:
                     break
                 #print '************************************* GO NEXT?'
-                if self.next_dl and self.next_dling and (self.next_contentId or self.next_contentId==0) and self.iterator == 100:
+                if self.next_dl and self.next_dling and isinstance(self.next_contentId, int) and self.iterator == 100:
                     self.contentId = self.next_contentId
                     continue
                 #print '************************************* NO! break'
@@ -259,7 +259,6 @@ class TorrentPlayer(xbmc.Player):
                 if not xbmcvfs.exists(newFileName):
                     xbmcvfs.copy(os.path.join(os.path.dirname(os.path.dirname(path)),title),newFileName)
 
-
     def setup_play(self):
         self.next_dling = False
         self.iterator=0
@@ -361,7 +360,7 @@ class TorrentPlayer(xbmc.Player):
                         self.seed(self.contentId)
                         self.seeding_status=True
                         #xbmc.sleep(7000)
-                    if self.iterator == 100 and self.next_dl and not self.next_dling and isinstance(self.next_contentId, int):
+                    if self.iterator == 100 and self.next_dl and not self.next_dling and isinstance(self.next_contentId, int) and self.next_contentId!=False:
                         showMessage(Localization.localize('Torrent Downloading'),
                                     Localization.localize('Starting download next episode!'), forced=True)
                         self.torrent.stopSession()

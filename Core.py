@@ -1349,30 +1349,45 @@ class Core:
                 myshows_lang = myshows_setting.getLocalizedString
                 myshows_items = []
                 myshows_files = []
+                myshows_sizes = {}
                 contentList = []
                 for filedict in torrent.getContentList():
                     fileTitle = ''
                     if filedict.get('size'):
-                        fileTitle = '[%d MB] ' % (filedict.get('size') / 1024 / 1024)
+                        myshows_sizes[str(filedict.get('ind'))]='[%d MB] ' % (filedict.get('size') / 1024 / 1024)
                     title = filedict.get('title')
                     fileTitle = fileTitle + '[%s]%s' % (title[len(title) - 3:], title)
                     contentList.append((self.unescape(fileTitle), str(filedict.get('ind'))))
                 contentList = sorted(contentList, key=lambda x: x[0])
                 for title, identifier in contentList:
-                    if re.search('.*?\.avi|mp4|mkv|flv|mov|vob|wmv|ogm|asx|mpg|mpeg|avc|vp3|fli|flc|m4v$', title,
-                                 re.I | re.DOTALL):
-                        myshows_items.append(title)
-                        myshows_files.append('plugin://plugin.video.torrenter/?action=playTorrent&url=' + identifier)
-                if len(myshows_items) > 1: myshows_items = cutFileNames(myshows_items)
-                myshows_items.append(unicode(myshows_lang(30400)))
-                myshows_files.append('')
+                    try:
+                        if title.split('.')[-1].lower() in ['avi','mp4','mkv','flv','mov','vob','wmv','ogm','asx','mpg','mpeg','avc','vp3','fli','flc','m4v','iso']:
+                            myshows_items.append(title)
+                            myshows_files.append(identifier)
+                    except:
+                        pass
+                if len(myshows_items) > 1:
+                    if len(myshows_sizes)==0:
+                        myshows_items = cutFileNames(myshows_items)
+                    else:
+                        myshows_cut = cutFileNames(myshows_items)
+                        myshows_items=[]
+                        x=-1
+                        for i in myshows_files:
+                            x=x+1
+                            fileTitle = ''
+                            fileTitle=myshows_sizes[str(i)]
+                            fileTitle+=myshows_cut[x]
+                            myshows_items.append(fileTitle)
+                    myshows_items.append(unicode(myshows_lang(30400)))
+                    myshows_files.append('')
                 dialog = xbmcgui.Dialog()
                 if len(myshows_items) == 2:
                     ret = 0
                 else:
                     ret = dialog.select(unicode(myshows_lang(30401)), myshows_items)
                 if ret > -1:
-                    xbmc.executebuiltin('xbmc.RunPlugin("' + myshows_files[ret] + '")')
+                    xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url=' + myshows_files[ret] + '")')
             else:
                 contentList = []
                 for filedict in torrent.getContentList():

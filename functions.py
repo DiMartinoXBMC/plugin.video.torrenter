@@ -79,7 +79,7 @@ def md5(string):
 
 
 def Debug(msg, force=False):
-    if (debug == 'true' or force):
+    if (1==1 or debug == 'true' or force):
         try:
             print "[Torrenter v2] " + msg
         except UnicodeEncodeError:
