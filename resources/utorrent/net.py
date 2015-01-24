@@ -903,7 +903,10 @@ class Deluge:
         if obj is None:
             return False
 
-        res = [obj['result'].get('download_location')]
+        try:
+            res = [obj['result'].get('download_location')]
+        except:
+            res=[None]
         return res, res
 
     def listfiles(self, id):
