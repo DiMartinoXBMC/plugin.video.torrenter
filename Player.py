@@ -150,20 +150,19 @@ class TorrentPlayer(xbmc.Player):
                 #print '************************************* NO! break'
                 break
 
-            self.torrent.stopSession()
-            self.torrent.threadComplete = True
-            self.torrent.checkThread()
-            if 'false' == self.__settings__.getSetting("keep_files"):
-                clearStorage(self.userStorageDirectory)
+        self.torrent.stopSession()
+        self.torrent.threadComplete = True
+        self.torrent.checkThread()
+        if 'false' == self.__settings__.getSetting("keep_files"):
+            clearStorage(self.userStorageDirectory)
+        else:
+            if self.seeding_status:
+                showMessage(Localization.localize('Information'),
+                        Localization.localize('Torrent is seeding. To stop it use Download Status.'), forced=True)
             else:
-                if self.seeding_status:
-                    showMessage(Localization.localize('Information'),
-                            Localization.localize('Torrent is seeding. To stop it use Download Status.'), forced=True)
-                else:
-                    if self.seeding: self.db_delete()
-                    showMessage(Localization.localize('Information'),
-                            Localization.localize('Torrent downloading is stopped.'), forced=True)
-
+                if self.seeding: self.db_delete()
+                showMessage(Localization.localize('Information'),
+                        Localization.localize('Torrent downloading is stopped.'), forced=True)
 
     def init(self):
         self.next_dl = True if self.__settings__.getSetting('next_dl') == 'true' and self.ids_video else False
@@ -341,7 +340,7 @@ class TorrentPlayer(xbmc.Player):
                 OverlayText(w=OVERLAY_WIDTH, h=OVERLAY_HEIGHT, alignment=XBFONT_CENTER_X | XBFONT_CENTER_Y)) as overlay:
             with nested(self.attach(overlay.show, self.on_playback_paused),
                         self.attach(overlay.hide, self.on_playback_resumed, self.on_playback_stopped)):
-                while not xbmc.abortRequested and self.isPlaying():
+                while not xbmc.abortRequested and self.isPlaying() and not self.torrent.threadComplete:
                     self.torrent.checkThread()
                     self.torrent.debug()
                     status = self.torrent.torrentHandle.status()

@@ -353,40 +353,6 @@ class Libtorrent:
         #if seeding:# and None == self.magnetLink:
         #    thread.start_new_thread(self.addToSeeding, (contentId,))
 
-    '''def addToSeeding(self, contentId):
-        print 'addToSeeding!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1'
-        if self.torrentHandle:
-            print 'addToSeeding torrentHandle OK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1'
-            info = self.torrentHandle.get_torrent_info()
-            fileSettings = {
-                'ti': info,
-                'save_path': self.storageDirectory,
-                'flags': 0x300
-            }
-            self.seedingHandle= self.session.add_torrent(fileSettings)
-            piece_length = info.piece_length()
-            filelist=[]
-            for contentId, contentFile in enumerate(info.files()):
-                stringdata = {"title": contentFile.path, "size": contentFile.size, "ind": int(contentId),
-                              'offset': contentFile.offset}
-                filelist.append(stringdata)
-            selectedFileInfo = filelist[contentId]
-            Offset = selectedFileInfo['size'] / (1024 * 1024)
-            partOffset = (Offset * 1024 * 1024 / piece_length) + 1
-            #print 'partOffset ' + str(self.partOffset)+str(' ')
-            startPart = selectedFileInfo['offset'] / piece_length
-            endPart = int((selectedFileInfo['offset'] + selectedFileInfo['size']) / piece_length)
-            #print 'part ' + str(self.startPart)+ str(' ')+ str(self.endPart)
-            for i in range(startPart, startPart + partOffset):
-                if i <= endPart:
-                    self.seedingHandle.piece_priority(i, 7)
-                    #print str(i)
-            self.seedingHandle.piece_priority(endPart - 1, 7)
-            self.seedingHandle.piece_priority(endPart, 7)
-            while self.seedingHandle:
-                xbmc.sleep(5000)
-                self.debug(seeding=True)'''
-
     def fetchParts(self):
         priorities = self.torrentHandle.piece_priorities()
         status = self.torrentHandle.status()

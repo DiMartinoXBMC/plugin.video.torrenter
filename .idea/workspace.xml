@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="56e91349-2444-4553-bc78-90c2bab49e9c" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addon.xml" afterPath="$PROJECT_DIR$/addon.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/utorrent/net.py" afterPath="$PROJECT_DIR$/resources/utorrent/net.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Libtorrent.py" afterPath="$PROJECT_DIR$/Libtorrent.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Player.py" afterPath="$PROJECT_DIR$/Player.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="plugin.video.torrenter.iws" />
@@ -35,32 +35,45 @@
     <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
         <leaf>
-          <file leaf-file-name="Core.py" pinned="false" current="true" current-in-tab="true">
+          <file leaf-file-name="Core.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Core.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.56962025" vertical-offset="26648" max-vertical-offset="29903">
-                  <caret line="1608" column="46" selection-start-line="1608" selection-start-column="46" selection-end-line="1608" selection-end-column="46" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="27098" max-vertical-offset="29903">
+                  <caret line="1617" column="33" selection-start-line="1617" selection-start-column="33" selection-end-line="1617" selection-end-column="33" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="Downloader.py" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Downloader.py">
+          <file leaf-file-name="Player.py" pinned="false" current="true" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/Player.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="1326" max-vertical-offset="2329">
-                  <caret line="78" column="8" selection-start-line="78" selection-start-column="8" selection-end-line="78" selection-end-column="8" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="Localization.py" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Localization.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="3234" max-vertical-offset="4046">
-                  <caret line="88" column="23" selection-start-line="88" selection-start-column="23" selection-end-line="88" selection-end-column="23" />
-                  <folding />
+                <state vertical-scroll-proportion="0.60879904" vertical-offset="1953" max-vertical-offset="2958">
+                  <caret line="354" column="29" selection-start-line="354" selection-start-column="29" selection-end-line="354" selection-end-column="29" />
+                  <folding>
+                    <element signature="e#1125#2841#0" expanded="false" />
+                    <element signature="e#1176#1831#0" expanded="false" />
+                    <element signature="e#1861#2039#0" expanded="false" />
+                    <element signature="e#2069#2247#0" expanded="false" />
+                    <element signature="e#2278#2289#0" expanded="false" />
+                    <element signature="e#2333#2350#0" expanded="false" />
+                    <element signature="e#2403#2495#0" expanded="false" />
+                    <element signature="e#2570#2841#0" expanded="false" />
+                    <element signature="e#5678#6069#0" expanded="false" />
+                    <element signature="e#6108#6779#0" expanded="false" />
+                    <element signature="e#6811#9235#0" expanded="false" />
+                    <element signature="e#9284#10585#0" expanded="false" />
+                    <element signature="e#10621#12712#0" expanded="false" />
+                    <element signature="e#12755#12862#0" expanded="false" />
+                    <element signature="e#12905#12988#0" expanded="false" />
+                    <element signature="e#13030#13137#0" expanded="false" />
+                    <element signature="e#13180#13287#0" expanded="false" />
+                    <element signature="e#13358#13491#0" expanded="false" />
+                    <element signature="e#15799#16271#0" expanded="false" />
+                    <element signature="e#16306#16401#0" expanded="false" />
+                    <element signature="e#16442#16770#0" expanded="false" />
+                    <element signature="e#16803#17470#0" expanded="false" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -69,17 +82,7 @@
             <entry file="file://$PROJECT_DIR$/addon.xml">
               <provider selected="true" editor-type-id="text-editor">
                 <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
-                  <caret line="2" column="14" selection-start-line="2" selection-start-column="14" selection-end-line="2" selection-end-column="14" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="AceStream.py" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/AceStream.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="2040" max-vertical-offset="2669">
-                  <caret line="120" column="46" selection-start-line="120" selection-start-column="46" selection-end-line="120" selection-end-column="46" />
+                  <caret line="12" column="51" selection-start-line="12" selection-start-column="51" selection-end-line="12" selection-end-column="51" />
                   <folding />
                 </state>
               </provider>
@@ -119,21 +122,47 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="Libtorrent.py" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="Libtorrent.py" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/Libtorrent.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="1598" max-vertical-offset="7310">
-                  <caret line="108" column="43" selection-start-line="108" selection-start-column="43" selection-end-line="108" selection-end-column="43" />
-                  <folding />
+                <state vertical-scroll-proportion="0.5399754" vertical-offset="445" max-vertical-offset="1309">
+                  <caret line="277" column="12" selection-start-line="277" selection-start-column="12" selection-end-line="277" selection-end-column="12" />
+                  <folding>
+                    <element signature="e#24#785#1" expanded="false" />
+                    <element signature="e#1427#2875#0" expanded="false" />
+                    <element signature="e#2924#5656#0" expanded="false" />
+                    <element signature="e#5695#6679#0" expanded="false" />
+                    <element signature="e#6728#7730#0" expanded="false" />
+                    <element signature="e#7769#7901#0" expanded="false" />
+                    <element signature="e#7942#8076#0" expanded="false" />
+                    <element signature="e#8110#8232#0" expanded="false" />
+                    <element signature="e#8266#8388#0" expanded="false" />
+                    <element signature="e#8438#8485#0" expanded="false" />
+                    <element signature="e#8535#8635#0" expanded="false" />
+                    <element signature="e#8675#8989#0" expanded="false" />
+                    <element signature="e#9035#9203#0" expanded="false" />
+                    <element signature="e#9259#9314#0" expanded="false" />
+                    <element signature="e#9372#9429#0" expanded="false" />
+                    <element signature="e#9466#9645#0" expanded="false" />
+                    <element signature="e#9697#10933#0" expanded="false" />
+                    <element signature="e#10978#11878#0" expanded="false" />
+                    <element signature="e#11915#12409#0" expanded="false" />
+                    <element signature="e#12447#13049#0" expanded="false" />
+                    <element signature="e#13086#13188#0" expanded="false" />
+                    <element signature="e#13267#14413#0" expanded="false" />
+                    <element signature="e#14449#14866#0" expanded="false" />
+                    <element signature="e#15085#16214#0" expanded="false" />
+                    <element signature="e#16249#16392#0" expanded="false" />
+                  </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="net.py" pinned="false" current="false" current-in-tab="true">
+          <file leaf-file-name="net.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/resources/utorrent/net.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.6051661" vertical-offset="14536" max-vertical-offset="22576">
-                  <caret line="900" column="16" selection-start-line="900" selection-start-column="8" selection-end-line="900" selection-end-column="16" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="15028" max-vertical-offset="22576">
+                  <caret line="911" column="20" selection-start-line="911" selection-start-column="20" selection-end-line="911" selection-end-column="20" />
                   <folding />
                 </state>
               </provider>
@@ -178,17 +207,17 @@
         <option value="$PROJECT_DIR$/resources/settings.xml" />
         <option value="$PROJECT_DIR$/resources/searchers/T411FR.py" />
         <option value="$PROJECT_DIR$/changelog.txt" />
-        <option value="$PROJECT_DIR$/Libtorrent.py" />
         <option value="$PROJECT_DIR$/resources/contenters/EZTV.py" />
         <option value="$PROJECT_DIR$/resources/searchers/EZTV.py" />
         <option value="$PROJECT_DIR$/cal.py" />
         <option value="$PROJECT_DIR$/functions.py" />
-        <option value="$PROJECT_DIR$/Player.py" />
         <option value="$PROJECT_DIR$/Localization.py" />
         <option value="$PROJECT_DIR$/Core.py" />
         <option value="$PROJECT_DIR$/AceStream.py" />
         <option value="$PROJECT_DIR$/addon.xml" />
         <option value="$PROJECT_DIR$/resources/utorrent/net.py" />
+        <option value="$PROJECT_DIR$/Libtorrent.py" />
+        <option value="$PROJECT_DIR$/Player.py" />
       </list>
     </option>
   </component>
@@ -569,7 +598,11 @@
       <created>1421703999627</created>
       <updated>1421703999627</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="deluge net fix">
+      <created>1422131055103</created>
+      <updated>1422131055103</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -608,12 +641,12 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -654,7 +687,8 @@
     <MESSAGE value="myshows external fix" />
     <MESSAGE value="TC copy files from subfold" />
     <MESSAGE value="ace stream fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="ace stream fix" />
+    <MESSAGE value="deluge net fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="deluge net fix" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -958,13 +992,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Player.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4371921" vertical-offset="1481" max-vertical-offset="3094">
-          <caret line="246" column="36" selection-start-line="246" selection-start-column="36" selection-end-line="246" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/language/Russian/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="256" max-vertical-offset="1105">
@@ -997,9 +1024,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Core.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="27098" max-vertical-offset="29903">
+          <caret line="1617" column="33" selection-start-line="1617" selection-start-column="33" selection-end-line="1617" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/AceStream.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1154" max-vertical-offset="2448">
+        <state vertical-scroll-proportion="0.5012225" vertical-offset="1409" max-vertical-offset="2448">
           <caret line="120" column="46" selection-start-line="120" selection-start-column="46" selection-end-line="120" selection-end-column="46" />
           <folding />
         </state>
@@ -1008,32 +1043,81 @@
     <entry file="file://$PROJECT_DIR$/addon.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
-          <caret line="2" column="14" selection-start-line="2" selection-start-column="14" selection-end-line="2" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Libtorrent.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1598" max-vertical-offset="7310">
-          <caret line="108" column="43" selection-start-line="108" selection-start-column="43" selection-end-line="108" selection-end-column="43" />
+          <caret line="12" column="51" selection-start-line="12" selection-start-column="51" selection-end-line="12" selection-end-column="51" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/resources/utorrent/net.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6051661" vertical-offset="14536" max-vertical-offset="22576">
-          <caret line="900" column="16" selection-start-line="900" selection-start-column="8" selection-end-line="900" selection-end-column="16" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="15028" max-vertical-offset="22576">
+          <caret line="911" column="20" selection-start-line="911" selection-start-column="20" selection-end-line="911" selection-end-column="20" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Core.py">
+    <entry file="file://$PROJECT_DIR$/Libtorrent.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.56962025" vertical-offset="26648" max-vertical-offset="29903">
-          <caret line="1608" column="46" selection-start-line="1608" selection-start-column="46" selection-end-line="1608" selection-end-column="46" />
-          <folding />
+        <state vertical-scroll-proportion="0.5399754" vertical-offset="445" max-vertical-offset="1309">
+          <caret line="277" column="12" selection-start-line="277" selection-start-column="12" selection-end-line="277" selection-end-column="12" />
+          <folding>
+            <element signature="e#24#785#1" expanded="false" />
+            <element signature="e#1427#2875#0" expanded="false" />
+            <element signature="e#2924#5656#0" expanded="false" />
+            <element signature="e#5695#6679#0" expanded="false" />
+            <element signature="e#6728#7730#0" expanded="false" />
+            <element signature="e#7769#7901#0" expanded="false" />
+            <element signature="e#7942#8076#0" expanded="false" />
+            <element signature="e#8110#8232#0" expanded="false" />
+            <element signature="e#8266#8388#0" expanded="false" />
+            <element signature="e#8438#8485#0" expanded="false" />
+            <element signature="e#8535#8635#0" expanded="false" />
+            <element signature="e#8675#8989#0" expanded="false" />
+            <element signature="e#9035#9203#0" expanded="false" />
+            <element signature="e#9259#9314#0" expanded="false" />
+            <element signature="e#9372#9429#0" expanded="false" />
+            <element signature="e#9466#9645#0" expanded="false" />
+            <element signature="e#9697#10933#0" expanded="false" />
+            <element signature="e#10978#11878#0" expanded="false" />
+            <element signature="e#11915#12409#0" expanded="false" />
+            <element signature="e#12447#13049#0" expanded="false" />
+            <element signature="e#13086#13188#0" expanded="false" />
+            <element signature="e#13267#14413#0" expanded="false" />
+            <element signature="e#14449#14866#0" expanded="false" />
+            <element signature="e#15085#16214#0" expanded="false" />
+            <element signature="e#16249#16392#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Player.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.60879904" vertical-offset="1953" max-vertical-offset="2958">
+          <caret line="354" column="29" selection-start-line="354" selection-start-column="29" selection-end-line="354" selection-end-column="29" />
+          <folding>
+            <element signature="e#1125#2841#0" expanded="false" />
+            <element signature="e#1176#1831#0" expanded="false" />
+            <element signature="e#1861#2039#0" expanded="false" />
+            <element signature="e#2069#2247#0" expanded="false" />
+            <element signature="e#2278#2289#0" expanded="false" />
+            <element signature="e#2333#2350#0" expanded="false" />
+            <element signature="e#2403#2495#0" expanded="false" />
+            <element signature="e#2570#2841#0" expanded="false" />
+            <element signature="e#5678#6069#0" expanded="false" />
+            <element signature="e#6108#6779#0" expanded="false" />
+            <element signature="e#6811#9235#0" expanded="false" />
+            <element signature="e#9284#10585#0" expanded="false" />
+            <element signature="e#10621#12712#0" expanded="false" />
+            <element signature="e#12755#12862#0" expanded="false" />
+            <element signature="e#12905#12988#0" expanded="false" />
+            <element signature="e#13030#13137#0" expanded="false" />
+            <element signature="e#13180#13287#0" expanded="false" />
+            <element signature="e#13358#13491#0" expanded="false" />
+            <element signature="e#15799#16271#0" expanded="false" />
+            <element signature="e#16306#16401#0" expanded="false" />
+            <element signature="e#16442#16770#0" expanded="false" />
+            <element signature="e#16803#17470#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
