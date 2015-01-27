@@ -221,6 +221,10 @@ dictionary = {
         'Keyboard':'Клавиатура',
         'Copy Files in Root':'Скопировать файлы в Корень',
         'Copied %d files!':'Скопировано %d файлов!',
+        'Add to MyShows.ru':'Добавить в MyShows.ru',
+        'Return to MyShows.ru':'Вернуться в MyShows.ru',
+        'Search results:':'Результаты поиска:',
+
     }
 }
 

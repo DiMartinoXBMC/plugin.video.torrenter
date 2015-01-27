@@ -1339,8 +1339,7 @@ class Core:
             try:
                 searcherObject = getattr(__import__(searcher), searcher)()
             except Exception, e:
-                print 'Unable to use searcher: ' + searcher + ' at ' + self.__plugin__ + ' openTorrent(). Exception: ' + str(
-                    e)
+                print 'Unable to use searcher: ' + searcher + ' at ' + self.__plugin__ + ' openTorrent(). Exception: ' + str(e)
                 return
             url = searcherObject.getTorrentFile(classMatch.group(2))
         self.__settings__.setSetting("lastTorrentUrl", url)
@@ -1356,8 +1355,6 @@ class Core:
         self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
         if silent != 'true':
             if external:
-                myshows_setting = xbmcaddon.Addon(id='plugin.video.myshows')
-                myshows_lang = myshows_setting.getLocalizedString
                 myshows_items = []
                 myshows_files = []
                 myshows_sizes = {}
@@ -1388,13 +1385,13 @@ class Core:
                             x=x+1
                             fileTitle=myshows_sizes[str(i)]+myshows_cut[x]
                             myshows_items.append(fileTitle)
-                    myshows_items.append(unicode(myshows_lang(30400)))
+                    myshows_items.append(self.localize('Return to MyShows.ru'))
                     myshows_files.append('')
                 dialog = xbmcgui.Dialog()
                 if len(myshows_items) == 2:
                     ret = 0
                 else:
-                    ret = dialog.select(unicode(myshows_lang(30401)), myshows_items)
+                    ret = dialog.select(self.localize('Search results:'), myshows_items)
                 if ret > -1:
                     xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url=' + myshows_files[ret] + '")')
             else:
@@ -1494,7 +1491,7 @@ class Core:
                 e)
         return filesList
 
-    def showFilesList(self, filesList, params={}):  #myshows
+    def showFilesList(self, filesList, params={}):
         get = params.get
         external = unquote(get("external"), None)
         silent = get("silent")
@@ -1512,8 +1509,6 @@ class Core:
                         xbmc.executebuiltin(
                             'XBMC.Notification("%s", "%s", %s)' % ("Поиск", "Ничего не найдено :(", "2500"))
                     return
-                myshows_setting = xbmcaddon.Addon(id='plugin.video.myshows')
-                myshows_lang = myshows_setting.getLocalizedString
                 if silent:
                     order, seeds, leechers, size, title, link, image = filesList[0]
                     xbmc.executebuiltin('XBMC.RunPlugin(%s)' % (
@@ -1529,23 +1524,24 @@ class Core:
                         for key in link_dict.keys():
                             if link_dict.get(key):
                                 link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(link_dict.get(key)))
-                        contextMenu = [(self.localize('Open (no return)'),
-                     'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
-                     sys.argv[0], 'openTorrent', link_url)),
-                            (myshows_lang(30409),
+                        contextMenu = [
+                            (self.localize('Add to MyShows.ru'),
                              'XBMC.RunPlugin(%s)' % (
                              'plugin://plugin.video.myshows/?mode=3010&sort=activate&stringdata=' + urllib.quote_plus(
                                  '{"filename":"%s", "stype":%s, "showId":%s, "seasonId":%s, "id":%s, "episodeId":%s}' % (
                                  link, jstr(s['stype']), jstr(s['showId']), jstr(s['seasonId']), jstr(s['id']),
                                  jstr(s['episodeId']))))),
-                            (myshows_lang(30400),
+                            (self.localize('Return to MyShows.ru'),
+                             (self.localize('Open (no return)'),
+                     'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
+                     sys.argv[0], 'openTorrent', link_url)),
                              'XBMC.ActivateWindow(%s)' % ('Videos,plugin://plugin.video.myshows/?mode=3013')),
                         ]
                         title = self.titleMake(seeds, leechers, size, title)
                         self.drawItem(title, 'context', link, image, contextMenu=contextMenu)
             except:
                 showMessage(self.localize('Information'), self.localize('Torrent list is empty.'))
-                xbmc.executebuiltin('XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.myshows/?mode=3013')
+                xbmc.executebuiltin('XBMC.RunPlugin(%s)' % 'plugin://plugin.video.myshows/?mode=3013')
                 return
         else:
             for (order, seeds, leechers, size, title, link, image) in filesList:
@@ -1555,15 +1551,15 @@ class Core:
                     if link_dict.get(key):
                         link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(link_dict.get(key)))
                 contextMenu = [
-                    (self.localize('Open (no return)'),
-                     'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
-                     sys.argv[0], 'openTorrent', link_url)),
                     (self.localize('Download via T-client'),
                      'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
                      sys.argv[0], 'downloadFilesList', urllib.quote_plus(link))),
                     (self.localize('Download via Libtorrent'),
                      'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
-                     sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(link)))
+                     sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(link))),
+                    (self.localize('Open (no return)'),
+                     'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
+                     sys.argv[0], 'openTorrent', link_url)),
                 ]
                 title = self.titleMake(seeds, leechers, size, title)
 
@@ -1715,13 +1711,7 @@ class Core:
 
     def search(self, params={}):
         defaultKeyword = params.get('url')
-        try:
-            myshows_setting = xbmcaddon.Addon(id='plugin.video.myshows')
-            showKey = myshows_setting.getSetting("torrenter_keyboard")
-        except:
-            showKey = None
-
-        if params.get('showKey'): showKey=params.get('showKey')
+        showKey=params.get('showKey')
 
         if showKey == "true" or defaultKeyword == '' or not defaultKeyword:
             if not defaultKeyword:

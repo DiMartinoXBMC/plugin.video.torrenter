@@ -146,7 +146,6 @@ class Cache:
 
     def download(self):
         dirname = os.path.dirname(self.filename)
-        print self.filename
         zipname = os.path.basename(self.filename).rstrip('.db') + '.zip'
         url = 'http://www.tat-store.ru/torrenter/' + zipname
         self.http = HTTP()
