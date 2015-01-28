@@ -637,12 +637,22 @@ class Core:
         subcategory = apps.get('subcategory')
         provider = apps.get('provider')
         page = apps.get('page') if apps.get('page') else 1
+        sort = apps.get('sort') if apps.get('sort') else 0
+        apps_property={'page':page, 'sort':sort}
         property = self.Content.get_property(category, subcategory)
-        contentList = self.Content.get_contentList(category, subcategory, page)
+        contentList = self.Content.get_contentList(category, subcategory, apps_property)
         if property and property.get('page'):
             apps['page'] = page + 1
             #print str(apps)
             self.drawItem('[COLOR FFFFFFFF][B]%s[/B][/COLOR]' % self.localize('Next Page'), 'openContent',
+                          json.dumps(apps), isFolder=True)
+        if property and property.get('sort'):
+            if len(property.get('sort'))>sort+1:
+                apps['sort'] = int(sort) + 1
+            else:
+                apps['sort'] = 0
+            print str(apps['sort'])
+            self.drawItem('[COLOR FFFFFFFF][B]%s: %s[/B][/COLOR]' % (self.localize('Sort'), self.localize(property['sort'][apps['sort']]['name'])), 'openContent',
                           json.dumps(apps), isFolder=True)
 
         if mode == 'tracker':
@@ -652,6 +662,12 @@ class Core:
             self.drawcontentList(contentList)
             view_style('drawcontentList')
             #if not self.debug: view_style('drawcontentList')
+
+        if property and property.get('page'):
+            apps['page'] = page + 1
+            #print str(apps)
+            self.drawItem('[COLOR FFFFFFFF][B]%s[/B][/COLOR]' % self.localize('Next Page'), 'openContent',
+                          json.dumps(apps), isFolder=True)
 
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
@@ -709,7 +725,7 @@ class Core:
                                             if self.Content.isPages() and self.Content.get_property(category,
                                                                                                     subcategory):
                                                 for i in range(1, 5 if category!='year' else 2):
-                                                    contentList = self.Content.get_contentList(category, subcategory, i)
+                                                    contentList = self.Content.get_contentList(category, subcategory, {'page':i})
                                                     self.drawcontentList(contentList)
                                                     if self.breakdown: break
                                             else:
@@ -821,7 +837,7 @@ class Core:
             listitem = xbmcgui.ListItem(title, iconImage=img, thumbnailImage=img)
             listitem.setInfo(type='Video', infoLabels=info)
             if meta:
-                self.itemScrap(listitem, meta)
+                listitem=itemScrap(listitem, meta)
                 if meta.get('icon'):
                     search_url['img'] = meta.get('icon')
                 if meta.get('info').get('title'):
@@ -855,29 +871,6 @@ class Core:
         progressBar.update(0)
         progressBar.close()
         if self.debug and 1 == debug: lockView('wide')
-
-    def itemScrap(self, item, kwarg):
-        # Debug('[itemTVDB]:meta '+str(kwarg))
-        if 'title' in kwarg and kwarg['title']:
-            item.setLabel(kwarg['title'])
-
-        if 'label' in kwarg and kwarg['label']:
-            item.setLabel2(kwarg['label'])
-
-        if 'icon' in kwarg and kwarg['icon']:
-            item.setIconImage(kwarg['icon'])
-
-        if 'thumbnail' in kwarg and kwarg['thumbnail']:
-            item.setThumbnailImage(kwarg['thumbnail'])
-
-        if 'properties' in kwarg and kwarg['properties']:
-            for key, value in kwarg['properties'].iteritems():
-                item.setProperty(key, str(value))
-
-        if 'info' in kwarg and kwarg['properties']:
-            item.setInfo(type='Video', infoLabels=kwarg['info'])
-
-        return item
 
     def drawtrackerList(self, provider, contentList):
         contentList = sorted(contentList, key=lambda x: x[0], reverse=True)

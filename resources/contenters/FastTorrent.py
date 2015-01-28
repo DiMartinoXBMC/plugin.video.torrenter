@@ -32,7 +32,7 @@ class FastTorrent(Content.Content):
         'cartoons': ('Cartoons', '/last-multfilm-torrent/',
                      {'page': '/last-multfilm-torrent/%d.html', 'increase': 1, 'second_page': 2}),
         'anime': ('Anime', '/anime/multfilm/', {'page': '/anime/multfilm/%d.html', 'increase': 1, 'second_page': 2}),
-        'hot': ('Hot & New', '/new-films/', {'page': '/new-films/%d.html', 'increase': 1, 'second_page': 2}),
+        'hot': ('Most Recent', '/new-films/', {'page': '/new-films/%d.html', 'increase': 1, 'second_page': 2}),
         'genre': {'genre': 'by Genre',
                   'amime_series': ('Anime Series', '/anime-serialy/multfilm/',
                                    {'page': '/anime-serialy/multfilm/%d.html', 'increase': 1, 'second_page': 2}),
@@ -66,20 +66,9 @@ class FastTorrent(Content.Content):
     def isPages(self):
         return True
 
-    def get_contentList(self, category, subcategory=None, page=None):
+    def get_contentList(self, category, subcategory=None, apps_property=None):
         contentList = []
-        if not subcategory or subcategory == True:
-            get = self.category_dict[category]
-        else:
-            get = self.category_dict[category][subcategory]
-
-        if not page or page == 1:
-            url = self.baseurl + get[1]
-        else:
-            property = self.get_property(category, subcategory)
-
-            page_url = property['page'] % (property['second_page'] + ((page - 2) * property['increase']))
-            url = self.baseurl + str(page_url)
+        url = self.get_url(category, subcategory, apps_property)
 
         response = self.makeRequest(url, headers=self.headers)
 

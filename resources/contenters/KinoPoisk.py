@@ -30,10 +30,10 @@ class KinoPoisk(Content.Content):
         'tvshows': ('TV Shows', '/top/serial/list/'),
         'cartoons': ('Cartoons', '/top/id_genre/14/'),
         'search': ('[B]Search[/B]', '/s/type/film/list/1/find/%s/'),
-        'movies': ('Forieng Movies', '/s/type/film/list/1/m_act[country]/1/m_act[type]/film/'),
+        'movies': ('Movies', '/s/type/film/list/1/m_act[country]/1/m_act[type]/film/'),
         'rus_movies': ('Russian Movies', '/s/type/film/list/1/m_act[country]/2/m_act[type]/film/'),
         'anime': ('Anime', '/s/type/film/list/1/order/rating/m_act[genre][0]/1750/',),
-        'hot': ('Hot & New', '/popular/'),
+        'hot': ('Most Recent', '/popular/'),
         'top': ('Top 250 Movies', '/top/'),
         'genre': {'genre': 'by Genre',
                   'russia': ('Russia & USSR', '/top/rus/list/'),
@@ -99,10 +99,10 @@ class KinoPoisk(Content.Content):
     def isScrappable(self):
         return True
 
-    def get_contentList(self, category, subcategory=None, page=None):
+    def get_contentList(self, category, subcategory=None, apps_property=None):
         socket.setdefaulttimeout(15)
         contentList = []
-        url = self.get_url(category, subcategory, page, self.baseurl)
+        url = self.get_url(category, subcategory, apps_property)
 
         #print url
         response = self.makeRequest(url, headers=self.headers)

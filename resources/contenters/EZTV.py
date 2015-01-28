@@ -22,7 +22,7 @@ import Content, re
 
 class EZTV(Content.Content):
     category_dict = {
-        'hot': ('Hot & New', '/', {'page': '/page_%d', 'increase': 1, 'second_page': 1}),
+        'hot': ('Most Recent', '/', {'page': '/page_%d', 'increase': 1, 'second_page': 1}),
     }
 
     baseurl = "https://eztv.ch"
@@ -52,9 +52,9 @@ class EZTV(Content.Content):
     def isSearchOption(self):
         return False
 
-    def get_contentList(self, category, subcategory=None, page=None):
+    def get_contentList(self, category, subcategory=None, apps_property=None):
         contentList = []
-        url = self.get_url(category, subcategory, page, self.baseurl)
+        url = self.get_url(category, subcategory, apps_property)
 
         response = self.makeRequest(url, headers=self.headers)
 

@@ -35,11 +35,15 @@ class Content:
     searchIcon = '/icons/video.png'
     sourceWeight = 1
     cookieJar = None
+    baseurl = ''
 
     def isLabel(self):
         return 'Should search on ruhunt?'
 
     def isPages(self):
+        return False
+
+    def isSort(self):
         return False
 
     def isScrappable(self):
@@ -54,11 +58,11 @@ class Content:
     category_dict = {
         'sites': ('[B]by Site[/B]',),
         'search': ('[B]Search[/B]',),
-        'movies': ('Forieng Movies',),
+        'movies': ('Movies',),
         'rus_movies': ('Russian Movies',),
         'tvshows': ('TV Shows',),
         'cartoons': ('Cartoons',),
-        'hot': ('Hot & New',),
+        'hot': ('Most Recent',),
         'top': ('Top All Time',),
         'anime': ('Anime',),
         'year': {'year': 'by Year', },
@@ -77,7 +81,7 @@ class Content:
     for y in range(2015, 1970, -1):
         category_dict['year'][str(y)] = (str(y), '/top/y/%s/' % str(y))
 
-    def get_contentList(self, category, subcategory=None, page=None):
+    def get_contentList(self, category, subcategory=None, property=None):
         '''
         Retrieve keyword from the input and return a list of tuples:
         filesList.append((
@@ -103,7 +107,13 @@ class Content:
                         has_category = True
         return has_category
 
-    def get_url(self, category, subcategory, page, baseurl):
+    def get_url(self, category, subcategory, apps_property):
+        page=None
+        sort=None
+        if apps_property:
+            page=apps_property.get('page')
+            sort=apps_property.get('sort')
+
         if not subcategory or subcategory == True or category == 'search':
             get = self.category_dict[category]
         else:
@@ -111,13 +121,19 @@ class Content:
 
         if category == 'search': get = (get[0], get[1] % urllib.quote_plus(subcategory.encode('utf-8')))
 
-        if not page or page == 1:
-            url = baseurl + get[1]
-        else:
-            property = self.get_property(category, subcategory)
+        property = self.get_property(category, subcategory)
 
+        if not page or page == 1:
+            url = self.baseurl + get[1]
+        elif property:
             page_url = property['page'] % (property['second_page'] + ((page - 2) * property['increase']))
-            url = baseurl + str(page_url)
+            url = self.baseurl + str(page_url)
+
+        if property and property.get('sort'):
+            sort_dict=property['sort'][sort]
+            if sort_dict.get('url_after'):
+                page_url = sort_dict['url_after']
+                url = url + page_url
         return url
 
 

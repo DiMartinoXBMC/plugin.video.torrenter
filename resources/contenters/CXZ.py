@@ -26,12 +26,12 @@ from BeautifulSoup import BeautifulSoup
 
 def make_category_dict():
     category_dict = {
-        'movies': ('Forieng Movies', '/films/fl_foreign_hight/?'),
+        'movies': ('Movies', '/films/fl_foreign_hight/?'),
         'rus_movies': ('Russian Movies', '/films/fl_our_hight/?'),
         'tvshows': ('TV Shows', '/serials/fl_hight/?'),
         'cartoons': ('Cartoons', '/cartoons/fl_hight/?'),
         'anime': ('Anime', '/cartoons/cartoon_genre/anime/?'),
-        'hot': ('Hot & New', '/films/fl_hight/?'),
+        'hot': ('Most Recent', '/films/fl_hight/?'),
         'top': ('Top 250 Movies', '/films/fl_hight/?sort=popularity&'),
         'genre': {'genre': 'by Genre',
                   'action': ('Action', '/films/film_genre/bojevik/?'),
@@ -110,9 +110,9 @@ class CXZ(Content.Content):
     def isScrappable(self):
         return True
 
-    def get_contentList(self, category, subcategory=None, page=None):
+    def get_contentList(self, category, subcategory=None, apps_property=None):
         contentList = []
-        url = self.get_url(category, subcategory, page, self.baseurl)
+        url = self.get_url(category, subcategory, apps_property)
 
         response = self.makeRequest(url, headers=self.headers)
 

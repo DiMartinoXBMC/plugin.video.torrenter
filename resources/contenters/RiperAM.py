@@ -28,7 +28,7 @@ class RiperAM(Content.Content):
         #'tvshows':('TV Shows', '/top/serial/list/'),
         #'cartoons':('Cartoons', '/top/id_genre/14/'),
         #'anime':('Anime', '/search/title?count=100&genres=animation&keywords=anime&num_votes=1000,&explore=title_type&ref_=gnr_kw_an'),
-        'hot': ('Hot & New', '/', {'page': '/portal.php?tp=%d', 'increase': 30, 'second_page': 30}),
+        'hot': ('Most Recent', '/', {'page': '/portal.php?tp=%d', 'increase': 30, 'second_page': 30}),
         #'top':('Top 250 Movies', '/top/'),
     }
 
@@ -60,9 +60,9 @@ class RiperAM(Content.Content):
     def isSearchOption(self):
         return False
 
-    def get_contentList(self, category, subcategory=None, page=None):
+    def get_contentList(self, category, subcategory=None, apps_property=None):
         contentList = []
-        url = self.get_url(category, subcategory, page, self.baseurl)
+        url = self.get_url(category, subcategory, apps_property)
 
         response = self.makeRequest(url, headers=self.headers)
 

@@ -123,7 +123,7 @@ dictionary = {
         'TV Shows': 'Сериалы',
         'Cartoons': 'Мультфильмы',
         'Anime': 'Аниме',
-        'Hot & New': 'Горячие Новинки',
+        'Most Recent': 'Горячие Новинки',
         'Top 250 Movies': 'Лучшие 250 фильмов',
         'Top All Time': 'Лучшее за ВСЕ ВРЕМЯ',
         'by Genre': 'по Жанру',
@@ -152,7 +152,6 @@ dictionary = {
         'War': 'Военные',
         'Western': 'Вестерны',
         '[B]by Site[/B]': '[B]по Сайту[/B]',
-        'Movies': 'Фильмы',
         'Cartoons Series': 'Мультсериалы',
         'Cartoons Short': 'Мультфильмы (короткометражки)',
         'Male': 'Мужские',
@@ -161,7 +160,7 @@ dictionary = {
         'Next Page': 'Следующая Страница',
         'Previous Page': 'Предыдущая Страница',
         'Russian Movies': 'Отечественные Фильмы',
-        'Forieng Movies': 'Зарубежные Фильмы',
+        'Movies': 'Зарубежные Фильмы',
         'Anime Film': 'Полнометражное Аниме',
         'Anime Series': 'Аниме Сериалы',
         'Can\'t download torrent, probably no seeds available.': 'Не могу скачать торрент, скорее всего нет доступных сидов.',
@@ -224,6 +223,9 @@ dictionary = {
         'Add to MyShows.ru':'Добавить в MyShows.ru',
         'Return to MyShows.ru':'Вернуться в MyShows.ru',
         'Search results:':'Результаты поиска:',
+        'by Seeders':'по Сидам',
+        'by Date':'по Дате',
+        'Sort':'Сортировка',
 
     }
 }

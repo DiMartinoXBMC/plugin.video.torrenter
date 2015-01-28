@@ -27,13 +27,13 @@ from BeautifulSoup import BeautifulSoup
 
 class IMDB(Content.Content):
     category_dict = {
-        'movies': ('Forieng Movies', '/search/title?languages=en|1&title_type=feature&sort=moviemeter,asc'),
+        'movies': ('Movies', '/search/title?languages=en|1&title_type=feature&sort=moviemeter,asc'),
         'rus_movies': ('Russian Movies', '/search/title?languages=ru|1&title_type=feature&sort=moviemeter,asc'),
         'tvshows': ('TV Shows', '/search/title?count=100&title_type=tv_series,mini_series&ref_=gnr_tv_mp'),
         'cartoons': ('Cartoons', '/search/title?genres=animation&title_type=feature&sort=moviemeter,asc'),
         'anime': ('Anime',
                   '/search/title?count=100&genres=animation&keywords=anime&num_votes=1000,&explore=title_type&ref_=gnr_kw_an'),
-        'hot': ('Hot & New', '/search/title?count=100&title_type=feature%2Ctv_series%2Ctv_movie&ref_=nv_ch_mm_1'),
+        'hot': ('Most Recent', '/search/title?count=100&title_type=feature%2Ctv_series%2Ctv_movie&ref_=nv_ch_mm_1'),
         'top': ('Top 250 Movies', '/chart/top/'),
         'search': ('[B]Search[/B]', '/find?q=%s&s=tt&ttype=ft'),
         'year': {'year': 'by Year', },
@@ -93,9 +93,9 @@ class IMDB(Content.Content):
     def isScrappable(self):
         return True
 
-    def get_contentList(self, category, subcategory=None, page=None):
+    def get_contentList(self, category, subcategory=None, apps_property=None):
         contentList = []
-        url = self.get_url(category, subcategory, page, self.baseurl)
+        url = self.get_url(category, subcategory, apps_property)
 
         response = self.makeRequest(url, headers=self.headers)
 

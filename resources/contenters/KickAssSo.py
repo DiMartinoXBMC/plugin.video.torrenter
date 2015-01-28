@@ -22,10 +22,18 @@ import Content
 
 class KickAssSo(Content.Content):
     category_dict = {
-        'hot': ('Hot & New', '/new/', {'page': '/new/%d/', 'increase': 1, 'second_page': 2}),
-        'anime': ('Anime', '/anime/', {'page': '/anime/%d/', 'increase': 1, 'second_page': 2}),
-        'tvshows': ('TV Shows', '/tv/', {'page': '/tv/%d/', 'increase': 1, 'second_page': 2}),
-        'movies': ('Forieng Movies', '/movies/', {'page': '/movies/%d/', 'increase': 1, 'second_page': 2}),
+        'hot': ('Most Recent', '/new/', {'page': '/new/%d/', 'increase': 1, 'second_page': 2,
+                                         'sort':[{'name':'by Seeders', 'url_after':'?field=seeders&sorder=desc'},
+                                                 {'name':'by Date', 'url_after':'?field=time_add&sorder=desc'}]}),
+        'anime': ('Anime', '/anime/', {'page': '/anime/%d/', 'increase': 1, 'second_page': 2,
+                                         'sort':[{'name':'by Seeders', 'url_after':'?field=seeders&sorder=desc'},
+                                                 {'name':'by Date', 'url_after':'?field=time_add&sorder=desc'}]}),
+        'tvshows': ('TV Shows', '/tv/', {'page': '/tv/%d/', 'increase': 1, 'second_page': 2,
+                                         'sort':[{'name':'by Seeders', 'url_after':'?field=seeders&sorder=desc'},
+                                                 {'name':'by Date', 'url_after':'?field=time_add&sorder=desc'}]}),
+        'movies': ('Movies', '/movies/', {'page': '/movies/%d/', 'increase': 1, 'second_page': 2,
+                                         'sort':[{'name':'by Seeders', 'url_after':'?field=seeders&sorder=desc'},
+                                                 {'name':'by Date', 'url_after':'?field=time_add&sorder=desc'}]}),
     }
 
     baseurl = "http://kickass.so"
@@ -52,12 +60,15 @@ class KickAssSo(Content.Content):
     def isPages(self):
         return True
 
+    def isSort(self):
+        return True
+
     def isSearchOption(self):
         return False
 
-    def get_contentList(self, category, subcategory=None, page=None):
+    def get_contentList(self, category, subcategory=None, apps_property=None):
         contentList = []
-        url = self.get_url(category, subcategory, page, self.baseurl)
+        url = self.get_url(category, subcategory, apps_property)
 
         response = self.makeRequest(url, headers=self.headers)
 

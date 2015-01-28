@@ -1546,3 +1546,26 @@ def unquote(string, ret=None):
             return ret
         else:
             return string
+
+def itemScrap(item, kwarg):
+    # Debug('[itemTVDB]:meta '+str(kwarg))
+    if 'title' in kwarg and kwarg['title']:
+        item.setLabel(kwarg['title'])
+
+    if 'label' in kwarg and kwarg['label']:
+        item.setLabel2(kwarg['label'])
+
+    if 'icon' in kwarg and kwarg['icon']:
+        item.setIconImage(kwarg['icon'])
+
+    if 'thumbnail' in kwarg and kwarg['thumbnail']:
+        item.setThumbnailImage(kwarg['thumbnail'])
+
+    if 'properties' in kwarg and kwarg['properties']:
+        for key, value in kwarg['properties'].iteritems():
+            item.setProperty(key, str(value))
+
+    if 'info' in kwarg and kwarg['properties']:
+        item.setInfo(type='Video', infoLabels=kwarg['info'])
+
+    return item
