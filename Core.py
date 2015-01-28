@@ -1531,10 +1531,10 @@ class Core:
                                  '{"filename":"%s", "stype":%s, "showId":%s, "seasonId":%s, "id":%s, "episodeId":%s}' % (
                                  link, jstr(s['stype']), jstr(s['showId']), jstr(s['seasonId']), jstr(s['id']),
                                  jstr(s['episodeId']))))),
+                            (self.localize('Open (no return)'),
+                             'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
+                             sys.argv[0], 'openTorrent', link_url)),
                             (self.localize('Return to MyShows.ru'),
-                             (self.localize('Open (no return)'),
-                     'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
-                     sys.argv[0], 'openTorrent', link_url)),
                              'XBMC.ActivateWindow(%s)' % ('Videos,plugin://plugin.video.myshows/?mode=3013')),
                         ]
                         title = self.titleMake(seeds, leechers, size, title)
