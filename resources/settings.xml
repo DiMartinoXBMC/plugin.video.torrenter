@@ -20,6 +20,12 @@
                 default="true"
                 />
         <setting
+                id="sort_search"
+                type="bool"
+                label="30039"
+                default="true"
+                />
+        <setting
                 id="skin_optimization"
                 type="enum"
                 lvalues="30003|30018|30017|30016|30019"

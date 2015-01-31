@@ -36,6 +36,7 @@
     <string id="30036">Open Context Menu</string>
     <string id="30037">Download via Torrent-client</string>
     <string id="30038">Download via Python-Libtorrent</string>
+    <string id="30039">Sort search results by seeds</string>
     <string id="30101">Interface</string>
     <string id="30102">P2P Network</string>
     <string id="30103">Advanced</string>

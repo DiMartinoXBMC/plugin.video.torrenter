@@ -18,8 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-from StringIO import StringIO
-import gzip
 import tempfile
 
 import Downloader
@@ -33,6 +31,7 @@ from Player import TorrentPlayer
 from functions import *
 from resources.utorrent.net import *
 from resources.scrapers.scrapers import Scrapers
+from resources.skins.DialogXml import *
 
 
 class Core:
@@ -651,8 +650,7 @@ class Core:
                 apps['sort'] = int(sort) + 1
             else:
                 apps['sort'] = 0
-            print str(apps['sort'])
-            self.drawItem('[COLOR FFFFFFFF][B]%s: %s[/B][/COLOR]' % (self.localize('Sort'), self.localize(property['sort'][apps['sort']]['name'])), 'openContent',
+            self.drawItem('[COLOR FFFFFFFF][B]%s %s[/B][/COLOR]' % (self.localize('Sort'), self.localize(property['sort'][apps['sort']]['name'])), 'openContent',
                           json.dumps(apps), isFolder=True)
 
         if mode == 'tracker':
@@ -898,6 +896,11 @@ class Core:
                      sys.argv[0], 'downloadLibtorrent', urllib.quote_plus('%s::%s' % (provider, info.get('link')))))
                 ]
 
+            if isinstance(info, dict) and info.get('infolink'):
+                contextMenu.append((self.localize('Information'),
+                    'XBMC.RunPlugin(%s)' % ('%s?action=%s&provider=%s&url=%s&link=%s') % (
+                    sys.argv[0], 'ActionInfo', provider, info.get('infolink'), link['url'])))
+
             if self.open_option==0:
                 self.drawItem(title, 'openTorrent', link, image=img, info=info, contextMenu=contextMenu, replaceMenu=False)
             elif self.open_option==1:
@@ -907,6 +910,27 @@ class Core:
             elif self.open_option==3:
                 self.drawItem(title, 'downloadLibtorrent', link, image=img, info=info, contextMenu=contextMenu, replaceMenu=False)
             #self.drawItem(title, 'openTorrent', link, img, info=info, contextMenu=contextMenu, replaceMenu=False)
+
+    def ActionInfo(self, params={}):
+        get = params.get
+        contenter=get('provider')
+        infolink=get('url')
+        link=get('link')
+        if ROOT + os.sep + 'resources' + os.sep + 'contenters' not in sys.path:
+            sys.path.insert(0, ROOT + os.sep + 'resources' + os.sep + 'contenters')
+        try:
+            self.Content = getattr(__import__(contenter), contenter)()
+        except Exception, e:
+            print 'Unable to use contenter: ' + contenter + ' at ' + ' ActionInfo(). Exception: ' + str(e)
+
+        movieInfo=self.Content.get_info(infolink)
+        if movieInfo:
+            w = DialogXml("movieinfo.xml", ROOT, "Default")
+            w.doModal(movieInfo, link)
+            del w
+            del movieInfo
+        else:
+            showMessage(self.localize('Information'),self.localize('Information not found!'))
 
     def searchOption(self, params={}):
         try:
@@ -1378,10 +1402,8 @@ class Core:
                             x=x+1
                             fileTitle=myshows_sizes[str(i)]+myshows_cut[x]
                             myshows_items.append(fileTitle)
-                    myshows_items.append(self.localize('Return to MyShows.ru'))
-                    myshows_files.append('')
                 dialog = xbmcgui.Dialog()
-                if len(myshows_items) == 2:
+                if len(myshows_items) == 1:
                     ret = 0
                 else:
                     ret = dialog.select(self.localize('Search results:'), myshows_items)
@@ -1429,7 +1451,7 @@ class Core:
         get = params.get
         url = urllib.unquote_plus(get("url"))
         addtime=get("addtime")
-        if not addtime and self.__settings__.getSetting('history')=='true':
+        if self.__settings__.getSetting('history')=='true':
             HistoryDB().add(url)
         try:
             external = urllib.unquote_plus(get("external"))
@@ -1465,7 +1487,8 @@ class Core:
         if None == get('isApi'):
             progressBar.update(0)
             progressBar.close()
-        filesList = sorted(filesList, key=lambda x: x[0], reverse=True)
+        if self.__settings__.getSetting('sort_search')=='true':
+            filesList = sorted(filesList, key=lambda x: x[0], reverse=True)
         self.showFilesList(filesList, params)
 
     def controlCenter(self, params={}):

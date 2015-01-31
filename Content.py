@@ -81,7 +81,7 @@ class Content:
     for y in range(2015, 1970, -1):
         category_dict['year'][str(y)] = (str(y), '/top/y/%s/' % str(y))
 
-    def get_contentList(self, category, subcategory=None, property=None):
+    def get_contentList(self, category, subcategory=None, apps_property=None):
         '''
         Retrieve keyword from the input and return a list of tuples:
         filesList.append((

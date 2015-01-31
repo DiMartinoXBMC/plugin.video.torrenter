@@ -948,12 +948,17 @@ class HistoryDB:
             self._close()
 
     def add(self, url):
-        if not self.get(url):
-            self._connect()
+        self._connect()
+        self.cur.execute('select fav from history where string="' + url + '"')
+        x = self.cur.fetchone()
+        if x: x=int(x[0])
+        fav=True if x else False
+        if not fav:
+            self.cur.execute('delete from history where string="' +  decode(url) + '"')
             self.cur.execute('insert into history(addtime,string,fav,providers)'
-                             ' values(?,?,?,?)', (int(time.time()), decode(url), 0, ""))
-            self.db.commit()
-            self._close()
+                                 ' values(?,?,?,?)', (int(time.time()), decode(url), 0, ""))
+        self.db.commit()
+        self._close()
 
     def update(self, addtime, fav):
         self._connect()

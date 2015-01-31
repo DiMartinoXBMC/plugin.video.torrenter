@@ -19,6 +19,7 @@
 '''
 import re
 import Content
+from BeautifulSoup import BeautifulSoup
 
 class KickAssSo(Content.Content):
     category_dict = {
@@ -85,9 +86,9 @@ class KickAssSo(Content.Content):
         num = 51
         good_forums=['TV','Anime','Movies']
         result = re.compile(
-                r'''<a title="Download torrent file" href="(.+?)\?.+?" class=".+?"><i.+?<a.+?<a.+?<a href=".+?html" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>''',
+                r'''<a title="Download torrent file" href="(.+?)\?.+?" class=".+?"><i.+?<a.+?<a.+?<a href="(.+?html)" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>''',
                 re.DOTALL).findall(response)
-        for link,title,forum in result:
+        for link,infolink,title,forum in result:
             #main
             if forum in good_forums:
                 info = {}
@@ -99,9 +100,75 @@ class KickAssSo(Content.Content):
 
                 info['label'] = info['title'] = self.unescape(title)
                 info['link'] = link
+                info['infolink']=self.baseurl+infolink
 
                 contentList.append((
                     int(int(self.sourceWeight) * (int(num))),
                     original_title, title, int(year), img, info,
                 ))
         return contentList
+
+    def get_info(self, url):
+        movieInfo={}
+        color='[COLOR blue]%s:[/COLOR] %s\r\n'
+        response = self.makeRequest(url, headers=self.headers)
+
+        if None != response and 0 < len(response):
+            Soup = BeautifulSoup(response)
+            result = Soup.find('div', 'torrentMediaInfo')
+            if not result:
+                return None
+            li=result.findAll('li')
+            info,movieInfo={'Cast':''},{'desc':'','poster':'','title':'','views':'0','rating':'50','kinopoisk':''}
+            try:
+                img=result.find('a',{'class':'movieCover'}).find('img').get('src')
+                movieInfo['poster']='http:'+img
+            except:
+                pass
+            try:
+                movie=re.compile('View all <strong>(.+?)</strong> episodes</a>').match(str(result))
+                if movie:
+                    info['Movie']=movie.group(1)
+            except:
+                pass
+            for i in li:
+                name=i.find('strong').text
+                if name:
+                    info[name.rstrip(':')]=i.text.replace(name,'',1)
+            plot=result.find('div',{'id':'summary'})
+            if plot:
+                cut=plot.find('strong').text
+                info['plot']=plot.text.replace(cut,'',1).replace('report summary','')
+            #print str(result)
+            cast=re.compile('<a href="/movies/actor/.+?">(.+?)</a>').findall(str(result))
+            if cast:
+                for actor in cast:
+                    info['Cast']+=actor+", "
+            if 'Genres' in info:
+                info['Genres']=info['Genres'].replace(', ',',').replace(',',', ')
+            for key in info.keys():
+                if not 'Movie' in info and info[key]=='addto bookmarks':
+                    movieInfo['title']=self.unescape(key)
+                    info['TV Show']=self.unescape(key)
+                if not 'plot' in info and 'Summary' in key:
+                    info['plot']=info[key]
+
+            for i in ['Movie','TV Show','Release date','Original run','Episode','Air date','Genres','Language','Director','Writers','Cast','Original run','IMDb rating','AniDB rating']:
+                if info.get(i) and info.get(i) not in ['']:
+                    movieInfo['desc']+=color %(i,info.get(i))
+                    if i=='Movie':
+                        movieInfo['title']=info.get(i)
+
+            for i in ['plot','IMDb link','RottenTomatoes']:
+                if info.get(i) and info.get(i) not in ['']:
+                    if i=='plot':
+                        movieInfo['desc']+='\r\n[COLOR blue]Plot:[/COLOR]\r\n'+info.get(i)
+                    if i=='RottenTomatoes':
+                        movieInfo['rating']=str(info.get(i).split('%')[0])
+                    if i=='IMDb link':
+                        movieInfo['kinopoisk']='http://imdb.snick.ru/ratefor/02/tt%s.png' % info.get(i)
+
+
+            #print str(info)
+
+        return movieInfo

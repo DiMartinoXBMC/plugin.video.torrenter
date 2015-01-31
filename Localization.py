@@ -87,6 +87,7 @@ dictionary = {
         'Skip All Files': 'Пропустить Все Файлы',
         'Start': 'Пуск',
         'Stop': 'Стоп',
+        'Play':'Воспроизвести',
         'High Priority': 'Высокий Приоритет',
         'Skip File': 'Пропустить Файл',
         'Remove': 'Удалить',
@@ -226,6 +227,11 @@ dictionary = {
         'by Seeders':'по Сидам',
         'by Date':'по Дате',
         'Sort':'Сортировка',
+        'Close':'Закрыть окно',
+        'Views:':'Просм.:',
+        'Rating:':'Рейтинг:',
+        'Information not found!':'Информация не найдена!'
+
 
     }
 }
