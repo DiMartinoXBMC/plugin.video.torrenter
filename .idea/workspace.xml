@@ -2,22 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="56e91349-2444-4553-bc78-90c2bab49e9c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/skins/DialogXml.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/skins/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/skins/Default/720p/movieinfo.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Content.py" afterPath="$PROJECT_DIR$/Content.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Core.py" afterPath="$PROJECT_DIR$/Core.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/contenters/KickAssSo.py" afterPath="$PROJECT_DIR$/resources/contenters/KickAssSo.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/searchers/KickAssSo.py" afterPath="$PROJECT_DIR$/resources/searchers/KickAssSo.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Localization.py" afterPath="$PROJECT_DIR$/Localization.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/skins/Default/media/ConfluenceDialogBack.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/skins/Default/media/ConfluenceDialogCloseButton-focus.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/skins/Default/media/ConfluenceDialogCloseButton.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/skins/Default/media/Confluencedialogheader.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addon.xml" afterPath="$PROJECT_DIR$/addon.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/scrapers/cache.py" afterPath="$PROJECT_DIR$/resources/scrapers/cache.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cal.py" afterPath="$PROJECT_DIR$/cal.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/changelog.txt" afterPath="$PROJECT_DIR$/changelog.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/functions.py" afterPath="$PROJECT_DIR$/functions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/settings.xml" afterPath="$PROJECT_DIR$/resources/settings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/language/English/strings.xml" afterPath="$PROJECT_DIR$/resources/language/English/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/language/Russian/strings.xml" afterPath="$PROJECT_DIR$/resources/language/Russian/strings.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/skins/Default/720p/movieinfo.xml" afterPath="$PROJECT_DIR$/resources/skins/Default/720p/movieinfo.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="plugin.video.torrenter.iws" />
@@ -52,44 +42,9 @@
           <file leaf-file-name="Core.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Core.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-29.321428" vertical-offset="9498" max-vertical-offset="11067">
-                  <caret line="1492" column="0" selection-start-line="1492" selection-start-column="0" selection-end-line="1492" selection-end-column="0" />
-                  <folding>
-                    <element signature="e#24#781#1" expanded="false" />
-                    <element signature="e#2316#2613#0" expanded="false" />
-                    <element signature="e#2650#7284#0" expanded="false" />
-                    <element signature="e#7323#19288#0" expanded="false" />
-                    <element signature="e#19329#20095#0" expanded="false" />
-                    <element signature="e#20146#27161#0" expanded="false" />
-                    <element signature="e#27205#30634#0" expanded="false" />
-                    <element signature="e#30675#31902#0" expanded="false" />
-                    <element signature="e#32002#36356#0" expanded="false" />
-                    <element signature="e#36404#38468#0" expanded="false" />
-                    <element signature="e#38510#40305#0" expanded="false" />
-                    <element signature="e#40355#44978#0" expanded="false" />
-                    <element signature="e#53882#54693#0" expanded="false" />
-                    <element signature="e#54742#56701#0" expanded="false" />
-                    <element signature="e#56858#58110#0" expanded="false" />
-                    <element signature="e#58166#58583#0" expanded="false" />
-                    <element signature="e#58625#58734#0" expanded="false" />
-                    <element signature="e#58777#58897#0" expanded="false" />
-                    <element signature="e#58947#59098#0" expanded="false" />
-                    <element signature="e#66954#66993#0" expanded="false" />
-                    <element signature="e#67042#67832#0" expanded="false" />
-                    <element signature="e#70727#71476#0" expanded="false" />
-                    <element signature="e#71524#73020#0" expanded="false" />
-                    <element signature="e#73065#73938#0" expanded="false" />
-                    <element signature="e#81864#81960#0" expanded="false" />
-                    <element signature="e#82023#82550#0" expanded="false" />
-                    <element signature="e#82611#87823#0" expanded="false" />
-                    <element signature="e#87867#87924#0" expanded="false" />
-                    <element signature="e#87978#91327#0" expanded="false" />
-                    <element signature="e#91382#93313#0" expanded="false" />
-                    <element signature="e#93379#93999#0" expanded="false" />
-                    <element signature="e#94749#95538#0" expanded="false" />
-                    <element signature="e#95580#95675#0" expanded="false" />
-                    <element signature="e#95725#95873#0" expanded="false" />
-                  </folding>
+                <state vertical-scroll-proportion="0.0" vertical-offset="11790" max-vertical-offset="30022">
+                  <caret line="900" column="78" selection-start-line="900" selection-start-column="78" selection-end-line="900" selection-end-column="78" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -97,17 +52,17 @@
           <file leaf-file-name="ExtraTorrent.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/resources/searchers/ExtraTorrent.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="861" max-vertical-offset="1802">
+                <state vertical-scroll-proportion="0.0" vertical-offset="1275" max-vertical-offset="1836">
                   <caret line="75" column="22" selection-start-line="75" selection-start-column="22" selection-end-line="75" selection-end-column="22" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="KickAssSo.py" pinned="false" current="false" current-in-tab="true">
+          <file leaf-file-name="KickAssSo.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/resources/searchers/KickAssSo.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.079617836" vertical-offset="1004" max-vertical-offset="1632">
+                <state vertical-scroll-proportion="0.0" vertical-offset="1122" max-vertical-offset="1700">
                   <caret line="66" column="33" selection-start-line="66" selection-start-column="33" selection-end-line="66" selection-end-column="33" />
                   <folding />
                 </state>
@@ -117,7 +72,7 @@
           <file leaf-file-name="Content.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Content.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="714" max-vertical-offset="4335">
+                <state vertical-scroll-proportion="0.0" vertical-offset="867" max-vertical-offset="4488">
                   <caret line="51" column="18" selection-start-line="51" selection-start-column="8" selection-end-line="51" selection-end-column="18" />
                   <folding />
                 </state>
@@ -127,8 +82,18 @@
           <file leaf-file-name="addon.xml" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/addon.xml">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="170" max-vertical-offset="510">
-                  <caret line="10" column="35" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
+                  <caret line="10" column="43" selection-start-line="10" selection-start-column="43" selection-end-line="10" selection-end-column="43" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="RatingDialog.xml" pinned="false" current="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/../plugin.video.myshows/resources/skins/Default/720p/RatingDialog.xml">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="-2.738434" vertical-offset="3120" max-vertical-offset="3961">
+                  <caret line="93" column="39" selection-start-line="93" selection-start-column="39" selection-end-line="93" selection-end-column="39" />
                   <folding />
                 </state>
               </provider>
@@ -137,11 +102,9 @@
           <file leaf-file-name="KickAssSo.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/resources/contenters/KickAssSo.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-17.178572" vertical-offset="2341" max-vertical-offset="3043">
+                <state vertical-scroll-proportion="0.0" vertical-offset="2341" max-vertical-offset="3043">
                   <caret line="166" column="25" selection-start-line="166" selection-start-column="25" selection-end-line="166" selection-end-column="25" />
-                  <folding>
-                    <element signature="e#782#791#0" expanded="true" />
-                  </folding>
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -149,7 +112,7 @@
           <file leaf-file-name="cal.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/cal.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="306">
+                <state vertical-scroll-proportion="0.0" vertical-offset="187" max-vertical-offset="323">
                   <caret line="11" column="117" selection-start-line="11" selection-start-column="117" selection-end-line="11" selection-end-column="117" />
                   <folding />
                 </state>
@@ -159,7 +122,7 @@
           <file leaf-file-name="changelog.txt" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/changelog.txt">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1360">
+                <state vertical-scroll-proportion="0.0" vertical-offset="34" max-vertical-offset="1360">
                   <caret line="2" column="64" selection-start-line="2" selection-start-column="64" selection-end-line="2" selection-end-column="64" />
                   <folding />
                 </state>
@@ -184,27 +147,27 @@
             <entry file="file://$PROJECT_DIR$/resources/skins/DialogXml.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1411">
-                  <caret line="9" column="44" selection-start-line="9" selection-start-column="44" selection-end-line="9" selection-end-column="44" />
+                  <caret line="68" column="0" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="movieinfo.xml" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="movieinfo.xml" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/resources/skins/Default/720p/movieinfo.xml">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="2543" max-vertical-offset="3808">
-                  <caret line="167" column="46" selection-start-line="167" selection-start-column="43" selection-end-line="167" selection-end-column="46" />
+                <state vertical-scroll-proportion="0.31672597" vertical-offset="638" max-vertical-offset="3808">
+                  <caret line="48" column="30" selection-start-line="48" selection-start-column="30" selection-end-line="48" selection-end-column="30" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="functions.py" pinned="false" current="true" current-in-tab="true">
+          <file leaf-file-name="functions.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/functions.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.3455414" vertical-offset="15695" max-vertical-offset="26588">
-                  <caret line="953" column="23" selection-start-line="953" selection-start-column="23" selection-end-line="953" selection-end-column="23" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="15878" max-vertical-offset="26588">
+                  <caret line="958" column="5" selection-start-line="958" selection-start-column="5" selection-end-line="958" selection-end-column="5" />
                   <folding />
                 </state>
               </provider>
@@ -213,7 +176,7 @@
           <file leaf-file-name="settings.xml" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/resources/settings.xml">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2941">
+                <state vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="2941">
                   <caret line="24" column="29" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
                   <folding />
                 </state>
@@ -282,11 +245,9 @@
         <option value="$PROJECT_DIR$/resources/contenters/EZTV.py" />
         <option value="$PROJECT_DIR$/resources/contenters/KinoPoisk.py" />
         <option value="$PROJECT_DIR$/resources/contenters/RiperAM.py" />
-        <option value="$PROJECT_DIR$/addon.xml" />
         <option value="$PROJECT_DIR$/Content.py" />
         <option value="$PROJECT_DIR$/resources/skins/DialogReviews.py" />
         <option value="$PROJECT_DIR$/cal.py" />
-        <option value="$PROJECT_DIR$/resources/skins/Default/720p/movieinfo.xml" />
         <option value="$PROJECT_DIR$/Localization.py" />
         <option value="$PROJECT_DIR$/changelog.txt" />
         <option value="$PROJECT_DIR$/functions.py" />
@@ -298,7 +259,11 @@
         <option value="$PROJECT_DIR$/resources/contenters/KickAssSo.py" />
         <option value="$PROJECT_DIR$/resources/skins/DialogXml.py" />
         <option value="$PROJECT_DIR$/resources/settings.xml" />
+        <option value="$PROJECT_DIR$/addon.xml" />
+        <option value="$PROJECT_DIR$/../script.torrenterscc/addon.xml" />
+        <option value="$PROJECT_DIR$/../script.torrenterscc/test.py" />
         <option value="$PROJECT_DIR$/Core.py" />
+        <option value="$PROJECT_DIR$/resources/skins/Default/720p/movieinfo.xml" />
       </list>
     </option>
   </component>
@@ -334,7 +299,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -423,6 +387,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -739,7 +704,11 @@
       <created>1422474825684</created>
       <updated>1422474825684</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="information kickass update">
+      <created>1422736110449</created>
+      <updated>1422736110449</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -764,17 +733,17 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1" y="1" width="1918" height="1038" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2585034" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3288889" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2585034" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32879817" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1319149" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2154195" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21566401" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -801,7 +770,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="save path keyboard" />
     <MESSAGE value="return russian trackers" />
     <MESSAGE value="moveout some minor functions from Core" />
     <MESSAGE value="download by libtorrent" />
@@ -826,7 +794,8 @@
     <MESSAGE value="false positive fix" />
     <MESSAGE value="myshows fix" />
     <MESSAGE value="sort" />
-    <option name="LAST_COMMIT_MESSAGE" value="sort" />
+    <MESSAGE value="information kickass update" />
+    <option name="LAST_COMMIT_MESSAGE" value="information kickass update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -834,28 +803,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/cal.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="187" max-vertical-offset="289">
-          <caret line="11" column="93" selection-start-line="11" selection-start-column="93" selection-end-line="11" selection-end-column="93" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="969">
-          <caret line="7" column="20" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addon.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="238" max-vertical-offset="510">
-          <caret line="14" column="266" selection-start-line="14" selection-start-column="31" selection-end-line="14" selection-end-column="266" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../plugin.video.myshows/resources/settings.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.41653904" vertical-offset="0" max-vertical-offset="1513">
@@ -989,14 +936,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/addon.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
-          <caret line="10" column="35" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/utorrent/net.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="14229" max-vertical-offset="22576">
@@ -1067,15 +1006,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.32857144" vertical-offset="2360" max-vertical-offset="3825">
           <caret line="151" column="0" selection-start-line="151" selection-start-column="0" selection-end-line="197" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/skins/Default/720p/movieinfo.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2543" max-vertical-offset="3808">
-          <caret line="167" column="46" selection-start-line="167" selection-start-column="43" selection-end-line="167" selection-end-column="46" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1083,7 +1013,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.38870433" vertical-offset="1279" max-vertical-offset="4250">
           <caret line="89" column="29" selection-start-line="89" selection-start-column="29" selection-end-line="89" selection-end-column="29" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1091,7 +1020,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.10575428" vertical-offset="0" max-vertical-offset="643">
           <caret line="4" column="42" selection-start-line="4" selection-start-column="42" selection-end-line="4" selection-end-column="51" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1099,7 +1027,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.2904762" vertical-offset="6192" max-vertical-offset="6885">
           <caret line="387" column="24" selection-start-line="387" selection-start-column="24" selection-end-line="392" selection-end-column="37" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1115,7 +1042,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33280253" vertical-offset="2307" max-vertical-offset="9078">
           <caret line="148" column="8" selection-start-line="148" selection-start-column="8" selection-end-line="148" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1139,7 +1065,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.43152866" vertical-offset="2075" max-vertical-offset="2703">
           <caret line="148" column="66" selection-start-line="148" selection-start-column="66" selection-end-line="148" selection-end-column="66" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1155,7 +1080,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.48726115" vertical-offset="714" max-vertical-offset="1513">
           <caret line="65" column="22" selection-start-line="65" selection-start-column="22" selection-end-line="65" selection-end-column="22" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1163,14 +1087,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="861" max-vertical-offset="1802">
           <caret line="75" column="22" selection-start-line="75" selection-start-column="22" selection-end-line="75" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/skins/DialogXml.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1411">
-          <caret line="9" column="44" selection-start-line="9" selection-start-column="44" selection-end-line="9" selection-end-column="44" />
           <folding />
         </state>
       </provider>
@@ -1185,69 +1101,79 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/resources/contenters/KickAssSo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-17.178572" vertical-offset="2341" max-vertical-offset="3043">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2341" max-vertical-offset="3043">
           <caret line="166" column="25" selection-start-line="166" selection-start-column="25" selection-end-line="166" selection-end-column="25" />
-          <folding>
-            <element signature="e#782#791#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Core.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-29.321428" vertical-offset="9498" max-vertical-offset="11067">
-          <caret line="1492" column="0" selection-start-line="1492" selection-start-column="0" selection-end-line="1492" selection-end-column="0" />
-          <folding>
-            <element signature="e#24#781#1" expanded="false" />
-            <element signature="e#2316#2613#0" expanded="false" />
-            <element signature="e#2650#7284#0" expanded="false" />
-            <element signature="e#7323#19288#0" expanded="false" />
-            <element signature="e#19329#20095#0" expanded="false" />
-            <element signature="e#20146#27161#0" expanded="false" />
-            <element signature="e#27205#30634#0" expanded="false" />
-            <element signature="e#30675#31902#0" expanded="false" />
-            <element signature="e#32002#36356#0" expanded="false" />
-            <element signature="e#36404#38468#0" expanded="false" />
-            <element signature="e#38510#40305#0" expanded="false" />
-            <element signature="e#40355#44978#0" expanded="false" />
-            <element signature="e#53882#54693#0" expanded="false" />
-            <element signature="e#54742#56701#0" expanded="false" />
-            <element signature="e#56858#58110#0" expanded="false" />
-            <element signature="e#58166#58583#0" expanded="false" />
-            <element signature="e#58625#58734#0" expanded="false" />
-            <element signature="e#58777#58897#0" expanded="false" />
-            <element signature="e#58947#59098#0" expanded="false" />
-            <element signature="e#66954#66993#0" expanded="false" />
-            <element signature="e#67042#67832#0" expanded="false" />
-            <element signature="e#70727#71476#0" expanded="false" />
-            <element signature="e#71524#73020#0" expanded="false" />
-            <element signature="e#73065#73938#0" expanded="false" />
-            <element signature="e#81864#81960#0" expanded="false" />
-            <element signature="e#82023#82550#0" expanded="false" />
-            <element signature="e#82611#87823#0" expanded="false" />
-            <element signature="e#87867#87924#0" expanded="false" />
-            <element signature="e#87978#91327#0" expanded="false" />
-            <element signature="e#91382#93313#0" expanded="false" />
-            <element signature="e#93379#93999#0" expanded="false" />
-            <element signature="e#94749#95538#0" expanded="false" />
-            <element signature="e#95580#95675#0" expanded="false" />
-            <element signature="e#95725#95873#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/resources/searchers/KickAssSo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.079617836" vertical-offset="1004" max-vertical-offset="1632">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1004" max-vertical-offset="1632">
           <caret line="66" column="33" selection-start-line="66" selection-start-column="33" selection-end-line="66" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../script.torrenterscc/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.13556619" vertical-offset="0" max-vertical-offset="627">
+          <caret line="5" column="77" selection-start-line="5" selection-start-column="77" selection-end-line="5" selection-end-column="77" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/skins/DialogXml.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1411">
+          <caret line="68" column="0" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Core.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="11790" max-vertical-offset="30022">
+          <caret line="900" column="78" selection-start-line="900" selection-start-column="78" selection-end-line="900" selection-end-column="78" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addon.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
+          <caret line="10" column="43" selection-start-line="10" selection-start-column="43" selection-end-line="10" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../script.torrenterscc/addon.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3273165" vertical-offset="0" max-vertical-offset="831">
+          <caret line="16" column="14" selection-start-line="16" selection-start-column="14" selection-end-line="16" selection-end-column="14" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/functions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3455414" vertical-offset="15695" max-vertical-offset="26588">
-          <caret line="953" column="23" selection-start-line="953" selection-start-column="23" selection-end-line="953" selection-end-column="23" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="15878" max-vertical-offset="26588">
+          <caret line="958" column="5" selection-start-line="958" selection-start-column="5" selection-end-line="958" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.video.myshows/resources/skins/Default/720p/RatingDialog.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.738434" vertical-offset="3120" max-vertical-offset="3961">
+          <caret line="93" column="39" selection-start-line="93" selection-start-column="39" selection-end-line="93" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/skins/Default/720p/movieinfo.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.31672597" vertical-offset="638" max-vertical-offset="3808">
+          <caret line="48" column="30" selection-start-line="48" selection-start-column="30" selection-end-line="48" selection-end-column="30" />
           <folding />
         </state>
       </provider>

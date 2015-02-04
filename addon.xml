@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.torrenter" name="Torrenter" version="2.1.6" provider-name="vadim.skorba, DiMartino">
+<addon id="plugin.video.torrenter" name="Torrenter" version="2.1.7" provider-name="vadim.skorba, DiMartino">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
         <import addon="script.module.libtorrent"/>

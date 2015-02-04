@@ -15,7 +15,7 @@
                 <posy>0</posy>
                 <width>800</width>
                 <height>680</height>
-                <texture border="40">DialogBack.png</texture>
+                <texture border="40">ConfluenceDialogBack.png</texture>
             </control>
             <control type="image">
                 <description>Dialog Header image</description>
@@ -23,7 +23,7 @@
                 <posy>16</posy>
                 <width>720</width>
                 <height>40</height>
-                <texture>dialogheader.png</texture>
+                <texture>Confluencedialogheader.png</texture>
             </control>
             <control type="label" id="1">
                 <description>header label</description>
@@ -48,8 +48,8 @@
                 <label>-</label>
                 <font>-</font>
                 <onclick>PreviousMenu</onclick>
-                <texturefocus>DialogCloseButton-focus.png</texturefocus>
-                <texturenofocus>DialogCloseButton.png</texturenofocus>
+                <texturefocus>ConfluenceDialogCloseButton-focus.png</texturefocus>
+                <texturenofocus>ConfluenceDialogCloseButton.png</texturenofocus>
                 <onleft>10</onleft>
                 <onright>10</onright>
                 <onup>10</onup>
