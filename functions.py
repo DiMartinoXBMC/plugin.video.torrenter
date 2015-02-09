@@ -1339,11 +1339,10 @@ def fetchData(url, referer=None):
 
 def file_decode(filename):
     if not __settings__.getSetting('delete_russian')=='true':
-        if sys.getfilesystemencoding()=='mbcs':
-            try:
-                filename=filename.decode('utf-8')#,'ignore')
-            except:
-                pass
+        try:
+            filename=filename.decode('utf-8')#,'ignore')
+        except:
+            pass
     return filename
 
 def file_encode(filename):

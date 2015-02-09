@@ -758,6 +758,7 @@ class Transmission:
     def setprio_simple_multi(self, menu):
         id=menu[0][0]
         prio=menu[0][1]
+        res=None
 
         inds=[]
         for hash, action, ind in menu:
