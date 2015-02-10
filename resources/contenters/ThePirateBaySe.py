@@ -55,7 +55,7 @@ class ThePirateBaySe(Content.Content):
         return False
 
     def isInfoLink(self):
-        return False
+        return True
 
     def isPages(self):
         return True
@@ -69,7 +69,6 @@ class ThePirateBaySe(Content.Content):
     def get_contentList(self, category, subcategory=None, apps_property=None):
         contentList = []
         url = self.get_url(category, subcategory, apps_property)
-        print str(url)
 
         response = self.makeRequest(url, headers=self.headers)
 
@@ -87,11 +86,9 @@ class ThePirateBaySe(Content.Content):
         result = re.compile(
                 r'''<div class="detName">.+?">(.+?)</a>.+?<a href="(.+?)".+?<font class="detDesc">Uploaded (.+?), Size (.+?), .+?</font>.+?<td align="right">(\d+?)</td>.+?<td align="right">(\d+?)</td>''',
                 re.DOTALL).findall(response)
-        for (title, link, date, size, seeds, leechers) in result:
+        for title, link, date, size, seeds, leechers in result:
             info = {}
             num = num - 1
-            if not re.match('^https?\://.+', link) and not re.match('^magnet\:.+', link):
-                link = re.search('^(https?\://.+?)/.+', self.baseurl).group(1) + link
             original_title = None
             year = 0
             img = ''
@@ -103,7 +100,6 @@ class ThePirateBaySe(Content.Content):
             info['label'] = info['title'] = self.unescape(title)
             info['link'] = link
             info['plot'] = info['title']+'\r\n[I](%s) [S/L: %s/%s] [/I]\r\n%s' % (size, seeds, leechers, date)
-
             contentList.append((
                 int(int(self.sourceWeight) * (int(num))),
                 original_title, title, int(year), img, info,

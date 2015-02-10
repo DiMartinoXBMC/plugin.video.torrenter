@@ -883,7 +883,11 @@ class Core:
             label = info.get('label').encode('utf-8', 'ignore')
 
             if self.contenterObject[provider].isInfoLink() and info.get('link'):
-                link = {'url': '%s::%s' % (provider, info.get('link')), 'thumbnail': img}
+                if isinstance(info.get('link'), tuple):
+                    url=info.get('link')[0]
+                else:
+                    url=info.get('link')
+                link = {'url': '%s::%s' % (provider, url), 'thumbnail': img}
             elif self.contenterObject[provider].isLabel():
                 link = {'url': '%s::%s' % (provider, urllib.quote_plus(label)), 'thumbnail': img}
 
