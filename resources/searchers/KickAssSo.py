@@ -63,7 +63,7 @@ class KickAssSo(SearcherABC.SearcherABC):
 
     def search(self, keyword):
         filesList = []
-        url = "http://kickass.so/usearch/%s/?field=time_add&sorder=desc" % urllib.quote_plus(keyword)
+        url = "http://kickass.to/usearch/%s/?field=time_add&sorder=desc" % urllib.quote_plus(keyword)
         headers = [('User-Agent',
             'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 YaBrowser/14.10.2062.12061 Safari/537.36'),
            ('Referer', 'http://kickass.so/'), ('Accept-encoding', 'gzip'), ]
