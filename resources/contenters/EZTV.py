@@ -70,9 +70,9 @@ class EZTV(Content.Content):
         #print str(result)
         num = 51
         result = re.compile(
-                r'''class="epinfo">(.+?)</a>.+?<a href="(magnet.+?)"''',
+                r'''class="epinfo">(.+?)</a>.+?<a href="(magnet.+?)".+?<td align="center" class="forum_thread_post">(.+?) </td>''',
                 re.DOTALL).findall(response)
-        for title, link in result:
+        for title, link, date in result:
             #main
             info = {}
             num = num - 1
@@ -83,6 +83,7 @@ class EZTV(Content.Content):
 
             info['label'] = info['title'] = title
             info['link'] = link
+            info['plot'] = info['title']+'\r\nAge: %s' % (date)
 
             contentList.append((
                 int(int(self.sourceWeight) * (int(num))),
