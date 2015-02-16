@@ -50,10 +50,14 @@ def clearStorage(userStorageDirectory):
         import shutil
 
         temp = userStorageDirectory.rstrip('Torrenter').rstrip('/\\')
-        shutil.move(os.path.join(userStorageDirectory, 'torrents'), os.path.join(temp, 'torrents'))
+        torrents_temp,i=None,0
+        while not torrents_temp or xbmcvfs.exists(torrents_temp):
+            torrents_temp=os.path.join(temp, 'torrents'+str(i))+os.sep
+            i+=1
+        shutil.move(os.path.join(userStorageDirectory, 'torrents'), torrents_temp)
         shutil.rmtree(userStorageDirectory, ignore_errors=True)
         xbmcvfs.mkdir(userStorageDirectory)
-        shutil.move(os.path.join(temp, 'torrents'), os.path.join(userStorageDirectory, 'torrents'))
+        shutil.move(torrents_temp, os.path.join(userStorageDirectory, 'torrents'))
     DownloadDB().clear()
     showMessage(Localization.localize('Storage'), Localization.localize('Storage was cleared'), forced=True)
 

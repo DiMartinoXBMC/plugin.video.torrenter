@@ -177,11 +177,13 @@ class TorrentPlayer(xbmc.Player):
 
     def setup_torrent(self):
         self.torrent.startSession()
-        if 0 < int(self.__settings__.getSetting("upload_limit")):
-            self.torrent.setUploadLimit(int(self.__settings__.getSetting("upload_limit")) * 1000000 / 8)  #MBits/second
-        if 0 < int(self.__settings__.getSetting("download_limit")):
+        upload_limit=self.__settings__.getSetting("upload_limit") if self.__settings__.getSetting("upload_limit")!="" else 0
+        if 0 < int(upload_limit):
+            self.torrent.setUploadLimit(int(upload_limit) * 1000000 / 8)  #MBits/second
+        download_limit=self.__settings__.getSetting("download_limit") if self.__settings__.getSetting("download_limit")!="" else 0
+        if 0 < int(download_limit):
             self.torrent.setDownloadLimit(
-                int(self.__settings__.getSetting("download_limit")) * 1000000 / 8)  #MBits/second
+                int(download_limit) * 1000000 / 8)  #MBits/second
         self.torrent.status = False
         self.fullSize = self.torrent.getFileSize(self.contentId)
         Offset = calculate(self.fullSize)
