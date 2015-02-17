@@ -27,34 +27,34 @@ def configure(api_key, language='en'):
     config['language'] = language
     config['urls'] = {}
     config['urls'][
-        'movie.search'] = "https://api.themoviedb.org/3/search/movie?query=%%s&year=%%s&api_key=%(apikey)s&page=%%s" % (
+        'movie.search'] = "http://api.themoviedb.org/3/search/movie?query=%%s&year=%%s&api_key=%(apikey)s&page=%%s" % (
     config)
-    config['urls']['movie.info'] = "https://api.themoviedb.org/3/movie/%%s?api_key=%(apikey)s" % (config)
+    config['urls']['movie.info'] = "http://api.themoviedb.org/3/movie/%%s?api_key=%(apikey)s" % (config)
     config['urls'][
-        'people.search'] = "https://api.themoviedb.org/3/search/person?query=%%s&api_key=%(apikey)s&page=%%s" % (config)
-    config['urls']['collection.info'] = "https://api.themoviedb.org/3/collection/%%s&api_key=%(apikey)s" % (config)
+        'people.search'] = "http://api.themoviedb.org/3/search/person?query=%%s&api_key=%(apikey)s&page=%%s" % (config)
+    config['urls']['collection.info'] = "http://api.themoviedb.org/3/collection/%%s&api_key=%(apikey)s" % (config)
     config['urls'][
-        'movie.alternativetitles'] = "https://api.themoviedb.org/3/movie/%%s/alternative_titles?api_key=%(apikey)s" % (
+        'movie.alternativetitles'] = "http://api.themoviedb.org/3/movie/%%s/alternative_titles?api_key=%(apikey)s" % (
     config)
-    config['urls']['movie.casts'] = "https://api.themoviedb.org/3/movie/%%s/casts?api_key=%(apikey)s" % (config)
-    config['urls']['movie.images'] = "https://api.themoviedb.org/3/movie/%%s/images?api_key=%(apikey)s" % (config)
-    config['urls']['movie.keywords'] = "https://api.themoviedb.org/3/movie/%%s/keywords?api_key=%(apikey)s" % (config)
-    config['urls']['movie.releases'] = "https://api.themoviedb.org/3/movie/%%s/releases?api_key=%(apikey)s" % (config)
-    config['urls']['movie.trailers'] = "https://api.themoviedb.org/3/movie/%%s/trailers?api_key=%(apikey)s" % (config)
-    config['urls']['movie.translations'] = "https://api.themoviedb.org/3/movie/%%s/translations?api_key=%(apikey)s" % (
-    config)
-    config['urls'][
-        'person.info'] = "https://api.themoviedb.org/3/person/%%s?api_key=%(apikey)s&append_to_response=images,credits" % (
-    config)
-    config['urls']['latestmovie'] = "https://api.themoviedb.org/3/latest/movie?api_key=%(apikey)s" % (config)
-    config['urls']['config'] = "https://api.themoviedb.org/3/configuration?api_key=%(apikey)s" % (config)
-    config['urls']['request.token'] = "https://api.themoviedb.org/3/authentication/token/new?api_key=%(apikey)s" % (
+    config['urls']['movie.casts'] = "http://api.themoviedb.org/3/movie/%%s/casts?api_key=%(apikey)s" % (config)
+    config['urls']['movie.images'] = "http://api.themoviedb.org/3/movie/%%s/images?api_key=%(apikey)s" % (config)
+    config['urls']['movie.keywords'] = "http://api.themoviedb.org/3/movie/%%s/keywords?api_key=%(apikey)s" % (config)
+    config['urls']['movie.releases'] = "http://api.themoviedb.org/3/movie/%%s/releases?api_key=%(apikey)s" % (config)
+    config['urls']['movie.trailers'] = "http://api.themoviedb.org/3/movie/%%s/trailers?api_key=%(apikey)s" % (config)
+    config['urls']['movie.translations'] = "http://api.themoviedb.org/3/movie/%%s/translations?api_key=%(apikey)s" % (
     config)
     config['urls'][
-        'session.id'] = "https://api.themoviedb.org/3/authentication/session/new?api_key=%(apikey)s&request_token=%%s" % (
+        'person.info'] = "http://api.themoviedb.org/3/person/%%s?api_key=%(apikey)s&append_to_response=images,credits" % (
+    config)
+    config['urls']['latestmovie'] = "http://api.themoviedb.org/3/latest/movie?api_key=%(apikey)s" % (config)
+    config['urls']['config'] = "http://api.themoviedb.org/3/configuration?api_key=%(apikey)s" % (config)
+    config['urls']['request.token'] = "http://api.themoviedb.org/3/authentication/token/new?api_key=%(apikey)s" % (
     config)
     config['urls'][
-        'movie.add.rating'] = "https://api.themoviedb.org/3/movie/%%s/rating?session_id=%%s&api_key=%(apikey)s" % (
+        'session.id'] = "http://api.themoviedb.org/3/authentication/session/new?api_key=%(apikey)s&request_token=%%s" % (
+    config)
+    config['urls'][
+        'movie.add.rating'] = "http://api.themoviedb.org/3/movie/%%s/rating?session_id=%%s&api_key=%(apikey)s" % (
     config)
     config['api'] = {}
     config['api']['backdrop.sizes'] = ""
