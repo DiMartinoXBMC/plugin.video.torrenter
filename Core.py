@@ -662,8 +662,6 @@ class Core:
             #if not self.debug: view_style('drawcontentList')
 
         if property and property.get('page'):
-            apps['page'] = page + 1
-            #print str(apps)
             self.drawItem('[COLOR FFFFFFFF][B]%s[/B][/COLOR]' % self.localize('Next Page'), 'openContent',
                           json.dumps(apps), isFolder=True)
 
@@ -887,7 +885,10 @@ class Core:
                     url=info.get('link')[0]
                 else:
                     url=info.get('link')
-                link = {'url': '%s::%s' % (provider, url), 'thumbnail': img}
+                if not '::' in url:
+                    link = {'url': '%s::%s' % (provider, url), 'thumbnail': img}
+                else:
+                    link = {'url': url, 'thumbnail': img}
             elif self.contenterObject[provider].isLabel():
                 link = {'url': '%s::%s' % (provider, urllib.quote_plus(label)), 'thumbnail': img}
 
@@ -971,6 +972,13 @@ class Core:
             if get('title'): options.append('%s S%2dE%2d' % (get('title'), int(get('season')), int(get('episode'))))
             if get('original_title'): options.append(
                 '%s S%2dE%2d' % (get('original_title'), int(get('season')), int(get('episode'))))
+
+        search_phrase=self.__settings__.getSetting('search_phrase')
+        if search_phrase!='':
+            x=[]
+            x.extend(options)
+            for title in x:
+                options.append(title+' '+search_phrase)
 
         for title in options:
             try:

@@ -59,6 +59,7 @@
                 label="30025"
                 default="1"
                 />
+        <setting id="search_phrase" type="text" label="30040"/>
         <setting
                 id="debug"
                 type="bool"

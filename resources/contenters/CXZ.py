@@ -101,6 +101,9 @@ class CXZ(Content.Content):
     def isLabel(self):
         return False
 
+    def isInfoLink(self):
+        return False
+
     def isPages(self):
         return True
 
