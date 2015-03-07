@@ -25,7 +25,27 @@ class SWESUB(Content.Content):
     category_dict = {
         'tvshows': ('TV Shows', '/senaste-tv-serier/', {'page': '/senaste-tv-serier/?page=%d',
                                                         'increase': 1, 'second_page': 2,}),
-        'movies': ('Movies', '/filmer/', {'page': '/filmer/?page=%d', 'increase': 1, 'second_page': 2,}),
+        'movies': ('Movies', '/senaste-filmer/'),#, {'page': '/senaste-filmer/?page=%d', 'increase': 1, 'second_page': 2,}),
+        'genre': {'genre': 'by Genre',
+              'action': ('Action', '/action/', {'page': '/action/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'adventure': ('Adventure', '/aventyr/', {'page': '/aventyr/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'animation': ('Animation', '/animerat/', {'page': '/animerat/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'comedy': ('Comedy', '/komedi/', {'page': '/komedi/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'crime': ('Crime', '/kriminal/', {'page': '/kriminal/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'documentary': ('Documentary', '/dokumentar/', {'page': '/dokumentar/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'drama': ('Drama', '/drama/', {'page': '/drama/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'family': ('Family', '/familj/', {'page': '/familj/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'fantasy': ('Fantasy', '/fantasy/', {'page': '/fantasy/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'horror': ('Horror', '/skrack/', {'page': '/skrack/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'music': ('Music', '/dans/', {'page': '/dans/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'musical': ('Musical', '/musikal/', {'page': '/musikal/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'romance': ('Romance', '/romantik/', {'page': '/romantik/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'sci_fi': ('Sci-Fi', '/sci-fi/', {'page': '/sci-fi/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'sport': ('Sport', '/sport/', {'page': '/sport/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'thriller': ('Thriller', '/thriller/', {'page': '/thriller/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'war': ('War', '/krig/', {'page': '/krig/?page=%d', 'increase': 1, 'second_page': 2,}),
+              'western': ('Western', '/western/', {'page': '/western/?page=%d', 'increase': 1, 'second_page': 2,}),
+        }
     }
 
     baseurl = "http://swesub.tv"

@@ -54,7 +54,7 @@ class BTDigg(SearcherABC.SearcherABC):
         if None != response and 0 < len(response):
             #print response
             dat = json.loads(response)
-            print str(dat)
+            #print str(dat)
             for item in dat:
                 size = self.sizeConvert(item['size'])
                 seeds,leechers=0,0

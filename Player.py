@@ -166,6 +166,7 @@ class TorrentPlayer(xbmc.Player):
 
     def init(self):
         self.next_dl = True if self.__settings__.getSetting('next_dl') == 'true' and self.ids_video else False
+        print str(self.next_dl)
         self.next_contentId = False
         self.display_name = ''
         self.downloadedSize = 0
@@ -356,6 +357,7 @@ class TorrentPlayer(xbmc.Player):
                             self.next_contentId = int(self.ids_video[next_contentId_index])
                         else:
                             self.next_contentId = False
+                        print str(self.next_contentId)+'xxxxxx23'
                     if not self.seeding_run and self.iterator == 100 and self.seeding:
                         self.seeding_run=True
                         self.seed(self.contentId)
@@ -396,14 +398,18 @@ class TorrentPlayer(xbmc.Player):
 
     def get_ids(self):
         contentList = []
+        #path=self.torrent.getContentList()[self.contentId]['title']
+        #print path
         for filedict in self.torrent.getContentList():
             contentList.append((filedict.get('title'), str(filedict.get('ind'))))
         contentList = sorted(contentList, key=lambda x: x[0])
+        #print str(contentList)
 
-        dirList, contentListNew = cutFolder(contentList)
+        #dirList, contentListNew = cutFolder(contentList)
 
         ids_video = []
-        for title, identifier in contentListNew:
+        #print str(contentListNew)
+        for title, identifier in contentList:
             try:
                 ext = title.split('.')[-1]
                 if ext.lower() in ['avi','mp4','mkv','flv','mov','vob','wmv','ogm','asx','mpg','mpeg','avc','vp3','fli','flc','m4v','iso']:
@@ -411,4 +417,5 @@ class TorrentPlayer(xbmc.Player):
             except:
                 pass
 
+        #print 'get_ids:'+str(ids_video)
         return ids_video
