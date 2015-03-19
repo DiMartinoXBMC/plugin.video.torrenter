@@ -80,7 +80,7 @@ class KinoZalTV(SearcherABC.SearcherABC):
             for (forum, topic, title, size, seeds, leechers) in re.compile(regex, re.DOTALL).findall(response):
                 if int(forum) not in bad_forums:
                     image = sys.modules["__main__"].__root__ + self.searchIcon
-                    link = 'http://kinozal.tv/download.php/' + topic + '/[kinozal.tv]id' + topic + '.torrent'
+                    link = 'http://kinozal.tv/download.php?id=' + topic
                     filesList.append((
                         int(int(self.sourceWeight) * int(seeds)),
                         int(seeds), int(leechers), size,

@@ -357,7 +357,7 @@ class TorrentPlayer(xbmc.Player):
                             self.next_contentId = int(self.ids_video[next_contentId_index])
                         else:
                             self.next_contentId = False
-                        print str(self.next_contentId)+'xxxxxx23'
+                        #print str(self.next_contentId)+'xxxxxx23'
                     if not self.seeding_run and self.iterator == 100 and self.seeding:
                         self.seeding_run=True
                         self.seed(self.contentId)

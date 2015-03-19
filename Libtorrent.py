@@ -126,11 +126,11 @@ class Libtorrent:
                     print 'Exception: ' + str(e)
                     xbmcvfs.delete(torrentFile)
                     return
-                baseName = file_encode(os.path.basename(self.getFilePath()))
+                #baseName = file_encode(os.path.basename(self.getFilePath()))
                 if not xbmcvfs.exists(self.torrentFilesPath):
                     xbmcvfs.mkdirs(self.torrentFilesPath)
-                newFile = self.torrentFilesPath + baseName + '.' + self.md5(torrentUrl) + '.torrent'
-
+                newFile = self.torrentFilesPath + self.md5(torrentUrl) + '.torrent'#+ '.'+ baseName
+                #print newFile
                 xbmcvfs.delete(newFile)
                 if not xbmcvfs.exists(newFile):
                     try:

@@ -159,8 +159,8 @@ class RuTrackerOrg(SearcherABC.SearcherABC):
             '(http://static\.rutracker\.org/captcha/\d+/\d+/[0-9a-f]+\.jpg\?\d+).+?name="cap_sid" value="(.+?)".+?name="(cap_code_[0-9a-f]+)"',
             re.DOTALL | re.MULTILINE).search(pageContent)
         data = {
-            'login_password': 'torrenter',
-            'login_username': 'torrenter-plugin',
+            'login_password': 'torrenter_plugin',
+            'login_username': 'torrenter_plugin',
             'login': '%C2%F5%EE%E4',
             'redirect': 'index.php'
         }
