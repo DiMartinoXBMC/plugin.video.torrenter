@@ -129,7 +129,7 @@ class Libtorrent:
                 baseName = file_encode(os.path.basename(self.getFilePath()))
                 if not xbmcvfs.exists(self.torrentFilesPath):
                     xbmcvfs.mkdirs(self.torrentFilesPath)
-                newFile = self.torrentFilesPath+self.md5(baseName)+'.'+self.md5(torrentUrl)+'.torrent'#+ '.'+ baseName
+                newFile = self.torrentFilesPath+self.md5(baseName)+'.'+self.md5(torrentUrl)+'.torrent'# + '.'+ baseName
                 if not xbmcvfs.exists(newFile):
                     xbmcvfs.delete(newFile)
                 if not xbmcvfs.exists(newFile):
