@@ -72,7 +72,7 @@ class OpenSharing(SearcherABC.SearcherABC):
         response = self.makeRequest(url, headers=headers)
 
         if None != response and 0 < len(response):
-            #print response
+            print response
             dat = re.compile(
                 r'<tr class="\w\w\w".+?<a href="magnet.+?">.+?<a class="downgif" href="(/download/\d+?/)">.+?<a .+?">(.+?)</a></td>.+?<img .+?alt="seeders".+?>&nbsp;(\d+)</span>.+?alt="leechers".+?>.+?&nbsp;(\d+)</span>.+?<td align="right">(.+?)</td><td',
                 re.DOTALL | re.I).findall(response)

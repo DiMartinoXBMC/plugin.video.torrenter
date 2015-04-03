@@ -73,13 +73,13 @@ class OldPirateBay(SearcherABC.SearcherABC):
         if None != response and 0 < len(response):
             #print response
             dat = re.compile(
-                r'''<td class="title-row">.+?<a href='magnet:\?xt=urn:btih:(.+?)&amp.+?<span>(.+?)</span></a>.+?<td class="size-row">(.+?)</td><td class="seeders.+?">(\d+)</td><td class="leechers.+?">(\d+)</td></tr>''',
+                r'''<a href="/torrent/.+?">(.+?)</a>.+?<a class=".+?" href="(.+?)" title="TORRENT LINK">.+?<td .+?>(.+?)</td><td class=".+?">(.+?)</td><td class=".+?">(.+?)</td><td .+?>(.+?)</td></tr>''',
                 re.DOTALL).findall(response)
-            for (link, title, size, seeds, leechers) in dat:
+            for (title, link, age, size, seeds, leechers) in dat:
                 torrentTitle = title  #"%s [S\L: %s\%s]" % (title, seeds, leechers)
-                size = size.replace('&nbsp;', ' ')
+                size = self.unescape(self.stripHtml(size))
                 image = sys.modules["__main__"].__root__ + self.searchIcon
-                link = 'http://torrent.oldpiratebay.org/download.php?id=0&hash=%s' % link
+                link = self.unescape(link)
                 filesList.append((
                     int(int(self.sourceWeight) * int(seeds)),
                     int(seeds), int(leechers), size,
