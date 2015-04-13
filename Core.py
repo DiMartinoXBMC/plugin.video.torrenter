@@ -1483,6 +1483,12 @@ class Core:
                         searchersList.append(searcher + '.py')
             if not addtime or not searchersList:
                 searchersList = Searchers().get_active()
+        elif external == 'torrenterone':
+            slist = Searchers().list()
+            ret = xbmcgui.Dialog().select(self.localize('Choose searcher:'), slist)
+            if ret > -1 and ret < len(slist):
+                external = slist[ret]
+                searchersList.append(external + '.py')
         else:
             searchersList.append(external + '.py')
         for searcherFile in searchersList:

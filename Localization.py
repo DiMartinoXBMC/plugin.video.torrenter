@@ -230,7 +230,8 @@ dictionary = {
         'Close':'Закрыть окно',
         'Views:':'Просм.:',
         'Rating:':'Рейтинг:',
-        'Information not found!':'Информация не найдена!'
+        'Information not found!':'Информация не найдена!',
+        'Choose searcher':'Выберите трекер',
 
 
     }
