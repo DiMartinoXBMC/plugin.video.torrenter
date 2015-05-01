@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="56e91349-2444-4553-bc78-90c2bab49e9c" name="Default" comment="utf fix">
+    <list default="true" id="56e91349-2444-4553-bc78-90c2bab49e9c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Libtorrent.py" afterPath="$PROJECT_DIR$/Libtorrent.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cal.py" afterPath="$PROJECT_DIR$/cal.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/searchers/RuTrackerOrg.py" afterPath="$PROJECT_DIR$/resources/searchers/RuTrackerOrg.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/searchers/T411FR.py" afterPath="$PROJECT_DIR$/resources/searchers/T411FR.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addon.xml" afterPath="$PROJECT_DIR$/addon.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/changelog.txt" afterPath="$PROJECT_DIR$/changelog.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="plugin.video.torrenter.iws" />
@@ -38,18 +41,48 @@
           <file leaf-file-name="Core.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Core.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="16779" max-vertical-offset="30447">
-                  <caret line="987" column="63" selection-start-line="987" selection-start-column="63" selection-end-line="987" selection-end-column="63" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="25279" max-vertical-offset="30549">
+                  <caret line="1487" column="75" selection-start-line="1487" selection-start-column="75" selection-end-line="1487" selection-end-column="75" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="changelog.txt" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="functions.py" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/functions.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="17782" max-vertical-offset="26928">
+                  <caret line="1046" column="12" selection-start-line="1046" selection-start-column="8" selection-end-line="1046" selection-end-column="12" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Localization.py" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Localization.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="3687" max-vertical-offset="4267">
+                  <caret line="234" column="0" selection-start-line="234" selection-start-column="0" selection-end-line="234" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="changelog.txt" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/changelog.txt">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="1530">
-                  <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+                <state vertical-scroll-proportion="0.41530946" vertical-offset="0" max-vertical-offset="1632">
+                  <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="addon.xml" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/addon.xml">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
+                  <caret line="1" column="61" selection-start-line="1" selection-start-column="61" selection-end-line="1" selection-end-column="66" />
                   <folding />
                 </state>
               </provider>
@@ -58,28 +91,18 @@
           <file leaf-file-name="Player.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Player.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="6086" max-vertical-offset="7242">
-                  <caret line="358" column="55" selection-start-line="358" selection-start-column="55" selection-end-line="358" selection-end-column="55" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="3757" max-vertical-offset="7242">
+                  <caret line="221" column="86" selection-start-line="221" selection-start-column="71" selection-end-line="221" selection-end-column="86" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="Libtorrent.py" pinned="false" current="true" current-in-tab="true">
+          <file leaf-file-name="Libtorrent.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Libtorrent.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.74182445" vertical-offset="1694" max-vertical-offset="6732">
-                  <caret line="139" column="30" selection-start-line="139" selection-start-column="30" selection-end-line="139" selection-end-column="30" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="NNMClubRu.py" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/resources/searchers/NNMClubRu.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="136" max-vertical-offset="2618">
-                  <caret line="8" column="15" selection-start-line="8" selection-start-column="15" selection-end-line="8" selection-end-column="15" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="576" max-vertical-offset="6766">
+                  <caret line="81" column="28" selection-start-line="81" selection-start-column="28" selection-end-line="81" selection-end-column="28" />
                   <folding />
                 </state>
               </provider>
@@ -89,52 +112,44 @@
       </split-first>
       <split-second>
         <leaf>
-          <file leaf-file-name="functions.py" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/functions.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="6222" max-vertical-offset="26928">
-                  <caret line="366" column="21" selection-start-line="366" selection-start-column="21" selection-end-line="366" selection-end-column="21" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="KickAssSo.py" pinned="false" current="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/resources/contenters/KickAssSo.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-1.180624" vertical-offset="1280" max-vertical-offset="3060">
-                  <caret line="35" column="10" selection-start-line="35" selection-start-column="10" selection-end-line="35" selection-end-column="10" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="addon.xml" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/addon.xml">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="340" max-vertical-offset="510">
-                  <caret line="20" column="22" selection-start-line="20" selection-start-column="22" selection-end-line="20" selection-end-column="22" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
           <file leaf-file-name="SearcherABC.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/SearcherABC.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="1190" max-vertical-offset="3757">
-                  <caret line="70" column="8" selection-start-line="70" selection-start-column="8" selection-end-line="70" selection-end-column="8" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="3468" max-vertical-offset="3757">
+                  <caret line="204" column="33" selection-start-line="204" selection-start-column="30" selection-end-line="204" selection-end-column="33" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="strings.xml" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/resources/language/Russian/strings.xml">
+          <file leaf-file-name="Cpasbien.py" pinned="false" current="true" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/resources/searchers/Cpasbien.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="256" max-vertical-offset="1139">
-                  <caret line="19" column="35" selection-start-line="19" selection-start-column="35" selection-end-line="19" selection-end-column="35" />
+                <state vertical-scroll-proportion="0.27687296" vertical-offset="357" max-vertical-offset="1700">
+                  <caret line="35" column="7" selection-start-line="35" selection-start-column="7" selection-end-line="35" selection-end-column="7" />
                   <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="RuTrackerOrg.py" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/resources/searchers/RuTrackerOrg.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0" vertical-offset="2212" max-vertical-offset="3077">
+                  <caret line="164" column="35" selection-start-line="164" selection-start-column="35" selection-end-line="164" selection-end-column="35" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="T411FR.py" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/resources/searchers/T411FR.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="-4.4035087" vertical-offset="548" max-vertical-offset="2278">
+                  <caret line="47" column="7" selection-start-line="47" selection-start-column="7" selection-end-line="47" selection-end-column="7" />
+                  <folding>
+                    <element signature="e#783#792#0" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -158,8 +173,6 @@
         <option value="$PROJECT_DIR$/README.txt" />
         <option value="$PROJECT_DIR$/controlcenter.py" />
         <option value="$PROJECT_DIR$/Downloader.py" />
-        <option value="$PROJECT_DIR$/resources/searchers/T411FR.py" />
-        <option value="$PROJECT_DIR$/resources/searchers/EZTV.py" />
         <option value="$PROJECT_DIR$/AceStream.py" />
         <option value="$PROJECT_DIR$/resources/utorrent/net.py" />
         <option value="$PROJECT_DIR$/resources/contenters/IMDB.py" />
@@ -168,7 +181,6 @@
         <option value="$PROJECT_DIR$/resources/contenters/RiperAM.py" />
         <option value="$PROJECT_DIR$/Content.py" />
         <option value="$PROJECT_DIR$/resources/skins/DialogReviews.py" />
-        <option value="$PROJECT_DIR$/Localization.py" />
         <option value="$PROJECT_DIR$/resources/scrapers/cache.py" />
         <option value="$PROJECT_DIR$/resources/searchers/Nyaa.py" />
         <option value="$PROJECT_DIR$/resources/skins/DialogXml.py" />
@@ -186,18 +198,24 @@
         <option value="$PROJECT_DIR$/resources/language/English/strings.xml" />
         <option value="$PROJECT_DIR$/resources/settings.xml" />
         <option value="$PROJECT_DIR$/resources/language/Russian/strings.xml" />
-        <option value="$PROJECT_DIR$/Core.py" />
-        <option value="$PROJECT_DIR$/addon.xml" />
         <option value="$PROJECT_DIR$/resources/searchers/BTDigg.py" />
-        <option value="$PROJECT_DIR$/cal.py" />
-        <option value="$PROJECT_DIR$/changelog.txt" />
         <option value="$PROJECT_DIR$/resources/contenters/SWESUB.py" />
         <option value="$PROJECT_DIR$/Player.py" />
         <option value="$PROJECT_DIR$/resources/searchers/ThePirateBaySe.py" />
         <option value="$PROJECT_DIR$/resources/searchers/unused/KinoZalTV.py" />
-        <option value="$PROJECT_DIR$/resources/searchers/RuTrackerOrg.py" />
         <option value="$PROJECT_DIR$/resources/searchers/NNMClubRu.py" />
+        <option value="$PROJECT_DIR$/cal.py" />
+        <option value="$PROJECT_DIR$/resources/searchers/OpenSharing.py" />
+        <option value="$PROJECT_DIR$/resources/searchers/OldPirateBay.py" />
+        <option value="$PROJECT_DIR$/resources/searchers/EZTV.py" />
+        <option value="$PROJECT_DIR$/Localization.py" />
+        <option value="$PROJECT_DIR$/Core.py" />
+        <option value="$PROJECT_DIR$/addon.xml" />
         <option value="$PROJECT_DIR$/Libtorrent.py" />
+        <option value="$PROJECT_DIR$/resources/searchers/Cpasbien.py" />
+        <option value="$PROJECT_DIR$/resources/searchers/RuTrackerOrg.py" />
+        <option value="$PROJECT_DIR$/resources/searchers/T411FR.py" />
+        <option value="$PROJECT_DIR$/changelog.txt" />
       </list>
     </option>
   </component>
@@ -649,7 +667,23 @@
       <created>1426795799240</created>
       <updated>1426795799240</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="utf fix">
+      <created>1426796944835</created>
+      <updated>1426796944835</updated>
+    </task>
+    <task id="LOCAL-00048" summary="utf fix">
+      <created>1426796963534</created>
+      <updated>1426796963534</updated>
+    </task>
+    <task id="LOCAL-00049" summary="search fix">
+      <created>1428070959419</created>
+      <updated>1428070959419</updated>
+    </task>
+    <task id="LOCAL-00050" summary="one searcher for myshows.ru">
+      <created>1428931031577</created>
+      <updated>1428931031577</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -676,7 +710,7 @@
     <frame x="1" y="0" width="1918" height="1040" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26636568" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25904977" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32879817" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -711,8 +745,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="context fix" />
-    <MESSAGE value="fixes" />
     <MESSAGE value="fixes and fr" />
     <MESSAGE value="fix external multifile play" />
     <MESSAGE value="ez ch up" />
@@ -726,7 +758,6 @@
     <MESSAGE value="sort" />
     <MESSAGE value="information kickass update" />
     <MESSAGE value="skin support update" />
-    <MESSAGE value="utf fix" />
     <MESSAGE value="kickass &amp; piratebay" />
     <MESSAGE value="piratefix" />
     <MESSAGE value="speed and clear fix" />
@@ -736,7 +767,10 @@
     <MESSAGE value="BTDigg" />
     <MESSAGE value="fix" />
     <MESSAGE value="change" />
-    <option name="LAST_COMMIT_MESSAGE" value="change" />
+    <MESSAGE value="utf fix" />
+    <MESSAGE value="search fix" />
+    <MESSAGE value="one searcher for myshows.ru" />
+    <option name="LAST_COMMIT_MESSAGE" value="one searcher for myshows.ru" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -744,80 +778,10 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/.PyCharm30/system/python_stubs/1494736245/__builtin__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33277312" vertical-offset="329" max-vertical-offset="86666">
-          <caret line="31" column="11" selection-start-line="31" selection-start-column="11" selection-end-line="31" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/TFileME.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.45095694" vertical-offset="1238" max-vertical-offset="2176">
-          <caret line="101" column="69" selection-start-line="101" selection-start-column="69" selection-end-line="101" selection-end-column="69" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/T411FR.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.1583236" vertical-offset="382" max-vertical-offset="2261">
-          <caret line="87" column="45" selection-start-line="87" selection-start-column="45" selection-end-line="87" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../plugin.video.myshows/functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3329208" vertical-offset="24891" max-vertical-offset="31042">
-          <caret line="1491" column="30" selection-start-line="1491" selection-start-column="28" selection-end-line="1491" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../script.module.torrent.ts/addon.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="357">
-          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://D:/Python27/Lib/subprocess.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3325359" vertical-offset="10755" max-vertical-offset="27659">
-          <caret line="649" column="8" selection-start-line="649" selection-start-column="8" selection-end-line="649" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../script.module.torrent.ts/resources/settings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.48494452" vertical-offset="0" max-vertical-offset="631">
-          <caret line="18" column="0" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../script.module.torrent.ts/ASCore.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3443" max-vertical-offset="11322">
-          <caret line="218" column="16" selection-start-line="218" selection-start-column="16" selection-end-line="218" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Downloader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="187" max-vertical-offset="2278">
-          <caret line="78" column="8" selection-start-line="78" selection-start-column="8" selection-end-line="78" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/AceStream.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5012225" vertical-offset="1409" max-vertical-offset="2448">
           <caret line="120" column="46" selection-start-line="120" selection-start-column="46" selection-end-line="120" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Localization.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.38870433" vertical-offset="1279" max-vertical-offset="4250">
-          <caret line="89" column="29" selection-start-line="89" selection-start-column="29" selection-end-line="89" selection-end-column="29" />
         </state>
       </provider>
     </entry>
@@ -961,21 +925,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Core.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="16558" max-vertical-offset="30226">
-          <caret line="987" column="63" selection-start-line="987" selection-start-column="63" selection-end-line="987" selection-end-column="63" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/EZTV.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="459" max-vertical-offset="1564">
-          <caret line="66" column="43" selection-start-line="66" selection-start-column="43" selection-end-line="66" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/searchers/BTDigg.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7859589" vertical-offset="0" max-vertical-offset="1190">
@@ -997,35 +946,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/addon.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
-          <caret line="20" column="22" selection-start-line="20" selection-start-column="22" selection-end-line="20" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SearcherABC.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="724" max-vertical-offset="3485">
-          <caret line="70" column="8" selection-start-line="70" selection-start-column="8" selection-end-line="70" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/language/Russian/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="256" max-vertical-offset="1139">
           <caret line="19" column="35" selection-start-line="19" selection-start-column="35" selection-end-line="19" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/changelog.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1530">
-          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1043,28 +967,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/KickAssSo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.7568493" vertical-offset="28" max-vertical-offset="1632">
-          <caret line="66" column="33" selection-start-line="66" selection-start-column="33" selection-end-line="66" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="5610" max-vertical-offset="26639">
-          <caret line="366" column="21" selection-start-line="366" selection-start-column="21" selection-end-line="366" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cal.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.47611204" vertical-offset="0" max-vertical-offset="607">
-          <caret line="19" column="11" selection-start-line="19" selection-start-column="11" selection-end-line="19" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/searchers/unused/KinoZalTV.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.45547944" vertical-offset="1626" max-vertical-offset="2210">
@@ -1072,41 +974,176 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/resources/searchers/NNMClubRu.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="136" max-vertical-offset="2618">
+          <caret line="8" column="15" selection-start-line="8" selection-start-column="15" selection-end-line="8" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/contenters/KickAssSo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="595" max-vertical-offset="3094">
+          <caret line="35" column="10" selection-start-line="35" selection-start-column="10" selection-end-line="35" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cal.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2863706" vertical-offset="0" max-vertical-offset="653">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/searchers/KickAssSo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.52986217" vertical-offset="946" max-vertical-offset="1632">
+          <caret line="80" column="20" selection-start-line="80" selection-start-column="20" selection-end-line="80" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/searchers/OldPirateBay.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6875957" vertical-offset="894" max-vertical-offset="1547">
+          <caret line="83" column="61" selection-start-line="83" selection-start-column="61" selection-end-line="83" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/searchers/TFileME.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.29709035" vertical-offset="1523" max-vertical-offset="2176">
+          <caret line="107" column="34" selection-start-line="107" selection-start-column="34" selection-end-line="107" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Python27/Lib/urllib2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334" vertical-offset="20399" max-vertical-offset="24871">
+          <caret line="1226" column="8" selection-start-line="1226" selection-start-column="8" selection-end-line="1226" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/searchers/EZTV.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5206738" vertical-offset="867" max-vertical-offset="1564">
+          <caret line="75" column="13" selection-start-line="75" selection-start-column="13" selection-end-line="75" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Localization.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3687" max-vertical-offset="4267">
+          <caret line="234" column="0" selection-start-line="234" selection-start-column="0" selection-end-line="234" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="17281" max-vertical-offset="26639">
+          <caret line="1046" column="12" selection-start-line="1046" selection-start-column="8" selection-end-line="1046" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Core.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="24678" max-vertical-offset="30328">
+          <caret line="1487" column="75" selection-start-line="1487" selection-start-column="75" selection-end-line="1487" selection-end-column="75" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Downloads/plugin.rutracker-0.18.1/plugin.rutracker/drivers/rutracker.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3913793" vertical-offset="28" max-vertical-offset="11475">
+          <caret line="24" column="71" selection-start-line="24" selection-start-column="71" selection-end-line="24" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Player.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="5882" max-vertical-offset="7038">
-          <caret line="358" column="55" selection-start-line="358" selection-start-column="55" selection-end-line="358" selection-end-column="55" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="3757" max-vertical-offset="7242">
+          <caret line="221" column="86" selection-start-line="221" selection-start-column="71" selection-end-line="221" selection-end-column="86" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Downloads/plugin.rutracker-0.18.1/plugin.rutracker/xbmcup/net.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5104167" vertical-offset="12082" max-vertical-offset="18972">
+          <caret line="740" column="35" selection-start-line="740" selection-start-column="35" selection-end-line="740" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Downloads/plugin.rutracker-0.18.1/plugin.rutracker/xbmcup/default.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33506945" vertical-offset="28" max-vertical-offset="28424">
+          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Downloads/plugin.rutracker-0.18.1/plugin.rutracker/default.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4236111" vertical-offset="26191" max-vertical-offset="30498">
+          <caret line="1558" column="32" selection-start-line="1558" selection-start-column="32" selection-end-line="1558" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SearcherABC.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2871" max-vertical-offset="3485">
+          <caret line="204" column="33" selection-start-line="204" selection-start-column="30" selection-end-line="204" selection-end-column="33" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/resources/searchers/RuTrackerOrg.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.9084629" vertical-offset="0" max-vertical-offset="3077">
-          <caret line="72" column="32" selection-start-line="72" selection-start-column="32" selection-end-line="72" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/NNMClubRu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="136" max-vertical-offset="2618">
-          <caret line="8" column="15" selection-start-line="8" selection-start-column="15" selection-end-line="8" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/contenters/KickAssSo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.180624" vertical-offset="1280" max-vertical-offset="3060">
-          <caret line="35" column="10" selection-start-line="35" selection-start-column="10" selection-end-line="35" selection-end-column="10" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="2212" max-vertical-offset="3077">
+          <caret line="164" column="35" selection-start-line="164" selection-start-column="35" selection-end-line="164" selection-end-column="35" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Libtorrent.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.74182445" vertical-offset="1694" max-vertical-offset="6732">
-          <caret line="139" column="30" selection-start-line="139" selection-start-column="30" selection-end-line="139" selection-end-column="30" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="576" max-vertical-offset="6766">
+          <caret line="81" column="28" selection-start-line="81" selection-start-column="28" selection-end-line="81" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/searchers/T411FR.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.4035087" vertical-offset="548" max-vertical-offset="2278">
+          <caret line="47" column="7" selection-start-line="47" selection-start-column="7" selection-end-line="47" selection-end-column="7" />
+          <folding>
+            <element signature="e#783#792#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addon.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
+          <caret line="1" column="61" selection-start-line="1" selection-start-column="61" selection-end-line="1" selection-end-column="66" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/changelog.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.41530946" vertical-offset="0" max-vertical-offset="1632">
+          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/searchers/Cpasbien.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.27687296" vertical-offset="357" max-vertical-offset="1700">
+          <caret line="35" column="7" selection-start-line="35" selection-start-column="7" selection-end-line="35" selection-end-column="7" />
           <folding />
         </state>
       </provider>

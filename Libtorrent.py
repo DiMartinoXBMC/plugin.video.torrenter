@@ -76,6 +76,8 @@ class Libtorrent:
             except Exception, e:
                 print 'Error importing python_libtorrent.' + system + '. Exception: ' + str(e)
                 pass
+            #from ctypes import *
+            #cdll.LoadLibrary(dirname + '/libtorrent-rasterbar.so.7')
 
         self.lt = libtorrent
         del libtorrent

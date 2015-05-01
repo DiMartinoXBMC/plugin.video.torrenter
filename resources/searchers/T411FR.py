@@ -62,21 +62,16 @@ class T411FR(SearcherABC.SearcherABC):
         str(image),# Path/URL to image shown at the list
     ))'''
 
-    headers = {('Origin', 'http://t411.me'),
+    headers = {('Origin', 'http://t411.io'),
                    ('User-Agent',
                     'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 YaBrowser/14.10.2062.12061 Safari/537.36'),
-                   ('Referer', 'http://t411.me/'),('X-NewRelic-ID','x='),
+                   ('Referer', 'http://t411.io/'),('X-NewRelic-ID','x='),
                    ('X-Requested-With','XMLHttpRequest'),}
 
     def search(self, keyword):
         filesList = []
-        url='http://www.t411.me/torrents/search/?search=%s' % urllib.quote_plus(keyword.decode('utf-8').encode('cp1251'))
+        url='http://www.t411.io/torrents/search/?search=%s' % urllib.quote_plus(keyword.decode('utf-8').encode('cp1251'))
         url+='&order=seeders&type=desc'
-        #headers = {('Origin', 'http://t411.me'),
-        #           ('User-Agent',
-        #            'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 YaBrowser/14.10.2062.12061 Safari/537.36'),
-        #           ('Referer', 'http://t411.me/')}
-
         response = self.makeRequest(url, headers=self.headers)
         if None != response and 0 < len(response):
             #self.cookieJar.save(ignore_discard=True)
@@ -86,7 +81,7 @@ class T411FR(SearcherABC.SearcherABC):
             for (title, link, size, seeds, leechers) in re.compile(regex, re.DOTALL).findall(response):
                 title=self.clear_title(title)
                 image = sys.modules["__main__"].__root__ + self.searchIcon
-                link = 'http://www.t411.me/torrents/download/?id='+link
+                link = 'http://www.t411.io/torrents/download/?id='+link
                 filesList.append((
                     int(int(self.sourceWeight) * int(seeds)),
                     int(seeds), int(leechers), size,
@@ -124,11 +119,11 @@ class T411FR(SearcherABC.SearcherABC):
             'remember':'1'
         }
         x=self.makeRequest(
-            'http://www.t411.me/users/auth/',data=data, headers=self.headers)
+            'http://www.t411.io/users/auth/',data=data, headers=self.headers)
         if re.search('{"status":"OK"',x):
             print 'LOGGED T411FR'
         self.cookieJar.save(ignore_discard=True)
         for cookie in self.cookieJar:
-            if cookie.name == 'authKey' and cookie.domain=='.t411.me':
+            if cookie.name == 'authKey' and cookie.domain=='.t411.io':
                 return 'authKey=' + cookie.value
         return False
