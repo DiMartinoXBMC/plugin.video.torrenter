@@ -1,4 +1,4 @@
-﻿[B]Version 2.2.3[/B]
+﻿[B]Version 2.2.2[/B]
 [+] Поиск: Исправлен RuTrackerOrg, T411FR
 
 [B]Version 2.2.1[/B]

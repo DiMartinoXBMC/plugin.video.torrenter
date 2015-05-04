@@ -65,10 +65,10 @@ class RuTorOrg(SearcherABC.SearcherABC):
         filesList = []
         self.timeout(5)
         #print 'strating Rutor'
-        url = "http://rutor.org/search/0/0/100/2/%s" % urllib.quote_plus(keyword)
+        url = "http://zerkalo-rutor.org/search/0/0/100/2/%s" % urllib.quote_plus(keyword)
         headers = [('User-Agent',
                     'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 YaBrowser/14.10.2062.12061 Safari/537.36'),
-                   ('Referer', 'http://rutor.org'), ('Accept-encoding', 'gzip'),
+                   ('Referer', 'http://zerkalo-rutor.org'), ('Accept-encoding', 'gzip'),
                    ('Cookie', str(sys.modules["__main__"].__settings__.getSetting("rutor-auth")))]
         response = self.makeRequest(url, headers=headers)
 
@@ -83,18 +83,19 @@ class RuTorOrg(SearcherABC.SearcherABC):
                 sys.modules["__main__"].__settings__.setSetting("rutor-auth", cookie)
                 headers = [('User-Agent',
                     'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 YaBrowser/14.10.2062.12061 Safari/537.36'),
-                   ('Referer', 'http://rutor.org'), ('Accept-encoding', 'gzip'),
+                   ('Referer', 'http://zerkalo-rutor.org'), ('Accept-encoding', 'gzip'),
                    ('Cookie', str(sys.modules["__main__"].__settings__.getSetting("rutor-auth")))]
                 response = self.makeRequest(url, headers=headers)
 
         if None != response and 0 < len(response):
             dat = re.compile(
-                '<tr class="[tg].+?<a.+?href="(.+?/download/.+?)">.+?<a href=".+?">.+?<a href=".+?">(.+?)</a></td>.+?<td align="right">(\d*?\..+?&nbsp;.+?)</td>.+?<img .+?alt="S".+?>&nbsp;(\d+)</span>.+?alt="L".+?>&nbsp;(\d+)',
+                '<tr class="[tg].+?<a.+?href="(/download/\d+)">.+?<a href=".+?">.+?<a href=".+?">(.+?)</a></td>.+?<td align="right">(\d*?\..+?&nbsp;.+?)</td>.+?<img .+?alt="S".+?>&nbsp;(\d+)</span>.+?alt="L".+?>&nbsp;(\d+)',
                 re.DOTALL).findall(response)
             if dat and len(dat) > 0:
                 for (link, title, size, seeds, leechers) in dat:
                     torrentTitle = title.strip()  #"%s [S\L: %s\%s]" % (title, seeds, leechers)
                     size = size.replace('&nbsp;', ' ')
+                    link='http://zerkalo-rutor.org'+link
                     image = sys.modules["__main__"].__root__ + self.searchIcon
                     filesList.append((
                         int(int(self.sourceWeight) * int(seeds)),
