@@ -272,12 +272,14 @@ class Core:
     def test(self, params={}):
         #db=DownloadDB()
         #db.add(u'XXX2', 'file', json.dumps({'seeds':1,'leechers':1}), 20)
-        #url='magnet:?xt=urn:btih:MZLDDZU5MWZWICIGQN6YDVAXJNNISU5W&dn=Jimmy.Fallon.2015.01.09.Don.Cheadle.HDTV.x264-CROOKS&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80'
+        #url='magnet:?xt=urn:btih:6698E0950DCD257A6B03AF2E8B068B7FF9D4619D&dn=game+of+thrones+season+2+720p+bluray+x264+shaanig&tr=udp%3A%2F%2Fcoppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Fopen.demonii.com%3A1337'
         #filename='D:\\torrents\\Torrenter\\torrents\\Jimmy.Fallon.2015.01.09.Don.Cheadle.HDTV.x264-CROOKS.mp4.torrent'
         #torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
         #self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(filename))
         #torrent.downloadProcess()
-        self.DownloadStatus()
+        #self.DownloadStatus()
+        url='http://torcache.net/torrent/6698E0950DCD257A6B03AF2E8B068B7FF9D4619D.torrent?title=[kickass.to]game.of.thrones.season.2.720p.bluray.x264.shaanig'
+        #xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=openTorrent&external=ThePirateBaySe&url=ThePirateBaySe%3A%3A'+urllib.quote_plus(url)+'&not_download_only=True")')
 
     def DownloadStatus(self, params={}):
         db = DownloadDB()
@@ -1349,6 +1351,27 @@ class Core:
         except:
             print 'Unable to save torrent file from "' + url + '" to "' + torrentFile + '" in Torrent::saveTorrent'
             return
+
+    def playSTRM(self, params={}):
+        get = params.get
+        xbmc.executebuiltin('xbmc.Playlist.Clear')
+        url = unquote(get("url"),None)
+        if url:
+            self.__settings__.setSetting("lastTorrentUrl", url)
+            torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
+            if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
+                                                         torrentFilesDirectory=self.torrentFilesDirectory)
+            self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
+            contentList = []
+            for filedict in torrent.getContentList():
+                fileTitle = filedict.get('title')
+                if filedict.get('size'):
+                    fileTitle += ' [%d MB]' % (filedict.get('size') / 1024 / 1024)
+                    contentList.append((filedict.get('size'), self.unescape(fileTitle), str(filedict.get('ind'))))
+            if len(contentList)>0:
+                contentList = sorted(contentList, key=lambda x: x[0], reverse=True)
+                #self.playTorrent({'url':contentList[0][2]})
+                xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url='+contentList[0][2]+'")')
 
     def openTorrent(self, params={}):
         get = params.get

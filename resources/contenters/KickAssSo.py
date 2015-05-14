@@ -23,18 +23,14 @@ from BeautifulSoup import BeautifulSoup
 
 class KickAssSo(Content.Content):
     category_dict = {
-        'hot': ('Most Recent', '/new/', {'page': '/new/%d/', 'increase': 1, 'second_page': 2,
-                                         'sort':[{'name':'by Seeders', 'url_after':'?field=seeders&sorder=desc'},
-                                                 {'name':'by Date', 'url_after':'?field=time_add&sorder=desc'}]}),
+        'hot': ('Most Recent', '/new/?field=seeders&sorder=desc', {'page': '/new/%d/?field=seeders&sorder=desc', 'increase': 1, 'second_page': 2,
+                                         ' ':[{'name':' ', 'url_after':'?field=seeders&sorder=desc'}]}),
         'anime': ('Anime', '/anime/', {'page': '/anime/%d/', 'increase': 1, 'second_page': 2,
-                                         'sort':[{'name':'by Seeders', 'url_after':'?field=seeders&sorder=desc'},
-                                                 {'name':'by Date', 'url_after':'?field=time_add&sorder=desc'}]}),
-        'tvshows': ('TV Shows', '/tv/', {'page': '/tv/%d/', 'increase': 1, 'second_page': 2,
-                                         'sort':[{'name':'by Seeders', 'url_after':'?field=seeders&sorder=desc'},
-                                                 {'name':'by Date', 'url_after':'?field=time_add&sorder=desc'}]}),
-        'movies': ('Movies', '/movies/', {'page': '/movies/%d/', 'increase': 1, 'second_page': 2,
-                                         'sort':[{'name':'by Seeders', 'url_after':'?field=seeders&sorder=desc'},
-                                                 {'name':'by Date', 'url_after':'?field=time_add&sorder=desc'}]}),
+                                         ' ':[{'name':' ', 'url_after':'?field=seeders&sorder=desc'}]}),
+        'tvshows': ('TV Shows', '/tv/?field=seeders&sorder=desc', {'page': '/tv/%d/?field=seeders&sorder=desc', 'increase': 1, 'second_page': 2,
+                                         ' ':[{'name':' ', 'url_after':'?field=seeders&sorder=desc'}]}),
+        'movies': ('Movies', '/movies/?field=seeders&sorder=desc', {'page': '/movies/%d/?field=seeders&sorder=desc', 'increase': 1, 'second_page': 2,
+                                         ' ':[{'name':' ', 'url_after':'?field=seeders&sorder=desc'}]}),
     }
 
     baseurl = "http://kickass.to"

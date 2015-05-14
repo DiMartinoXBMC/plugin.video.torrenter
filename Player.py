@@ -166,7 +166,7 @@ class TorrentPlayer(xbmc.Player):
 
     def init(self):
         self.next_dl = True if self.__settings__.getSetting('next_dl') == 'true' and self.ids_video else False
-        print str(self.next_dl)
+        print '[TorrentPlayer]: init - '+str(self.next_dl)
         self.next_contentId = False
         self.display_name = ''
         self.downloadedSize = 0
@@ -306,7 +306,12 @@ class TorrentPlayer(xbmc.Player):
         xbmc.sleep(300)
 
         if response:
-            xbmc.Player().play(path, listitem)
+            #xbmc.Player().play(path, listitem)
+            playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+            playlist.clear()
+            playlist.add(path, listitem)
+            xbmc.Player().play(playlist)
+
             xbmc.sleep(3000)#very important, do not edit this, podavan
             return True
 

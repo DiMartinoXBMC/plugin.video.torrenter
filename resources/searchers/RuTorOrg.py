@@ -87,15 +87,17 @@ class RuTorOrg(SearcherABC.SearcherABC):
                    ('Cookie', str(sys.modules["__main__"].__settings__.getSetting("rutor-auth")))]
                 response = self.makeRequest(url, headers=headers)
 
+        #print response
+
         if None != response and 0 < len(response):
             dat = re.compile(
-                '<tr class="[tg].+?<a.+?href="(/download/\d+)">.+?<a href=".+?">.+?<a href=".+?">(.+?)</a></td>.+?<td align="right">(\d*?\..+?&nbsp;.+?)</td>.+?<img .+?alt="S".+?>&nbsp;(\d+)</span>.+?alt="L".+?>&nbsp;(\d+)',
+                '<tr class="[tg].+?<a.+?href="(.+?download/\d+)">.+?<a href=".+?">.+?<a href=".+?">(.+?)</a></td>.+?<td align="right">(\d*?\..+?&nbsp;.+?)</td>.+?<img .+?alt="S".+?>&nbsp;(\d+)</span>.+?alt="L".+?>&nbsp;(\d+)',
                 re.DOTALL).findall(response)
             if dat and len(dat) > 0:
                 for (link, title, size, seeds, leechers) in dat:
                     torrentTitle = title.strip()  #"%s [S\L: %s\%s]" % (title, seeds, leechers)
                     size = size.replace('&nbsp;', ' ')
-                    link='http://zerkalo-rutor.org'+link
+                    if link[0]=='/': link='http://zerkalo-rutor.org'+link
                     image = sys.modules["__main__"].__root__ + self.searchIcon
                     filesList.append((
                         int(int(self.sourceWeight) * int(seeds)),

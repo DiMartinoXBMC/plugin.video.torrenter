@@ -176,10 +176,10 @@ class Libtorrent:
         torrentInfo = self.getMagnetInfo()
         try:
             torrentFile = self.lt.create_torrent(torrentInfo)
-            baseName = file_encode(os.path.basename(self.storageDirectory + os.sep + torrentInfo.files()[0].path))
+            baseName = os.path.basename(self.storageDirectory + os.sep + torrentInfo.files()[0].path)
             if not xbmcvfs.exists(self.torrentFilesPath):
                 xbmcvfs.mkdirs(self.torrentFilesPath)
-            self.torrentFile = self.torrentFilesPath + baseName + '.torrent'
+            self.torrentFile = self.torrentFilesPath + self.md5(baseName) + '.torrent'
             torentFileHandler = xbmcvfs.File(self.torrentFile, "w+b")
             torentFileHandler.write(self.lt.bencode(torrentFile.generate()))
             torentFileHandler.close()
