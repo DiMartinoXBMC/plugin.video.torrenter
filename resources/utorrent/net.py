@@ -912,6 +912,7 @@ class Deluge:
 
     def listfiles(self, id):
         obj = self.get_info()
+        i=0
         if obj is None:
             return None
 
@@ -939,8 +940,11 @@ class Deluge:
 
             if x.get('progress'):
                 percent=int(x['progress']*100)
+            elif obj.get('file_progress') and len(obj['file_progress'])>=i:
+                percent=int(obj['file_progress'][i]*100)
             else:percent=0
 
+            i+=1
             res.append([path, percent, x['index'], size])
 
         return res
