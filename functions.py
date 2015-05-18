@@ -1577,3 +1577,20 @@ def itemScrap(item, kwarg):
         item.setInfo(type='Video', infoLabels=kwarg['info'])
 
     return item
+
+def get_ids_video(contentList):
+    ids_video=[]
+    allowed_video_ext=['avi','mp4','mkv','flv','mov','vob','wmv','ogm','asx','mpg','mpeg','avc','vp3','fli','flc','m4v','iso']
+    allowed_music_ext=['mp3','flac','wma','ogg','m4a','aac','m4p','rm','ra']
+    for extlist in [allowed_video_ext,allowed_music_ext]:
+        for title, identifier in contentList:
+            try:
+                ext = title.split('.')[-1]
+                if ext.lower() in extlist:
+                    ids_video.append(str(identifier))
+            except:
+                pass
+        if len(ids_video)>1:
+            break
+    #print Debug('[get_ids_video]:'+str(ids_video))
+    return ids_video

@@ -1259,14 +1259,12 @@ class Core:
             for title in dirList:
                 self.drawItem(title, 'openTorrent', url, isFolder=True, action2=title)
 
-            ids_video = ''
-            for title, identifier in contentListNew:
-                try:
-                    ext = title.split('.')[-1]
-                    if re.match('avi|mp4|mkV|flv|mov|vob|wmv|ogm|asx|mpg|mpeg|avc|vp3|fli|flc|m4v', ext, re.I):
-                        ids_video = ids_video + str(identifier) + ','
-                except:
-                    pass
+            ids_video_result = get_ids_video(contentListNew)
+            ids_video=''
+
+            if len(ids_video_result)>0:
+                for identifier in ids_video_result:
+                    ids_video = ids_video + str(identifier) + ','
 
             for title, identifier in contentListNew:
                 contextMenu = [
@@ -1421,7 +1419,7 @@ class Core:
                 contentList = sorted(contentList, key=lambda x: x[0])
                 for title, identifier in contentList:
                     try:
-                        if title.split('.')[-1].lower() in ['avi','mp4','mkv','flv','mov','vob','wmv','ogm','asx','mpg','mpeg','avc','vp3','fli','flc','m4v','iso']:
+                        if title.split('.')[-1].lower() in ['avi','mp4','mkv','flv','mov','vob','wmv','ogm','asx','mpg','mpeg','avc','vp3','fli','flc','m4v','iso','mp3']:
                             myshows_items.append(title)
                             myshows_files.append(identifier)
                     except:
@@ -1458,14 +1456,12 @@ class Core:
                 for title in dirList:
                     self.drawItem(title, 'openTorrent', url, image=thumbnail, isFolder=True, action2=title)
 
-                ids_video = ''
-                for title, identifier in contentListNew:
-                    try:
-                        ext = title.split('.')[-1]
-                        if ext.lower() in ['avi','mp4','mkv','flv','mov','vob','wmv','ogm','asx','mpg','mpeg','avc','vp3','fli','flc','m4v','iso']:
-                            ids_video = ids_video + str(identifier) + ','
-                    except:
-                        pass
+                ids_video_result = get_ids_video(contentListNew)
+                ids_video=''
+
+                if len(ids_video_result)>0:
+                    for identifier in ids_video_result:
+                        ids_video = ids_video + str(identifier) + ','
 
                 for title, identifier in contentListNew:
                     contextMenu = [

@@ -11,7 +11,7 @@ import Downloader
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import calculate, showMessage, clearStorage, DownloadDB, cutFolder
+from functions import calculate, showMessage, clearStorage, DownloadDB, get_ids_video
 
 
 ROOT = sys.modules["__main__"].__root__
@@ -403,24 +403,7 @@ class TorrentPlayer(xbmc.Player):
 
     def get_ids(self):
         contentList = []
-        #path=self.torrent.getContentList()[self.contentId]['title']
-        #print path
         for filedict in self.torrent.getContentList():
             contentList.append((filedict.get('title'), str(filedict.get('ind'))))
         contentList = sorted(contentList, key=lambda x: x[0])
-        #print str(contentList)
-
-        #dirList, contentListNew = cutFolder(contentList)
-
-        ids_video = []
-        #print str(contentListNew)
-        for title, identifier in contentList:
-            try:
-                ext = title.split('.')[-1]
-                if ext.lower() in ['avi','mp4','mkv','flv','mov','vob','wmv','ogm','asx','mpg','mpeg','avc','vp3','fli','flc','m4v','iso']:
-                    ids_video.append(str(identifier))
-            except:
-                pass
-
-        #print 'get_ids:'+str(ids_video)
-        return ids_video
+        return get_ids_video(contentList)
