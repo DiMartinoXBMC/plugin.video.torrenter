@@ -63,7 +63,8 @@ class KickAssSo(SearcherABC.SearcherABC):
 
     def search(self, keyword):
         filesList = []
-        url = "http://kickass.to/usearch/%s/?field=seeders&sorder=desc" % urllib.quote_plus(keyword)
+        baseurl="http://kat.cr"
+        url = baseurl+"/usearch/%s/?field=seeders&sorder=desc" % urllib.quote_plus(keyword)
         headers = [('User-Agent',
             'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 YaBrowser/14.10.2062.12061 Safari/537.36'),
            ('Referer', 'http://kickass.so/'), ('Accept-encoding', 'gzip'), ]
@@ -73,7 +74,7 @@ class KickAssSo(SearcherABC.SearcherABC):
             #print response
             good_forums=['TV','Anime','Movies']
             result = re.compile(
-                    r'''<a title="Download torrent file" href="(.+?)\?.+?" class=".+?"><i.+?<a.+?<a.+?<a href=".+?html" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>.+?<td class="nobr center">(.+?)</td>.+?<td class="green center">(\d+?)</td>.+?<td class="red lasttd center">(\d+?)</td>''',
+                    r'''title="Download torrent file" href="(.+?\.torrent).+?" class=".+?"><i.+?<a.+?<a.+?<a href=".+?html" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>.+?<td class="nobr center">(.+?)</td>.+?<td class="green center">(\d+?)</td>.+?<td class="red lasttd center">(\d+?)</td>''',
                     re.DOTALL).findall(response)
             for link,title,forum,size,seeds,leechers in result:
                 if forum in good_forums:

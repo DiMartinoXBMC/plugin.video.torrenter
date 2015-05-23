@@ -33,7 +33,7 @@ class KickAssSo(Content.Content):
                                          ' ':[{'name':' ', 'url_after':'?field=seeders&sorder=desc'}]}),
     }
 
-    baseurl = "http://kickass.to"
+    baseurl = "http://kat.cr"
     headers = [('User-Agent',
                 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124' + \
                 ' YaBrowser/14.10.2062.12061 Safari/537.36'),
@@ -82,7 +82,7 @@ class KickAssSo(Content.Content):
         num = 51
         good_forums=['TV','Anime','Movies']
         result = re.compile(
-                r'''<a title="Download torrent file" href="(.+?)\?.+?" class=".+?"><i.+?<a.+?<a.+?<a href="(.+?html)" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>.+?<td class="nobr center">(.+?)</td>.+?<td class="center">(\d+&nbsp;.+?)</td>.+?<td class="green center">(\d+?)</td>.+?<td class="red lasttd center">(\d+?)</td>''',
+                r'''title="Download torrent file" href="(.+?\.torrent).+?" class=".+?"><i.+?<a.+?<a.+?<a href="(.+?html)" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>.+?<td class="nobr center">(.+?)</td>.+?<td class="center">(\d+&nbsp;.+?)</td>.+?<td class="green center">(\d+?)</td>.+?<td class="red lasttd center">(\d+?)</td>''',
                 re.DOTALL).findall(response)
         for link,infolink,title,forum,size,date,seeds,leechers in result:
             #main

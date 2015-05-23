@@ -1,4 +1,12 @@
-﻿[B]Version 2.2.3[/B]
+﻿[B]Version 2.2.5[/B]
+[+] Списки Медиа: Исправлен KickAssSo
+[+] Поиск: Исправлен KickAssSo
+
+[B]Version 2.2.4[/B]
+[+] Проигрыватель: Поддержка музыки (проигрывание следующего файла).
+[+] Торрент-клиент: Исправлен прогресс Deluge.
+
+[B]Version 2.2.3[/B]
 [+] Проигрыватель: Добавлена возможность запускать через .strm файлы (plugin://plugin.video.torrenter/?action=playSTRM&url=URL_ENCODED_MAGNET_PATH_HTTP)
 
 [B]Version 2.2.2[/B]
