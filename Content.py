@@ -214,14 +214,11 @@ class Content:
     )
 
     def unescape(self, string):
-        pars = HTMLParser.HTMLParser()
-        return pars.unescape(string)
-        #for (symbol, code) in self.htmlCodes:
-        #    try:
-        #        string = re.sub(code, symbol, string)
-        #    except:
-        #        pass
-        #return string
+        try:
+            pars = HTMLParser.HTMLParser()
+            return pars.unescape(string)
+        except:
+            return string
 
     def stripHtml(self, string):
         for (html, replacement) in self.stripPairs:
