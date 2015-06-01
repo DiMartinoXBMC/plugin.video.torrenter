@@ -110,7 +110,7 @@ class RuTrackerOrg(SearcherABC.SearcherABC):
                       1592, 1595, 1556, 1560, 1561, 1653, 1570, 1654, 1655, 1656, 1930, 1931, 1932, 1562, 1563, 1626,
                       1564, 1565, 1559, 1566, 1573, 1567]
             for (forum, link, title, size, seeds, leechers) in re.compile(
-                    '<a class="gen f" href="tracker\.php\?f=(\d+)">.+? class=".+?" href="\./viewtopic\.php\?t=(\d+)">(.+?)</a>.+?<a .+?href="http://dl.+?">(.+?) &.+?<td class=".+?"><u>(.+?)</u>.+?<td class=".+?"><b>(\d+)',
+                    '<a class="gen f" href="tracker\.php\?f=(\d+)">.+? class=".+?" href="viewtopic\.php\?t=(\d+)">(.+?)</a>.+?<a .+?href="http://dl.+?">(.+?)</a>.+?class="seedmed".+?(\d+)</.+?class=".+?eechmed".+?(\d+)',
                     re.DOTALL).findall(response):
                 if int(forum) in forums:
                     size = size.replace('&nbsp;', ' ')
