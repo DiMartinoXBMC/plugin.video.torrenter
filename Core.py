@@ -740,7 +740,8 @@ class Core:
                         showMessage('','')
                         xbmc.sleep(1000)
                         showMessage('','')
-
+                        dialog=xbmcgui.Dialog()
+                        x=dialog.ok('Done!','Bases are up to date!')
         else:
             self.drawItem('[B]%s[/B]' % "Download All", 'full_download', json.dumps({'provider': "all"}), isFolder=True)
             for cat in self.Contenters.get_activedic().keys():

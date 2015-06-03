@@ -345,8 +345,12 @@ def get_best(Data, search, year):
     for s in shows:
         i = int(s['itemIndex'])
         show = Data[i][1]
+        if isinstance(show.get('release_date'), str):
+            release_date=str(show.get('release_date').split('-')[0])
+        else:
+            release_date='0'
         print (' ... %d: id="%s", name="%s", year="%s", score="%d".' %
-               (i, str(show['id']), show.get('title').encode('utf-8'), str(show.get('release_date').split('-')[0]),
+               (i, str(show['id']), show.get('title').encode('utf-8'), release_date,
                 s['rate']))
     if shows:
         return shows[0]
