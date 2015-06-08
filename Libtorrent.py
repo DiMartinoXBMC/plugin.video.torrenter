@@ -51,6 +51,30 @@ class Libtorrent:
 
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
 
+        '''dirname = os.path.join(xbmc.translatePath('special://home'), 'addons', 'plugin.video.torrenter',
+                               'resources')
+        sys.path.insert(0, dirname)
+
+        try:
+                import resources.libtorrent as libtorrent
+
+                print 'Imported libtorrent v' + libtorrent.version + ' from python_libtorrent.'
+        except Exception, e:
+                print 'Error importing python_libtorrent. Exception: ' + str(e)
+
+        try:
+            from ctypes import *
+            cdll.LoadLibrary(os.path.join(dirname,'libtorrent.so'))
+        except Exception, e:
+                print 'Error importing by ctypes. Exception: ' + str(e)
+
+        try:
+            print 'Imported libtorrent v' + libtorrent.version + ' from python_libtorrent.'
+        except Exception, e:
+                print 'Error importing python_libtorrent. Exception: ' + str(e)
+
+        print 'Imported libtorrent v' + libtorrent.version + ' from ctypes.'''''
+
         try:
             import libtorrent
 
@@ -334,7 +358,7 @@ class Libtorrent:
         for i in range(self.torrentFileInfo.num_pieces()):
             self.torrentHandle.piece_priority(i, 0)
 
-    def continueSession(self, contentId=0, Offset=0, seeding=False):
+    def continueSession(self, contentId=0, Offset=0, seeding=False, isMP4=False):
         self.piece_length = self.torrentFileInfo.piece_length()
         selectedFileInfo = self.getContentList()[contentId]
         if not Offset:
@@ -344,16 +368,18 @@ class Libtorrent:
         self.startPart = selectedFileInfo['offset'] / self.piece_length
         self.endPart = int((selectedFileInfo['offset'] + selectedFileInfo['size']) / self.piece_length)
         #print 'part ' + str(self.startPart)+ str(' ')+ str(self.endPart)
+        pieceMB=float(self.piece_length) / (1024 * 1024)
+        multiplier=int(10/pieceMB)
+        #print 'continueSession: pieceMB '+str(pieceMB)+' multiplier '+str(multiplier)
         for i in range(self.startPart, self.startPart + self.partOffset):
             if i <= self.endPart:
                 self.torrentHandle.piece_priority(i, 7)
-                #print str(i)
-        self.torrentHandle.piece_priority(self.endPart - 1, 7)
-        self.torrentHandle.piece_priority(self.endPart, 7)
-        #thread.start_new_thread(self.checkProcess, ())
-        #thread.start_new_thread(self.downloadProcess, (contentId,))
-        #if seeding:# and None == self.magnetLink:
-        #    thread.start_new_thread(self.addToSeeding, (contentId,))
+                if isMP4 and i%multiplier==0:
+                    self.torrentHandle.piece_priority(self.endPart - i/multiplier, 7)
+                    #print str(i)
+                if multiplier>=i:
+                    self.torrentHandle.piece_priority(self.endPart - i, 7)
+                    #print str(i)
 
     def fetchParts(self):
         priorities = self.torrentHandle.piece_priorities()

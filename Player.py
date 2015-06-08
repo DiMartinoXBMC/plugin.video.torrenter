@@ -189,7 +189,16 @@ class TorrentPlayer(xbmc.Player):
         self.fullSize = self.torrent.getFileSize(self.contentId)
         Offset = calculate(self.fullSize)
         #print 'Offset: '+str(Offset)
-        self.torrent.continueSession(self.contentId, Offset=Offset)
+
+        #mp4 fix
+        label = os.path.basename(self.torrent.getFilePath(self.contentId))
+        isMP4=False
+        if '.' in label:
+            ext=label.split('.')[-1]
+            if ext.lower()=='mp4':
+                isMP4=True
+        #print 'setup_torrent: '+str((self.contentId, Offset, isMP4, label, ext))
+        self.torrent.continueSession(self.contentId, Offset=Offset, isMP4=isMP4)
 
     def buffer(self):
         iterator = 0

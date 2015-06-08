@@ -75,7 +75,7 @@ class RiperAM(SearcherABC.SearcherABC):
         if None != response and 0 < len(response):
             self.cookieJar.save(ignore_discard=True)
             self.check_login(response)
-            print response
+            #print response
             dat = re.compile(
                 r'<a href="\.(/download/.+?)".+?<font size="3pt">(.+?)</font></a>.+?Размер: <b>(.+?)</b>.+?" title="Сидеров"><b>(\d+?)</b>.+?title="Личеров"><b>(\d+?)</b></span></dd>',
                 re.DOTALL | re.I).findall(response)
