@@ -368,9 +368,8 @@ class Libtorrent:
         self.startPart = selectedFileInfo['offset'] / self.piece_length
         self.endPart = int((selectedFileInfo['offset'] + selectedFileInfo['size']) / self.piece_length)
         #print 'part ' + str(self.startPart)+ str(' ')+ str(self.endPart)
-        pieceMB=float(self.piece_length) / (1024 * 1024)
-        multiplier=int(10/pieceMB)
-        #print 'continueSession: pieceMB '+str(pieceMB)+' multiplier '+str(multiplier)
+        multiplier=self.partOffset/5
+        print 'continueSession: multiplier '+str(multiplier)
         for i in range(self.startPart, self.startPart + self.partOffset):
             if i <= self.endPart:
                 self.torrentHandle.piece_priority(i, 7)
