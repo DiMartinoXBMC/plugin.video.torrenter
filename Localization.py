@@ -232,8 +232,20 @@ dictionary = {
         'Rating:':'Рейтинг:',
         'Information not found!':'Информация не найдена!',
         'Choose searcher':'Выберите трекер',
-
-
+        'Python-Libtorrent Not Found':'Python-Libtorrent не найден',
+        'Windows has static compiled python-libtorrent included.':'На Windows при установке из репозитория к плагину идет python-libtorrent.',
+        'You should install "script.module.libtorrent" from "MyShows.me Kodi Repo"':'Установите "script.module.libtorrent" из "MyShows.me Kodi Repo"',
+        'Linux x64 has not static compiled python-libtorrent included.':'На Linux x64 не смогли собрать статическую python-libtorrent',
+        'You should install it by "sudo apt-get install python-libtorrent"':'Установи коммандой "sudo apt-get install python-libtorrent"',
+        'Linux has static compiled python-libtorrent included but it didn\'t work.':'На Linux x86 есть статическая python-libtorrent, но она очевидно не сработала.',
+        'As far as I know you can compile python-libtorrent for ARMv6-7.':'На ARMv6-7 можно скомпилировать python-libtorrent',
+        'You should search for "OneEvil\'s OpenELEC libtorrent" or use Ace Stream.':'Поищи "OneEvil\'s OpenELEC libtorrent" или используй Ace Stream',
+        'Please use install Ace Stream APK and choose it in Settings.':'Установите Ace Stream APK и выберите плеер в Найстройка плагина',
+        'It is possible to compile python-libtorrent for Android, but I don\'t know how.':'Вообще скомпилировать python-libtorrent на Android можно, но мы не знаем как.',
+        'It is possible to compile python-libtorrent for OS X.':'Вообще скомпилировать python-libtorrent на OS X можно.',
+        'But you would have to do it by yourself, there is some info on github.com.':'Но придется это тебе делать самому, на гитхабе была инфа',
+        'It is NOT possible to compile python-libtorrent for iOS.':'Под iOS невозможно скомпилировать python-libtorrent',
+        'But you can use torrent-client control functions.':'Но все остальные функции кроме прямого стриминга с торрента работают.',
     }
 }
 

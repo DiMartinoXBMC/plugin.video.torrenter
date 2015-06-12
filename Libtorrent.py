@@ -25,7 +25,7 @@ import urllib2
 import hashlib
 import re
 import sys
-import platform
+from platform import get_platform
 from StringIO import StringIO
 import gzip
 from functions import file_decode, file_encode, isSubtitle, DownloadDB
@@ -34,7 +34,6 @@ import xbmc
 import xbmcgui
 import xbmcvfs
 import Localization
-
 
 class Libtorrent:
     torrentFile = None
@@ -73,7 +72,7 @@ class Libtorrent:
         except Exception, e:
                 print 'Error importing python_libtorrent. Exception: ' + str(e)
 
-        print 'Imported libtorrent v' + libtorrent.version + ' from ctypes.'''''
+        print 'Imported libtorrent v' + libtorrent.version + ' from ctypes.
 
         try:
             import libtorrent
@@ -101,10 +100,36 @@ class Libtorrent:
                 print 'Error importing python_libtorrent.' + system + '. Exception: ' + str(e)
                 pass
             #from ctypes import *
-            #cdll.LoadLibrary(dirname + '/libtorrent-rasterbar.so.7')
+            #cdll.LoadLibrary(dirname + '/libtorrent-rasterbar.so.7')'''
 
-        self.lt = libtorrent
-        del libtorrent
+        self.platform=get_platform()
+
+        print '[Libtorrent] self.platform: '+str(self.platform)
+
+        try:
+            import libtorrent
+            print 'Imported libtorrent v' + libtorrent.version + ' from system'
+        except Exception, e:
+            print 'Error importing from system. Exception: ' + str(e)
+
+            try:
+                dirname = os.path.join(xbmc.translatePath('special://home'), 'addons', 'script.module.libtorrent',
+                                   'python_libtorrent', self.platform['system'])
+                sys.path.insert(0, dirname)
+                import libtorrent
+                print 'Imported libtorrent v' + libtorrent.version + ' from python_libtorrent.' + self.platform['system']
+            except Exception, e:
+                print 'Error importing python_libtorrent.' + self.platform['system'] + '. Exception: ' + str(e)
+                pass
+
+        try:
+            self.lt = libtorrent
+            del libtorrent
+        except:
+            xbmcgui.Dialog().ok(Localization.localize('Python-Libtorrent Not Found'),
+                                Localization.localize(self.platform["message"][0]),Localization.localize(self.platform["message"][1]))
+            return
+
         self.storageDirectory = storageDirectory
         self.torrentFilesPath=os.path.join(self.storageDirectory, torrentFilesDirectory)+os.sep
         if xbmcvfs.exists(torrentFile):
@@ -245,11 +270,17 @@ class Libtorrent:
 
     def getContentList(self):
         filelist = []
-        for contentId, contentFile in enumerate(self.torrentFileInfo.files()):
-            stringdata = {"title": contentFile.path, "size": contentFile.size, "ind": int(contentId),
-                          'offset': contentFile.offset}
-            filelist.append(stringdata)
-        return filelist
+        try:
+            for contentId, contentFile in enumerate(self.torrentFileInfo.files()):
+                stringdata = {"title": contentFile.path, "size": contentFile.size, "ind": int(contentId),
+                              'offset': contentFile.offset}
+                filelist.append(stringdata)
+            return filelist
+        except:
+            xbmcgui.Dialog().ok(Localization.localize('Python-Libtorrent Not Found'),
+                                Localization.localize(self.platform["message"][0]),Localization.localize(self.platform["message"][1]))
+            return
+
 
     def getSubsIds(self, filename):
         subs=[]

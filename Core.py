@@ -1673,40 +1673,47 @@ class Core:
             self.__settings__.setSetting("lastTorrentUrl", url)
             classMatch = re.search('(\w+)::(.+)', url)
             if classMatch:
-                searcher = classMatch.group(1)
-                if self.ROOT + os.sep + 'resources' + os.sep + 'searchers' not in sys.path:
-                    sys.path.insert(0, self.ROOT + os.sep + 'resources' + os.sep + 'searchers')
-                try:
-                    searcherObject = getattr(__import__(searcher), searcher)()
-                except Exception, e:
-                    print 'Unable to use searcher: ' + searcher + ' at ' + self.__plugin__ + ' openTorrent(). Exception: ' + str(e)
-                    return
-                url = searcherObject.getTorrentFile(classMatch.group(2))
-
-                torrent = Downloader.Torrent(self.userStorageDirectory,
-                                             torrentFilesDirectory=self.torrentFilesDirectory)
-                if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
-                                                             torrentFilesDirectory=self.torrentFilesDirectory)
-
-                if re.match("^magnet\:.+$", url):
-                    if not dirname:
-                        torrent.magnetToTorrent(url)
-                        url = torrent.torrentFile
-                    else:
-                        Download().add_url(url, dirname)
-                        return
+                print str(dirname)+str(re.match("^magnet\:.+$", classMatch.group(2))==None)
+                if re.match("^magnet\:.+$", classMatch.group(2)) and dirname:
+                    url=classMatch.group(2)
                 else:
-                    url = torrent.saveTorrent(url)
+                    searcher = classMatch.group(1)
+                    if self.ROOT + os.sep + 'resources' + os.sep + 'searchers' not in sys.path:
+                        sys.path.insert(0, self.ROOT + os.sep + 'resources' + os.sep + 'searchers')
+                    try:
+                        searcherObject = getattr(__import__(searcher), searcher)()
+                    except Exception, e:
+                        print 'Unable to use searcher: ' + searcher + ' at ' + self.__plugin__ + ' openTorrent(). Exception: ' + str(e)
+                        return
+                    url = searcherObject.getTorrentFile(classMatch.group(2))
 
-        f = open(url, 'rb')
-        torrent = f.read()
-        f.close()
-        success = Download().add(torrent, dirname)
-        if success:
-            showMessage(self.localize('Torrent-client Browser'), self.localize('Added!'), forced=True)
-            if ind:
-                id = self.chooseHASH()[0]
-                Download().setprio(id, ind)
+                    torrent = Downloader.Torrent(self.userStorageDirectory,
+                                                 torrentFilesDirectory=self.torrentFilesDirectory)
+                    if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
+                                                                 torrentFilesDirectory=self.torrentFilesDirectory)
+
+        if re.match("^magnet\:.+$", url):
+            if not dirname:
+                torrent.magnetToTorrent(url)
+                url = torrent.torrentFile
+            else:
+                success = Download().add_url(url, dirname)
+                if success:
+                    showMessage(self.localize('Torrent-client Browser'), self.localize('Added!'), forced=True)
+                return
+        else:
+            url = torrent.saveTorrent(url)
+
+        if url:
+            f = open(url, 'rb')
+            torrent = f.read()
+            f.close()
+            success = Download().add(torrent, dirname)
+            if success:
+                showMessage(self.localize('Torrent-client Browser'), self.localize('Added!'), forced=True)
+                if ind:
+                    id = self.chooseHASH()[0]
+                    Download().setprio(id, ind)
 
     def downloadLibtorrent(self, params={}):
         get = params.get
