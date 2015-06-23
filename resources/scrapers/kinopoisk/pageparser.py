@@ -32,9 +32,11 @@ import pluginsettings as S
 import translit
 
 
+
+
 # MATCHER_MOVIE_DURATION = re.compile('\s*(\d+).*?', re.UNICODE | re.DOTALL)
-#MATCHER_IMDB_RATING = re.compile('IMDb:\s*(\d+\.?\d*)\s*\(\s*([\s\d]+)\s*\)', re.UNICODE | re.DOTALL)
-#MATCHER_IMDB_RATING = re.compile('IMDb:\s*(\d+\.?\d*)\s?\((.*)\)', re.UNICODE)
+# MATCHER_IMDB_RATING = re.compile('IMDb:\s*(\d+\.?\d*)\s*\(\s*([\s\d]+)\s*\)', re.UNICODE | re.DOTALL)
+# MATCHER_IMDB_RATING = re.compile('IMDb:\s*(\d+\.?\d*)\s?\((.*)\)', re.UNICODE)
 
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22'
 '''
@@ -171,5 +173,3 @@ class PageParser:
             results.append([itemKinoPoiskId, itemTitle, itemYear, itemScore])
 
         return results
-
-

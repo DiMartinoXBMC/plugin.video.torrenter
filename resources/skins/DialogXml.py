@@ -1,28 +1,35 @@
 # -*- coding: utf-8 -*-
-import xbmcgui, Localization, sys, xbmc
+import sys
+
+import xbmcgui
+import Localization
+import xbmc
 
 KEY_BUTTON_BACK = 275
 KEY_KEYBOARD_ESC = 61467
 ACTION_PREVIOUS_MENU = 10
 ACTION_NAV_BACK = 92
+
+
 class DialogXml(xbmcgui.WindowXMLDialog):
     def onInit(self):
         print "onInit(): Window Initialized"
-        localize=Localization.localize
-        color='[COLOR %s]%s[/COLOR]'
+        localize = Localization.localize
+        color = '[COLOR %s]%s[/COLOR]'
         self.movie_label = self.getControl(32)
         self.movie_label.setText(self.movieInfo['desc'])
 
         if self.movieInfo.get('views'):
             self.view_label = self.getControl(34)
-            self.view_label.setLabel(color % ('blue', localize('Views:'))+self.movieInfo['views'])
+            self.view_label.setLabel(color % ('blue', localize('Views:')) + self.movieInfo['views'])
 
         self.view_label = self.getControl(35)
         self.ratingcolor = 'green'
         self.ratingint = int(self.movieInfo['rating'])
-        if(self.ratingint < 70):
+        if (self.ratingint < 70):
             self.ratingcolor = 'red'
-        self.view_label.setLabel(color % ('blue', localize('Rating:'))+color % (self.ratingcolor, self.movieInfo['rating']))
+        self.view_label.setLabel(
+            color % ('blue', localize('Rating:')) + color % (self.ratingcolor, self.movieInfo['rating']))
 
         self.movie_label = self.getControl(1)
         self.movie_label.setLabel(self.movieInfo['title'])
@@ -43,7 +50,7 @@ class DialogXml(xbmcgui.WindowXMLDialog):
         self.setFocus(self.getControl(22))
 
     def onAction(self, action):
-        buttonCode =  action.getButtonCode()
+        buttonCode = action.getButtonCode()
         if (action == ACTION_NAV_BACK or action == ACTION_PREVIOUS_MENU):
             self.close()
         if (buttonCode == KEY_BUTTON_BACK or buttonCode == KEY_KEYBOARD_ESC):
@@ -61,18 +68,16 @@ class DialogXml(xbmcgui.WindowXMLDialog):
 
     def RunPlugin(self, action):
         if self.link:
-            exec_str='XBMC.RunPlugin(%s)' % \
-                         ('%s?action=%s&url=%s') % \
-                         (sys.argv[0], action, self.link)
+            exec_str = 'XBMC.RunPlugin(%s)' % \
+                       ('%s?action=%s&url=%s') % \
+                       (sys.argv[0], action, self.link)
             xbmc.executebuiltin(exec_str)
 
-
     def onFocus(self, controlID):
-        #print "onFocus(): control %i" % controlID
+        # print "onFocus(): control %i" % controlID
         pass
-
 
     def doModal(self, movieInfo, url):
         self.movieInfo = movieInfo
-        self.link=url
+        self.link = url
         xbmcgui.WindowXMLDialog.doModal(self)

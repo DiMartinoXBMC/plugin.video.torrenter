@@ -18,7 +18,6 @@ import xbmc
 import xbmcgui
 import xbmcvfs
 
-
 os.sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__))))
 
 import dopal.main
@@ -50,7 +49,6 @@ class HTTP:
             self._dirname = os.path.join(self._dirname, subdir)
             if not xbmcvfs.exists(self._dirname):
                 xbmcvfs.mkdir(self._dirname)
-
 
     def fetch(self, request, **kwargs):
         self.con, self.fd, self.progress, self.cookies, self.request = None, None, None, None, request
@@ -91,7 +89,6 @@ class HTTP:
 
         return self.response
 
-
     def _opener(self):
 
         build = [urllib2.HTTPHandler()]
@@ -117,7 +114,6 @@ class HTTP:
             build.append(urllib2.HTTPCookieProcessor(self.cookies))
 
         urllib2.install_opener(urllib2.build_opener(*build))
-
 
     def _fetch(self):
         params = {} if self.request.params is None else self.request.params
@@ -153,7 +149,7 @@ class HTTP:
         if self.request.download:
             self._download()
         else:
-            if not self.response.headers.get('content-encoding')=='gzip':
+            if not self.response.headers.get('content-encoding') == 'gzip':
                 self.response.body = self.con.read()
             else:
                 buf = StringIO(self.con.read())
@@ -162,7 +158,6 @@ class HTTP:
 
         if self.request.cookies:
             self.cookies.save(self.request.cookies)
-
 
     def _download(self):
         fd = open(self.request.download, 'wb')
@@ -194,7 +189,6 @@ class HTTP:
                 self.progress.update(*self._progress(read, size, name))
 
         self.response.filename = self.request.download
-
 
     def _upload(self, upload, params):
         res = []
@@ -231,7 +225,6 @@ class HTTP:
         result.append('')
         return boundary, '\r\n'.join(result)
 
-
     def _headers(self, raw):
         headers = {}
         for line in raw.headers:
@@ -242,7 +235,6 @@ class HTTP:
                 if tag and value:
                     headers[tag] = value
         return headers
-
 
     def _progress(self, read, size, name):
         res = []
@@ -756,11 +748,11 @@ class Transmission:
         return True if res else None
 
     def setprio_simple_multi(self, menu):
-        id=menu[0][0]
-        prio=menu[0][1]
-        res=None
+        id = menu[0][0]
+        prio = menu[0][1]
+        res = None
 
-        inds=[]
+        inds = []
         for hash, action, ind in menu:
             inds.append(int(ind))
 
@@ -857,72 +849,72 @@ class Deluge:
         self.login = login
         self.password = password
 
-        self.url = ['http://','https://'][int(url)] + host
+        self.url = ['http://', 'https://'][int(url)] + host
         if port:
             self.url += ':' + str(port)
 
         self.http = HTTP()
 
     def get_info(self):
-        obj = self.action({"method":"web.update_ui",
-                           "params":[[],{}],"id":1})
+        obj = self.action({"method": "web.update_ui",
+                           "params": [[], {}], "id": 1})
         return obj
 
     def list(self):
-        obj=self.get_info()
+        obj = self.get_info()
         if obj is None:
             return False
 
         res = []
-        if len(obj['result'].get('torrents'))>0:
+        if len(obj['result'].get('torrents')) > 0:
             for k in obj['result'].get('torrents').keys():
-                r=obj['result']['torrents'][k]
-                add={
-                        'id': str(k),
-                        'status': self.get_status(r['state']),
-                        'name': r['name'],
-                        'size': r['total_wanted'],
-                        'progress': round(r['progress'], 2),
-                        'download': r['total_done'],
-                        'upload': r['total_uploaded'],
-                        'upspeed': r['upload_payload_rate'],
-                        'downspeed': r['download_payload_rate'],
-                        'ratio': round(r['ratio'], 2),
-                        'eta': r['eta'],
-                        'peer': r['total_peers'],
-                        'seed': r['num_seeds'],
-                        'leech': r['num_peers'],
-                        'add': r['time_added'],
-                        'dir': r['save_path']
+                r = obj['result']['torrents'][k]
+                add = {
+                    'id': str(k),
+                    'status': self.get_status(r['state']),
+                    'name': r['name'],
+                    'size': r['total_wanted'],
+                    'progress': round(r['progress'], 2),
+                    'download': r['total_done'],
+                    'upload': r['total_uploaded'],
+                    'upspeed': r['upload_payload_rate'],
+                    'downspeed': r['download_payload_rate'],
+                    'ratio': round(r['ratio'], 2),
+                    'eta': r['eta'],
+                    'peer': r['total_peers'],
+                    'seed': r['num_seeds'],
+                    'leech': r['num_peers'],
+                    'add': r['time_added'],
+                    'dir': r['save_path']
                 }
-                if len(r['files'])>1: add['dir']=os.path.join(r['save_path'],r['name'])
+                if len(r['files']) > 1: add['dir'] = os.path.join(r['save_path'], r['name'])
                 res.append(add)
         return res
 
     def listdirs(self):
-        obj = self.action({"method":"core.get_config","params":[],"id":5})
+        obj = self.action({"method": "core.get_config", "params": [], "id": 5})
         if obj is None:
             return False
 
         try:
             res = [obj['result'].get('download_location')]
         except:
-            res=[None]
+            res = [None]
         return res, res
 
     def listfiles(self, id):
         obj = self.get_info()
-        i=0
+        i = 0
         if obj is None:
             return None
 
         res = []
-        obj=obj['result']['torrents'][id]
-        #print str(obj)
-        if len(obj['files'])==1:
-            strip_path=None
+        obj = obj['result']['torrents'][id]
+        # print str(obj)
+        if len(obj['files']) == 1:
+            strip_path = None
         else:
-            strip_path=obj['name']
+            strip_path = obj['name']
 
         for x in obj['files']:
             if x['size'] >= 1024 * 1024 * 1024:
@@ -934,17 +926,18 @@ class Deluge:
             else:
                 size = str(x['size']) + 'B'
             if strip_path:
-                path=x['path'].lstrip(strip_path).lstrip('/')
+                path = x['path'].lstrip(strip_path).lstrip('/')
             else:
-                path=x['path']
+                path = x['path']
 
             if x.get('progress'):
-                percent=int(x['progress']*100)
-            elif obj.get('file_progress') and len(obj['file_progress'])>=i:
-                percent=int(obj['file_progress'][i]*100)
-            else:percent=0
+                percent = int(x['progress'] * 100)
+            elif obj.get('file_progress') and len(obj['file_progress']) >= i:
+                percent = int(obj['file_progress'][i] * 100)
+            else:
+                percent = 0
 
-            i+=1
+            i += 1
             res.append([path, percent, x['index'], size])
 
         return res
@@ -953,24 +946,26 @@ class Deluge:
         obj = self.get_info()
         if obj is None:
             return None
-        res=obj['result']['torrents'][id]['file_priorities']
+        res = obj['result']['torrents'][id]['file_priorities']
         return res
 
     def add(self, torrent, dirname):
-        torrentFile=os.path.join(self.http._dirname,'deluge.torrent')
+        torrentFile = os.path.join(self.http._dirname, 'deluge.torrent')
         if self.action({'method': 'core.add_torrent_file',
                         'params': [torrentFile,
-                base64.b64encode(torrent), {"download_path": dirname}],"id":3}) is None:
+                                   base64.b64encode(torrent), {"download_path": dirname}], "id": 3}) is None:
             return None
         return True
 
     def add_url(self, torrent, dirname):
         if re.match("^magnet\:.+$", torrent):
-            if self.action({'method': 'core.add_torrent_magnet', 'params':[torrent,
-                {'download_path': dirname}],"id":3}) is None:
+            if self.action({'method': 'core.add_torrent_magnet', 'params': [torrent,
+                                                                            {'download_path': dirname}],
+                            "id": 3}) is None:
                 return None
         else:
-            if self.action({"method": "core.add_torrent_url", "params":[torrent, {'download_path': dirname}],"id":3}) is None:
+            if self.action({"method": "core.add_torrent_url", "params": [torrent, {'download_path': dirname}],
+                            "id": 3}) is None:
                 return None
         return True
 
@@ -979,48 +974,48 @@ class Deluge:
 
     def setprio(self, id, ind):
         i = -1
-        prios=self.get_prio(id)
+        prios = self.get_prio(id)
 
         for p in prios:
-            i=i+1
-            if p==1:
+            i = i + 1
+            if p == 1:
                 prios.pop(i)
-                prios.insert(i,0)
+                prios.insert(i, 0)
 
         prios.pop(int(ind))
-        prios.insert(int(ind),7)
+        prios.insert(int(ind), 7)
 
-        if self.action({"method": "core.set_torrent_file_priorities", "params":[id, prios],"id":6}) is None:
-                return None
+        if self.action({"method": "core.set_torrent_file_priorities", "params": [id, prios], "id": 6}) is None:
+            return None
 
         return True
 
     def setprio_simple(self, id, prio, ind):
-        prios=self.get_prio(id)
+        prios = self.get_prio(id)
 
-        if ind!=None:
+        if ind != None:
             prios.pop(int(ind))
             if prio == '3':
-                prios.insert(int(ind),7)
+                prios.insert(int(ind), 7)
             elif prio == '0':
-                prios.insert(int(ind),0)
+                prios.insert(int(ind), 0)
 
-        if self.action({"method": "core.set_torrent_file_priorities", "params":[id, prios],"id":6}) is None:
+        if self.action({"method": "core.set_torrent_file_priorities", "params": [id, prios], "id": 6}) is None:
             return None
         return True
 
     def setprio_simple_multi(self, menu):
-        id=menu[0][0]
-        prios=self.get_prio(id)
+        id = menu[0][0]
+        prios = self.get_prio(id)
 
         for hash, action, ind in menu:
             prios.pop(int(ind))
             if action == '3':
-                prios.insert(int(ind),7)
+                prios.insert(int(ind), 7)
             elif action == '0':
-                prios.insert(int(ind),0)
+                prios.insert(int(ind), 0)
 
-        if self.action({"method": "core.set_torrent_file_priorities", "params":[id, prios],"id":6}) is None:
+        if self.action({"method": "core.set_torrent_file_priorities", "params": [id, prios], "id": 6}) is None:
             return None
 
     def action(self, request):
@@ -1034,8 +1029,8 @@ class Deluge:
             return None
         else:
             response = self.http.fetch(self.url + '/json', method='POST', params=jsobj,
-                                           headers={'X-Requested-With': 'XMLHttpRequest', 'Cookie': cookie,
-                                           'Content-Type': 'application/json; charset=UTF-8'})
+                                       headers={'X-Requested-With': 'XMLHttpRequest', 'Cookie': cookie,
+                                                'Content-Type': 'application/json; charset=UTF-8'})
 
             if response.error:
                 return None
@@ -1049,23 +1044,23 @@ class Deluge:
                     return obj
 
     def action_simple(self, action, id):
-        actions = {'start': {"method":"core.resume_torrent","params":[[id]],"id":4},
-                   'stop': {"method":"core.pause_torrent","params":[[id]],"id":4},
-                   'remove': {"method":"core.remove_torrent","params":[id, False],"id":4},
-                   'removedata': {"method":"core.remove_torrent", "params":[id, True],"id":4}}
+        actions = {'start': {"method": "core.resume_torrent", "params": [[id]], "id": 4},
+                   'stop': {"method": "core.pause_torrent", "params": [[id]], "id": 4},
+                   'remove': {"method": "core.remove_torrent", "params": [id, False], "id": 4},
+                   'removedata': {"method": "core.remove_torrent", "params": [id, True], "id": 4}}
         obj = self.action(actions[action])
         return True if obj else None
 
     def get_auth(self):
-        params=json.dumps({"method":"auth.login","params":[self.password],"id":0})
+        params = json.dumps({"method": "auth.login", "params": [self.password], "id": 0})
         response = self.http.fetch(self.url + '/json', method='POST', params=params, gzip=True,
-                                       headers={'X-Requested-With': 'XMLHttpRequest',
-                                                'Content-Type': 'application/json; charset=UTF-8'})
+                                   headers={'X-Requested-With': 'XMLHttpRequest',
+                                            'Content-Type': 'application/json; charset=UTF-8'})
         if response.error:
             return None
 
-        auth=json.loads(response.body)
-        if auth["result"]==False:
+        auth = json.loads(response.body)
+        if auth["result"] == False:
             return False
         else:
             r = re.compile('_session_id=([^;]+);').search(response.headers.get('set-cookie', ''))
@@ -1118,7 +1113,7 @@ class Vuze:
                 'download': float(getattr(getattr(r, 'stats'), 'downloaded')),
                 'upload': getattr(getattr(r, 'stats'), 'uploaded'),
                 # 'upspeed': r['rateUpload'],
-                #'downspeed': r['rateDownload'],
+                # 'downspeed': r['rateDownload'],
                 'ratio': float(r.stats.share_ratio) / 1000,
                 'eta': getattr(getattr(r, 'stats'), 'eta'),
                 'peer': getattr(getattr(r, 'scrape_result'), 'non_seed_count') + getattr(getattr(r, 'scrape_result'),

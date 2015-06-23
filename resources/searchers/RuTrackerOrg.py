@@ -21,9 +21,6 @@
 import urllib
 import re
 import sys
-import tempfile
-import os
-import time
 
 import SearcherABC
 
@@ -66,7 +63,7 @@ class RuTrackerOrg(SearcherABC.SearcherABC):
 
     def search(self, keyword):
         filesList = []
-        url='http://rutracker.org/forum/tracker.php?nm=' + urllib.quote_plus(keyword)
+        url = 'http://rutracker.org/forum/tracker.php?nm=' + urllib.quote_plus(keyword)
 
         data = {'prev_my': '0',
                 'prev_new': '0',
@@ -79,11 +76,11 @@ class RuTrackerOrg(SearcherABC.SearcherABC):
         response = self.makeRequest(url, data=data)
         if None != response and 0 < len(response):
             response = response.decode('cp1251').encode('utf8')
-            #print response
+            # print response
             if not self.check_login(response):
                 response = self.makeRequest(url, data=data)
                 response = response.decode('cp1251').encode('utf8')
-            #print response
+            # print response
             forums = [7, 187, 2090, 2221, 2091, 2092, 2093, 934, 505, 212, 2459, 1235, 185, 22, 941, 1666, 124, 1543,
                       376, 709, 1577, 511, 656, 93, 905, 1576, 101, 100, 103, 572, 1670, 2198, 2199, 313, 2201, 312,
                       2339, 314, 352, 549, 1213, 2109, 514, 2097, 4, 930, 2365, 1900, 521, 2258, 208, 539, 209, 484,
@@ -128,19 +125,19 @@ class RuTrackerOrg(SearcherABC.SearcherABC):
 
     def getTorrentFile(self, url):
         self.load_cookie()
-        cookie=None
+        cookie = None
         for cookie in self.cookieJar:
-            if cookie.name=='bb_data' and cookie.domain=='.rutracker.org':
-                cookie = 'bb_data=' + cookie.value + '; bb_dl=' + re.search('(\d+)$',url).group(1)
+            if cookie.name == 'bb_data' and cookie.domain == '.rutracker.org':
+                cookie = 'bb_data=' + cookie.value + '; bb_dl=' + re.search('(\d+)$', url).group(1)
                 break
         if not cookie:
-            cookie = self.login() + '; bb_dl=' + re.search('(\d+)$',url).group(1)
+            cookie = self.login() + '; bb_dl=' + re.search('(\d+)$', url).group(1)
 
         referer = 'http://rutracker.org/forum/viewtopic.php?t=' + re.search('(\d+)$', url).group(1)
-        headers=[('Cookie', cookie), ('Referer', referer)]
+        headers = [('Cookie', cookie), ('Referer', referer)]
         content = self.makeRequest(url, headers=headers)
         if not self.check_login(content):
-            cookie = self.login() + '; bb_dl=' + re.search('(\d+)$',url).group(1)
+            cookie = self.login() + '; bb_dl=' + re.search('(\d+)$', url).group(1)
             content = self.makeRequest(url, headers=[('Cookie', cookie), ('Referer', referer)])
 
         return self.saveTorrentFile(url, content)

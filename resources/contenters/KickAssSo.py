@@ -18,19 +18,24 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 import re
+
 import Content
 from BeautifulSoup import BeautifulSoup
 
+
 class KickAssSo(Content.Content):
     category_dict = {
-        'hot': ('Most Recent', '/new/?field=seeders&sorder=desc', {'page': '/new/%d/?field=seeders&sorder=desc', 'increase': 1, 'second_page': 2,
-                                         ' ':[{'name':' ', 'url_after':'?field=seeders&sorder=desc'}]}),
+        'hot': ('Most Recent', '/new/?field=seeders&sorder=desc',
+                {'page': '/new/%d/?field=seeders&sorder=desc', 'increase': 1, 'second_page': 2,
+                 ' ': [{'name': ' ', 'url_after': '?field=seeders&sorder=desc'}]}),
         'anime': ('Anime', '/anime/', {'page': '/anime/%d/', 'increase': 1, 'second_page': 2,
-                                         ' ':[{'name':' ', 'url_after':'?field=seeders&sorder=desc'}]}),
-        'tvshows': ('TV Shows', '/tv/?field=seeders&sorder=desc', {'page': '/tv/%d/?field=seeders&sorder=desc', 'increase': 1, 'second_page': 2,
-                                         ' ':[{'name':' ', 'url_after':'?field=seeders&sorder=desc'}]}),
-        'movies': ('Movies', '/movies/?field=seeders&sorder=desc', {'page': '/movies/%d/?field=seeders&sorder=desc', 'increase': 1, 'second_page': 2,
-                                         ' ':[{'name':' ', 'url_after':'?field=seeders&sorder=desc'}]}),
+                                       ' ': [{'name': ' ', 'url_after': '?field=seeders&sorder=desc'}]}),
+        'tvshows': ('TV Shows', '/tv/?field=seeders&sorder=desc',
+                    {'page': '/tv/%d/?field=seeders&sorder=desc', 'increase': 1, 'second_page': 2,
+                     ' ': [{'name': ' ', 'url_after': '?field=seeders&sorder=desc'}]}),
+        'movies': ('Movies', '/movies/?field=seeders&sorder=desc',
+                   {'page': '/movies/%d/?field=seeders&sorder=desc', 'increase': 1, 'second_page': 2,
+                    ' ': [{'name': ' ', 'url_after': '?field=seeders&sorder=desc'}]}),
     }
 
     baseurl = "http://kat.cr"
@@ -70,36 +75,37 @@ class KickAssSo(Content.Content):
         response = self.makeRequest(url, headers=self.headers)
 
         if None != response and 0 < len(response):
-            #print response
+            # print response
             if category:
                 contentList = self.mode(response)
-        #print str(contentList)
+        # print str(contentList)
         return contentList
 
     def mode(self, response):
         contentList = []
-        #print str(result)
+        # print str(result)
         num = 51
-        good_forums=['TV','Anime','Movies']
+        good_forums = ['TV', 'Anime', 'Movies']
         result = re.compile(
-                r'''title="Download torrent file" href="(.+?\.torrent).+?" class=".+?"><i.+?<a.+?<a.+?<a href="(.+?html)" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>.+?<td class="nobr center">(.+?)</td>.+?<td class="center">(\d+&nbsp;.+?)</td>.+?<td class="green center">(\d+?)</td>.+?<td class="red lasttd center">(\d+?)</td>''',
-                re.DOTALL).findall(response)
-        for link,infolink,title,forum,size,date,seeds,leechers in result:
-            #main
+            r'''title="Download torrent file" href="(.+?\.torrent).+?" class=".+?"><i.+?<a.+?<a.+?<a href="(.+?html)" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>.+?<td class="nobr center">(.+?)</td>.+?<td class="center">(\d+&nbsp;.+?)</td>.+?<td class="green center">(\d+?)</td>.+?<td class="red lasttd center">(\d+?)</td>''',
+            re.DOTALL).findall(response)
+        for link, infolink, title, forum, size, date, seeds, leechers in result:
+            # main
             if forum in good_forums:
                 info = {}
                 num = num - 1
                 original_title = None
                 year = 0
                 img = ''
-                #info
+                # info
 
                 info['label'] = info['title'] = self.unescape(title)
                 info['link'] = link
-                info['infolink']=self.baseurl+infolink
+                info['infolink'] = self.baseurl + infolink
                 size = self.unescape(self.stripHtml(size))
-                date=self.unescape(self.stripHtml(date))
-                info['plot'] = info['title']+'\r\n[I](%s) [S/L: %s/%s] [/I]\r\nAge: %s' % (size, seeds, leechers, date)
+                date = self.unescape(self.stripHtml(date))
+                info['plot'] = info['title'] + '\r\n[I](%s) [S/L: %s/%s] [/I]\r\nAge: %s' % (
+                size, seeds, leechers, date)
 
                 contentList.append((
                     int(int(self.sourceWeight) * (int(num))),
@@ -108,8 +114,8 @@ class KickAssSo(Content.Content):
         return contentList
 
     def get_info(self, url):
-        movieInfo={}
-        color='[COLOR blue]%s:[/COLOR] %s\r\n'
+        movieInfo = {}
+        color = '[COLOR blue]%s:[/COLOR] %s\r\n'
         response = self.makeRequest(url, headers=self.headers)
 
         if None != response and 0 < len(response):
@@ -117,57 +123,59 @@ class KickAssSo(Content.Content):
             result = Soup.find('div', 'torrentMediaInfo')
             if not result:
                 return None
-            li=result.findAll('li')
-            info,movieInfo={'Cast':''},{'desc':'','poster':'','title':'','views':'0','rating':'50','kinopoisk':''}
+            li = result.findAll('li')
+            info, movieInfo = {'Cast': ''}, {'desc': '', 'poster': '', 'title': '', 'views': '0', 'rating': '50',
+                                             'kinopoisk': ''}
             try:
-                img=result.find('a',{'class':'movieCover'}).find('img').get('src')
-                movieInfo['poster']='http:'+img
+                img = result.find('a', {'class': 'movieCover'}).find('img').get('src')
+                movieInfo['poster'] = 'http:' + img
             except:
                 pass
             try:
-                movie=re.compile('View all <strong>(.+?)</strong> episodes</a>').match(str(result))
+                movie = re.compile('View all <strong>(.+?)</strong> episodes</a>').match(str(result))
                 if movie:
-                    info['Movie']=movie.group(1)
+                    info['Movie'] = movie.group(1)
             except:
                 pass
             for i in li:
-                name=i.find('strong').text
+                name = i.find('strong').text
                 if name:
-                    info[name.rstrip(':')]=i.text.replace(name,'',1)
-            plot=result.find('div',{'id':'summary'})
+                    info[name.rstrip(':')] = i.text.replace(name, '', 1)
+            plot = result.find('div', {'id': 'summary'})
             if plot:
-                cut=plot.find('strong').text
-                info['plot']=plot.text.replace(cut,'',1).replace('report summary','')
-            #print str(result)
-            cast=re.compile('<a href="/movies/actor/.+?">(.+?)</a>').findall(str(result))
+                cut = plot.find('strong').text
+                info['plot'] = plot.text.replace(cut, '', 1).replace('report summary', '')
+            # print str(result)
+            cast = re.compile('<a href="/movies/actor/.+?">(.+?)</a>').findall(str(result))
             if cast:
                 for actor in cast:
-                    info['Cast']+=actor+", "
+                    info['Cast'] += actor + ", "
             if 'Genres' in info:
-                info['Genres']=info['Genres'].replace(', ',',').replace(',',', ')
+                info['Genres'] = info['Genres'].replace(', ', ',').replace(',', ', ')
             for key in info.keys():
-                if not 'Movie' in info and info[key]=='addto bookmarks':
-                    movieInfo['title']=self.unescape(key)
-                    info['TV Show']=self.unescape(key)
+                if not 'Movie' in info and info[key] == 'addto bookmarks':
+                    movieInfo['title'] = self.unescape(key)
+                    info['TV Show'] = self.unescape(key)
                 if not 'plot' in info and 'Summary' in key:
-                    info['plot']=info[key]
+                    info['plot'] = info[key]
 
-            for i in ['Movie','TV Show','Release date','Original run','Episode','Air date','Genres','Language','Director','Writers','Cast','Original run','IMDb rating','AniDB rating']:
+            for i in ['Movie', 'TV Show', 'Release date', 'Original run', 'Episode', 'Air date', 'Genres', 'Language',
+                      'Director', 'Writers', 'Cast', 'Original run', 'IMDb rating', 'AniDB rating']:
                 if info.get(i) and info.get(i) not in ['']:
-                    movieInfo['desc']+=color %(i,info.get(i))
-                    if i=='Movie':
-                        movieInfo['title']=info.get(i)
+                    movieInfo['desc'] += color % (i, info.get(i))
+                    if i == 'Movie':
+                        movieInfo['title'] = info.get(i)
 
-            for i in ['plot','IMDb link','RottenTomatoes']:
+            for i in ['plot', 'IMDb link', 'RottenTomatoes']:
                 if info.get(i) and info.get(i) not in ['']:
-                    if i=='plot':
-                        movieInfo['desc']+='\r\n[COLOR blue]Plot:[/COLOR]\r\n'+info.get(i)
-                    if i=='RottenTomatoes':
-                        movieInfo['rating']=str(info.get(i).split('%')[0])
-                    if i=='IMDb link':
-                        movieInfo['kinopoisk']='http://imdb.snick.ru/ratefor/02/tt%s.png' % info.get(i)
+                    if i == 'plot':
+                        movieInfo['desc'] += '\r\n[COLOR blue]Plot:[/COLOR]\r\n' + info.get(i)
+                    if i == 'RottenTomatoes':
+                        movieInfo['rating'] = str(info.get(i).split('%')[0])
+                    if i == 'IMDb link':
+                        movieInfo['kinopoisk'] = 'http://imdb.snick.ru/ratefor/02/tt%s.png' % info.get(i)
 
 
-            #print str(info)
+                        # print str(info)
 
         return movieInfo

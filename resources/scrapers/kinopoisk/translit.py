@@ -19,11 +19,9 @@ Simple transliteration
 """
 
 # __id__ = __revision__ = "$Id: translit.py 102 2007-07-12 12:33:36Z the.pythy $"
-#__url__ = "$URL: https://pythy.googlecode.com/svn/tags/pytils/0_2_2/pytils/translit.py $"
+# __url__ = "$URL: https://pythy.googlecode.com/svn/tags/pytils/0_2_2/pytils/translit.py $"
 
 import re
-import sys
-
 
 TRANSTABLE = (
     (u"'", u"'"),

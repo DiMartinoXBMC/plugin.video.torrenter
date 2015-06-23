@@ -12,7 +12,6 @@ import xbmcgui
 import Localization
 from net import HTTP
 
-
 try:
     from sqlite3 import dbapi2 as sqlite
 except:
@@ -33,7 +32,7 @@ class Cache:
 
     def get(self, token, callback, *param):
         cur = self.db.cursor()
-        cur.execute('select expire,data from cache where id=? limit 1', (token, ))
+        cur.execute('select expire,data from cache where id=? limit 1', (token,))
         row = cur.fetchone()
         cur.close()
 
@@ -67,7 +66,7 @@ class Cache:
     def expire(self, expire):
         # with rtrCache_lock:
         cur = self.db.cursor()
-        cur.execute('delete from cache where addtime<?', (int(time.time()) - expire, ))
+        cur.execute('delete from cache where addtime<?', (int(time.time()) - expire,))
         self.db.commit()
         cur.close()
 
@@ -77,7 +76,7 @@ class Cache:
             if os.path.getsize(self.filename) < size:
                 break
             cur = self.db.cursor()
-            cur.execute('select id from cache order by addtime asc limit ?', (step, ))
+            cur.execute('select id from cache order by addtime asc limit ?', (step,))
             rows = cur.fetchall()
             if not rows:
                 cur.close()
@@ -129,7 +128,7 @@ class Cache:
                 cur.execute('create table cache(id varchar(255) unique, addtime integer, expire integer, data blob)')
                 cur.execute('create index time on cache(addtime asc)')
                 cur.execute('create table db_ver(version real)')
-                cur.execute('insert into db_ver(version) values(?)', (self.version, ))
+                cur.execute('insert into db_ver(version) values(?)', (self.version,))
                 self.db.commit()
                 cur.close()
 
@@ -137,7 +136,7 @@ class Cache:
         scrapers = {'tvdb': 'TheTVDB.com', 'tmdb': 'TheMovieDB.org', 'kinopoisk': 'KinoPoisk.ru'}
         ok = xbmcgui.Dialog().yesno(Localization.localize('Content Lists'),
                                     Localization.localize('Do you want to preload full metadata?') + ' (%s)' % (
-                                    scrapers[os.path.basename(self.filename).split('.')[0]]),
+                                        scrapers[os.path.basename(self.filename).split('.')[0]]),
                                     Localization.localize('It is highly recommended!'))
         if ok:
             return self.download()
@@ -146,7 +145,7 @@ class Cache:
 
     def download(self):
         dirname = os.path.dirname(self.filename)
-        zipname = os.path.basename(self.filename).replace('.db','') + '.zip'
+        zipname = os.path.basename(self.filename).replace('.db', '') + '.zip'
         url = 'http://www.tat-store.ru/torrenter/' + zipname
         self.http = HTTP()
         response = self.http.fetch(url, download=os.path.join(dirname, zipname), progress=True)

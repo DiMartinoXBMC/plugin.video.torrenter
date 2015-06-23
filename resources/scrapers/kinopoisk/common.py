@@ -27,9 +27,7 @@ import math
 import difflib
 
 import translit
-import LOGGER as Log
 from HTTP import *
-
 
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22'
 # USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/534.51.22 (KHTML, like Gecko) Version/5.1.1 Safari/534.51.22'
@@ -230,7 +228,7 @@ def scoreMediaTitleMatch(mediaName, mediaYear, title, altTitle, year, itemIndex)
         elif yearDiff == 2:
             yearPenalty = 25
     score = score - yearPenalty
-    #print str(mediaYear)+' '+str(year)+' '+str(yearPenalty)
+    # print str(mediaYear)+' '+str(year)+' '+str(yearPenalty)
 
     # Compute title penalty.
     titlePenalty = computeTitlePenalty(mediaName, title)
@@ -364,8 +362,8 @@ def computeTitlePenalty(mediaName, title):
                     penaltyAlt = penaltyAlt + int(penaltyPerPart * (1 - partDiffRatio))
                     i = i + 1
                 penalty = min(penalty, penaltyAlt)
-            #    print '++++++ DIFF("%s", "%s") = %g --> %d' % (mediaName.encode('utf8'), title.encode('utf8'), diffRatio, penalty)
-            #    Log.Debug('++++++ DIFF("%s", "%s") = %g --> %d' % (mediaName.encode('utf8'), title.encode('utf8'), diffRatio, penalty))
+                #    print '++++++ DIFF("%s", "%s") = %g --> %d' % (mediaName.encode('utf8'), title.encode('utf8'), diffRatio, penalty)
+                #    Log.Debug('++++++ DIFF("%s", "%s") = %g --> %d' % (mediaName.encode('utf8'), title.encode('utf8'), diffRatio, penalty))
         return penalty
     return 0
 

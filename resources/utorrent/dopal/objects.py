@@ -22,7 +22,7 @@ from dopal.core import ExtendedAzureusConnection
 from dopal.errors import AzMethodError, InvalidObjectIDError, \
     RemoteMethodError, StaleObjectReferenceError, ConnectionlessObjectError, \
     NonRefreshableConnectionlessObjectError, MissingRemoteAttributeError, \
-    NonRefreshableIncompleteObjectError, NonRefreshableObjectError
+    NonRefreshableObjectError
 import dopal.utils
 
 
@@ -486,7 +486,6 @@ class RemoteAttributesMixin(object):
             # behaviour?
             text = "'%s' object has no attribute '%s'"
             raise AttributeError, text % (type(self).__name__, name)
-
 
     def __setattr__(self, name, value):
         if self.__protect_remote_attributes__ and not name.startswith('__'):

@@ -18,7 +18,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import hashlib, sys
+import hashlib
+import sys
 
 import Libtorrent
 import AceStream
@@ -26,7 +27,6 @@ import AceStream
 
 class Torrent():
     __settings__ = sys.modules["__main__"].__settings__
-
 
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
         self.get_torrent_client()
@@ -77,7 +77,7 @@ class Torrent():
         return self.player.getFilePath(contentId)
 
     def getContentList(self):
-        #print str(self.player.getContentList())
+        # print str(self.player.getContentList())
         return self.player.getContentList()
 
     def setUploadLimit(self, bytesPerSecond):

@@ -2,12 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import re
-#import xbmc, xbmcgui, xbmcplugin, xbmcvfs
-import xbmcaddon
+# import xbmc, xbmcgui, xbmcplugin, xbmcvfs
 from tvdb import TvDb
 from tmdbs import TmDb
 from kinopoisks import KinoPoisk
-
 
 STATUS = {
     'moder': (40501, 'FFFF0000'),
@@ -90,7 +88,7 @@ class Scrapers():
             scraper = TvDb(language)
         elif content == 'tmdb':
             scraper = TmDb(language)
-        else:  #if content == 'kinopoisk':
+        else:  # if content == 'kinopoisk':
             scraper = KinoPoisk(language)
 
         name, search, year = item['label'], item['search'], item['year']

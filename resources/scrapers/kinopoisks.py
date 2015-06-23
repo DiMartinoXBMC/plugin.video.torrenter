@@ -11,7 +11,6 @@ import kinopoisk.LOGGER
 import kinopoisk.pageparser
 import kinopoisk.common
 
-
 GENRE = {
     'anime': 1750,
     'biography': 22,
@@ -295,7 +294,7 @@ class KinoPoisk:
     """
 
     def __init__(self, language='ru'):
-        dbname='kinopoisk.%s.db' % language
+        dbname = 'kinopoisk.%s.db' % language
         self.cache = Cache(dbname, 1.0)
         self.html = Clear()
 
@@ -463,8 +462,9 @@ class KinoPoisk:
                 if len(data) == 3:
                     i = 0
                     for mon in (
-                    u'января', u'февраля', u'марта', u'апреля', u'мая', u'июня', u'июля', u'августа', u'сентября',
-                    u'октября', u'ноября', u'декабря'):
+                            u'января', u'февраля', u'марта', u'апреля', u'мая', u'июня', u'июля', u'августа',
+                            u'сентября',
+                            u'октября', u'ноября', u'декабря'):
                         i += 1
                         if mon == data[1]:
                             mon = str(i)

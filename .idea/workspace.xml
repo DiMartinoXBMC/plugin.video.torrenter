@@ -1,12 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="56e91349-2444-4553-bc78-90c2bab49e9c" name="Default" comment="">
+    <list default="true" id="56e91349-2444-4553-bc78-90c2bab49e9c" name="Default" comment="update">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/platform_pulsar.py" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\platform.py" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AceStream.py" afterPath="$PROJECT_DIR$/AceStream.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeautifulSoup.py" afterPath="$PROJECT_DIR$/BeautifulSoup.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/skins/DialogXml.py" afterPath="$PROJECT_DIR$/resources/skins/DialogXml.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Downloader.py" afterPath="$PROJECT_DIR$/Downloader.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/contenters/EZTV.py" afterPath="$PROJECT_DIR$/resources/contenters/EZTV.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/contenters/KickAssSo.py" afterPath="$PROJECT_DIR$/resources/contenters/KickAssSo.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/searchers/unused/KinoZalTV.py" afterPath="$PROJECT_DIR$/resources/searchers/unused/KinoZalTV.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Libtorrent.py" afterPath="$PROJECT_DIR$/Libtorrent.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Player.py" afterPath="$PROJECT_DIR$/Player.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/searchers/RuTrackerOrg.py" afterPath="$PROJECT_DIR$/resources/searchers/RuTrackerOrg.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/contenters/SWESUB.py" afterPath="$PROJECT_DIR$/resources/contenters/SWESUB.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/searchers/T411FR.py" afterPath="$PROJECT_DIR$/resources/searchers/T411FR.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addon.xml" afterPath="$PROJECT_DIR$/addon.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/changelog.txt" afterPath="$PROJECT_DIR$/changelog.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/searchers/TFileME.py" afterPath="$PROJECT_DIR$/resources/searchers/TFileME.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/contenters/ThePirateBaySe.py" afterPath="$PROJECT_DIR$/resources/contenters/ThePirateBaySe.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/searchers/ThePirateBaySe.py" afterPath="$PROJECT_DIR$/resources/searchers/ThePirateBaySe.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/pyxbmct/addonwindow.py" afterPath="$PROJECT_DIR$/resources/pyxbmct/addonwindow.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/scrapers/cache.py" afterPath="$PROJECT_DIR$/resources/scrapers/cache.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cal.py" afterPath="$PROJECT_DIR$/cal.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/scrapers/kinopoisk/common.py" afterPath="$PROJECT_DIR$/resources/scrapers/kinopoisk/common.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controlcenter.py" afterPath="$PROJECT_DIR$/controlcenter.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/utorrent/dopal/core.py" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/core.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/functions.py" afterPath="$PROJECT_DIR$/functions.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/scrapers/kinopoisks.py" afterPath="$PROJECT_DIR$/resources/scrapers/kinopoisks.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/scrapers/net.py" afterPath="$PROJECT_DIR$/resources/scrapers/net.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/utorrent/net.py" afterPath="$PROJECT_DIR$/resources/utorrent/net.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/utorrent/dopal/objects.py" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/objects.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/scrapers/kinopoisk/pageparser.py" afterPath="$PROJECT_DIR$/resources/scrapers/kinopoisk/pageparser.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/scrapers/scrapers.py" afterPath="$PROJECT_DIR$/resources/scrapers/scrapers.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/scrapers/kinopoisk/translit.py" afterPath="$PROJECT_DIR$/resources/scrapers/kinopoisk/translit.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/scrapers/requests/utils.py" afterPath="$PROJECT_DIR$/resources/scrapers/requests/utils.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="plugin.video.torrenter.iws" />
@@ -17,6 +44,7 @@
     <ignored path=".idea/misc.xml" />
     <ignored path=".idea/plugin.video.torrenter.iml" />
     <ignored path=".idea/scopes/scope_settings.xml" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,9 +55,6 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter" />
   </component>
-  <component name="DaemonCodeAnalyzer">
-    <disable_hints />
-  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
     <favorites_list name="plugin.video.torrenter" />
@@ -38,71 +63,127 @@
     <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
         <leaf>
-          <file leaf-file-name="Core.py" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="Core.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Core.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="25279" max-vertical-offset="30549">
-                  <caret line="1487" column="75" selection-start-line="1487" selection-start-column="75" selection-end-line="1487" selection-end-column="75" />
-                  <folding />
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="1706" column="15" selection-start-line="1706" selection-start-column="15" selection-end-line="1706" selection-end-column="15" />
+                  <folding>
+                    <element signature="e#24#781#1" expanded="false" />
+                    <element signature="e#2316#2613#0" expanded="false" />
+                    <element signature="e#2650#7284#0" expanded="false" />
+                    <element signature="e#7323#19288#0" expanded="false" />
+                    <element signature="e#19329#20381#0" expanded="false" />
+                    <element signature="e#20432#27447#0" expanded="false" />
+                    <element signature="e#27491#30920#0" expanded="false" />
+                    <element signature="e#30961#32188#0" expanded="false" />
+                    <element signature="e#32288#36642#0" expanded="false" />
+                    <element signature="e#36690#38754#0" expanded="false" />
+                    <element signature="e#38796#40526#0" expanded="false" />
+                    <element signature="e#40576#45315#0" expanded="false" />
+                    <element signature="e#45380#51737#0" expanded="false" />
+                    <element signature="e#51801#54442#0" expanded="false" />
+                    <element signature="e#54489#55300#0" expanded="false" />
+                    <element signature="e#55349#57538#0" expanded="false" />
+                    <element signature="e#57695#58947#0" expanded="false" />
+                    <element signature="e#59003#59420#0" expanded="false" />
+                    <element signature="e#59462#59571#0" expanded="false" />
+                    <element signature="e#59614#59734#0" expanded="false" />
+                    <element signature="e#59784#59935#0" expanded="false" />
+                    <element signature="e#59988#67742#0" expanded="false" />
+                    <element signature="e#67791#67830#0" expanded="false" />
+                    <element signature="e#67879#68669#0" expanded="false" />
+                    <element signature="e#68719#71385#0" expanded="false" />
+                    <element signature="e#71430#72179#0" expanded="false" />
+                    <element signature="e#72227#73723#0" expanded="false" />
+                    <element signature="e#73768#74641#0" expanded="false" />
+                    <element signature="e#74686#75950#0" expanded="false" />
+                    <element signature="e#75998#81770#0" expanded="false" />
+                    <element signature="e#81818#83957#0" expanded="false" />
+                    <element signature="e#84007#84103#0" expanded="false" />
+                    <element signature="e#84166#84693#0" expanded="false" />
+                    <element signature="e#84754#89966#0" expanded="false" />
+                    <element signature="e#90010#90067#0" expanded="false" />
+                    <element signature="e#93942#95873#0" expanded="false" />
+                    <element signature="e#95939#96559#0" expanded="false" />
+                    <element signature="e#96602#97273#0" expanded="false" />
+                    <element signature="e#97309#98098#0" expanded="false" />
+                    <element signature="e#98140#98235#0" expanded="false" />
+                    <element signature="e#98285#98433#0" expanded="false" />
+                  </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="functions.py" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/functions.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="17782" max-vertical-offset="26928">
-                  <caret line="1046" column="12" selection-start-line="1046" selection-start-column="8" selection-end-line="1046" selection-end-column="12" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="Localization.py" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Localization.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="3687" max-vertical-offset="4267">
-                  <caret line="234" column="0" selection-start-line="234" selection-start-column="0" selection-end-line="234" selection-end-column="0" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="changelog.txt" pinned="false" current="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/changelog.txt">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.41530946" vertical-offset="0" max-vertical-offset="1632">
-                  <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="addon.xml" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/addon.xml">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
-                  <caret line="1" column="61" selection-start-line="1" selection-start-column="61" selection-end-line="1" selection-end-column="66" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="Player.py" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Player.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="3757" max-vertical-offset="7242">
-                  <caret line="221" column="86" selection-start-line="221" selection-start-column="71" selection-end-line="221" selection-end-column="86" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="Libtorrent.py" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="Libtorrent.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/Libtorrent.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="576" max-vertical-offset="6766">
-                  <caret line="81" column="28" selection-start-line="81" selection-start-column="28" selection-end-line="81" selection-end-column="28" />
+                <state vertical-scroll-proportion="0.9070568">
+                  <caret line="107" column="53" selection-start-line="107" selection-start-column="53" selection-end-line="107" selection-end-column="53" />
+                  <folding>
+                    <element signature="e#24#785#1" expanded="false" />
+                    <element signature="e#801#814#0" expanded="true" />
+                    <element signature="e#1453#3521#1" expanded="false" />
+                    <element signature="e#10280#10412#0" expanded="false" />
+                    <element signature="e#10453#10587#0" expanded="false" />
+                    <element signature="e#10621#10743#0" expanded="false" />
+                    <element signature="e#10777#10899#0" expanded="false" />
+                    <element signature="e#10949#10996#0" expanded="false" />
+                    <element signature="e#11046#11150#0" expanded="false" />
+                    <element signature="e#11872#12042#0" expanded="false" />
+                    <element signature="e#12098#12153#0" expanded="false" />
+                    <element signature="e#12211#12268#0" expanded="false" />
+                    <element signature="e#12305#12484#0" expanded="false" />
+                    <element signature="e#12536#13830#0" expanded="false" />
+                    <element signature="e#13875#14803#0" expanded="false" />
+                    <element signature="e#14840#15334#0" expanded="false" />
+                    <element signature="e#15372#16022#0" expanded="false" />
+                    <element signature="e#16059#16161#0" expanded="false" />
+                    <element signature="e#16253#17426#0" expanded="false" />
+                    <element signature="e#17462#17879#0" expanded="false" />
+                    <element signature="e#17916#18067#0" expanded="false" />
+                    <element signature="e#18098#19239#0" expanded="false" />
+                    <element signature="e#19274#19417#0" expanded="false" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Localization.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Localization.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="244" column="25" selection-start-line="244" selection-start-column="25" selection-end-line="244" selection-end-column="25" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="addon.xml" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/addon.xml">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="1" column="66" selection-start-line="1" selection-start-column="66" selection-end-line="1" selection-end-column="66" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="changelog.txt" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/changelog.txt">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Content.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Content.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="212" column="25" selection-start-line="212" selection-start-column="25" selection-end-line="212" selection-end-column="25" />
                   <folding />
                 </state>
               </provider>
@@ -112,44 +193,168 @@
       </split-first>
       <split-second>
         <leaf>
-          <file leaf-file-name="SearcherABC.py" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="SearcherABC.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/SearcherABC.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="3468" max-vertical-offset="3757">
-                  <caret line="204" column="33" selection-start-line="204" selection-start-column="30" selection-end-line="204" selection-end-column="33" />
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="203" column="0" selection-start-line="203" selection-start-column="0" selection-end-line="203" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="Cpasbien.py" pinned="false" current="true" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/resources/searchers/Cpasbien.py">
+          <file leaf-file-name="RuTorOrg.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/resources/searchers/RuTorOrg.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.27687296" vertical-offset="357" max-vertical-offset="1700">
-                  <caret line="35" column="7" selection-start-line="35" selection-start-column="7" selection-end-line="35" selection-end-column="7" />
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="99" column="36" selection-start-line="99" selection-start-column="36" selection-end-line="99" selection-end-column="36" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="RuTrackerOrg.py" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/resources/searchers/RuTrackerOrg.py">
+          <file leaf-file-name="RiperAM.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/resources/searchers/RiperAM.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="2212" max-vertical-offset="3077">
-                  <caret line="164" column="35" selection-start-line="164" selection-start-column="35" selection-end-line="164" selection-end-column="35" />
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="95" column="0" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="T411FR.py" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="net.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/resources/utorrent/net.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="42" column="28" selection-start-line="42" selection-start-column="28" selection-end-line="42" selection-end-column="28" />
+                  <folding>
+                    <element signature="e#1034#8975#0" expanded="false" />
+                    <element signature="e#1062#1399#0" expanded="false" />
+                    <element signature="e#1449#2544#0" expanded="false" />
+                    <element signature="e#2578#3669#0" expanded="false" />
+                    <element signature="e#3701#5436#0" expanded="false" />
+                    <element signature="e#5471#6443#0" expanded="false" />
+                    <element signature="e#6492#7772#0" expanded="false" />
+                    <element signature="e#7811#8109#0" expanded="false" />
+                    <element signature="e#8162#8500#0" expanded="false" />
+                    <element signature="e#8538#8975#0" expanded="false" />
+                    <element signature="e#9001#10155#0" expanded="false" />
+                    <element signature="e#9345#10020#0" expanded="false" />
+                    <element signature="e#10054#10155#0" expanded="false" />
+                    <element signature="e#10182#10681#0" expanded="false" />
+                    <element signature="e#10219#10404#0" expanded="false" />
+                    <element signature="e#10438#10681#0" expanded="false" />
+                    <element signature="e#10769#11126#0" expanded="false" />
+                    <element signature="e#11160#11730#0" expanded="false" />
+                    <element signature="e#11760#12542#0" expanded="false" />
+                    <element signature="e#12581#13178#0" expanded="false" />
+                    <element signature="e#13218#13565#0" expanded="false" />
+                    <element signature="e#13612#13916#0" expanded="false" />
+                    <element signature="e#13967#14134#0" expanded="false" />
+                    <element signature="e#14176#14497#0" expanded="false" />
+                    <element signature="e#14552#14721#0" expanded="false" />
+                    <element signature="e#14773#14854#0" expanded="false" />
+                    <element signature="e#14890#14894#0" expanded="false" />
+                    <element signature="e#14944#15516#0" expanded="false" />
+                    <element signature="e#15567#15657#0" expanded="false" />
+                    <element signature="e#15692#16218#0" expanded="false" />
+                    <element signature="e#16272#16854#0" expanded="false" />
+                    <element signature="e#16912#18406#0" expanded="false" />
+                    <element signature="e#16912#17219#1" expanded="false" />
+                    <element signature="e#18493#18822#0" expanded="false" />
+                    <element signature="e#18852#21525#0" expanded="false" />
+                    <element signature="e#21559#21791#0" expanded="false" />
+                    <element signature="e#21830#23111#0" expanded="false" />
+                    <element signature="e#23597#23601#0" expanded="false" />
+                    <element signature="e#23643#24380#0" expanded="false" />
+                    <element signature="e#24435#24929#0" expanded="false" />
+                    <element signature="e#24981#25541#0" expanded="false" />
+                    <element signature="e#25582#27356#0" expanded="false" />
+                    <element signature="e#27407#27933#0" expanded="false" />
+                    <element signature="e#27967#28197#0" expanded="false" />
+                    <element signature="e#28239#28387#0" expanded="false" />
+                    <element signature="e#28429#28685#0" expanded="false" />
+                    <element signature="e#28706#36753#0" expanded="false" />
+                    <element signature="e#28766#28963#0" expanded="false" />
+                    <element signature="e#28997#29118#0" expanded="false" />
+                    <element signature="e#29148#30344#0" expanded="false" />
+                    <element signature="e#30378#30636#0" expanded="false" />
+                    <element signature="e#30675#31874#0" expanded="false" />
+                    <element signature="e#31912#32063#0" expanded="false" />
+                    <element signature="e#32110#32435#0" expanded="false" />
+                    <element signature="e#32486#33008#0" expanded="false" />
+                    <element signature="e#33044#33048#0" expanded="false" />
+                    <element signature="e#33090#33485#0" expanded="false" />
+                    <element signature="e#33540#33921#0" expanded="false" />
+                    <element signature="e#33973#34377#0" expanded="false" />
+                    <element signature="e#34418#35150#0" expanded="false" />
+                    <element signature="e#35201#35645#0" expanded="false" />
+                    <element signature="e#35679#36409#0" expanded="false" />
+                    <element signature="e#36451#36753#0" expanded="false" />
+                    <element signature="e#36772#42276#0" expanded="false" />
+                    <element signature="e#36832#37200#0" expanded="false" />
+                    <element signature="e#37231#38795#0" expanded="false" />
+                    <element signature="e#38829#38861#0" expanded="false" />
+                    <element signature="e#38900#39787#0" expanded="false" />
+                    <element signature="e#39834#40018#0" expanded="false" />
+                    <element signature="e#40070#40169#0" expanded="false" />
+                    <element signature="e#40205#40209#0" expanded="false" />
+                    <element signature="e#40251#40687#0" expanded="false" />
+                    <element signature="e#40742#40996#0" expanded="false" />
+                    <element signature="e#41072#41461#0" expanded="false" />
+                    <element signature="e#41513#41594#0" expanded="false" />
+                    <element signature="e#41645#42017#0" expanded="false" />
+                    <element signature="e#42061#42276#0" expanded="false" />
+                    <element signature="e#42301#45751#0" expanded="false" />
+                    <element signature="e#42329#42342#0" expanded="false" />
+                    <element signature="e#42374#42938#0" expanded="false" />
+                    <element signature="e#42982#44875#0" expanded="false" />
+                    <element signature="e#44922#44962#0" expanded="false" />
+                    <element signature="e#45013#45057#0" expanded="false" />
+                    <element signature="e#45087#45112#0" expanded="false" />
+                    <element signature="e#45146#45175#0" expanded="false" />
+                    <element signature="e#45214#45246#0" expanded="false" />
+                    <element signature="e#45282#45311#0" expanded="false" />
+                    <element signature="e#45353#45388#0" expanded="false" />
+                    <element signature="e#45443#45549#0" expanded="false" />
+                    <element signature="e#45606#45656#0" expanded="false" />
+                    <element signature="e#45707#45751#0" expanded="false" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="utils.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/resources/scrapers/requests/utils.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.7607573">
+                  <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#182#192#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="tmdbs.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/resources/scrapers/tmdbs.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="344" column="19" selection-start-line="344" selection-start-column="19" selection-end-line="344" selection-end-column="19" />
+                  <folding>
+                    <element signature="e#25#36#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="T411FR.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/resources/searchers/T411FR.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-4.4035087" vertical-offset="548" max-vertical-offset="2278">
-                  <caret line="47" column="7" selection-start-line="47" selection-start-column="7" selection-end-line="47" selection-end-column="7" />
-                  <folding>
-                    <element signature="e#783#792#0" expanded="true" />
-                  </folding>
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="75" column="0" selection-start-line="75" selection-start-column="0" selection-end-line="77" selection-end-column="28" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -167,57 +372,42 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
-    <option name="changedFiles">
+    <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/resources/searchers/ExtraTorrent.py" />
-        <option value="$PROJECT_DIR$/README.txt" />
-        <option value="$PROJECT_DIR$/controlcenter.py" />
-        <option value="$PROJECT_DIR$/Downloader.py" />
-        <option value="$PROJECT_DIR$/AceStream.py" />
         <option value="$PROJECT_DIR$/resources/utorrent/net.py" />
-        <option value="$PROJECT_DIR$/resources/contenters/IMDB.py" />
-        <option value="$PROJECT_DIR$/resources/contenters/FastTorrent.py" />
-        <option value="$PROJECT_DIR$/resources/contenters/KinoPoisk.py" />
-        <option value="$PROJECT_DIR$/resources/contenters/RiperAM.py" />
-        <option value="$PROJECT_DIR$/Content.py" />
-        <option value="$PROJECT_DIR$/resources/skins/DialogReviews.py" />
-        <option value="$PROJECT_DIR$/resources/scrapers/cache.py" />
-        <option value="$PROJECT_DIR$/resources/searchers/Nyaa.py" />
-        <option value="$PROJECT_DIR$/resources/skins/DialogXml.py" />
-        <option value="$PROJECT_DIR$/../script.torrenterscc/addon.xml" />
-        <option value="$PROJECT_DIR$/../script.torrenterscc/test.py" />
-        <option value="$PROJECT_DIR$/resources/skins/Default/720p/movieinfo.xml" />
         <option value="$PROJECT_DIR$/resources/searchers/KickAssSo.py" />
-        <option value="$PROJECT_DIR$/resources/contenters/ThePirateBaySe.py" />
-        <option value="$PROJECT_DIR$/functions.py" />
         <option value="$PROJECT_DIR$/resources/contenters/KickAssSo.py" />
-        <option value="$PROJECT_DIR$/resources/contenters/EZTV.py" />
-        <option value="$PROJECT_DIR$/resources/scrapers/tmdb.py" />
-        <option value="$PROJECT_DIR$/resources/scrapers/tmdbs.py" />
-        <option value="$PROJECT_DIR$/resources/contenters/CXZ.py" />
-        <option value="$PROJECT_DIR$/resources/language/English/strings.xml" />
-        <option value="$PROJECT_DIR$/resources/settings.xml" />
-        <option value="$PROJECT_DIR$/resources/language/Russian/strings.xml" />
-        <option value="$PROJECT_DIR$/resources/searchers/BTDigg.py" />
-        <option value="$PROJECT_DIR$/resources/contenters/SWESUB.py" />
-        <option value="$PROJECT_DIR$/Player.py" />
-        <option value="$PROJECT_DIR$/resources/searchers/ThePirateBaySe.py" />
-        <option value="$PROJECT_DIR$/resources/searchers/unused/KinoZalTV.py" />
-        <option value="$PROJECT_DIR$/resources/searchers/NNMClubRu.py" />
-        <option value="$PROJECT_DIR$/cal.py" />
-        <option value="$PROJECT_DIR$/resources/searchers/OpenSharing.py" />
-        <option value="$PROJECT_DIR$/resources/searchers/OldPirateBay.py" />
-        <option value="$PROJECT_DIR$/resources/searchers/EZTV.py" />
-        <option value="$PROJECT_DIR$/Localization.py" />
-        <option value="$PROJECT_DIR$/Core.py" />
-        <option value="$PROJECT_DIR$/addon.xml" />
-        <option value="$PROJECT_DIR$/Libtorrent.py" />
-        <option value="$PROJECT_DIR$/resources/searchers/Cpasbien.py" />
+        <option value="$PROJECT_DIR$/Content.py" />
         <option value="$PROJECT_DIR$/resources/searchers/RuTrackerOrg.py" />
-        <option value="$PROJECT_DIR$/resources/searchers/T411FR.py" />
+        <option value="$PROJECT_DIR$/resources/scrapers/tmdbs.py" />
+        <option value="$PROJECT_DIR$/resources/contenters/EZTVAZ.py" />
+        <option value="$PROJECT_DIR$/resources/contenters/EZTV.py" />
+        <option value="$PROJECT_DIR$/../plugin.torrenter.c.eztvaz/README.md" />
+        <option value="$PROJECT_DIR$/../plugin.torrenter.c.eztvaz/Content.py" />
+        <option value="$PROJECT_DIR$/../plugin.torrenter.c.eztvaz/EZTVAZ.py" />
+        <option value="$PROJECT_DIR$/../plugin.torrenter.c.eztvaz/resources/settings.xml" />
+        <option value="$PROJECT_DIR$/../plugin.torrenter.c.eztvaz/addon.xml" />
+        <option value="$PROJECT_DIR$/../plugin.torrenter.c.eztvaz/changelog.txt" />
+        <option value="$PROJECT_DIR$/../plugin.torrenter.c.eztvaz/default.py" />
+        <option value="$PROJECT_DIR$/resources/searchers/RiperAM.py" />
+        <option value="$PROJECT_DIR$/functions.py" />
+        <option value="$PROJECT_DIR$/Player.py" />
+        <option value="$PROJECT_DIR$/cal.py" />
+        <option value="$PROJECT_DIR$/platform_pulsar.py" />
+        <option value="$PROJECT_DIR$/platformpulsar.py" />
+        <option value="$PROJECT_DIR$/platform2.py" />
         <option value="$PROJECT_DIR$/changelog.txt" />
+        <option value="$PROJECT_DIR$/addon.xml" />
+        <option value="$PROJECT_DIR$/Core.py" />
+        <option value="$PROJECT_DIR$/Localization.py" />
+        <option value="$PROJECT_DIR$/platform.py" />
+        <option value="$PROJECT_DIR$/resources/scrapers/requests/utils.py" />
+        <option value="$PROJECT_DIR$/Libtorrent.py" />
       </list>
     </option>
+  </component>
+  <component name="NamedScopeManager">
+    <order />
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="1" />
@@ -296,17 +486,40 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="searchers" />
+              <option name="myItemId" value="scrapers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="plugin.video.torrenter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="plugin.video.torrenter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scrapers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="requests" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
       <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="D:/Program Files (x86)/Git/bin/git.exe" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../plugin.torrenter.c.eztvaz" />
     <property name="FullScreen" value="false" />
     <property name="recentsLimit" value="5" />
     <property name="options.lastSelected" value="vcs.Git" />
@@ -314,13 +527,9 @@
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
   </component>
-  <component name="PyConsoleOptionsProvider">
-    <option name="myPythonConsoleState">
-      <console-settings />
-    </option>
-  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\contenters" />
       <recent name="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\searchers" />
     </key>
   </component>
@@ -339,8 +548,107 @@
       <module name="plugin.video.torrenter" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/cal.py" />
       <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="plugin.video.torrenter" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Attests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="plugin.video.torrenter" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="plugin.video.torrenter" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Nosetests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="plugin.video.torrenter" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="plugin.video.torrenter" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="tests" factoryName="py.test">
@@ -367,103 +675,6 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <configuration default="true" type="tests" factoryName="Nosetests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="plugin.video.torrenter" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
-      <method />
-    </configuration>
-    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="plugin.video.torrenter" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <method />
-    </configuration>
-    <configuration default="true" type="tests" factoryName="Unittests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="plugin.video.torrenter" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PUREUNITTEST" value="true" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
-      <method />
-    </configuration>
-    <configuration default="true" type="tests" factoryName="Doctests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="plugin.video.torrenter" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <method />
-    </configuration>
-    <configuration default="true" type="tests" factoryName="Attests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="plugin.video.torrenter" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <method />
-    </configuration>
     <list size="1">
       <item index="0" class="java.lang.String" itemvalue="Python.cal" />
     </list>
@@ -481,209 +692,304 @@
     <task active="true" id="Default" summary="Default task">
       <changelist id="56e91349-2444-4553-bc78-90c2bab49e9c" name="Default" comment="" />
       <created>1420801533300</created>
+      <option name="number" value="Default" />
       <updated>1420801533300</updated>
-    </task>
-    <task id="LOCAL-00001" summary="New Read me?">
-      <created>1420802182683</created>
-      <updated>1420802182683</updated>
-    </task>
-    <task id="LOCAL-00002" summary="New Read me?">
-      <created>1420802225322</created>
-      <updated>1420802225322</updated>
-    </task>
-    <task id="LOCAL-00003" summary="New Read me?">
-      <created>1420802271541</created>
-      <updated>1420802271541</updated>
-    </task>
-    <task id="LOCAL-00004" summary="New Read me?">
-      <created>1420833581950</created>
-      <updated>1420833581950</updated>
-    </task>
-    <task id="LOCAL-00005" summary="extratorrent fix">
-      <created>1420834735779</created>
-      <updated>1420834735779</updated>
-    </task>
-    <task id="LOCAL-00006" summary="save path keyboard">
-      <created>1420904827834</created>
-      <updated>1420904827834</updated>
-    </task>
-    <task id="LOCAL-00007" summary="return russian trackers">
-      <created>1420970744332</created>
-      <updated>1420970744332</updated>
-    </task>
-    <task id="LOCAL-00008" summary="moveout some minor functions from Core">
-      <created>1420996631774</created>
-      <updated>1420996631774</updated>
-    </task>
-    <task id="LOCAL-00009" summary="download by libtorrent">
-      <created>1421093421091</created>
-      <updated>1421093421091</updated>
-    </task>
-    <task id="LOCAL-00010" summary="download by libtorrent">
-      <created>1421159093940</created>
-      <updated>1421159093940</updated>
-    </task>
-    <task id="LOCAL-00011" summary="download by libtorrent with pause">
-      <created>1421159105711</created>
-      <updated>1421159105711</updated>
-    </task>
-    <task id="LOCAL-00012" summary="download by libtorrent with start and stop">
-      <created>1421168794238</created>
-      <updated>1421168794238</updated>
-    </task>
-    <task id="LOCAL-00013" summary="reworked Kickass">
-      <created>1421170408845</created>
-      <updated>1421170408845</updated>
-    </task>
-    <task id="LOCAL-00014" summary="context instead of open">
-      <created>1421173155027</created>
-      <updated>1421173155027</updated>
     </task>
     <task id="LOCAL-00015" summary="icons">
       <created>1421173168540</created>
+      <option name="number" value="00015" />
+      <option name="project" value="LOCAL" />
       <updated>1421173168540</updated>
     </task>
     <task id="LOCAL-00016" summary="version bump">
       <created>1421173435595</created>
+      <option name="number" value="00016" />
+      <option name="project" value="LOCAL" />
       <updated>1421173435595</updated>
     </task>
     <task id="LOCAL-00017" summary="keep seeding">
       <created>1421267041595</created>
+      <option name="number" value="00017" />
+      <option name="project" value="LOCAL" />
       <updated>1421267041595</updated>
     </task>
     <task id="LOCAL-00018" summary="deluge">
       <created>1421351603195</created>
+      <option name="number" value="00018" />
+      <option name="project" value="LOCAL" />
       <updated>1421351603195</updated>
     </task>
     <task id="LOCAL-00019" summary="context fix">
       <created>1421359002092</created>
+      <option name="number" value="00019" />
+      <option name="project" value="LOCAL" />
       <updated>1421359002092</updated>
     </task>
     <task id="LOCAL-00020" summary="fixes">
       <created>1421420336815</created>
+      <option name="number" value="00020" />
+      <option name="project" value="LOCAL" />
       <updated>1421420336815</updated>
     </task>
     <task id="LOCAL-00021" summary="fixes and fr">
       <created>1421533952269</created>
+      <option name="number" value="00021" />
+      <option name="project" value="LOCAL" />
       <updated>1421533952269</updated>
     </task>
     <task id="LOCAL-00022" summary="fix external multifile play">
       <created>1421602178920</created>
+      <option name="number" value="00022" />
+      <option name="project" value="LOCAL" />
       <updated>1421602178920</updated>
     </task>
     <task id="LOCAL-00023" summary="ez ch up">
       <created>1421609366931</created>
+      <option name="number" value="00023" />
+      <option name="project" value="LOCAL" />
       <updated>1421609366931</updated>
     </task>
     <task id="LOCAL-00024" summary="ez ch up">
       <created>1421609391245</created>
+      <option name="number" value="00024" />
+      <option name="project" value="LOCAL" />
       <updated>1421609391245</updated>
     </task>
     <task id="LOCAL-00025" summary="subs new naming">
       <created>1421616989982</created>
+      <option name="number" value="00025" />
+      <option name="project" value="LOCAL" />
       <updated>1421616989982</updated>
     </task>
     <task id="LOCAL-00026" summary="myshows external fix">
       <created>1421677945021</created>
+      <option name="number" value="00026" />
+      <option name="project" value="LOCAL" />
       <updated>1421677945021</updated>
     </task>
     <task id="LOCAL-00027" summary="TC copy files from subfold">
       <created>1421688808925</created>
+      <option name="number" value="00027" />
+      <option name="project" value="LOCAL" />
       <updated>1421688808925</updated>
     </task>
     <task id="LOCAL-00028" summary="ace stream fix">
       <created>1421703999627</created>
+      <option name="number" value="00028" />
+      <option name="project" value="LOCAL" />
       <updated>1421703999627</updated>
     </task>
     <task id="LOCAL-00029" summary="deluge net fix">
       <created>1422131055103</created>
+      <option name="number" value="00029" />
+      <option name="project" value="LOCAL" />
       <updated>1422131055103</updated>
     </task>
     <task id="LOCAL-00030" summary="false positive fix">
       <created>1422137592938</created>
+      <option name="number" value="00030" />
+      <option name="project" value="LOCAL" />
       <updated>1422137592938</updated>
     </task>
     <task id="LOCAL-00031" summary="myshows fix">
       <created>1422386879331</created>
+      <option name="number" value="00031" />
+      <option name="project" value="LOCAL" />
       <updated>1422386879331</updated>
     </task>
     <task id="LOCAL-00032" summary="myshows fix">
       <created>1422468121503</created>
+      <option name="number" value="00032" />
+      <option name="project" value="LOCAL" />
       <updated>1422468121503</updated>
     </task>
     <task id="LOCAL-00033" summary="myshows fix">
       <created>1422468152950</created>
+      <option name="number" value="00033" />
+      <option name="project" value="LOCAL" />
       <updated>1422468152950</updated>
     </task>
     <task id="LOCAL-00034" summary="sort">
       <created>1422474825684</created>
+      <option name="number" value="00034" />
+      <option name="project" value="LOCAL" />
       <updated>1422474825684</updated>
     </task>
     <task id="LOCAL-00035" summary="information kickass update">
       <created>1422736110449</created>
+      <option name="number" value="00035" />
+      <option name="project" value="LOCAL" />
       <updated>1422736110449</updated>
     </task>
     <task id="LOCAL-00036" summary="skin support update">
       <created>1423066680117</created>
+      <option name="number" value="00036" />
+      <option name="project" value="LOCAL" />
       <updated>1423066680117</updated>
     </task>
     <task id="LOCAL-00037" summary="utf fix">
       <created>1423512510712</created>
+      <option name="number" value="00037" />
+      <option name="project" value="LOCAL" />
       <updated>1423512510712</updated>
     </task>
     <task id="LOCAL-00038" summary="kickass &amp; piratebay">
       <created>1423579932578</created>
+      <option name="number" value="00038" />
+      <option name="project" value="LOCAL" />
       <updated>1423579932578</updated>
     </task>
     <task id="LOCAL-00039" summary="piratefix">
       <created>1423580753025</created>
+      <option name="number" value="00039" />
+      <option name="project" value="LOCAL" />
       <updated>1423580753025</updated>
     </task>
     <task id="LOCAL-00040" summary="speed and clear fix">
       <created>1424103598566</created>
+      <option name="number" value="00040" />
+      <option name="project" value="LOCAL" />
       <updated>1424103598566</updated>
     </task>
     <task id="LOCAL-00041" summary="eztv and kickass content plot">
       <created>1424104905835</created>
+      <option name="number" value="00041" />
+      <option name="project" value="LOCAL" />
       <updated>1424104905835</updated>
     </task>
     <task id="LOCAL-00042" summary="drop ssl tmdb">
       <created>1424197115815</created>
+      <option name="number" value="00042" />
+      <option name="project" value="LOCAL" />
       <updated>1424197115815</updated>
     </task>
     <task id="LOCAL-00043" summary="swesub update, phrase, next page fix">
       <created>1424607233401</created>
+      <option name="number" value="00043" />
+      <option name="project" value="LOCAL" />
       <updated>1424607233401</updated>
     </task>
     <task id="LOCAL-00044" summary="BTDigg">
       <created>1425134151016</created>
+      <option name="number" value="00044" />
+      <option name="project" value="LOCAL" />
       <updated>1425134151016</updated>
     </task>
     <task id="LOCAL-00045" summary="fix">
       <created>1425744202487</created>
+      <option name="number" value="00045" />
+      <option name="project" value="LOCAL" />
       <updated>1425744202487</updated>
     </task>
     <task id="LOCAL-00046" summary="change">
       <created>1426795799240</created>
+      <option name="number" value="00046" />
+      <option name="project" value="LOCAL" />
       <updated>1426795799240</updated>
     </task>
     <task id="LOCAL-00047" summary="utf fix">
       <created>1426796944835</created>
+      <option name="number" value="00047" />
+      <option name="project" value="LOCAL" />
       <updated>1426796944835</updated>
     </task>
     <task id="LOCAL-00048" summary="utf fix">
       <created>1426796963534</created>
+      <option name="number" value="00048" />
+      <option name="project" value="LOCAL" />
       <updated>1426796963534</updated>
     </task>
     <task id="LOCAL-00049" summary="search fix">
       <created>1428070959419</created>
+      <option name="number" value="00049" />
+      <option name="project" value="LOCAL" />
       <updated>1428070959419</updated>
     </task>
     <task id="LOCAL-00050" summary="one searcher for myshows.ru">
       <created>1428931031577</created>
+      <option name="number" value="00050" />
+      <option name="project" value="LOCAL" />
       <updated>1428931031577</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="fixes">
+      <created>1430506818834</created>
+      <option name="number" value="00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1430506818834</updated>
+    </task>
+    <task id="LOCAL-00052" summary="rutor fix">
+      <created>1430760574055</created>
+      <option name="number" value="00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1430760574055</updated>
+    </task>
+    <task id="LOCAL-00053" summary="update">
+      <created>1431620449674</created>
+      <option name="number" value="00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1431620449674</updated>
+    </task>
+    <task id="LOCAL-00054" summary="deluge file progress fix">
+      <created>1431970599353</created>
+      <option name="number" value="00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1431970599354</updated>
+    </task>
+    <task id="LOCAL-00055" summary="music update">
+      <created>1431972846563</created>
+      <option name="number" value="00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1431972846563</updated>
+    </task>
+    <task id="LOCAL-00056" summary="kickass fix">
+      <created>1432369524328</created>
+      <option name="number" value="00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1432369524328</updated>
+    </task>
+    <task id="LOCAL-00057" summary="kickass fix">
+      <created>1432469972605</created>
+      <option name="number" value="00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1432469972605</updated>
+    </task>
+    <task id="LOCAL-00058" summary="update">
+      <created>1433191499390</created>
+      <option name="number" value="00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1433191499390</updated>
+    </task>
+    <task id="LOCAL-00059" summary="tmdb fix">
+      <created>1433358593853</created>
+      <option name="number" value="00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1433358593853</updated>
+    </task>
+    <task id="LOCAL-00060" summary="riper fix">
+      <created>1433360754651</created>
+      <option name="number" value="00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1433360754651</updated>
+    </task>
+    <task id="LOCAL-00061" summary="little piece mp4 fix">
+      <created>1433787458035</created>
+      <option name="number" value="00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1433787458036</updated>
+    </task>
+    <task id="LOCAL-00062" summary="update">
+      <created>1433792128270</created>
+      <option name="number" value="00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1433792128271</updated>
+    </task>
+    <task id="LOCAL-00063" summary="magnet, platform">
+      <created>1434145575569</created>
+      <option name="number" value="00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1434145575570</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -710,24 +1016,26 @@
     <frame x="1" y="0" width="1918" height="1040" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25904977" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32879817" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1319149" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1319149" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31030577" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21493213" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32879817" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1319149" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25226244" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32539684" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2497309" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32539684" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -742,19 +1050,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <option name="myTodoPanelSettings">
-      <TodoPanelSettings />
-    </option>
-    <MESSAGE value="fixes and fr" />
-    <MESSAGE value="fix external multifile play" />
-    <MESSAGE value="ez ch up" />
-    <MESSAGE value="subs new naming" />
-    <MESSAGE value="myshows external fix" />
-    <MESSAGE value="TC copy files from subfold" />
-    <MESSAGE value="ace stream fix" />
-    <MESSAGE value="deluge net fix" />
-    <MESSAGE value="false positive fix" />
-    <MESSAGE value="myshows fix" />
     <MESSAGE value="sort" />
     <MESSAGE value="information kickass update" />
     <MESSAGE value="skin support update" />
@@ -770,384 +1065,529 @@
     <MESSAGE value="utf fix" />
     <MESSAGE value="search fix" />
     <MESSAGE value="one searcher for myshows.ru" />
-    <option name="LAST_COMMIT_MESSAGE" value="one searcher for myshows.ru" />
+    <MESSAGE value="fixes" />
+    <MESSAGE value="rutor fix" />
+    <MESSAGE value="deluge file progress fix" />
+    <MESSAGE value="music update" />
+    <MESSAGE value="kickass fix" />
+    <MESSAGE value="tmdb fix" />
+    <MESSAGE value="riper fix" />
+    <MESSAGE value="little piece mp4 fix" />
+    <MESSAGE value="update" />
+    <MESSAGE value="magnet, platform" />
+    <option name="LAST_COMMIT_MESSAGE" value="magnet, platform" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="7" />
+      <option name="time" value="12" />
     </breakpoint-manager>
+    <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/AceStream.py">
+    <entry file="file://$PROJECT_DIR$/resources/searchers/T411FR.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5012225" vertical-offset="1409" max-vertical-offset="2448">
-          <caret line="120" column="46" selection-start-line="120" selection-start-column="46" selection-end-line="120" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Content.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="4335">
-          <caret line="51" column="18" selection-start-line="51" selection-start-column="8" selection-end-line="51" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharm30/system/python_stubs/1494736245/_sqlite3.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33280253" vertical-offset="2307" max-vertical-offset="9078">
-          <caret line="148" column="8" selection-start-line="148" selection-start-column="8" selection-end-line="148" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/scrapers/cache.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.43152866" vertical-offset="2075" max-vertical-offset="2703">
-          <caret line="148" column="66" selection-start-line="148" selection-start-column="66" selection-end-line="148" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/Nyaa.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.48726115" vertical-offset="714" max-vertical-offset="1513">
-          <caret line="65" column="22" selection-start-line="65" selection-start-column="22" selection-end-line="65" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../script.torrenterscc/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.13556619" vertical-offset="0" max-vertical-offset="627">
-          <caret line="5" column="77" selection-start-line="5" selection-start-column="77" selection-end-line="5" selection-end-column="77" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../script.torrenterscc/addon.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3273165" vertical-offset="0" max-vertical-offset="831">
-          <caret line="16" column="14" selection-start-line="16" selection-start-column="14" selection-end-line="16" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/skins/Default/720p/movieinfo.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.31729054" vertical-offset="638" max-vertical-offset="3808">
-          <caret line="48" column="30" selection-start-line="48" selection-start-column="30" selection-end-line="48" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../plugin.video.myshows/resources/skins/Default/720p/RatingDialog.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.95365417" vertical-offset="2661" max-vertical-offset="3961">
-          <caret line="188" column="29" selection-start-line="188" selection-start-column="29" selection-end-line="188" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/ExtraTorrent.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.10526316" vertical-offset="1179" max-vertical-offset="1802">
-          <caret line="75" column="22" selection-start-line="75" selection-start-column="22" selection-end-line="75" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/skins/DialogXml.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.1443124" vertical-offset="0" max-vertical-offset="1411">
-          <caret line="5" column="19" selection-start-line="5" selection-start-column="19" selection-end-line="5" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/scrapers/tmdbs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8136752" vertical-offset="969" max-vertical-offset="6001">
-          <caret line="89" column="0" selection-start-line="89" selection-start-column="0" selection-end-line="89" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/scrapers/tmdb.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.871795" vertical-offset="7363" max-vertical-offset="8126">
-          <caret line="59" column="21" selection-start-line="59" selection-start-column="21" selection-end-line="59" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/utorrent/net.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="14501" max-vertical-offset="22865">
-          <caret line="853" column="0" selection-start-line="853" selection-start-column="0" selection-end-line="853" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/contenters/KinoPoisk.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1372" max-vertical-offset="5287">
-          <caret line="104" column="63" selection-start-line="104" selection-start-column="63" selection-end-line="104" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/contenters/RiperAM.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="997" max-vertical-offset="1955">
-          <caret line="92" column="16" selection-start-line="92" selection-start-column="12" selection-end-line="92" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/contenters/CXZ.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.16780822" vertical-offset="1619" max-vertical-offset="3332">
-          <caret line="104" column="20" selection-start-line="104" selection-start-column="20" selection-end-line="104" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/language/English/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4935484" vertical-offset="357" max-vertical-offset="1122">
-          <caret line="39" column="4" selection-start-line="39" selection-start-column="4" selection-end-line="39" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/settings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.009901" vertical-offset="459" max-vertical-offset="2958">
-          <caret line="63" column="26" selection-start-line="63" selection-start-column="26" selection-end-line="63" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/contenters/FastTorrent.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.16803955" vertical-offset="1598" max-vertical-offset="2346">
-          <caret line="103" column="17" selection-start-line="103" selection-start-column="17" selection-end-line="103" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/contenters/EZTV.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2520593" vertical-offset="850" max-vertical-offset="1666">
-          <caret line="59" column="0" selection-start-line="59" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/BTDigg.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7859589" vertical-offset="0" max-vertical-offset="1190">
-          <caret line="31" column="19" selection-start-line="31" selection-start-column="19" selection-end-line="31" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/contenters/IMDB.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="454" max-vertical-offset="4233">
-          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="63" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/contenters/SWESUB.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.9444444" vertical-offset="255" max-vertical-offset="2159">
-          <caret line="52" column="22" selection-start-line="52" selection-start-column="22" selection-end-line="52" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/language/Russian/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="256" max-vertical-offset="1139">
-          <caret line="19" column="35" selection-start-line="19" selection-start-column="35" selection-end-line="19" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/ThePirateBaySe.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.025684932" vertical-offset="903" max-vertical-offset="1598">
-          <caret line="54" column="34" selection-start-line="54" selection-start-column="34" selection-end-line="54" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/contenters/ThePirateBaySe.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="300" max-vertical-offset="1904">
-          <caret line="56" column="18" selection-start-line="56" selection-start-column="8" selection-end-line="56" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/unused/KinoZalTV.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.45547944" vertical-offset="1626" max-vertical-offset="2210">
-          <caret line="86" column="61" selection-start-line="86" selection-start-column="61" selection-end-line="86" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/NNMClubRu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="136" max-vertical-offset="2618">
-          <caret line="8" column="15" selection-start-line="8" selection-start-column="15" selection-end-line="8" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/contenters/KickAssSo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="595" max-vertical-offset="3094">
-          <caret line="35" column="10" selection-start-line="35" selection-start-column="10" selection-end-line="35" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cal.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2863706" vertical-offset="0" max-vertical-offset="653">
-          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/KickAssSo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.52986217" vertical-offset="946" max-vertical-offset="1632">
-          <caret line="80" column="20" selection-start-line="80" selection-start-column="20" selection-end-line="80" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/OldPirateBay.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6875957" vertical-offset="894" max-vertical-offset="1547">
-          <caret line="83" column="61" selection-start-line="83" selection-start-column="61" selection-end-line="83" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/TFileME.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.29709035" vertical-offset="1523" max-vertical-offset="2176">
-          <caret line="107" column="34" selection-start-line="107" selection-start-column="34" selection-end-line="107" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://D:/Python27/Lib/urllib2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334" vertical-offset="20399" max-vertical-offset="24871">
-          <caret line="1226" column="8" selection-start-line="1226" selection-start-column="8" selection-end-line="1226" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="78" selection-end-column="27" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/resources/searchers/EZTV.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5206738" vertical-offset="867" max-vertical-offset="1564">
+        <state vertical-scroll-proportion="0.5206738">
           <caret line="75" column="13" selection-start-line="75" selection-start-column="13" selection-end-line="75" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Localization.py">
+    <entry file="file://$PROJECT_DIR$/../plugin.video.xbmctorrent/addon.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3687" max-vertical-offset="4267">
-          <caret line="234" column="0" selection-start-line="234" selection-start-column="0" selection-end-line="234" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.33552632">
+          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.video.xbmctorrent/player.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.3756614">
+          <caret line="132" column="20" selection-start-line="132" selection-start-column="16" selection-end-line="132" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.video.xbmctorrent/resources/site-packages/xbmctorrent/player.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.51428574">
+          <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.video.xbmctorrent/resources/site-packages/xbmctorrent/cmd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6990132">
+          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/searchers/RuTorOrg.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="99" column="36" selection-start-line="99" selection-start-column="36" selection-end-line="99" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/functions.py">
+    <entry file="file://$PROJECT_DIR$/Downloader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="17281" max-vertical-offset="26639">
-          <caret line="1046" column="12" selection-start-line="1046" selection-start-column="8" selection-end-line="1046" selection-end-column="12" />
+        <state vertical-scroll-proportion="0.3327869">
+          <caret line="51" column="8" selection-start-line="51" selection-start-column="8" selection-end-line="51" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/searchers/KickAssSo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="70" column="57" selection-start-line="70" selection-start-column="57" selection-end-line="70" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/contenters/KickAssSo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="98" column="54" selection-start-line="98" selection-start-column="54" selection-end-line="98" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Content.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="212" column="25" selection-start-line="212" selection-start-column="25" selection-end-line="212" selection-end-column="25" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Core.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="24678" max-vertical-offset="30328">
-          <caret line="1487" column="75" selection-start-line="1487" selection-start-column="75" selection-end-line="1487" selection-end-column="75" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Downloads/plugin.rutracker-0.18.1/plugin.rutracker/drivers/rutracker.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3913793" vertical-offset="28" max-vertical-offset="11475">
-          <caret line="24" column="71" selection-start-line="24" selection-start-column="71" selection-end-line="24" selection-end-column="71" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Player.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3757" max-vertical-offset="7242">
-          <caret line="221" column="86" selection-start-line="221" selection-start-column="71" selection-end-line="221" selection-end-column="86" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Downloads/plugin.rutracker-0.18.1/plugin.rutracker/xbmcup/net.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5104167" vertical-offset="12082" max-vertical-offset="18972">
-          <caret line="740" column="35" selection-start-line="740" selection-start-column="35" selection-end-line="740" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Downloads/plugin.rutracker-0.18.1/plugin.rutracker/xbmcup/default.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33506945" vertical-offset="28" max-vertical-offset="28424">
-          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Downloads/plugin.rutracker-0.18.1/plugin.rutracker/default.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4236111" vertical-offset="26191" max-vertical-offset="30498">
-          <caret line="1558" column="32" selection-start-line="1558" selection-start-column="32" selection-end-line="1558" selection-end-column="32" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/SearcherABC.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2871" max-vertical-offset="3485">
-          <caret line="204" column="33" selection-start-line="204" selection-start-column="30" selection-end-line="204" selection-end-column="33" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="203" column="0" selection-start-line="203" selection-start-column="0" selection-end-line="203" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/resources/searchers/RuTrackerOrg.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2212" max-vertical-offset="3077">
-          <caret line="164" column="35" selection-start-line="164" selection-start-column="35" selection-end-line="164" selection-end-column="35" />
+        <state vertical-scroll-proportion="-2.0034661">
+          <caret line="86" column="28" selection-start-line="86" selection-start-column="28" selection-end-line="86" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/searchers/NNMClubRu.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.3015597">
+          <caret line="8" column="15" selection-start-line="8" selection-start-column="15" selection-end-line="8" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/searchers/TFileME.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.20450607">
+          <caret line="107" column="34" selection-start-line="107" selection-start-column="34" selection-end-line="107" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/contenters/EZTV.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5272068">
+          <caret line="39" column="22" selection-start-line="39" selection-start-column="22" selection-end-line="39" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/contenters/IMDB.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="41" column="60" selection-start-line="41" selection-start-column="60" selection-end-line="41" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.torrenter.c.eztvaz/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="18" selection-start-line="0" selection-start-column="18" selection-end-line="0" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.torrenter.c.eztvaz/resources/language/English/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.27803737">
+          <caret line="14" column="36" selection-start-line="14" selection-start-column="36" selection-end-line="14" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.video.mytest/default1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.05957944">
+          <caret line="3" column="27" selection-start-line="3" selection-start-column="27" selection-end-line="3" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.video.myshows/addon.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.8399532">
+          <caret line="18" column="28" selection-start-line="18" selection-start-column="28" selection-end-line="18" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/default.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4567757">
+          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="28" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.video.myshows/functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33294392">
+          <caret line="179" column="0" selection-start-line="179" selection-start-column="0" selection-end-line="194" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.torrenter.c.eztvaz/EZTVAZ.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="35" column="24" selection-start-line="35" selection-start-column="24" selection-end-line="35" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.torrenter.c.eztvaz/Content.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/settings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33252722">
+          <caret line="35" column="32" selection-start-line="35" selection-start-column="32" selection-end-line="35" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.torrenter.c.eztvaz/resources/settings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.11915888">
+          <caret line="6" column="27" selection-start-line="6" selection-start-column="27" selection-end-line="6" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.torrenter.c.eztvaz/changelog.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.019859813">
+          <caret line="1" column="29" selection-start-line="1" selection-start-column="29" selection-end-line="1" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.torrenter.c.eztvaz/addon.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2978972">
+          <caret line="15" column="12" selection-start-line="15" selection-start-column="12" selection-end-line="15" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/contenters/RiperAM.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="84" column="21" selection-start-line="84" selection-start-column="21" selection-end-line="84" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Player.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="195" column="24" selection-start-line="195" selection-start-column="24" selection-end-line="195" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.video.pulsar/resources/site-packages/pulsar/provider.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.55785835">
+          <caret line="24" column="14" selection-start-line="24" selection-start-column="14" selection-end-line="24" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.video.pulsar/resources/site-packages/pulsar/addon.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.1761658">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../plugin.video.pulsar/resources/site-packages/pulsar/platform.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2642487">
+          <caret line="9" column="52" selection-start-line="9" selection-start-column="52" selection-end-line="9" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/searchers/RiperAM.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="95" column="0" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Libtorrent.py">
+    <entry file="file://$PROJECT_DIR$/../plugin.torrenter.c.eztvaz/default.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="576" max-vertical-offset="6766">
-          <caret line="81" column="28" selection-start-line="81" selection-start-column="28" selection-end-line="81" selection-end-column="28" />
-          <folding />
+        <state vertical-scroll-proportion="-3.0518134">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/T411FR.py">
+    <entry file="file://$PROJECT_DIR$/cal.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.4035087" vertical-offset="548" max-vertical-offset="2278">
-          <caret line="47" column="7" selection-start-line="47" selection-start-column="7" selection-end-line="47" selection-end-column="7" />
+        <state vertical-scroll-proportion="0.484985">
+          <caret line="19" column="11" selection-start-line="19" selection-start-column="11" selection-end-line="19" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="250" column="4" selection-start-line="250" selection-start-column="4" selection-end-line="250" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/utorrent/net.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="42" column="28" selection-start-line="42" selection-start-column="28" selection-end-line="42" selection-end-column="28" />
           <folding>
-            <element signature="e#783#792#0" expanded="true" />
+            <element signature="e#1034#8975#0" expanded="false" />
+            <element signature="e#1062#1399#0" expanded="false" />
+            <element signature="e#1449#2544#0" expanded="false" />
+            <element signature="e#2578#3669#0" expanded="false" />
+            <element signature="e#3701#5436#0" expanded="false" />
+            <element signature="e#5471#6443#0" expanded="false" />
+            <element signature="e#6492#7772#0" expanded="false" />
+            <element signature="e#7811#8109#0" expanded="false" />
+            <element signature="e#8162#8500#0" expanded="false" />
+            <element signature="e#8538#8975#0" expanded="false" />
+            <element signature="e#9001#10155#0" expanded="false" />
+            <element signature="e#9345#10020#0" expanded="false" />
+            <element signature="e#10054#10155#0" expanded="false" />
+            <element signature="e#10182#10681#0" expanded="false" />
+            <element signature="e#10219#10404#0" expanded="false" />
+            <element signature="e#10438#10681#0" expanded="false" />
+            <element signature="e#10769#11126#0" expanded="false" />
+            <element signature="e#11160#11730#0" expanded="false" />
+            <element signature="e#11760#12542#0" expanded="false" />
+            <element signature="e#12581#13178#0" expanded="false" />
+            <element signature="e#13218#13565#0" expanded="false" />
+            <element signature="e#13612#13916#0" expanded="false" />
+            <element signature="e#13967#14134#0" expanded="false" />
+            <element signature="e#14176#14497#0" expanded="false" />
+            <element signature="e#14552#14721#0" expanded="false" />
+            <element signature="e#14773#14854#0" expanded="false" />
+            <element signature="e#14890#14894#0" expanded="false" />
+            <element signature="e#14944#15516#0" expanded="false" />
+            <element signature="e#15567#15657#0" expanded="false" />
+            <element signature="e#15692#16218#0" expanded="false" />
+            <element signature="e#16272#16854#0" expanded="false" />
+            <element signature="e#16912#18406#0" expanded="false" />
+            <element signature="e#16912#17219#1" expanded="false" />
+            <element signature="e#18493#18822#0" expanded="false" />
+            <element signature="e#18852#21525#0" expanded="false" />
+            <element signature="e#21559#21791#0" expanded="false" />
+            <element signature="e#21830#23111#0" expanded="false" />
+            <element signature="e#23597#23601#0" expanded="false" />
+            <element signature="e#23643#24380#0" expanded="false" />
+            <element signature="e#24435#24929#0" expanded="false" />
+            <element signature="e#24981#25541#0" expanded="false" />
+            <element signature="e#25582#27356#0" expanded="false" />
+            <element signature="e#27407#27933#0" expanded="false" />
+            <element signature="e#27967#28197#0" expanded="false" />
+            <element signature="e#28239#28387#0" expanded="false" />
+            <element signature="e#28429#28685#0" expanded="false" />
+            <element signature="e#28706#36753#0" expanded="false" />
+            <element signature="e#28766#28963#0" expanded="false" />
+            <element signature="e#28997#29118#0" expanded="false" />
+            <element signature="e#29148#30344#0" expanded="false" />
+            <element signature="e#30378#30636#0" expanded="false" />
+            <element signature="e#30675#31874#0" expanded="false" />
+            <element signature="e#31912#32063#0" expanded="false" />
+            <element signature="e#32110#32435#0" expanded="false" />
+            <element signature="e#32486#33008#0" expanded="false" />
+            <element signature="e#33044#33048#0" expanded="false" />
+            <element signature="e#33090#33485#0" expanded="false" />
+            <element signature="e#33540#33921#0" expanded="false" />
+            <element signature="e#33973#34377#0" expanded="false" />
+            <element signature="e#34418#35150#0" expanded="false" />
+            <element signature="e#35201#35645#0" expanded="false" />
+            <element signature="e#35679#36409#0" expanded="false" />
+            <element signature="e#36451#36753#0" expanded="false" />
+            <element signature="e#36772#42276#0" expanded="false" />
+            <element signature="e#36832#37200#0" expanded="false" />
+            <element signature="e#37231#38795#0" expanded="false" />
+            <element signature="e#38829#38861#0" expanded="false" />
+            <element signature="e#38900#39787#0" expanded="false" />
+            <element signature="e#39834#40018#0" expanded="false" />
+            <element signature="e#40070#40169#0" expanded="false" />
+            <element signature="e#40205#40209#0" expanded="false" />
+            <element signature="e#40251#40687#0" expanded="false" />
+            <element signature="e#40742#40996#0" expanded="false" />
+            <element signature="e#41072#41461#0" expanded="false" />
+            <element signature="e#41513#41594#0" expanded="false" />
+            <element signature="e#41645#42017#0" expanded="false" />
+            <element signature="e#42061#42276#0" expanded="false" />
+            <element signature="e#42301#45751#0" expanded="false" />
+            <element signature="e#42329#42342#0" expanded="false" />
+            <element signature="e#42374#42938#0" expanded="false" />
+            <element signature="e#42982#44875#0" expanded="false" />
+            <element signature="e#44922#44962#0" expanded="false" />
+            <element signature="e#45013#45057#0" expanded="false" />
+            <element signature="e#45087#45112#0" expanded="false" />
+            <element signature="e#45146#45175#0" expanded="false" />
+            <element signature="e#45214#45246#0" expanded="false" />
+            <element signature="e#45282#45311#0" expanded="false" />
+            <element signature="e#45353#45388#0" expanded="false" />
+            <element signature="e#45443#45549#0" expanded="false" />
+            <element signature="e#45606#45656#0" expanded="false" />
+            <element signature="e#45707#45751#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/addon.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
-          <caret line="1" column="61" selection-start-line="1" selection-start-column="61" selection-end-line="1" selection-end-column="66" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1" column="66" selection-start-line="1" selection-start-column="66" selection-end-line="1" selection-end-column="66" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/changelog.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.41530946" vertical-offset="0" max-vertical-offset="1632">
-          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/searchers/Cpasbien.py">
+    <entry file="file://$PROJECT_DIR$/Core.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.27687296" vertical-offset="357" max-vertical-offset="1700">
-          <caret line="35" column="7" selection-start-line="35" selection-start-column="7" selection-end-line="35" selection-end-column="7" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1706" column="15" selection-start-line="1706" selection-start-column="15" selection-end-line="1706" selection-end-column="15" />
+          <folding>
+            <element signature="e#24#781#1" expanded="false" />
+            <element signature="e#2316#2613#0" expanded="false" />
+            <element signature="e#2650#7284#0" expanded="false" />
+            <element signature="e#7323#19288#0" expanded="false" />
+            <element signature="e#19329#20381#0" expanded="false" />
+            <element signature="e#20432#27447#0" expanded="false" />
+            <element signature="e#27491#30920#0" expanded="false" />
+            <element signature="e#30961#32188#0" expanded="false" />
+            <element signature="e#32288#36642#0" expanded="false" />
+            <element signature="e#36690#38754#0" expanded="false" />
+            <element signature="e#38796#40526#0" expanded="false" />
+            <element signature="e#40576#45315#0" expanded="false" />
+            <element signature="e#45380#51737#0" expanded="false" />
+            <element signature="e#51801#54442#0" expanded="false" />
+            <element signature="e#54489#55300#0" expanded="false" />
+            <element signature="e#55349#57538#0" expanded="false" />
+            <element signature="e#57695#58947#0" expanded="false" />
+            <element signature="e#59003#59420#0" expanded="false" />
+            <element signature="e#59462#59571#0" expanded="false" />
+            <element signature="e#59614#59734#0" expanded="false" />
+            <element signature="e#59784#59935#0" expanded="false" />
+            <element signature="e#59988#67742#0" expanded="false" />
+            <element signature="e#67791#67830#0" expanded="false" />
+            <element signature="e#67879#68669#0" expanded="false" />
+            <element signature="e#68719#71385#0" expanded="false" />
+            <element signature="e#71430#72179#0" expanded="false" />
+            <element signature="e#72227#73723#0" expanded="false" />
+            <element signature="e#73768#74641#0" expanded="false" />
+            <element signature="e#74686#75950#0" expanded="false" />
+            <element signature="e#75998#81770#0" expanded="false" />
+            <element signature="e#81818#83957#0" expanded="false" />
+            <element signature="e#84007#84103#0" expanded="false" />
+            <element signature="e#84166#84693#0" expanded="false" />
+            <element signature="e#84754#89966#0" expanded="false" />
+            <element signature="e#90010#90067#0" expanded="false" />
+            <element signature="e#93942#95873#0" expanded="false" />
+            <element signature="e#95939#96559#0" expanded="false" />
+            <element signature="e#96602#97273#0" expanded="false" />
+            <element signature="e#97309#98098#0" expanded="false" />
+            <element signature="e#98140#98235#0" expanded="false" />
+            <element signature="e#98285#98433#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/searchers/T411FR.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="75" column="0" selection-start-line="75" selection-start-column="0" selection-end-line="77" selection-end-column="28" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Localization.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="244" column="25" selection-start-line="244" selection-start-column="25" selection-end-line="244" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/scrapers/tmdbs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="344" column="19" selection-start-line="344" selection-start-column="19" selection-end-line="344" selection-end-column="19" />
+          <folding>
+            <element signature="e#25#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/scrapers/requests/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7607573">
+          <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+          <folding>
+            <element signature="e#182#192#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Libtorrent.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.9070568">
+          <caret line="107" column="53" selection-start-line="107" selection-start-column="53" selection-end-line="107" selection-end-column="53" />
+          <folding>
+            <element signature="e#24#785#1" expanded="false" />
+            <element signature="e#801#814#0" expanded="true" />
+            <element signature="e#1453#3521#1" expanded="false" />
+            <element signature="e#10280#10412#0" expanded="false" />
+            <element signature="e#10453#10587#0" expanded="false" />
+            <element signature="e#10621#10743#0" expanded="false" />
+            <element signature="e#10777#10899#0" expanded="false" />
+            <element signature="e#10949#10996#0" expanded="false" />
+            <element signature="e#11046#11150#0" expanded="false" />
+            <element signature="e#11872#12042#0" expanded="false" />
+            <element signature="e#12098#12153#0" expanded="false" />
+            <element signature="e#12211#12268#0" expanded="false" />
+            <element signature="e#12305#12484#0" expanded="false" />
+            <element signature="e#12536#13830#0" expanded="false" />
+            <element signature="e#13875#14803#0" expanded="false" />
+            <element signature="e#14840#15334#0" expanded="false" />
+            <element signature="e#15372#16022#0" expanded="false" />
+            <element signature="e#16059#16161#0" expanded="false" />
+            <element signature="e#16253#17426#0" expanded="false" />
+            <element signature="e#17462#17879#0" expanded="false" />
+            <element signature="e#17916#18067#0" expanded="false" />
+            <element signature="e#18098#19239#0" expanded="false" />
+            <element signature="e#19274#19417#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
   </component>
 </project>
-

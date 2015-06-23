@@ -19,9 +19,7 @@
 '''
 
 import re
-import os
 import urllib
-import tempfile
 import sys
 
 import SearcherABC
@@ -64,7 +62,8 @@ class KinoZalTV(SearcherABC.SearcherABC):
 
     def search(self, keyword):
         filesList = []
-        url='http://kinozal.tv/browse.php?s=%s&g=0&c=0&v=0&d=0&w=0&t=1&f=0' % urllib.quote_plus(keyword.decode('utf-8').encode('cp1251'))
+        url = 'http://kinozal.tv/browse.php?s=%s&g=0&c=0&v=0&d=0&w=0&t=1&f=0' % urllib.quote_plus(
+            keyword.decode('utf-8').encode('cp1251'))
 
         headers = {('Origin', 'http://kinozal.tv'),
                    ('User-Agent',
@@ -74,8 +73,8 @@ class KinoZalTV(SearcherABC.SearcherABC):
         response = self.makeRequest(url, headers=headers)
         if None != response and 0 < len(response):
             response = response.decode('cp1251').encode('utf-8')
-            #print response
-            bad_forums = [2,1,23,32,40,41]
+            # print response
+            bad_forums = [2, 1, 23, 32, 40, 41]
             regex = '''onclick="cat\((\d+)\);".+?<a href="/details\.php\?id=(\d+)".+?>(.+?)</a>.+?<td class='s'>(.+?)</td>.+?class='sl_s'>(\d+)</td>.+?class='sl_p'>(\d+)</td>'''
             for (forum, topic, title, size, seeds, leechers) in re.compile(regex, re.DOTALL).findall(response):
                 if int(forum) not in bad_forums:
@@ -102,10 +101,10 @@ class KinoZalTV(SearcherABC.SearcherABC):
         self.timeout(5)
 
         content = self.makeRequest(url)
-        #print content
+        # print content
         if not self.check_login(content):
             content = self.makeRequest(url)
-            #print content
+            # print content
 
         return self.saveTorrentFile(url, content)
 
@@ -113,7 +112,7 @@ class KinoZalTV(SearcherABC.SearcherABC):
         data = {
             'password': 'torrenter',
             'username': 'torrenterpl',
-            'returnto:':''
+            'returnto:': ''
         }
         self.makeRequest(
             'http://kinozal.tv/takelogin.php',
@@ -121,11 +120,11 @@ class KinoZalTV(SearcherABC.SearcherABC):
         )
         self.cookieJar.save(ignore_discard=True)
         for cookie in self.cookieJar:
-            uid,passed=None,None
+            uid, passed = None, None
             if cookie.name == 'uid':
-                uid=cookie.value
+                uid = cookie.value
             if cookie.name == 'pass':
-                passed=cookie.value
+                passed = cookie.value
             if uid and passed:
-                return 'uid=' + uid+'; pass='+ passed
+                return 'uid=' + uid + '; pass=' + passed
         return False

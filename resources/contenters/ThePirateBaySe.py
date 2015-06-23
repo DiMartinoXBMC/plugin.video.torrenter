@@ -18,22 +18,24 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 import re
+
 import Content
+
 
 class ThePirateBaySe(Content.Content):
     category_dict = {
         'tvshows': ('TV Shows', '/browse/205', {'page': '/browse/208/%d', 'increase': 1, 'second_page': 1,
-                                         'sort':[{'name':'by Seeders', 'url_after':'/0/7/0'},
-                                                 {'name':'by Date', 'url_after':'/0/3/0'}]}),
+                                                'sort': [{'name': 'by Seeders', 'url_after': '/0/7/0'},
+                                                         {'name': 'by Date', 'url_after': '/0/3/0'}]}),
         'tvshowshd': ('TV Shows [HD]', '/browse/208', {'page': '/browse/208/%d', 'increase': 1, 'second_page': 1,
-                                         'sort':[{'name':'by Seeders', 'url_after':'/0/7/0'},
-                                                 {'name':'by Date', 'url_after':'/0/3/0'}]}),
+                                                       'sort': [{'name': 'by Seeders', 'url_after': '/0/7/0'},
+                                                                {'name': 'by Date', 'url_after': '/0/3/0'}]}),
         'movies': ('Movies', '/browse/201', {'page': '/browse/208/%d', 'increase': 1, 'second_page': 1,
-                                         'sort':[{'name':'by Seeders', 'url_after':'/0/7/0'},
-                                                 {'name':'by Date', 'url_after':'/0/3/0'}]}),
+                                             'sort': [{'name': 'by Seeders', 'url_after': '/0/7/0'},
+                                                      {'name': 'by Date', 'url_after': '/0/3/0'}]}),
         'movieshd': ('Movies [HD]', '/browse/207', {'page': '/browse/208/%d', 'increase': 1, 'second_page': 1,
-                                         'sort':[{'name':'by Seeders', 'url_after':'/0/7/0'},
-                                                 {'name':'by Date', 'url_after':'/0/3/0'}]}),
+                                                    'sort': [{'name': 'by Seeders', 'url_after': '/0/7/0'},
+                                                             {'name': 'by Date', 'url_after': '/0/3/0'}]}),
     }
 
     baseurl = "https://thepiratebay.se"
@@ -73,19 +75,19 @@ class ThePirateBaySe(Content.Content):
         response = self.makeRequest(url, headers=self.headers)
 
         if None != response and 0 < len(response):
-            #print response
+            # print response
             if category:
                 contentList = self.mode(response)
-        #print str(contentList)
+        # print str(contentList)
         return contentList
 
     def mode(self, response):
         contentList = []
-        #print str(result)
+        # print str(result)
         num = 31
         result = re.compile(
-                r'''<div class="detName">.+?">(.+?)</a>.+?<a href="(.+?)".+?<font class="detDesc">Uploaded (.+?), Size (.+?), .+?</font>.+?<td align="right">(\d+?)</td>.+?<td align="right">(\d+?)</td>''',
-                re.DOTALL).findall(response)
+            r'''<div class="detName">.+?">(.+?)</a>.+?<a href="(.+?)".+?<font class="detDesc">Uploaded (.+?), Size (.+?), .+?</font>.+?<td align="right">(\d+?)</td>.+?<td align="right">(\d+?)</td>''',
+            re.DOTALL).findall(response)
         for title, link, date, size, seeds, leechers in result:
             info = {}
             num = num - 1
@@ -95,11 +97,11 @@ class ThePirateBaySe(Content.Content):
             size = size.replace('&nbsp;', ' ')
             date = self.stripHtml(date.replace('&nbsp;', ' '))
 
-            #info
+            # info
 
             info['label'] = info['title'] = self.unescape(title)
             info['link'] = link
-            info['plot'] = info['title']+'\r\n[I](%s) [S/L: %s/%s] [/I]\r\n%s' % (size, seeds, leechers, date)
+            info['plot'] = info['title'] + '\r\n[I](%s) [S/L: %s/%s] [/I]\r\n%s' % (size, seeds, leechers, date)
             contentList.append((
                 int(int(self.sourceWeight) * (int(num))),
                 original_title, title, int(year), img, info,

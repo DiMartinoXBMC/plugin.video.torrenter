@@ -19,7 +19,6 @@ import xbmcvfs
 import Localization
 from resources.scrapers.scrapers import Scrapers
 
-
 try:
     from hashlib import md5
 except ImportError:
@@ -50,10 +49,10 @@ def clearStorage(userStorageDirectory):
         import shutil
 
         temp = userStorageDirectory.rstrip('Torrenter').rstrip('/\\')
-        torrents_temp,i=None,0
+        torrents_temp, i = None, 0
         while not torrents_temp or xbmcvfs.exists(torrents_temp):
-            torrents_temp=os.path.join(temp, 'torrents'+str(i))+os.sep
-            i+=1
+            torrents_temp = os.path.join(temp, 'torrents' + str(i)) + os.sep
+            i += 1
         shutil.move(os.path.join(userStorageDirectory, 'torrents'), torrents_temp)
         shutil.rmtree(userStorageDirectory, ignore_errors=True)
         xbmcvfs.mkdir(userStorageDirectory)
@@ -83,7 +82,7 @@ def md5(string):
 
 
 def Debug(msg, force=False):
-    if (1==1 or debug == 'true' or force):
+    if (1 == 1 or debug == 'true' or force):
         try:
             print "[Torrenter v2] " + msg
         except UnicodeEncodeError:
@@ -264,6 +263,7 @@ def calculate(full):
 
     return repl_const
 
+
 def getDirList(path, newl=None):
     l = []
     try:
@@ -371,13 +371,13 @@ def cutFolder(contentList, tdir=None):
                 common = False
                 break
 
-        #print common_folder
+        # print common_folder
         for fileTitle, contentId in contentList:
             dir = None
             if common:
                 fileTitle = fileTitle[len(common_folder) + 1:]
 
-            #print fileTitle
+            # print fileTitle
 
             if '\\' in fileTitle:
                 dir = fileTitle.split('\\')[0]
@@ -395,6 +395,7 @@ def cutFolder(contentList, tdir=None):
         return dirList, contentListNew
     else:
         return dirList, contentList
+
 
 def sweetpair(l):
     from difflib import SequenceMatcher
@@ -636,7 +637,7 @@ def PrepareSearch(filename):
 
     title_array = [(u'(.+?)(Cезон|cезон|Сезон|сезон|Season|season|СЕЗОН|SEASON)', titles[0], 0),
                    (u'(.+?)[sS](\d{1,2})', titles[0].replace('.', ' '), 0),
-    ]
+                   ]
     for regex, title, i in title_array:
         recomp = re.compile(regex)
         match = recomp.findall(title)
@@ -836,6 +837,7 @@ class TimeOut():
         # Debug('[TimeOut]: '+str(to))
         return to
 
+
 class ListDB:
     def __init__(self, version=1.0):
         self.dbname = 'list' + '.db3'
@@ -854,7 +856,7 @@ class ListDB:
         # self.cur.execute('create table list(addtime integer PRIMARY KEY, title varchar(32), originaltitle varchar(32)'
         #            ', year integer, category varchar(32), subcategory varchar(32))')
         self.cur.execute('create table list(addtime integer PRIMARY KEY, info varchar(32))')
-        self.cur.execute('insert into db_ver(version) values(?)', (self.version, ))
+        self.cur.execute('insert into db_ver(version) values(?)', (self.version,))
         self.db.commit()
         self._close()
 
@@ -919,27 +921,27 @@ class HistoryDB:
         self.cur.execute('select providers from history where addtime="' + addtime + '"')
         x = self.cur.fetchone()
         self._close()
-        #print 'get_providers: '+str(x[0].split(',') if x and x[0]!='' else None)
-        return x[0].split(',') if x and x[0]!='' else None
+        # print 'get_providers: '+str(x[0].split(',') if x and x[0]!='' else None)
+        return x[0].split(',') if x and x[0] != '' else None
 
     def set_providers(self, addtime, providers):
         self._connect()
         if isinstance(providers, dict):
-            temp=[]
+            temp = []
             for i in providers.keys():
                 if providers.get(i):
                     temp.append(i)
-            providers=temp
-        str_p=','.join(providers)
+            providers = temp
+        str_p = ','.join(providers)
         self.cur.execute('UPDATE history SET providers = "' + str_p + '" where addtime=' + addtime)
         self.db.commit()
         self._close()
 
     def change_providers(self, addtime, searcher):
         self._connect()
-        providers=self.get_providers(addtime)
-        keys=Searchers().dic().keys()
-        if providers and len(providers)>0:
+        providers = self.get_providers(addtime)
+        keys = Searchers().dic().keys()
+        if providers and len(providers) > 0:
             if searcher in providers:
                 providers.remove(searcher)
             else:
@@ -955,12 +957,12 @@ class HistoryDB:
         self._connect()
         self.cur.execute('select fav from history where string="' + url + '"')
         x = self.cur.fetchone()
-        if x: x=int(x[0])
-        fav=True if x else False
+        if x: x = int(x[0])
+        fav = True if x else False
         if not fav:
-            self.cur.execute('delete from history where string="' +  decode(url) + '"')
+            self.cur.execute('delete from history where string="' + decode(url) + '"')
             self.cur.execute('insert into history(addtime,string,fav,providers)'
-                                 ' values(?,?,?,?)', (int(time.time()), decode(url), 0, ""))
+                             ' values(?,?,?,?)', (int(time.time()), decode(url), 0, ""))
         self.db.commit()
         self._close()
 
@@ -1025,7 +1027,7 @@ class HistoryDB:
             cur.execute('create table db_ver(version real)')
             cur.execute(
                 'create table history(addtime integer PRIMARY KEY, string varchar(32), providers varchar(32), fav integer)')
-            cur.execute('insert into db_ver(version) values(?)', (self.version, ))
+            cur.execute('insert into db_ver(version) values(?)', (self.version,))
             self.db.commit()
             cur.close()
             self.cur = self.db.cursor()
@@ -1033,6 +1035,7 @@ class HistoryDB:
     def _close(self):
         self.cur.close()
         self.db.close()
+
 
 class Searchers():
     def __init__(self):
@@ -1071,7 +1074,7 @@ class Searchers():
         get_active = []
         for searcher in self.list():
             if self.old(searcher): get_active.append(searcher + '.py')
-        print 'Active Searchers: '+str(get_active)
+        print 'Active Searchers: ' + str(get_active)
         return get_active
 
 
@@ -1082,9 +1085,9 @@ class Contenters():
     def first_time(self, scrapperDB_ver, language='ru'):
         searcher = 'metadata'
         redl = False
-        scrapperDB_ver=scrapperDB_ver[language]
-        if scrapperDB_ver != __settings__.getSetting('scrapperDB_ver'+language) and self.getBoolSetting(searcher):
-            __settings__.setSetting('scrapperDB_ver'+language, scrapperDB_ver)
+        scrapperDB_ver = scrapperDB_ver[language]
+        if scrapperDB_ver != __settings__.getSetting('scrapperDB_ver' + language) and self.getBoolSetting(searcher):
+            __settings__.setSetting('scrapperDB_ver' + language, scrapperDB_ver)
             ok = xbmcgui.Dialog().yesno('< %s >' % Localization.localize('Content Lists'),
                                         Localization.localize('Your preloaded databases are outdated!'),
                                         Localization.localize('Do you want to download new ones right now?'))
@@ -1093,7 +1096,7 @@ class Contenters():
                 dirname = os.path.join(dirname, 'xbmcup', 'plugin.video.torrenter')
                 scrapers = {'tvdb': 'TheTVDB.com', 'tmdb': 'TheMovieDB.org', 'kinopoisk': 'KinoPoisk.ru'}
                 for i in scrapers.keys():
-                    xbmcvfs.delete(os.path.join(dirname, i+'.'+language + '.db'))
+                    xbmcvfs.delete(os.path.join(dirname, i + '.' + language + '.db'))
                 showMessage(Localization.localize('Reset All Cache DBs'), Localization.localize('Deleted!'))
                 redl = True
             else:
@@ -1102,8 +1105,8 @@ class Contenters():
                                         'You can always restart this by deleting DBs via Context Menu'), )
 
         if not self.getBoolSetting('oldc_' + searcher + language):
-            self.setBoolSetting('oldc_' + searcher+ language, True)
-            __settings__.setSetting('scrapperDB_ver'+language, scrapperDB_ver)
+            self.setBoolSetting('oldc_' + searcher + language, True)
+            __settings__.setSetting('scrapperDB_ver' + language, scrapperDB_ver)
             ok = xbmcgui.Dialog().yesno('< %s >' % Localization.localize('Content Lists'),
                                         Localization.localize('Do you want to search and cache full metadata + arts?'),
                                         Localization.localize(
@@ -1118,7 +1121,7 @@ class Contenters():
             self.Scraper = Scrapers()
             scrapers = {'tvdb': 'TheTVDB.com', 'tmdb': 'TheMovieDB.org', 'kinopoisk': 'KinoPoisk.ru'}
             for scraper in scrapers.keys():
-                if scraper!='kinopoisk' or language=='ru':
+                if scraper != 'kinopoisk' or language == 'ru':
                     self.Scraper.scraper(scraper, {'label': 'Мстители', 'search': [u'Мстители', u'The Avengers'],
                                                    'year': 2012}, language)
 
@@ -1341,25 +1344,29 @@ def fetchData(url, referer=None):
         print " fetchData(" + url + ") exception: " + str(e)
         return
 
+
 def file_decode(filename):
-    if not __settings__.getSetting('delete_russian')=='true':
+    if not __settings__.getSetting('delete_russian') == 'true':
         try:
-            filename=filename.decode('utf-8')#,'ignore')
+            filename = filename.decode('utf-8')  # ,'ignore')
         except:
             pass
     return filename
 
+
 def file_encode(filename):
-    if not __settings__.getSetting('delete_russian')=='true':
-        if sys.getfilesystemencoding()=='mbcs' and isAsciiString(filename):
-            filename=filename.decode('cp1251').encode('utf-8')
+    if not __settings__.getSetting('delete_russian') == 'true':
+        if sys.getfilesystemencoding() == 'mbcs' and isAsciiString(filename):
+            filename = filename.decode('cp1251').encode('utf-8')
     return filename
+
 
 def isAsciiString(mediaName):
     for index, char in enumerate(mediaName):
         if ord(char) >= 128:
             return False
     return True
+
 
 def getParameters(parameterString):
     commands = {}
@@ -1373,50 +1380,54 @@ def getParameters(parameterString):
                 commands[name] = value
     return commands
 
+
 def isSubtitle(filename, filename2):
     filename_if = filename[:len(filename) - len(filename.split('.')[-1]) - 1]
     filename_if = filename_if.split('/')[-1].split('\\')[-1]
     filename_if2 = filename2.split('/')[-1].split('\\')[-1][:len(filename_if)]
-    #Debug('Compare ' + filename_if.lower() + ' and ' + filename_if2.lower() + ' and ' + filename2.lower().split('.')[-1])
+    # Debug('Compare ' + filename_if.lower() + ' and ' + filename_if2.lower() + ' and ' + filename2.lower().split('.')[-1])
     ext = ['ass', 'mpsub', 'rum', 'sbt', 'sbv', 'srt', 'ssa', 'sub', 'sup', 'w32']
     if filename2.lower().split('.')[-1] in ext and \
                     filename_if.lower() == filename_if2.lower():
         return True
     return False
 
+
 def delete_russian(ok=False, action='delete'):
-    i=0
+    i = 0
     if not ok:
         ok = xbmcgui.Dialog().yesno('< %s >' % Localization.localize('International Check - First Run'),
-                                        'Delete Russian stuff?',
-                                        Localization.localize('Delete Russian stuff?'))
+                                    'Delete Russian stuff?',
+                                    Localization.localize('Delete Russian stuff?'))
     if ok:
-        fileList={
-            'contenters':['CXZ.py','FastTorrent.py','KinoPoisk.py','RiperAM.py'],
-            'searchers':['NNMClubRu.py','OpenSharing.py','RiperAM.py','RuTorOrg.py','RuTrackerOrg.py','TFileME.py']
+        fileList = {
+            'contenters': ['CXZ.py', 'FastTorrent.py', 'KinoPoisk.py', 'RiperAM.py'],
+            'searchers': ['NNMClubRu.py', 'OpenSharing.py', 'RiperAM.py', 'RuTorOrg.py', 'RuTrackerOrg.py',
+                          'TFileME.py']
         }
 
         for path in fileList.keys():
             for filename in fileList[path]:
-                if action=='delete':
-                    filepath=os.path.join(ROOT,'resources', path,filename)
+                if action == 'delete':
+                    filepath = os.path.join(ROOT, 'resources', path, filename)
                     if xbmcvfs.exists(filepath):
-                        newfilepath=os.path.join(ROOT,'resources', path,'unused',filename)
+                        newfilepath = os.path.join(ROOT, 'resources', path, 'unused', filename)
                         xbmcvfs.copy(filepath, newfilepath)
                         xbmcvfs.delete(filepath)
-                elif action=='return':
-                    filepath=os.path.join(ROOT,'resources', path,'unused',filename)
+                elif action == 'return':
+                    filepath = os.path.join(ROOT, 'resources', path, 'unused', filename)
                     if xbmcvfs.exists(filepath):
-                        newfilepath=os.path.join(ROOT,'resources',path,filename)
+                        newfilepath = os.path.join(ROOT, 'resources', path, filename)
                         xbmcvfs.copy(filepath, newfilepath)
                         xbmcvfs.delete(filepath)
-                        i=i+1
+                        i = i + 1
 
-        if action=='return':
+        if action == 'return':
             return i
         return True
     else:
         return False
+
 
 class DownloadDB:
     def __init__(self, version=1.41):
@@ -1426,26 +1437,32 @@ class DownloadDB:
     def get_all(self):
         self._connect()
         try:
-            self.cur.execute('select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads order by addtime DESC')
+            self.cur.execute(
+                'select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads order by addtime DESC')
         except:
-            Debug('[DownloadDB]: DELETE '+str(self.filename))
+            Debug('[DownloadDB]: DELETE ' + str(self.filename))
             xbmcvfs.delete(self.filename)
             self._connect()
-            self.cur.execute('select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads order by addtime DESC')
+            self.cur.execute(
+                'select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads order by addtime DESC')
         x = self.cur.fetchall()
         self._close()
         return x if x else None
 
     def get(self, title):
         self._connect()
-        self.cur.execute('select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads where title="' + decode(title) + '"')
+        self.cur.execute(
+            'select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads where title="' + decode(
+                title) + '"')
         x = self.cur.fetchone()
         self._close()
         return x if x else None
 
     def get_byaddtime(self, addtime):
         self._connect()
-        self.cur.execute('select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads where addtime="' + str(addtime) + '"')
+        self.cur.execute(
+            'select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads where addtime="' + str(
+                addtime) + '"')
         x = self.cur.fetchone()
         self._close()
         return x if x else None
@@ -1460,8 +1477,11 @@ class DownloadDB:
     def add(self, title, path, type, info, status, torrent, ind, storage):
         if not self.get(title):
             self._connect()
-            self.cur.execute('insert into downloads(addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage)'
-                             ' values(?,?,?,?,?,?,?,?,?,?)', (int(time.time()), decode(title), decode(path), type, json.dumps(info), status, decode(torrent), ind, int(time.time()), decode(storage)))
+            self.cur.execute(
+                'insert into downloads(addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage)'
+                ' values(?,?,?,?,?,?,?,?,?,?)', (
+                int(time.time()), decode(title), decode(path), type, json.dumps(info), status, decode(torrent), ind,
+                int(time.time()), decode(storage)))
             self.db.commit()
             self._close()
             return True
@@ -1474,13 +1494,15 @@ class DownloadDB:
         except:
             pass
         self._connect()
-        self.cur.execute('UPDATE downloads SET jsoninfo = "' + urllib.quote_plus(json.dumps(info)) + '", lastupdate='+str(int(time.time()))+' where title="' + title+'"')
+        self.cur.execute(
+            'UPDATE downloads SET jsoninfo = "' + urllib.quote_plus(json.dumps(info)) + '", lastupdate=' + str(
+                int(time.time())) + ' where title="' + title + '"')
         self.db.commit()
         self._close()
 
     def update_status(self, addtime, status):
         self._connect()
-        self.cur.execute('UPDATE downloads SET status = "' + status + '" where addtime="' + str(addtime)+'"')
+        self.cur.execute('UPDATE downloads SET status = "' + status + '" where addtime="' + str(addtime) + '"')
         self.db.commit()
         self._close()
 
@@ -1533,7 +1555,7 @@ class DownloadDB:
             cur.execute('create table db_ver(version real)')
             cur.execute(
                 'create table downloads(addtime integer PRIMARY KEY, title varchar(32), path varchar(32), type varchar(32), jsoninfo varchar(32), status varchar(32), torrent varchar(32), ind integer, lastupdate integer, storage varchar(32))')
-            cur.execute('insert into db_ver(version) values(?)', (self.version, ))
+            cur.execute('insert into db_ver(version) values(?)', (self.version,))
             self.db.commit()
             cur.close()
             self.cur = self.db.cursor()
@@ -1541,6 +1563,7 @@ class DownloadDB:
     def _close(self):
         self.cur.close()
         self.db.close()
+
 
 def decode(string, ret=None):
     try:
@@ -1552,6 +1575,7 @@ def decode(string, ret=None):
         else:
             return string
 
+
 def unquote(string, ret=None):
     try:
         return urllib.unquote_plus(string)
@@ -1560,6 +1584,7 @@ def unquote(string, ret=None):
             return ret
         else:
             return string
+
 
 def itemScrap(item, kwarg):
     # Debug('[itemTVDB]:meta '+str(kwarg))
@@ -1584,11 +1609,13 @@ def itemScrap(item, kwarg):
 
     return item
 
+
 def get_ids_video(contentList):
-    ids_video=[]
-    allowed_video_ext=['avi','mp4','mkv','flv','mov','vob','wmv','ogm','asx','mpg','mpeg','avc','vp3','fli','flc','m4v','iso']
-    allowed_music_ext=['mp3','flac','wma','ogg','m4a','aac','m4p','rm','ra']
-    for extlist in [allowed_video_ext,allowed_music_ext]:
+    ids_video = []
+    allowed_video_ext = ['avi', 'mp4', 'mkv', 'flv', 'mov', 'vob', 'wmv', 'ogm', 'asx', 'mpg', 'mpeg', 'avc', 'vp3',
+                         'fli', 'flc', 'm4v', 'iso']
+    allowed_music_ext = ['mp3', 'flac', 'wma', 'ogg', 'm4a', 'aac', 'm4p', 'rm', 'ra']
+    for extlist in [allowed_video_ext, allowed_music_ext]:
         for title, identifier in contentList:
             try:
                 ext = title.split('.')[-1]
@@ -1596,7 +1623,7 @@ def get_ids_video(contentList):
                     ids_video.append(str(identifier))
             except:
                 pass
-        if len(ids_video)>1:
+        if len(ids_video) > 1:
             break
-    #print Debug('[get_ids_video]:'+str(ids_video))
+    # print Debug('[get_ids_video]:'+str(ids_video))
     return ids_video

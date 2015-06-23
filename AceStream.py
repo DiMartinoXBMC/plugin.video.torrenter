@@ -18,8 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import time
-import sys
 import os
 import urllib2
 import urllib
@@ -28,8 +26,8 @@ import re
 import base64
 from StringIO import StringIO
 import gzip
-from functions import file_decode, file_encode
 
+from functions import file_decode, file_encode
 from functions import magnet_alert
 import xbmcvfs
 
@@ -67,12 +65,11 @@ class AceStream:
             print 'Error importing TSengine from ASCore. Exception: ' + str(e)
             return
 
-
         self.TSplayer = tsengine()
         del tsengine
         self.torrentFilesDirectory = torrentFilesDirectory
         self.storageDirectory = storageDirectory
-        _path=os.path.join(self.storageDirectory, self.torrentFilesDirectory)+os.sep
+        _path = os.path.join(self.storageDirectory, self.torrentFilesDirectory) + os.sep
         if not xbmcvfs.exists(_path):
             xbmcvfs.mkdirs(_path)
         if xbmcvfs.exists(torrentFile):
@@ -115,7 +112,8 @@ class AceStream:
                 localFile.write(content)
                 localFile.close()
             except Exception, e:
-                print 'Unable to save torrent file from "' + torrentUrl + '" to "' + torrentFile + '" in Torrent::saveTorrent' + '. Exception: ' + str(e)
+                print 'Unable to save torrent file from "' + torrentUrl + '" to "' + torrentFile + '" in Torrent::saveTorrent' + '. Exception: ' + str(
+                    e)
                 return
             if xbmcvfs.exists(torrentFile):
                 self.torrentFile = torrentFile
@@ -134,7 +132,7 @@ class AceStream:
         fileList = self.getContentList()
         for i in fileList:
             if i['ind'] == contentId:
-                return os.path.join(file_encode(self.storageDirectory),i['title'])
+                return os.path.join(file_encode(self.storageDirectory), i['title'])
 
     def getContentList(self):
         filelist = []

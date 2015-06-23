@@ -842,7 +842,7 @@ class AzureusConnection(AzureusLink):
                 raise NoEstablishedConnectionError
 
         from xml.dom.minidom import parseString
-        from dopal.xmlutils import normalise_xml_structure, get_text_content
+        from dopal.xmlutils import normalise_xml_structure
 
         # First step, convert the method data to XML.
         xml_data = remote_method_call_as_xml(method_name, method_args,
@@ -1017,7 +1017,6 @@ class ExtendedAzureusConnection(AzureusConnection):
             import dopal.utils
 
             return dopal.utils.parse_azureus_version_string(az_version)
-
 
 # Use of this name is deprecated, and this alias will be removed in later
 # versions of DOPAL.

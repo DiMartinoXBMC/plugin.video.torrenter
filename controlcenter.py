@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import xbmcaddon
-import xbmc, sys
-from functions import getParameters, HistoryDB
+import sys
 
+import xbmcaddon
+import xbmc
+from functions import getParameters, HistoryDB
 from resources.pyxbmct.addonwindow import *
 from functions import Searchers
-
 
 __settings__ = xbmcaddon.Addon(id='plugin.video.torrenter')
 __language__ = __settings__.getLocalizedString
@@ -16,10 +16,11 @@ __root__ = __settings__.getAddonInfo('path')
 
 print 'SYS ARGV: ' + str(sys.argv)
 
-if len(sys.argv)>1:
+if len(sys.argv) > 1:
     params = getParameters(sys.argv[1])
 else:
-    params={}
+    params = {}
+
 
 class MyAddon(AddonDialogWindow):
     def __init__(self, title=''):
@@ -170,22 +171,22 @@ class ControlCenter(AddonDialogWindow):
         super(ControlCenter, self).__init__(title)
 
         self.dic = Searchers().dic()
-        self.db=None
-        self.addtime=None
+        self.db = None
+        self.addtime = None
         self.keys = self.dic.keys()
         if addtime:
-            self.addtime=addtime
+            self.addtime = addtime
             self.db = HistoryDB()
             providers = self.db.get_providers(addtime)
             if not providers:
                 self.db.set_providers(addtime, self.dic)
             else:
                 for searcher in self.keys:
-                    self.dic[searcher]=False
+                    self.dic[searcher] = False
                 for searcher in providers:
                     try:
                         if searcher in self.keys:
-                            self.dic[searcher]=True
+                            self.dic[searcher] = True
                     except:
                         pass
 
@@ -215,16 +216,16 @@ class ControlCenter(AddonDialogWindow):
     def set_info_controls(self):
         # Demo for PyXBMCt UI controls.
         # no_int_label = Label(__language__(30146), alignment=ALIGN_CENTER)
-        #self.placeControl(no_int_label, 0, 0, 1, 3)
+        # self.placeControl(no_int_label, 0, 0, 1, 3)
         #
-        #label_timeout = Label(__language__(30410))
-        #self.placeControl(label_timeout, 1, 0)
+        # label_timeout = Label(__language__(30410))
+        # self.placeControl(label_timeout, 1, 0)
         # Label
-        #self.label = Label(__language__(30545) % TimeOut().timeout())
-        #self.placeControl(self.label, 1, 1)
+        # self.label = Label(__language__(30545) % TimeOut().timeout())
+        # self.placeControl(self.label, 1, 1)
         #
-        #label_watched = Label(__language__(30414) % (WatchedDB().count()))
-        #self.placeControl(label_watched, 2, 0)
+        # label_watched = Label(__language__(30414) % (WatchedDB().count()))
+        # self.placeControl(label_watched, 2, 0)
         pass
 
     def set_active_controls(self):
@@ -286,8 +287,8 @@ class ControlCenter(AddonDialogWindow):
                 ser = placed_keys[placed_values.index((place[0], place[1] - 1))]
             self.radiobutton[searcher].controlLeft(self.radiobutton[ser])
 
-            #print str((self.button_columns, self.last_column_row))
-            #print searcher
+            # print str((self.button_columns, self.last_column_row))
+            # print searcher
 
             if place == (self.button_columns, self.last_column_row) and self.last_column_row < 2:
                 ser = placed_keys[placed_values.index((place[0] - 1, place[1] + 1))]
@@ -363,11 +364,11 @@ class ControlCenter(AddonDialogWindow):
 
 
 def main():
-    title='Torrenter Global Control Center'
-    addtime=None
+    title = 'Torrenter Global Control Center'
+    addtime = None
     if params.get('title'):
-        title=str(params.get('title'))
-        addtime=str(params.get('addtime'))
+        title = str(params.get('title'))
+        addtime = str(params.get('addtime'))
 
     window = ControlCenter(title, addtime)
     window.doModal()

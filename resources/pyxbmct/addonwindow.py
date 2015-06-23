@@ -11,9 +11,12 @@
 #  PyXBMCt framework module
 
 import os
-import xbmc, xbmcgui, xbmcaddon
 
-#_addon = xbmcaddon.Addon()
+import xbmc
+import xbmcgui
+
+
+# _addon = xbmcaddon.Addon()
 _images = os.path.join(os.path.dirname(__file__), 'textures', 'default')
 
 
@@ -82,6 +85,7 @@ class Label(xbmcgui.ControlLabel):
     Example:
         self.label = Label('Status', angle=45)
     """
+
     def __new__(cls, *args, **kwargs):
         return super(Label, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
@@ -100,6 +104,7 @@ class FadeLabel(xbmcgui.ControlFadeLabel):
     Example:
         self.fadelabel = FadeLabel(textColor='0xFFFFFFFF')
     """
+
     def __new__(cls, *args, **kwargs):
         return super(FadeLabel, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
@@ -117,6 +122,7 @@ class TextBox(xbmcgui.ControlTextBox):
     Example:
         self.textbox = TextBox(textColor='0xFFFFFFFF')
     """
+
     def __new__(cls, *args, **kwargs):
         return super(TextBox, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
@@ -136,6 +142,7 @@ class Image(xbmcgui.ControlImage):
     Example:
         self.image = Image('d:\images\picture.jpg', aspectRatio=2)
     """
+
     def __new__(cls, *args, **kwargs):
         return super(Image, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
@@ -163,6 +170,7 @@ class Button(xbmcgui.ControlButton):
     Example:
         self.button = Button('Status', font='font14')
     """
+
     def __new__(cls, *args, **kwargs):
         textures = {'focusTexture': os.path.join(_images, 'Button', 'KeyboardKey.png'),
                     'noFocusTexture': os.path.join(_images, 'Button', 'KeyboardKeyNF.png')}
@@ -202,6 +210,7 @@ class RadioButton(xbmcgui.ControlRadioButton):
     Example:
         self.radiobutton = RadioButton('Status', font='font14')
     """
+
     def __new__(cls, *args, **kwargs):
         if int(xbmc.getInfoLabel('System.BuildVersion')[:2]) >= 13:
             textures = {'focusTexture': os.path.join(_images, 'RadioButton', 'MenuItemFO.png'),
@@ -210,7 +219,7 @@ class RadioButton(xbmcgui.ControlRadioButton):
                         'noFocusOnTexture': os.path.join(_images, 'RadioButton', 'radiobutton-focus.png'),
                         'focusOffTexture': os.path.join(_images, 'RadioButton', 'radiobutton-nofocus.png'),
                         'noFocusOffTexture': os.path.join(_images, 'RadioButton', 'radiobutton-nofocus.png')}
-        else: # This is for compatibility with Frodo and earlier versions.
+        else:  # This is for compatibility with Frodo and earlier versions.
             textures = {'focusTexture': os.path.join(_images, 'RadioButton', 'MenuItemFO.png'),
                         'noFocusTexture': os.path.join(_images, 'RadioButton', 'MenuItemNF.png'),
                         'TextureRadioFocus': os.path.join(_images, 'RadioButton', 'radiobutton-focus.png'),
@@ -242,6 +251,7 @@ class Edit(xbmcgui.ControlEdit):
     example:
     - self.edit = Edit('Status')
     """
+
     def __new__(cls, *args, **kwargs):
         textures = {'focusTexture': os.path.join(_images, 'Edit', 'button-focus.png'),
                     'noFocusTexture': os.path.join(_images, 'Edit', 'black-back2.png')}
@@ -272,6 +282,7 @@ class List(xbmcgui.ControlList):
     Example:
         self.cList = List('font14', space=5)
     """
+
     def __new__(cls, *args, **kwargs):
         textures = {'buttonTexture': os.path.join(_images, 'List', 'MenuItemNF.png'),
                     'buttonFocusTexture': os.path.join(_images, 'List', 'MenuItemFO.png')}
@@ -293,6 +304,7 @@ class Slider(xbmcgui.ControlSlider):
     Example:
         self.slider = Slider()
     """
+
     def __new__(cls, *args, **kwargs):
         textures = {'textureback': os.path.join(_images, 'Slider', 'osd_slider_bg.png'),
                     'texture': os.path.join(_images, 'Slider', 'osd_slider_nibNF.png'),
@@ -302,7 +314,6 @@ class Slider(xbmcgui.ControlSlider):
 
 
 class _AbstractWindow(object):
-
     """
     Top-level control window.
 
@@ -340,8 +351,8 @@ class _AbstractWindow(object):
             self.x = pos_x
             self.y = pos_y
         else:
-            self.x = 640 - self.width/2
-            self.y = 360 - self.height/2
+            self.x = 640 - self.width / 2
+            self.y = 360 - self.height / 2
         self.setGrid()
 
     def setGrid(self):
@@ -351,8 +362,8 @@ class _AbstractWindow(object):
         """
         self.grid_x = self.x
         self.grid_y = self.y
-        self.tile_width = self.width/self.columns
-        self.tile_height = self.height/self.rows
+        self.tile_width = self.width / self.columns
+        self.tile_height = self.height / self.rows
 
     def placeControl(self, control, row, column, rowspan=1, columnspan=1, pad_x=5, pad_y=5):
         """
@@ -478,9 +489,9 @@ class _AbstractWindow(object):
         self.disconnect(ACTION_NAV_BACK)
         """
         if type(event) == int:
-             event_list = self.actions_connected
+            event_list = self.actions_connected
         else:
-             event_list = self.controls_connected
+            event_list = self.controls_connected
         for index in range(len(event_list)):
             if event == event_list[index][0]:
                 event_list.pop(index)
@@ -525,7 +536,6 @@ class _AbstractWindow(object):
 
 
 class _AddonWindow(_AbstractWindow):
-
     """
     Top-level control window.
 
@@ -570,12 +580,14 @@ class _AddonWindow(_AbstractWindow):
         self.addControl(self.title_background)
         self.setAnimation(self.title_background)
         self.title_bar = xbmcgui.ControlLabel(-10, -10, 1, 1, title, alignment=ALIGN_CENTER, textColor='0xFFFFA500',
-                                                                        font='font13_title')
+                                              font='font13_title')
         self.addControl(self.title_bar)
         self.setAnimation(self.title_bar)
         self.window_close_button = xbmcgui.ControlButton(-100, -100, 60, 30, '',
-                        focusTexture=os.path.join(_images, 'AddonWindow', 'DialogCloseButton-focus.png'),
-                        noFocusTexture=os.path.join(_images, 'AddonWindow', 'DialogCloseButton.png'))
+                                                         focusTexture=os.path.join(_images, 'AddonWindow',
+                                                                                   'DialogCloseButton-focus.png'),
+                                                         noFocusTexture=os.path.join(_images, 'AddonWindow',
+                                                                                     'DialogCloseButton.png'))
         self.addControl(self.window_close_button)
         self.setAnimation(self.window_close_button)
 
@@ -614,9 +626,10 @@ class _AddonWindow(_AbstractWindow):
         """
         self.grid_x = self.x + self.X_MARGIN + self.win_padding
         self.grid_y = self.y + self.Y_MARGIN + self.Y_SHIFT + self.HEADER_HEIGHT + self.win_padding
-        self.tile_width = (self.width - 2 * (self.X_MARGIN + self.win_padding))/self.columns
+        self.tile_width = (self.width - 2 * (self.X_MARGIN + self.win_padding)) / self.columns
         self.tile_height = (
-                    self.height - self.HEADER_HEIGHT - self.Y_SHIFT - 2 * (self.Y_MARGIN + self.win_padding))/self.rows
+                               self.height - self.HEADER_HEIGHT - self.Y_SHIFT - 2 * (
+                               self.Y_MARGIN + self.win_padding)) / self.rows
 
     def setWindowTitle(self, title=''):
         """
@@ -632,8 +645,8 @@ class _AddonWindow(_AbstractWindow):
         """Get window title."""
         return self.title_bar.getLabel()
 
-class _FullWindow(xbmcgui.Window):
 
+class _FullWindow(xbmcgui.Window):
     """An abstract class to define window event processing."""
 
     def onAction(self, action):
@@ -659,7 +672,6 @@ class _FullWindow(xbmcgui.Window):
 
 
 class _DialogWindow(xbmcgui.WindowDialog):
-
     """An abstract class to define window event processing."""
 
     def onAction(self, action):
@@ -718,8 +730,8 @@ class BlankDialogWindow(_DialogWindow, _AbstractWindow):
     """
     pass
 
-class AddonFullWindow(_FullWindow, _AddonWindow):
 
+class AddonFullWindow(_FullWindow, _AddonWindow):
     """
     Addon UI container with a solid background.
     Control window is displayed on top of the main background image - self.main_bg.

@@ -12,9 +12,7 @@ import itertools
 
 import xbmc
 import xbmcgui
-import xbmcaddon
 import xbmcvfs
-
 
 RE = {
     'content-disposition': re.compile('attachment;\sfilename="*([^"\s]+)"|\s')
@@ -33,7 +31,6 @@ class HTTP:
             self._dirname = os.path.join(self._dirname, subdir)
             if not xbmcvfs.exists(self._dirname):
                 xbmcvfs.mkdir(self._dirname)
-
 
     def fetch(self, request, **kwargs):
         self.con, self.fd, self.progress, self.cookies, self.request = None, None, None, None, request
@@ -74,7 +71,6 @@ class HTTP:
 
         return self.response
 
-
     def _opener(self):
 
         build = [urllib2.HTTPHandler()]
@@ -100,7 +96,6 @@ class HTTP:
             build.append(urllib2.HTTPCookieProcessor(self.cookies))
 
         urllib2.install_opener(urllib2.build_opener(*build))
-
 
     def _fetch(self):
         params = {} if self.request.params is None else self.request.params
@@ -130,7 +125,7 @@ class HTTP:
                 ':'.join([self.request.auth_username, self.request.auth_password])).strip())
 
         self.con = urllib2.urlopen(req, timeout=self.request.timeout)
-        #self.con = urllib2.urlopen(req)
+        # self.con = urllib2.urlopen(req)
         self.response.headers = self._headers(self.con.info())
 
         if self.request.download:
@@ -140,7 +135,6 @@ class HTTP:
 
         if self.request.cookies:
             self.cookies.save(self.request.cookies)
-
 
     def _download(self):
         fd = open(self.request.download, 'wb')
@@ -172,7 +166,6 @@ class HTTP:
                 self.progress.update(*self._progress(read, size, name))
 
         self.response.filename = self.request.download
-
 
     def _upload(self, upload, params):
         res = []
@@ -209,7 +202,6 @@ class HTTP:
         result.append('')
         return boundary, '\r\n'.join(result)
 
-
     def _headers(self, raw):
         headers = {}
         for line in raw.headers:
@@ -220,7 +212,6 @@ class HTTP:
                 if tag and value:
                     headers[tag] = value
         return headers
-
 
     def _progress(self, read, size, name):
         res = []
@@ -304,4 +295,3 @@ class HTTPResponse:
         else:
             args += ',body=None'
         return '%s(%s)' % (self.__class__.__name__, args)
-

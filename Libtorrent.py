@@ -18,22 +18,23 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-#import time
+# import time
 import thread
 import os
 import urllib2
 import hashlib
 import re
 import sys
-from platform import get_platform
 from StringIO import StringIO
 import gzip
-from functions import file_decode, file_encode, isSubtitle, DownloadDB
 
 import xbmc
 import xbmcgui
 import xbmcvfs
 import Localization
+from platform_pulsar import get_platform
+from functions import file_decode, file_encode, isSubtitle, DownloadDB
+
 
 class Libtorrent:
     torrentFile = None
@@ -102,22 +103,25 @@ class Libtorrent:
             #from ctypes import *
             #cdll.LoadLibrary(dirname + '/libtorrent-rasterbar.so.7')'''
 
-        self.platform=get_platform()
+        self.platform = get_platform()
 
-        print '[Libtorrent] self.platform: '+str(self.platform)
+        print '[Libtorrent] self.platform: ' + str(self.platform)
 
         try:
             import libtorrent
+
             print 'Imported libtorrent v' + libtorrent.version + ' from system'
         except Exception, e:
             print 'Error importing from system. Exception: ' + str(e)
 
             try:
                 dirname = os.path.join(xbmc.translatePath('special://home'), 'addons', 'script.module.libtorrent',
-                                   'python_libtorrent', self.platform['system'])
+                                       'python_libtorrent', self.platform['system'])
                 sys.path.insert(0, dirname)
                 import libtorrent
-                print 'Imported libtorrent v' + libtorrent.version + ' from python_libtorrent.' + self.platform['system']
+
+                print 'Imported libtorrent v' + libtorrent.version + ' from python_libtorrent.' + self.platform[
+                    'system']
             except Exception, e:
                 print 'Error importing python_libtorrent.' + self.platform['system'] + '. Exception: ' + str(e)
                 pass
@@ -127,11 +131,12 @@ class Libtorrent:
             del libtorrent
         except:
             xbmcgui.Dialog().ok(Localization.localize('Python-Libtorrent Not Found'),
-                                Localization.localize(self.platform["message"][0]),Localization.localize(self.platform["message"][1]))
+                                Localization.localize(self.platform["message"][0]),
+                                Localization.localize(self.platform["message"][1]))
             return
 
         self.storageDirectory = storageDirectory
-        self.torrentFilesPath=os.path.join(self.storageDirectory, torrentFilesDirectory)+os.sep
+        self.torrentFilesPath = os.path.join(self.storageDirectory, torrentFilesDirectory) + os.sep
         if xbmcvfs.exists(torrentFile):
             self.torrentFile = torrentFile
             self.torrentFileInfo = self.lt.torrent_info(file_decode(self.torrentFile))
@@ -142,7 +147,7 @@ class Libtorrent:
         if re.match("^magnet\:.+$", torrentUrl):
             self.magnetLink = torrentUrl
             self.magnetToTorrent(torrentUrl)
-            self.magnetLink=None
+            self.magnetLink = None
             return self.torrentFile
         else:
             if not xbmcvfs.exists(self.torrentFilesPath):
@@ -168,7 +173,8 @@ class Libtorrent:
                 localFile.write(content)
                 localFile.close()
             except Exception, e:
-                print 'Unable to save torrent file from "' + torrentUrl + '" to "' + torrentFile + '" in Torrent::saveTorrent' + '. Exception: ' + str(e)
+                print 'Unable to save torrent file from "' + torrentUrl + '" to "' + torrentFile + '" in Torrent::saveTorrent' + '. Exception: ' + str(
+                    e)
                 return
             if xbmcvfs.exists(torrentFile):
                 try:
@@ -180,14 +186,16 @@ class Libtorrent:
                 baseName = file_encode(os.path.basename(self.getFilePath()))
                 if not xbmcvfs.exists(self.torrentFilesPath):
                     xbmcvfs.mkdirs(self.torrentFilesPath)
-                newFile = self.torrentFilesPath+self.md5(baseName)+'.'+self.md5(torrentUrl)+'.torrent'# + '.'+ baseName
+                newFile = self.torrentFilesPath + self.md5(baseName) + '.' + self.md5(
+                    torrentUrl) + '.torrent'  # + '.'+ baseName
                 if not xbmcvfs.exists(newFile):
                     xbmcvfs.delete(newFile)
                 if not xbmcvfs.exists(newFile):
                     try:
                         xbmcvfs.rename(torrentFile, newFile)
                     except Exception, e:
-                        print 'Unable to rename torrent file from "' + torrentFile + '" to "' + newFile + '" in Torrent::renameTorrent'+ '. Exception: ' + str(e)
+                        print 'Unable to rename torrent file from "' + torrentFile + '" to "' + newFile + '" in Torrent::renameTorrent' + '. Exception: ' + str(
+                            e)
                         return
                 self.torrentFile = newFile
                 if not self.torrentFileInfo:
@@ -266,7 +274,7 @@ class Libtorrent:
         return self.getContentList()[contentId]['size']
 
     def getFilePath(self, contentId=0):
-        return os.path.join(self.storageDirectory,self.getContentList()[contentId]['title'])#.decode('utf8')
+        return os.path.join(self.storageDirectory, self.getContentList()[contentId]['title'])  # .decode('utf8')
 
     def getContentList(self):
         filelist = []
@@ -278,12 +286,12 @@ class Libtorrent:
             return filelist
         except:
             xbmcgui.Dialog().ok(Localization.localize('Python-Libtorrent Not Found'),
-                                Localization.localize(self.platform["message"][0]),Localization.localize(self.platform["message"][1]))
+                                Localization.localize(self.platform["message"][0]),
+                                Localization.localize(self.platform["message"][1]))
             return
 
-
     def getSubsIds(self, filename):
-        subs=[]
+        subs = []
         for i in self.getContentList():
             if isSubtitle(filename, i['title']):
                 subs.append((i['ind'], i['title']))
@@ -305,25 +313,26 @@ class Libtorrent:
 
     def downloadProcess(self, contentId):
         self.startSession()
-        self.paused=False
-        db=DownloadDB()
-        ContentList=self.getContentList()
-        if contentId!=None: contentId=int(contentId)
-        if len(ContentList)==1 or contentId not in [None, -1]:
-            if not contentId: contentId=0
-            title=os.path.basename(ContentList[contentId]['title'])
-            path=os.path.join(self.storageDirectory, ContentList[contentId]['title'])
-            type='file'
+        self.paused = False
+        db = DownloadDB()
+        ContentList = self.getContentList()
+        if contentId != None: contentId = int(contentId)
+        if len(ContentList) == 1 or contentId not in [None, -1]:
+            if not contentId: contentId = 0
+            title = os.path.basename(ContentList[contentId]['title'])
+            path = os.path.join(self.storageDirectory, ContentList[contentId]['title'])
+            type = 'file'
         else:
-            contentId=-1
-            title=ContentList[0]['title'].split('\\')[0]
-            path=os.path.join(self.storageDirectory, title)
-            type='folder'
+            contentId = -1
+            title = ContentList[0]['title'].split('\\')[0]
+            path = os.path.join(self.storageDirectory, title)
+            type = 'folder'
 
-        add=db.add(title, path, type, {'progress':0}, 'downloading', self.torrentFile, contentId, self.storageDirectory)
-        get=db.get(title)
-        if add or get[5]=='stopped':
-            if get[5]=='stopped':
+        add = db.add(title, path, type, {'progress': 0}, 'downloading', self.torrentFile, contentId,
+                     self.storageDirectory)
+        get = db.get(title)
+        if add or get[5] == 'stopped':
+            if get[5] == 'stopped':
                 db.update_status(get[0], 'downloading')
             if contentId not in [None, -1]:
                 self.continueSession(int(contentId), Offset=0, seeding=False)
@@ -333,27 +342,27 @@ class Libtorrent:
             thread.start_new_thread(self.downloadLoop, (title,))
 
     def downloadLoop(self, title):
-        db=DownloadDB()
-        status='downloading'
-        while db.get(title) and status!='stopped':
+        db = DownloadDB()
+        status = 'downloading'
+        while db.get(title) and status != 'stopped':
             xbmc.sleep(3000)
-            status=db.get_status(title)
+            status = db.get_status(title)
             if not self.paused:
-                if status=='pause':
-                    self.paused=True
+                if status == 'pause':
+                    self.paused = True
                     self.session.pause()
             else:
-                if status!='pause':
-                    self.paused=False
+                if status != 'pause':
+                    self.paused = False
                     self.session.resume()
             s = self.torrentHandle.status()
-            info={}
-            info['upload']=s.upload_payload_rate
-            info['download']=s.download_payload_rate
-            info['peers']=s.num_peers
-            info['seeds']=s.num_seeds
+            info = {}
+            info['upload'] = s.upload_payload_rate
+            info['download'] = s.download_payload_rate
+            info['peers'] = s.num_peers
+            info['seeds'] = s.num_seeds
             iterator = int(s.progress * 100)
-            info['progress']=iterator
+            info['progress'] = iterator
             db.update(title, info)
             self.debug()
         self.session.remove_torrent(self.torrentHandle)
@@ -378,8 +387,8 @@ class Libtorrent:
             self.torrentHandle = self.session.add_torrent({'ti': self.torrentFileInfo,
                                                            'save_path': self.storageDirectory,
                                                            'flags': 0x300,
-                                                           #'storage_mode': self.lt.storage_mode_t.storage_mode_allocate,
-            })
+                                                           # 'storage_mode': self.lt.storage_mode_t.storage_mode_allocate,
+                                                           })
         else:
             self.torrentFileInfo = self.getMagnetInfo()
         self.torrentHandle.set_sequential_download(True)
@@ -395,21 +404,21 @@ class Libtorrent:
         if not Offset:
             Offset = selectedFileInfo['size'] / (1024 * 1024)
         self.partOffset = (Offset * 1024 * 1024 / self.piece_length) + 1
-        #print 'partOffset ' + str(self.partOffset)+str(' ')
+        # print 'partOffset ' + str(self.partOffset)+str(' ')
         self.startPart = selectedFileInfo['offset'] / self.piece_length
         self.endPart = int((selectedFileInfo['offset'] + selectedFileInfo['size']) / self.piece_length)
-        #print 'part ' + str(self.startPart)+ str(' ')+ str(self.endPart)
-        multiplier=self.partOffset/5
-        print 'continueSession: multiplier '+str(multiplier)
+        # print 'part ' + str(self.startPart)+ str(' ')+ str(self.endPart)
+        multiplier = self.partOffset / 5
+        print 'continueSession: multiplier ' + str(multiplier)
         for i in range(self.startPart, self.startPart + self.partOffset):
             if i <= self.endPart:
                 self.torrentHandle.piece_priority(i, 7)
-                if isMP4 and i%multiplier==0:
-                    self.torrentHandle.piece_priority(self.endPart - i/multiplier, 7)
-                    #print str(i)
-                if multiplier>=i:
+                if isMP4 and i % multiplier == 0:
+                    self.torrentHandle.piece_priority(self.endPart - i / multiplier, 7)
+                    # print str(i)
+                if multiplier >= i:
                     self.torrentHandle.piece_priority(self.endPart - i, 7)
-                    #print str(i)
+                    # print str(i)
 
     def fetchParts(self):
         priorities = self.torrentHandle.piece_priorities()
@@ -429,13 +438,13 @@ class Libtorrent:
 
     def debug(self):
         try:
-            #print str(self.getFilePath(0))
+            # print str(self.getFilePath(0))
             s = self.torrentHandle.status()
-            #get_settings=self.torrentHandle.status
-            #print s.num_pieces
-            #priorities = self.torrentHandle.piece_priorities()
-            #self.dump(priorities)
-            #print str('anonymous_mode '+str(get_settings['anonymous_mode']))
+            # get_settings=self.torrentHandle.status
+            # print s.num_pieces
+            # priorities = self.torrentHandle.piece_priorities()
+            # self.dump(priorities)
+            # print str('anonymous_mode '+str(get_settings['anonymous_mode']))
 
             state_str = ['queued', 'checking', 'downloading metadata',
                          'downloading', 'finished', 'seeding', 'allocating']
@@ -444,13 +453,13 @@ class Libtorrent:
                    s.upload_rate / 1000,
                    s.num_peers, state_str[s.state])
             i = 0
-            #for t in s.pieces:
+            # for t in s.pieces:
             #    if t: i=i+1
-            #print str(self.session.pop_alert())
-            #print str(s.pieces[self.startPart:self.endPart])
-            #print 'True pieces: %d' % i
-            #print s.current_tracker
-            #print str(s.pieces)
+            # print str(self.session.pop_alert())
+            # print str(s.pieces[self.startPart:self.endPart])
+            # print 'True pieces: %d' % i
+            # print s.current_tracker
+            # print str(s.pieces)
         except:
             print 'debug error'
             pass

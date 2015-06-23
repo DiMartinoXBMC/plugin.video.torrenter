@@ -21,7 +21,6 @@
 import urllib
 import re
 import sys
-import urllib2
 
 import SearcherABC
 
@@ -69,12 +68,12 @@ class ThePirateBaySe(SearcherABC.SearcherABC):
         response = self.makeRequest(url)
 
         if None != response and 0 < len(response):
-            #print response
+            # print response
             dat = re.compile(
                 r'<div class="detName">.+?">(.+?)</a>.+?<a href="(.+?)".+?<font class="detDesc">Uploaded .+?, Size (.+?), .+?</font>.+?<td align="right">(\d+?)</td>.+?<td align="right">(\d+?)</td>',
                 re.DOTALL).findall(response)
             for (title, link, size, seeds, leechers) in dat:
-                torrentTitle = title  #"%s [S\L: %s\%s]" % (title, seeds, leechers)
+                torrentTitle = title  # "%s [S\L: %s\%s]" % (title, seeds, leechers)
                 size = size.replace('&nbsp;', ' ')
                 image = sys.modules["__main__"].__root__ + self.searchIcon
                 if not re.match('^https?\://.+', link) and not re.match('^magnet\:.+', link):

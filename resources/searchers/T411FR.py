@@ -19,9 +19,7 @@
 '''
 
 import re
-import os
 import urllib
-import tempfile
 import sys
 
 import SearcherABC
@@ -63,25 +61,26 @@ class T411FR(SearcherABC.SearcherABC):
     ))'''
 
     headers = {('Origin', 'http://t411.io'),
-                   ('User-Agent',
-                    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 YaBrowser/14.10.2062.12061 Safari/537.36'),
-                   ('Referer', 'http://t411.io/'),('X-NewRelic-ID','x='),
-                   ('X-Requested-With','XMLHttpRequest'),}
+               ('User-Agent',
+                'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 YaBrowser/14.10.2062.12061 Safari/537.36'),
+               ('Referer', 'http://t411.io/'), ('X-NewRelic-ID', 'x='),
+               ('X-Requested-With', 'XMLHttpRequest'), }
 
     def search(self, keyword):
         filesList = []
-        url='http://www.t411.io/torrents/search/?search=%s' % urllib.quote_plus(keyword.decode('utf-8').encode('cp1251'))
-        url+='&order=seeders&type=desc'
+        url = 'http://www.t411.io/torrents/search/?search=%s' % urllib.quote_plus(
+            keyword.decode('utf-8').encode('cp1251'))
+        url += '&order=seeders&type=desc'
         response = self.makeRequest(url, headers=self.headers)
         if None != response and 0 < len(response):
-            #self.cookieJar.save(ignore_discard=True)
-            #self.check_login(response)
-            #print response
+            # self.cookieJar.save(ignore_discard=True)
+            # self.check_login(response)
+            # print response
             regex = '''<a href="//.+?" title="(.+?)">.+?<span class="up">.+?<a href="/torrents/nfo/\?id=(\d+)" class="ajax nfo"></a>.+?</td>.+?<td align="center">.+?</td>.+?<td align="center">.+?</td>.+?<td align="center">(.+?)</td>.+?<td align="center" class="up">(\d+)</td>.+?<td align="center" class="down">(\d+)</td>'''
             for (title, link, size, seeds, leechers) in re.compile(regex, re.DOTALL).findall(response):
-                title=self.clear_title(title)
+                title = self.clear_title(title)
                 image = sys.modules["__main__"].__root__ + self.searchIcon
-                link = 'http://www.t411.io/torrents/download/?id='+link
+                link = 'http://www.t411.io/torrents/download/?id=' + link
                 filesList.append((
                     int(int(self.sourceWeight) * int(seeds)),
                     int(seeds), int(leechers), size,
@@ -92,11 +91,11 @@ class T411FR(SearcherABC.SearcherABC):
         return filesList
 
     def clear_title(self, s):
-        return self.stripHtml(self.unescape(s)).replace('   ',' ').replace('  ',' ').strip()
+        return self.stripHtml(self.unescape(s)).replace('   ', ' ').replace('  ', ' ').strip()
 
     def check_login(self, response=None):
         if None != response and 0 < len(response):
-            #print response
+            # print response
             if re.compile('<input class="userInput"').search(response) or \
                     re.compile('start cache').search(response):
                 print 'T411FR Not logged!'
@@ -106,24 +105,24 @@ class T411FR(SearcherABC.SearcherABC):
 
     def getTorrentFile(self, url):
         content = self.makeRequest(url, headers=self.headers)
-        #print content
+        # print content
         if not self.check_login(content):
             content = self.makeRequest(url, headers=self.headers)
-        #return url
+        # return url
         return self.saveTorrentFile(url, content)
 
     def login(self):
         data = {
             'password': 'toraddon20',
             'login': 'zombitorrent',
-            'remember':'1'
+            'remember': '1'
         }
-        x=self.makeRequest(
-            'http://www.t411.io/users/auth/',data=data, headers=self.headers)
-        if re.search('{"status":"OK"',x):
+        x = self.makeRequest(
+            'http://www.t411.io/users/auth/', data=data, headers=self.headers)
+        if re.search('{"status":"OK"', x):
             print 'LOGGED T411FR'
         self.cookieJar.save(ignore_discard=True)
         for cookie in self.cookieJar:
-            if cookie.name == 'authKey' and cookie.domain=='.t411.io':
+            if cookie.name == 'authKey' and cookie.domain == '.t411.io':
                 return 'authKey=' + cookie.value
         return False

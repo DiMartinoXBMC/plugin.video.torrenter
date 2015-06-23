@@ -18,7 +18,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import Content, re
+import re
+
+import Content
+
 
 class EZTV(Content.Content):
     category_dict = {
@@ -59,31 +62,31 @@ class EZTV(Content.Content):
         response = self.makeRequest(url, headers=self.headers)
 
         if None != response and 0 < len(response):
-            #print response
+            # print response
             if category in ['hot']:
                 contentList = self.mode(response)
-        #print str(contentList)
+        # print str(contentList)
         return contentList
 
     def mode(self, response):
         contentList = []
-        #print str(result)
+        # print str(result)
         num = 51
         result = re.compile(
-                r'''class="epinfo">(.+?)</a>.+?<a href="(magnet.+?)".+?<td align="center" class="forum_thread_post">(.+?) </td>''',
-                re.DOTALL).findall(response)
+            r'''class="epinfo">(.+?)</a>.+?<a href="(magnet.+?)".+?<td align="center" class="forum_thread_post">(.+?) </td>''',
+            re.DOTALL).findall(response)
         for title, link, date in result:
-            #main
+            # main
             info = {}
             num = num - 1
             original_title = None
             year = 0
             img = ''
-            #info
+            # info
 
             info['label'] = info['title'] = title
             info['link'] = link
-            info['plot'] = info['title']+'\r\nAge: %s' % (date)
+            info['plot'] = info['title'] + '\r\nAge: %s' % (date)
 
             contentList.append((
                 int(int(self.sourceWeight) * (int(num))),
