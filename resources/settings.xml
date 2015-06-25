@@ -3,7 +3,7 @@
         <setting
                 id="language"
                 type="enum"
-                values="English|Russian"
+                values="English|Russian|Ukrainian"
                 label="30001"
                 default="1"
                 />
