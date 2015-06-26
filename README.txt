@@ -1,4 +1,4 @@
-﻿Plugin helps you to watch videos from p2p torrent-networks, without full predownload (uses inner python-libtorrent) or Ace Stream. It also can add, control torrents and play downloaded files with external uTorrent, Transmisson or Vuse.
+﻿Plugin helps you to watch videos from p2p torrent-networks, without full predownload (uses inner python-libtorrent) or Ace Stream. It also can add, control torrents and play downloaded files with external uTorrent, Transmission, Vuze or Deluge.
 Official forum thread: http://forum.kodi.tv/showthread.php?tid=214366
 
 [B]PYTHON-LIBTORRENT[/B]:

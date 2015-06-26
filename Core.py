@@ -114,7 +114,7 @@ class Core:
         self.drawItem('< %s >' % self.localize('Download Status'), 'DownloadStatus', image=self.ROOT + '/icons/download.png',
                       contextMenu=DLScontextMenu, replaceMenu=False)
         self.drawItem('< %s >' % self.localize('Torrent-client Browser'), 'uTorrentBrowser',
-                      image=self.ROOT + '/icons/torrent-client.png')
+                      image=self.ROOT + '/icons/' + self.getTorrentClientIcon())
         self.drawItem('< %s >' % self.localize('.torrent Player'), 'torrentPlayer',
                       image=self.ROOT + '/icons/torrentPlayer.png')
         self.drawItem('< %s >' % self.localize('Search Control Window'), 'controlCenter',
@@ -1817,3 +1817,14 @@ class Core:
     def returnRussian(self, params={}):
         i=delete_russian(ok=True, action='return')
         showMessage(self.localize('Return Russian stuff'),self.localize('%d files have been returned')%i)
+
+    def getTorrentClientIcon(self):
+        client = self.__settings__.getSetting("torrent")
+        if client == '1':
+            return 'transmission.png'
+        elif client == '2':
+            return 'vuze.png'
+        elif client == '3':
+            return 'deluge.png'
+        else:
+            return 'torrent-client.png'
