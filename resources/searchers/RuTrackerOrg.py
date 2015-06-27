@@ -110,7 +110,7 @@ class RuTrackerOrg(SearcherABC.SearcherABC):
                     '<a class="gen f" href="tracker\.php\?f=(\d+)">.+? class=".+?" href="viewtopic\.php\?t=(\d+)">(.+?)</a>.+?<a .+?href="http://dl.+?">(.+?)</a>.+?class="seedmed".+?(\d+)</.+?class=".+?eechmed".+?(\d+)',
                     re.DOTALL).findall(response):
                 if int(forum) in forums:
-                    size = size.replace('&nbsp;', ' ')
+                    size = size.replace(' &#8595;','').replace('&nbsp;', ' ')
                     torrentTitle = title
                     image = sys.modules["__main__"].__root__ + self.searchIcon
                     link = 'http://dl.rutracker.org/forum/dl.php?t=' + link

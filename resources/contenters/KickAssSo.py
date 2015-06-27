@@ -169,7 +169,7 @@ class KickAssSo(Content.Content):
             for i in ['plot', 'IMDb link', 'RottenTomatoes']:
                 if info.get(i) and info.get(i) not in ['']:
                     if i == 'plot':
-                        movieInfo['desc'] += '\r\n[COLOR blue]Plot:[/COLOR]\r\n' + info.get(i)
+                        movieInfo['desc'] += '\r\n[COLOR blue]Plot:[/COLOR]\r\n' + self.unescape(info.get(i))
                     if i == 'RottenTomatoes':
                         movieInfo['rating'] = str(info.get(i).split('%')[0])
                     if i == 'IMDb link':
