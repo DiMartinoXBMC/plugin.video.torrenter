@@ -45,7 +45,7 @@ class Core:
     torrent_player=__settings__.getSetting("torrent_player")
     history_bool = __settings__.getSetting('history') == 'true'
     open_option = int(__settings__.getSetting('open_option'))
-    language = {0: 'en', 1: 'ru'}.get(int(__settings__.getSetting("language")))
+    language = {0: 'en', 1: 'ru', 2: 'ru'}.get(int(__settings__.getSetting("language")))
     htmlCodes = (
         ('&', '&amp;'),
         ('<', '&lt;'),
