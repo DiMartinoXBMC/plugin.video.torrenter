@@ -129,7 +129,10 @@ class Libtorrent:
         self.platform = get_platform()
         try:
             import libtorrent
-        except:
+
+            print '[script.module.libtorrent]: Imported libtorrent v' + libtorrent.version + ' from system'
+        except Exception, e:
+            print '[script.module.libtorrent]: Error importing from system. Exception: ' + str(e)
             import python_libtorrent as libtorrent
 
         try:
