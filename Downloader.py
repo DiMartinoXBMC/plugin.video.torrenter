@@ -103,6 +103,9 @@ class Torrent():
     def initSession(self):
         return self.player.initSession()
 
+    def encryptSession(self):
+        return self.player.encryptSession()
+
     def startSession(self):
         return self.player.startSession()
 

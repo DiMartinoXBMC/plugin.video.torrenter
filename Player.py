@@ -176,6 +176,9 @@ class TorrentPlayer(xbmc.Player):
         self.on_playback_stopped = []
 
     def setup_torrent(self):
+        self.torrent.initSession()
+        if self.__settings__.getSetting('encryption') == 'true':
+            self.torrent.encryptSession()
         self.torrent.startSession()
         upload_limit = self.__settings__.getSetting("upload_limit") if self.__settings__.getSetting(
             "upload_limit") != "" else 0
@@ -355,13 +358,18 @@ class TorrentPlayer(xbmc.Player):
             event.remove(callback)
 
     def loop(self):
+        debug_counter=0
         with closing(
                 OverlayText(w=OVERLAY_WIDTH, h=OVERLAY_HEIGHT, alignment=XBFONT_CENTER_X | XBFONT_CENTER_Y)) as overlay:
             with nested(self.attach(overlay.show, self.on_playback_paused),
                         self.attach(overlay.hide, self.on_playback_resumed, self.on_playback_stopped)):
                 while not xbmc.abortRequested and self.isPlaying() and not self.torrent.threadComplete:
                     self.torrent.checkThread()
-                    self.torrent.debug()
+                    if self.iterator == 100 and debug_counter < 100:
+                        debug_counter += 1
+                    else:
+                        self.torrent.debug()
+                        debug_counter=0
                     status = self.torrent.torrentHandle.status()
                     overlay.text = "\n".join(self._get_status_lines(status))
                     # downloadedSize = torrent.torrentHandle.file_progress()[contentId]

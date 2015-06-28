@@ -39,7 +39,6 @@ class Core:
     __settings__ = sys.modules["__main__"].__settings__
     ROOT = sys.modules["__main__"].__root__  #.decode('utf-8').encode(sys.getfilesystemencoding())
     userStorageDirectory = file_encode(__settings__.getSetting("storage"))
-    USERAGENT = "Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0"
     torrentFilesDirectory = 'torrents'
     debug = __settings__.getSetting('debug') == 'true'
     torrent_player=__settings__.getSetting("torrent_player")
@@ -1052,7 +1051,6 @@ class Core:
             self.sectionMenu()
 
     def uTorrentBrowser(self, params={}):
-
         menu, dirs = [], []
         contextMenustring = 'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (sys.argv[0], 'uTorrentBrowser', '%s')
         get = params.get
@@ -1231,11 +1229,13 @@ class Core:
         url = unquote(get("url"),None)
         tdir = unquote(get("url2"),None)
 
-        #url="D:\\[rutracker.org].t4563731.torrent"
-
         if not url:
             action = xbmcgui.Dialog()
             url = action.browse(1, self.localize('Choose .torrent in video library'), 'video', '.torrent')
+            xbmc.executebuiltin(
+                            'XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.torrenter/?action=%s&url=%s'
+            % ('torrentPlayer', url))
+            return
         if url:
             self.__settings__.setSetting("lastTorrentUrl", url)
             torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
@@ -1243,11 +1243,8 @@ class Core:
                                                          torrentFilesDirectory=self.torrentFilesDirectory)
             self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
             contentList = []
-            #filename='Suzumiya Haruhi no Yuuutsu - 05 [DVDrip 1280x720 x264 FLAC].mkv'
-            #print str(torrent.getSubsIds(filename))
             for filedict in torrent.getContentList():
                 fileTitle = filedict.get('title')
-                #print fileTitle
                 if filedict.get('size'):
                     fileTitle += ' [%d MB]' % (filedict.get('size') / 1024 / 1024)
                 contentList.append((self.unescape(fileTitle), str(filedict.get('ind'))))
@@ -1740,6 +1737,9 @@ class Core:
                 url = searcherObject.getTorrentFile(classMatch.group(2))
         torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
         torrent.initSession()
+        encryption = self.__settings__.getSetting('encryption') == 'true'
+        if encryption:
+            torrent.encryptSession()
         url=torrent.saveTorrent(url)
         self.__settings__.setSetting("lastTorrent", url)
         if 0 < int(self.__settings__.getSetting("upload_limit")):
@@ -1747,7 +1747,7 @@ class Core:
         if 0 < int(self.__settings__.getSetting("download_limit")):
             torrent.setDownloadLimit(
                 int(self.__settings__.getSetting("download_limit")) * 1000000 / 8)  #MBits/second
-        torrent.downloadProcess(ind)
+        torrent.downloadProcess(ind, encryption)
         showMessage(self.localize('Download Status'), self.localize('Added!'))
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 

@@ -24,7 +24,6 @@ import os
 import urllib2
 import hashlib
 import re
-# import sys
 from StringIO import StringIO
 import gzip
 
@@ -51,80 +50,9 @@ class Libtorrent:
 
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
 
-        '''dirname = os.path.join(xbmc.translatePath('special://home'), 'addons', 'plugin.video.torrenter',
-                               'resources')
-        sys.path.insert(0, dirname)
-
-        try:
-                import resources.libtorrent as libtorrent
-
-                print 'Imported libtorrent v' + libtorrent.version + ' from python_libtorrent.'
-        except Exception, e:
-                print 'Error importing python_libtorrent. Exception: ' + str(e)
-
-        try:
-            from ctypes import *
-            cdll.LoadLibrary(os.path.join(dirname,'libtorrent.so'))
-        except Exception, e:
-                print 'Error importing by ctypes. Exception: ' + str(e)
-
-        try:
-            print 'Imported libtorrent v' + libtorrent.version + ' from python_libtorrent.'
-        except Exception, e:
-                print 'Error importing python_libtorrent. Exception: ' + str(e)
-
-        print 'Imported libtorrent v' + libtorrent.version + ' from ctypes.
-
-        try:
-            import libtorrent
-
-            print 'Imported libtorrent v' + libtorrent.version + ' from system'
-        except Exception, e:
-            print 'Error importing from system. Exception: ' + str(e)
-
-            if platform.system() != 'Windows':
-                if sys.maxsize > 2 ** 32:
-                    system = 'linux_x86_64'
-                else:
-                    system = 'linux_x86'
-            else:
-                system = 'windows'
-
-            dirname = os.path.join(xbmc.translatePath('special://home'), 'addons', 'script.module.libtorrent',
-                                   'python_libtorrent', system)
-            sys.path.insert(0, dirname)
-            try:
-                import libtorrent
-
-                print 'Imported libtorrent v' + libtorrent.version + ' from python_libtorrent.' + system
-            except Exception, e:
-                print 'Error importing python_libtorrent.' + system + '. Exception: ' + str(e)
-                pass
+        '''
             #from ctypes import *
-            #cdll.LoadLibrary(dirname + '/libtorrent-rasterbar.so.7')
-
-        self.platform = get_platform()
-
-        print '[Libtorrent] self.platform: ' + str(self.platform)
-
-        try:
-            import libtorrent
-
-            print 'Imported libtorrent v' + libtorrent.version + ' from system'
-        except Exception, e:
-            print 'Error importing from system. Exception: ' + str(e)
-
-            try:
-                dirname = os.path.join(xbmc.translatePath('special://home'), 'addons', 'script.module.libtorrent',
-                                       'python_libtorrent', self.platform['system'])
-                sys.path.insert(0, dirname)
-                import libtorrent
-
-                print 'Imported libtorrent v' + libtorrent.version + ' from python_libtorrent.' + self.platform[
-                    'system']
-            except Exception, e:
-                print 'Error importing python_libtorrent.' + self.platform['system'] + '. Exception: ' + str(e)
-                pass'''
+            #cdll.LoadLibrary(dirname + '/libtorrent-rasterbar.so.7')'''
 
         self.platform = get_platform()
         try:
@@ -290,17 +218,11 @@ class Libtorrent:
 
     def getContentList(self):
         filelist = []
-        try:
-            for contentId, contentFile in enumerate(self.torrentFileInfo.files()):
-                stringdata = {"title": contentFile.path, "size": contentFile.size, "ind": int(contentId),
-                              'offset': contentFile.offset}
-                filelist.append(stringdata)
-            return filelist
-        except:
-            xbmcgui.Dialog().ok(Localization.localize('Python-Libtorrent Not Found'),
-                                Localization.localize(self.platform["message"][0]),
-                                Localization.localize(self.platform["message"][1]))
-            return
+        for contentId, contentFile in enumerate(self.torrentFileInfo.files()):
+            stringdata = {"title": contentFile.path, "size": contentFile.size, "ind": int(contentId),
+                          'offset': contentFile.offset}
+            filelist.append(stringdata)
+        return filelist
 
     def getSubsIds(self, filename):
         subs = []
@@ -323,7 +245,10 @@ class Libtorrent:
             hasher.update(string.encode('utf-8', 'ignore'))
         return hasher.hexdigest()
 
-    def downloadProcess(self, contentId):
+    def downloadProcess(self, contentId, encrytion=True):
+        self.initSession()
+        if encrytion:
+            self.encryptSession()
         self.startSession()
         self.paused = False
         db = DownloadDB()
@@ -386,15 +311,38 @@ class Libtorrent:
         except:
             pass
         self.session = self.lt.session()
+        self.session.set_alert_mask(self.lt.alert.category_t.error_notification | self.lt.alert.category_t.status_notification | self.lt.alert.category_t.storage_notification)
         self.session.start_dht()
         self.session.add_dht_router("router.bittorrent.com", 6881)
         self.session.add_dht_router("router.utorrent.com", 6881)
         self.session.add_dht_router("router.bitcomet.com", 6881)
+        self.session.start_lsd()
+        self.session.start_upnp()
+        self.session.start_natpmp()
         self.session.listen_on(6881, 6891)
-        self.session.set_alert_mask(self.lt.alert.category_t.storage_notification)
+
+        # Session settings
+        session_settings = self.session.settings()
+        session_settings.announce_to_all_tiers = True
+        session_settings.announce_to_all_trackers = True
+        session_settings.connection_speed = 100
+        session_settings.peer_connect_timeout = 2
+        session_settings.rate_limit_ip_overhead = True
+        session_settings.request_timeout = 5
+        session_settings.torrent_connect_boost = 100
+
+        self.session.set_settings(session_settings)
+
+    def encryptSession(self):
+        # Encryption settings
+        encryption_settings = self.lt.pe_settings()
+        encryption_settings.out_enc_policy = self.lt.enc_policy(self.lt.enc_policy.forced)
+        encryption_settings.in_enc_policy = self.lt.enc_policy(self.lt.enc_policy.forced)
+        encryption_settings.allowed_enc_level = self.lt.enc_level.both
+        encryption_settings.prefer_rc4 = True
+        self.session.set_pe_settings(encryption_settings)
 
     def startSession(self):
-        self.initSession()
         if None == self.magnetLink:
             self.torrentHandle = self.session.add_torrent({'ti': self.torrentFileInfo,
                                                            'save_path': self.storageDirectory,
@@ -447,6 +395,10 @@ class Libtorrent:
         if self.threadComplete == True:
             print 'checkThread KIIIIIIIIIIILLLLLLLLLLLLLLL'
             self.session.remove_torrent(self.torrentHandle)
+            self.session.stop_natpmp()
+            self.session.stop_upnp()
+            self.session.stop_lsd()
+            self.session.stop_dht()
 
     def debug(self):
         try:
