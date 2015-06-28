@@ -311,7 +311,7 @@ class Core:
         if action2 == 'delete':
             db.delete(addtime)
             xbmc.executebuiltin('Container.Refresh')
-            showMessage(self.localize('Download Status'), self.localize('Deleted and Stopped!'))
+            showMessage(self.localize('Download Status'), self.localize('Stopped and Deleted!'))
 
         if action2 == 'pause':
             db.update_status(addtime, 'pause')
