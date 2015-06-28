@@ -197,10 +197,8 @@ class TorrentPlayer(xbmc.Player):
         # mp4 fix
         label = os.path.basename(self.torrent.getFilePath(self.contentId))
         isMP4 = False
-        if '.' in label:
-            ext = label.split('.')[-1]
-            if ext.lower() == 'mp4':
-                isMP4 = True
+        if '.' in label and  str(label.split('.')[-1]).lower() == 'mp4':
+            isMP4 = True
         # print 'setup_torrent: '+str((self.contentId, Offset, isMP4, label, ext))
         self.torrent.continueSession(self.contentId, Offset=Offset, isMP4=isMP4)
 

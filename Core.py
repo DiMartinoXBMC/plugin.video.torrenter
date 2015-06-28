@@ -62,7 +62,7 @@ class Core:
         ('&laquo;', '"'),
         ('&raquo;', '"'),
     )
-    scrapperDB_ver = {'en':'1.1', 'ru':'1.2'}
+    scrapperDB_ver = {'en':'1.1', 'ru':'1.3'}
 
     print 'SYS ARGV: ' + str(sys.argv)
 

@@ -173,7 +173,18 @@ class Content:
             encodedData = urllib.urlencode(data)
         else:
             encodedData = None
-        response = opener.open(url, encodedData)
+        try:
+            response = opener.open(url, encodedData)
+        except urllib2.HTTPError as e:
+            if e.code == 404:
+                print '[makeRequest]: Not Found! HTTP Error, e.code=' + str(e.code)
+                return
+            elif e.code in [503]:
+                print '[makeRequest]: Denied, HTTP Error, e.code=' + str(e.code)
+                return
+            else:
+                print '[makeRequest]: HTTP Error, e.code=' + str(e.code)
+
         if response.info().get('Content-Encoding') == 'gzip':
             buf = StringIO(response.read())
             f = gzip.GzipFile(fileobj=buf)
