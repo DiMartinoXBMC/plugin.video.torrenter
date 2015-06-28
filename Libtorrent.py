@@ -24,7 +24,7 @@ import os
 import urllib2
 import hashlib
 import re
-import sys
+# import sys
 from StringIO import StringIO
 import gzip
 
@@ -101,7 +101,7 @@ class Libtorrent:
                 print 'Error importing python_libtorrent.' + system + '. Exception: ' + str(e)
                 pass
             #from ctypes import *
-            #cdll.LoadLibrary(dirname + '/libtorrent-rasterbar.so.7')'''
+            #cdll.LoadLibrary(dirname + '/libtorrent-rasterbar.so.7')
 
         self.platform = get_platform()
 
@@ -124,12 +124,21 @@ class Libtorrent:
                     'system']
             except Exception, e:
                 print 'Error importing python_libtorrent.' + self.platform['system'] + '. Exception: ' + str(e)
-                pass
+                pass'''
+
+        self.platform = get_platform()
+        try:
+            import libtorrent
+        except:
+            import python_libtorrent as libtorrent
 
         try:
             self.lt = libtorrent
             del libtorrent
-        except:
+            print 'Imported libtorrent v' + self.lt.version + ' from python_libtorrent.' + self.platform[
+                    'system']
+        except Exception, e:
+            print 'Error importing python_libtorrent.' + self.platform['system'] + '. Exception: ' + str(e)
             xbmcgui.Dialog().ok(Localization.localize('Python-Libtorrent Not Found'),
                                 Localization.localize(self.platform["message"][0]),
                                 Localization.localize(self.platform["message"][1]))

@@ -60,6 +60,3 @@ def get_platform():
                           'But you can use torrent-client control functions.']
 
     return ret
-
-
-PLATFORM = get_platform()
