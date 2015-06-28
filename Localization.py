@@ -474,4 +474,10 @@ def localize(text):
     try:
         return dictionary[language][text]
     except:
-        return text
+        if language=='uk':
+            try:
+                return dictionary['ru'][text]
+            except:
+                return text
+        else:
+            return text
