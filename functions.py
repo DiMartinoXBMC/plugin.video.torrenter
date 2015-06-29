@@ -1451,7 +1451,15 @@ class DownloadDB:
 
     def get(self, title):
         self._connect()
-        self.cur.execute(
+        try:
+            self.cur.execute(
+            'select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads where title="' + decode(
+                title) + '"')
+        except:
+            Debug('[DownloadDB]: DELETE ' + str(self.filename))
+            xbmcvfs.delete(self.filename)
+            self._connect()
+            self.cur.execute(
             'select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads where title="' + decode(
                 title) + '"')
         x = self.cur.fetchone()
