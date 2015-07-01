@@ -185,7 +185,7 @@ class Content:
                 return
             else:
                 print '[makeRequest]: HTTP Error, e.code=' + str(e.code)
-
+                return
         if response.info().get('Content-Encoding') == 'gzip':
             buf = StringIO(response.read())
             f = gzip.GzipFile(fileobj=buf)

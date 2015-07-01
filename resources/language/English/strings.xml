@@ -57,5 +57,10 @@
     <string id="30412">Close</string>
     <string id="30413">Open Settings</string>
     <string id="30414">Torrent Client Browser</string>
+    <string id="30415">Install Trackers</string>
+    <string id="30416">Trackers Settings</string>
+    <string id="30417">Clear Storage</string>
+    <string id="30418">Choose searcher</string>
+    <string id="30419">You don't have external searcher. Please install it first.</string>
 
 </strings>

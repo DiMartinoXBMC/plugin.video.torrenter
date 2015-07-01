@@ -78,6 +78,8 @@ class Core:
 
     def sectionMenu(self):
         if self.__settings__.getSetting('plugin_name')!=self.__plugin__:
+            if self.__plugin__ == 'Torrenter v.2.3.0':
+                first_run_230(self.__settings__.getSetting('delete_russian')=='true')
             if self.__settings__.getSetting('delete_russian')!='false':
                 not_russian=delete_russian(ok=self.__settings__.getSetting('delete_russian')=='true', action='delete')
                 if not_russian:
@@ -124,16 +126,6 @@ class Core:
             self.drawItem('full_download', 'full_download', image=self.ROOT + '/icons/magnet.png')
             self.drawItem('test', 'test', image=self.ROOT + '/icons/magnet.png')
 
-        '''self.drawItem(self.localize('< Popular >'), 'getPopular', image=self.ROOT + '/icons/video.png')
-        self.drawItem(self.localize('< Ratings >'), 'getRatings', image=self.ROOT + '/icons/video.png')
-        self.drawItem(self.localize('< Recent Materials >'), 'recentMaterilas', image=self.ROOT + '/icons/video.png')
-        if self.__settings__.getSetting("auth"):
-            self.drawItem(self.localize('< Bookmarks >'), 'getBookmarks', image=self.ROOT + '/icons/bookmarks.png')
-            self.drawItem(self.localize('< History >'), 'getHistory', image=self.ROOT + '/icons/history.png')
-            self.drawItem(self.localize('< Logout >'), 'logoutUser', image=self.ROOT + '/icons/logout.png')
-        else:
-            self.drawItem(self.localize('< Login >'), 'loginUser', image=self.ROOT + '/icons/login.png')
-            self.drawItem(self.localize('< Register >'), 'registerUser', image=self.ROOT + '/icons/register.png')'''
         if 'true' == self.__settings__.getSetting("keep_files"):
             self.drawItem('< %s >' % self.localize('Clear Storage'), 'clearStorage', isFolder=True,
                           image=self.ROOT + '/icons/clear.png')
@@ -279,6 +271,9 @@ class Core:
         #self.DownloadStatus()
         url='http://torcache.net/torrent/6698E0950DCD257A6B03AF2E8B068B7FF9D4619D.torrent?title=[kickass.to]game.of.thrones.season.2.720p.bluray.x264.shaanig'
         #xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=openTorrent&external=ThePirateBaySe&url=ThePirateBaySe%3A%3A'+urllib.quote_plus(url)+'&not_download_only=True")')
+        #print str(Searchers().list())
+        first_run_230(False)
+
 
     def DownloadStatus(self, params={}):
         db = DownloadDB()
@@ -1232,10 +1227,11 @@ class Core:
         if not url:
             action = xbmcgui.Dialog()
             url = action.browse(1, self.localize('Choose .torrent in video library'), 'video', '.torrent')
-            xbmc.executebuiltin(
-                            'XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.torrenter/?action=%s&url=%s'
-            % ('torrentPlayer', url))
-            return
+            if url:
+                xbmc.executebuiltin(
+                                'XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.torrenter/?action=%s&url=%s'
+                % ('torrentPlayer', url))
+                return
         if url:
             self.__settings__.setSetting("lastTorrentUrl", url)
             torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
@@ -1382,14 +1378,7 @@ class Core:
         classMatch = re.search('(\w+)::(.+)', url)
         if classMatch:
             searcher = classMatch.group(1)
-            if self.ROOT + os.sep + 'resources' + os.sep + 'searchers' not in sys.path:
-                sys.path.insert(0, self.ROOT + os.sep + 'resources' + os.sep + 'searchers')
-            try:
-                searcherObject = getattr(__import__(searcher), searcher)()
-            except Exception, e:
-                print 'Unable to use searcher: ' + searcher + ' at ' + self.__plugin__ + ' openTorrent(). Exception: ' + str(e)
-                return
-            url = searcherObject.getTorrentFile(classMatch.group(2))
+            url = Searchers().downloadWithSearcher(classMatch.group(2), searcher)
         self.__settings__.setSetting("lastTorrentUrl", url)
         if not_download_only:
             if re.match("^http.+$", url):
@@ -1403,10 +1392,7 @@ class Core:
         self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
         if silent != 'true':
             if external:
-                myshows_items = []
-                myshows_files = []
-                myshows_sizes = {}
-                contentList = []
+                myshows_items, myshows_files, contentList, myshows_sizes = [], [], [], {}
                 for filedict in torrent.getContentList():
                     fileTitle = ''
                     if filedict.get('size'):
@@ -1482,46 +1468,26 @@ class Core:
         addtime=get("addtime")
         if self.__settings__.getSetting('history')=='true':
             HistoryDB().add(url)
-        try:
-            external = urllib.unquote_plus(get("external"))
-        except:
-            external = None
-        filesList = []
-        if None == get('isApi'):
-            progressBar = xbmcgui.DialogProgress()
-            progressBar.create(self.localize('Please Wait'), self.localize('Materials are loading now.'))
-            iterator = 0
+        external = unquote(get("external"))
         searchersList = []
         if not external or external == 'torrenterall':
             if addtime:
                 providers=HistoryDB().get_providers(addtime)
                 if providers:
                     for searcher in providers:
-                        searchersList.append(searcher + '.py')
+                        searchersList.append(searcher)
             if not addtime or not searchersList:
                 searchersList = Searchers().get_active()
         elif external == 'torrenterone':
-            slist = Searchers().list()
-            ret = xbmcgui.Dialog().select(self.localize('Choose searcher:'), slist)
+            slist = Searchers().list().keys()
+            ret = xbmcgui.Dialog().select(self.localize('Choose searcher')+':', slist)
             if ret > -1 and ret < len(slist):
                 external = slist[ret]
-                searchersList.append(external + '.py')
+                searchersList.append(external)
         else:
-            searchersList.append(external + '.py')
-        for searcherFile in searchersList:
-            searcher = re.search('^(\w+)\.py$', searcherFile).group(1)
-            if searcher:
-                if None == get('isApi'):
-                    progressBar.update(int(iterator), searcher)
-                    iterator += 100 / len(searchersList)
-                filesList += self.searchWithSearcher(url, searcher)
-            if None == get('isApi') and progressBar.iscanceled():
-                progressBar.update(0)
-                progressBar.close()
-                return
-        if None == get('isApi'):
-            progressBar.update(0)
-            progressBar.close()
+            searchersList.append(external)
+
+        filesList=search(url, searchersList, get('isApi'))
         if self.__settings__.getSetting('sort_search')=='true':
             filesList = sorted(filesList, key=lambda x: x[0], reverse=True)
         self.showFilesList(filesList, params)
@@ -1529,18 +1495,6 @@ class Core:
     def controlCenter(self, params={}):
         xbmc.executebuiltin(
             'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))
-
-    def searchWithSearcher(self, keyword, searcher):
-        filesList = []
-        if self.ROOT + os.sep + 'resources' + os.sep + 'searchers' not in sys.path:
-            sys.path.insert(0, self.ROOT + os.sep + 'resources' + os.sep + 'searchers')
-        try:
-            searcherObject = getattr(__import__(searcher), searcher)()
-            filesList = searcherObject.search(keyword)
-        except Exception, e:
-            print 'Unable to use searcher: ' + searcher + ' at ' + self.__plugin__ + ' searchWithSearcher(). Exception: ' + str(
-                e)
-        return filesList
 
     def showFilesList(self, filesList, params={}):
         get = params.get
@@ -1661,28 +1615,17 @@ class Core:
             dirname = self.__settings__.getSetting("torrent_dir")
 
         get = params.get
-        try:
-            url = urllib.unquote_plus(get("url"))
-        except:
-            url = self.__settings__.getSetting("lastTorrent").decode('utf-8')
+        url = unquote(get("url"), self.__settings__.getSetting("lastTorrent").decode('utf-8'))
         ind = get("ind")
         if not ind:
             self.__settings__.setSetting("lastTorrentUrl", url)
             classMatch = re.search('(\w+)::(.+)', url)
             if classMatch:
-                print str(dirname)+str(re.match("^magnet\:.+$", classMatch.group(2))==None)
                 if re.match("^magnet\:.+$", classMatch.group(2)) and dirname:
                     url=classMatch.group(2)
                 else:
                     searcher = classMatch.group(1)
-                    if self.ROOT + os.sep + 'resources' + os.sep + 'searchers' not in sys.path:
-                        sys.path.insert(0, self.ROOT + os.sep + 'resources' + os.sep + 'searchers')
-                    try:
-                        searcherObject = getattr(__import__(searcher), searcher)()
-                    except Exception, e:
-                        print 'Unable to use searcher: ' + searcher + ' at ' + self.__plugin__ + ' openTorrent(). Exception: ' + str(e)
-                        return
-                    url = searcherObject.getTorrentFile(classMatch.group(2))
+                    url = Searchers().downloadWithSearcher(classMatch.group(2), searcher)
 
                     torrent = Downloader.Torrent(self.userStorageDirectory,
                                                  torrentFilesDirectory=self.torrentFilesDirectory)

@@ -56,6 +56,8 @@ torrentFilesDirectory = 'torrents'
 __addonpath__ = __settings__.getAddonInfo('path')
 icon = __addonpath__ + '/icon.png'
 debug = __settings__.getSetting("debug")
+__version__ = __settings__.getAddonInfo('version')
+__plugin__ = __settings__.getAddonInfo('name') + " v." + __version__
 
 
 def clearStorage(userStorageDirectory):
@@ -1065,13 +1067,30 @@ class Searchers():
     def setBoolSetting(self, setting, bool=True):
         __settings__.setSetting(setting, "true" if bool else "false")
 
-    def list(self):
-        searchersList = []
-        dirList = os.listdir(ROOT + os.sep + 'resources' + os.sep + 'searchers')
-        for searcherFile in dirList:
-            if re.match('^(\w+)\.py$', searcherFile):
-                searchersList.append(searcherFile.replace('.py', ''))
-        return searchersList
+    def list(self, only=None):
+        searchersDict = {}
+        if only!='external':
+            searchers_dir = os.path.join(ROOT, 'resources', 'searchers')
+            searchers_dirList=xbmcvfs.listdir(searchers_dir)[1]
+            for searcherFile in searchers_dirList:
+                if re.match('^(\w+)\.py$', searcherFile):
+                    name=searcherFile.replace('.py', '')
+                    searchersDict[name]={'name':name,
+                                         'path':searchers_dir,
+                                         'searcher':os.path.join(searchers_dir,name+'.py'),
+                                         'type':'local'}
+        if only!='local':
+            addons_dir = os.path.join(xbmc.translatePath('special://home'),'addons')
+            addons_dirsList = xbmcvfs.listdir(addons_dir)[0]
+            for searcherDir in addons_dirsList:
+                if re.match('^torrenter\.searcher\.(\w+)$', searcherDir):
+                    name=searcherDir.replace('torrenter.searcher.', '')
+                    path=os.path.join(addons_dir, searcherDir)
+                    searchersDict[name]={'name':name,
+                                         'path':path,
+                                         'searcher':os.path.join(path,name+'.py'),
+                                         'type':'external'}
+        return searchersDict
 
     def dic(self, providers=[]):
         dic = {}
@@ -1090,10 +1109,96 @@ class Searchers():
 
     def get_active(self):
         get_active = []
-        for searcher in self.list():
+        for searcher in self.list().iterkeys():
             if self.old(searcher): get_active.append(searcher + '.py')
         print 'Active Searchers: ' + str(get_active)
         return get_active
+
+    def searchWithSearcher(self, keyword, searcher):
+        filesList = []
+        slist = Searchers().list()
+        if slist[searcher]['path'] not in sys.path:
+            sys.path.insert(0, slist[searcher]['path'])
+            print 'Added %s in sys.path' % (slist[searcher]['path'])
+        try:
+            searcherObject = getattr(__import__(searcher), searcher)()
+            filesList = searcherObject.search(keyword)
+        except Exception, e:
+            print 'Unable to use searcher: ' + searcher + ' at ' + __plugin__ + ' searchWithSearcher(). Exception: ' + str(
+                e)
+        return filesList
+
+    def downloadWithSearcher(self, url, searcher):
+        slist = Searchers().list()
+        if slist[searcher]['path'] not in sys.path:
+            sys.path.insert(0, slist[searcher]['path'])
+            print 'Added %s in sys.path' % (slist[searcher]['path'])
+        try:
+            searcherObject = getattr(__import__(searcher), searcher)()
+            url = searcherObject.getTorrentFile(url)
+        except Exception, e:
+            print 'Unable to use searcher: ' + searcher + ' at ' + __plugin__ + ' downloadWithSearcher(). Exception: ' + str(
+                e)
+        return url
+
+
+def search(url, searchersList, isApi=None):
+    from threading import Thread
+    from Queue import Queue
+
+    num_threads = 3
+    queue = Queue()
+    result = {}
+    iterator, filesList, left_searchers = 0, [], []
+    timeout_multi=int(sys.modules["__main__"].__settings__.getSetting("timeout"))
+    wait_time=10+(10*timeout_multi)
+    left_searchers.extend(searchersList)
+    if not isApi:
+        progressBar = xbmcgui.DialogProgress()
+        progressBar.create(Localization.localize('Please Wait'), Localization.localize('Materials are loading now.'))
+
+    def search_one(i, q):
+        while True:
+            if not isApi and progressBar.iscanceled():
+                progressBar.update(0)
+                progressBar.close()
+                return
+            iterator=100*int(len(searchersList)-len(left_searchers))/len(searchersList)
+            if not isApi:
+                progressBar.update(int(iterator), join_list(left_searchers, replace='.py'))
+            searcherFile = q.get()
+            searcher=searcherFile.replace('.py','')
+            print "Thread %s: Searching at %s" % (i, searcher)
+            result[searcherFile]=Searchers().searchWithSearcher(url, searcher)
+            left_searchers.remove(searcherFile)
+            q.task_done()
+
+    for i in range(num_threads):
+        worker = Thread(target=search_one, args=(i, queue))
+        worker.setDaemon(True)
+        worker.start()
+
+    for searcherFile in searchersList:
+        queue.put(searcherFile, timeout=wait_time)
+
+    print "Main Thread Waiting"
+    queue.join()
+    print "Done"
+
+    if not isApi:
+        progressBar.update(0)
+        progressBar.close()
+
+    for k in result.keys():
+        filesList.extend(result[k])
+    return filesList
+
+
+def join_list(l, char=', ', replace=''):
+    string=''
+    for i in l:
+        string+=i.replace(replace,'')+char
+    return string.rstrip(' ,')
 
 
 class Contenters():
@@ -1653,3 +1758,15 @@ def get_ids_video(contentList):
             break
     # print Debug('[get_ids_video]:'+str(ids_video))
     return ids_video
+
+
+def first_run_230(delete_russian):
+    ok = xbmcgui.Dialog().ok('< %s >' % Localization.localize('Torrenter Update 2.3.0'),
+                                Localization.localize('I added custom searchers for Torrenter v2!'),
+                                Localization.localize('Now you can use your login on trackers or write and install your own searcher!'))
+    if not delete_russian:
+        yes=xbmcgui.Dialog().yesno('< %s >' % Localization.localize('Torrenter Update 2.3.0'),
+                                    Localization.localize('Would you like to install %s from "MyShows.me Kodi Repo" in Programs section!') % 'RuTrackerOrg',
+                                    Localization.localize('Open installation window?'))
+        if yes:
+            xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher'))

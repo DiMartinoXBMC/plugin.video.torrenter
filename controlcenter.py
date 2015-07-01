@@ -22,6 +22,7 @@ import sys
 
 import xbmcaddon
 import xbmc
+import xbmcgui
 from functions import getParameters, HistoryDB
 from resources.pyxbmct.addonwindow import *
 from functions import Searchers
@@ -211,7 +212,7 @@ class ControlCenter(AddonDialogWindow):
         self.keys = self.dic.keys()
         self.placed, self.button_columns, self.last_column_row = self.place()
 
-        self.setGeometry(700, 150 + 50 * self.button_columns, 3 + self.button_columns, 3)
+        self.setGeometry(850, 200 + 50 * self.button_columns, 4 + self.button_columns, 3)
         self.set_info_controls()
         self.set_active_controls()
         self.set_navigation()
@@ -261,21 +262,33 @@ class ControlCenter(AddonDialogWindow):
             self.radiobutton_bottom[place[1]] = self.radiobutton[searcher]
 
         # Button
+        self.button_install = Button(__language__(30415))
+        self.placeControl(self.button_install, 2 + self.button_columns, 0)
+        self.connect(self.button_install, self.installSearcher)
+
+        # Button
+        self.button_openserchset = Button(__language__(30416))
+        self.placeControl(self.button_openserchset, 2 + self.button_columns, 1)
+        self.connect(self.button_openserchset, self.openSearcherSettings)
+
+        # Button
+        self.button_clearstor = Button(__language__(30417))
+        self.placeControl(self.button_clearstor, 2 + self.button_columns, 2)
+        self.connect(self.button_clearstor, self.clearStorage)
+
+        # Button
         self.button_openset = Button(__language__(30413))
-        self.placeControl(self.button_openset, 2 + self.button_columns, 0)
-        # Connect control to close the window.
+        self.placeControl(self.button_openset, 3 + self.button_columns, 0)
         self.connect(self.button_openset, self.openSettings)
 
         # Button
         self.button_utorrent = Button(__language__(30414))
-        self.placeControl(self.button_utorrent, 2 + self.button_columns, 1)
-        # Connect control to close the window.
+        self.placeControl(self.button_utorrent, 3 + self.button_columns, 1)
         self.connect(self.button_utorrent, self.openUtorrent)
 
         # Button
         self.button_close = Button(__language__(30412))
-        self.placeControl(self.button_close, 2 + self.button_columns, 2)
-        # Connect control to close the window.
+        self.placeControl(self.button_close, 3 + self.button_columns, 2)
         self.connect(self.button_close, self.close)
 
     def set_navigation(self):
@@ -284,7 +297,7 @@ class ControlCenter(AddonDialogWindow):
         placed_keys = self.placed.keys()
         for searcher in placed_keys:
 
-            buttons = [self.button_openset, self.button_utorrent, self.button_close]
+            buttons = [self.button_install, self.button_openserchset, self.button_clearstor]
             place = self.placed[searcher]
 
             if place[0] == 0:
@@ -323,29 +336,64 @@ class ControlCenter(AddonDialogWindow):
                 ser = placed_keys[placed_values.index((place[0] + 1, place[1]))]
                 self.radiobutton[searcher].controlDown(self.radiobutton[ser])
 
-        self.button_openset.controlUp(self.radiobutton_bottom[0])
+        self.button_install.controlUp(self.radiobutton_bottom[0])
+        self.button_install.controlDown(self.button_openset)
+        self.button_install.controlLeft(self.button_clearstor)
+        self.button_install.controlRight(self.button_openserchset)
+
+        self.button_openserchset.controlUp(self.radiobutton_bottom[1])
+        self.button_openserchset.controlDown(self.button_utorrent)
+        self.button_openserchset.controlLeft(self.button_install)
+        self.button_openserchset.controlRight(self.button_clearstor)
+
+        self.button_clearstor.controlUp(self.radiobutton_bottom[2])
+        self.button_clearstor.controlDown(self.button_close)
+        self.button_clearstor.controlLeft(self.button_openserchset)
+        self.button_clearstor.controlRight(self.button_install)
+
+        self.button_openset.controlUp(self.button_install)
         self.button_openset.controlDown(self.radiobutton_top[0])
         self.button_openset.controlLeft(self.button_close)
         self.button_openset.controlRight(self.button_utorrent)
 
-        self.button_utorrent.controlUp(self.radiobutton_bottom[1])
+        self.button_utorrent.controlUp(self.button_openserchset)
         self.button_utorrent.controlDown(self.radiobutton_top[1])
         self.button_utorrent.controlLeft(self.button_openset)
         self.button_utorrent.controlRight(self.button_close)
 
-        self.button_close.controlUp(self.radiobutton_bottom[2])
+        self.button_close.controlUp(self.button_clearstor)
         self.button_close.controlDown(self.radiobutton_top[2])
         self.button_close.controlLeft(self.button_utorrent)
         self.button_close.controlRight(self.button_openset)
+
         # Set initial focus
         self.setFocus(self.button_close)
 
     def openSettings(self):
         __settings__.openSettings()
 
+    def openSearcherSettings(self):
+        slist = Searchers().list('external').keys()
+        if len(slist)>0:
+            ret = xbmcgui.Dialog().select(__language__(30418), slist)
+            if ret > -1 and ret < len(slist):
+                sid = slist[ret]
+                Searcher=xbmcaddon.Addon(id='torrenter.searcher.'+sid)
+                Searcher.openSettings()
+                self.close()
+        else:
+            xbmcgui.Dialog().ok(__language__(30415), slist)
+
+    def installSearcher(self):
+        xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher'))
+        self.close()
+
     def openUtorrent(self):
         xbmc.executebuiltin('ActivateWindow(Videos,plugin://plugin.video.torrenter/?action=uTorrentBrowser)')
         self.close()
+
+    def clearStorage(self):
+        xbmc.executebuiltin('XBMC.RunPlugin(%s)' % ('plugin://plugin.video.torrenter/?action=%s') % 'clearStorage')
 
     def slider_update(self):
         # Update slider value label when the slider nib moves
