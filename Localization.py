@@ -250,7 +250,7 @@ def localize(text):
             'But you would have to do it by yourself, there is some info on github.com.':'Но придется это тебе делать самому, на гитхабе была инфа',
             'It is NOT possible to compile python-libtorrent for iOS.':'Под iOS невозможно скомпилировать python-libtorrent',
             'But you can use torrent-client control functions.':'Но все остальные функции кроме прямого стриминга с торрента работают.',
-            'I added custom searchers for Torrenter v2!':'Я добавил внешние серчеры для трекеров в стиле Pulsar!',
+            'I added custom searchers to Torrenter v2!':'Я добавил внешние серчеры для трекеров в стиле Pulsar!',
             'Now you can use your login on trackers or write and install your own searcher!':'Теперь можно использовать свой логин или даже написать и установить свой серчер.',
             'Would you like to install %s from "MyShows.me Kodi Repo" in Programs section?':'Хотите установить %s из "MyShows.me Kodi Repo" в Программах?',
             'Open installation window?':'Открыть окно установки?',
