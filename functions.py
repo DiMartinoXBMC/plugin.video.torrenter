@@ -1766,7 +1766,7 @@ def first_run_230(delete_russian):
                                 Localization.localize('Now you can use your login on trackers or write and install your own searcher!'))
     if not delete_russian:
         yes=xbmcgui.Dialog().yesno('< %s >' % Localization.localize('Torrenter Update 2.3.0'),
-                                    Localization.localize('Would you like to install %s from "MyShows.me Kodi Repo" in Programs section!') % 'RuTrackerOrg',
+                                    Localization.localize('Would you like to install %s from "MyShows.me Kodi Repo" in Programs section?') % 'RuTrackerOrg',
                                     Localization.localize('Open installation window?'))
         if yes:
             xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher'))

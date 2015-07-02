@@ -103,13 +103,13 @@ class SearcherABC:
             response = opener.open(url, encodedData)
         except urllib2.HTTPError as e:
             if e.code == 404:
-                print '[makeRequest]: Not Found! HTTP Error, e.code=' + str(e.code)
+                print self.__class__.__name__+' [makeRequest]: Not Found! HTTP Error, e.code=' + str(e.code)
                 return
             elif e.code in [503]:
-                print '[makeRequest]: Denied, HTTP Error, e.code=' + str(e.code)
+                print self.__class__.__name__+' [makeRequest]: Denied, HTTP Error, e.code=' + str(e.code)
                 return
             else:
-                print '[makeRequest]: HTTP Error, e.code=' + str(e.code)
+                print self.__class__.__name__+' [makeRequest]: HTTP Error, e.code=' + str(e.code)
                 return
         #self.cookieJar.extract_cookies(response, urllib2)
         if response.info().get('Content-Encoding') == 'gzip':
