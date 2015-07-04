@@ -28,6 +28,7 @@ import os
 import json
 import urllib
 import hashlib
+import shutil
 
 import xbmcplugin
 import xbmcgui
@@ -1586,10 +1587,19 @@ class DownloadDB:
     def _execute(self, sql):
         try:
             self.cur.execute(sql)
-        except:
-            self._close()
-            Debug('[DownloadDB]: DELETE ' + str(self.filename))
-            xbmcvfs.delete(self.filename)
+        except Exception, e:
+            if str(e)=='no such table: downloads':
+                cur = self.db.cursor()
+                cur.execute('pragma auto_vacuum=1')
+                cur.execute(
+                    'create table downloads(addtime integer PRIMARY KEY, title varchar(32), path varchar(32), type varchar(32), jsoninfo varchar(32), status varchar(32), torrent varchar(32), ind integer, lastupdate integer, storage varchar(32))')
+                self.db.commit()
+                cur.close()
+                self.cur = self.db.cursor()
+            else:
+                self._close()
+                Debug('[DownloadDB]: DELETE ' + str(self.filename))
+                xbmcvfs.delete(self.filename)
             self._connect()
             self.cur.execute(sql)
 
