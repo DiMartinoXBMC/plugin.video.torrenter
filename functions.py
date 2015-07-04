@@ -1109,7 +1109,7 @@ class Searchers():
 
     def get_active(self):
         get_active = []
-        for searcher in self.list().iterkeys():
+        for searcher in self.list().keys():
             if self.old(searcher): get_active.append(searcher + '.py')
         print 'Active Searchers: ' + str(get_active)
         return get_active
@@ -1559,48 +1559,44 @@ class DownloadDB:
 
     def get_all(self):
         self._connect()
-        try:
-            self.cur.execute(
-                'select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads order by addtime DESC')
-        except:
-            Debug('[DownloadDB]: DELETE ' + str(self.filename))
-            xbmcvfs.delete(self.filename)
-            self._connect()
-            self.cur.execute(
-                'select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads order by addtime DESC')
+        self._execute(
+            'select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads order by addtime DESC')
         x = self.cur.fetchall()
         self._close()
         return x if x else None
 
     def get(self, title):
         self._connect()
-        try:
-            self.cur.execute(
-            'select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads where title="' + decode(
-                title) + '"')
-        except:
-            Debug('[DownloadDB]: DELETE ' + str(self.filename))
-            xbmcvfs.delete(self.filename)
-            self._connect()
-            self.cur.execute(
-            'select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads where title="' + decode(
-                title) + '"')
+        self._execute(
+        'select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads where title="' + decode(
+            title) + '"')
         x = self.cur.fetchone()
         self._close()
         return x if x else None
 
     def get_byaddtime(self, addtime):
         self._connect()
-        self.cur.execute(
+        self._execute(
             'select addtime, title, path, type, jsoninfo, status, torrent, ind, lastupdate, storage from downloads where addtime="' + str(
                 addtime) + '"')
         x = self.cur.fetchone()
         self._close()
         return x if x else None
 
+    def _execute(self, sql):
+        try:
+            self.cur.execute(sql)
+        except:
+            self._close()
+            Debug('[DownloadDB]: DELETE ' + str(self.filename))
+            xbmcvfs.delete(self.filename)
+            self._connect()
+            self.cur.execute(sql)
+
+
     def get_status(self, title):
         self._connect()
-        self.cur.execute('select status from downloads where title="' + decode(title) + '"')
+        self._execute('select status from downloads where title="' + decode(title) + '"')
         x = self.cur.fetchone()
         self._close()
         return x[0] if x else None
@@ -1625,7 +1621,7 @@ class DownloadDB:
         except:
             pass
         self._connect()
-        self.cur.execute(
+        self._execute(
             'UPDATE downloads SET jsoninfo = "' + urllib.quote_plus(json.dumps(info)) + '", lastupdate=' + str(
                 int(time.time())) + ' where title="' + title + '"')
         self.db.commit()
@@ -1633,19 +1629,19 @@ class DownloadDB:
 
     def update_status(self, addtime, status):
         self._connect()
-        self.cur.execute('UPDATE downloads SET status = "' + status + '" where addtime="' + str(addtime) + '"')
+        self._execute('UPDATE downloads SET status = "' + status + '" where addtime="' + str(addtime) + '"')
         self.db.commit()
         self._close()
 
     def delete(self, addtime):
         self._connect()
-        self.cur.execute('delete from downloads where addtime="' + str(addtime) + '"')
+        self._execute('delete from downloads where addtime="' + str(addtime) + '"')
         self.db.commit()
         self._close()
 
     def clear(self):
         self._connect()
-        self.cur.execute('delete from downloads')
+        self._execute('delete from downloads')
         self.db.commit()
         self._close()
 

@@ -187,14 +187,14 @@ class IMDB(Content.Content):
     def topmode(self, response):
         contentList = []
         Soup = BeautifulSoup(response)
-        result = Soup.findAll('tr', {'class': ['odd', 'even']})
+        result = Soup.findAll('tr')[1:251]
         for tr in result:
             #main
             tdtitle = tr.find('td', 'titleColumn')
-            num = tdtitle.find('span', {'name': 'ir'}).text.rstrip('.')
+            num = tr.find('span', {'name': 'rk'}).get('data-value').rstrip('.')
             originaltitle = None
             title = tdtitle.find('a').text
-            year = tdtitle.find('span', {'name': 'rd'}).text.rstrip(')').lstrip('(')
+            year = tdtitle.find('span', {'class': 'secondaryInfo'}).text.rstrip(')').lstrip('(')
             tdposter = tr.find('td', 'posterColumn')
             img = self.biggerImg(tdposter.find('img').get('src'))
 

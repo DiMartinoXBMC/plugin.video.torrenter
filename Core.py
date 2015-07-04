@@ -274,7 +274,6 @@ class Core:
         #print str(Searchers().list())
         first_run_230(False)
 
-
     def DownloadStatus(self, params={}):
         db = DownloadDB()
         get = params.get
@@ -1567,6 +1566,8 @@ class Core:
                      sys.argv[0], 'openTorrent', link_url)),
                 ]
                 title = self.titleMake(seeds, leechers, size, title)
+
+                #print image
 
                 if self.open_option==0:
                     self.drawItem(title, 'openTorrent', link_dict, image, contextMenu=contextMenu, replaceMenu=False)
