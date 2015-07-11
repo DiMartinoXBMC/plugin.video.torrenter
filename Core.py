@@ -70,18 +70,18 @@ class Core:
 
     def __init__(self):
         if 0 == len(self.userStorageDirectory):
-                try:
-                    temp_dir = tempfile.gettempdir()
-                except:
-                    if not self.platform['system']=='android':
-                        temp_dir = tempdir()
-                    else:
-                        dialog=xbmcgui.Dialog()
-                        dialog.ok(self.localize('Android Support'),
-                                    self.localize('Android has no temprorary folder'),
-                                    self.localize('Please specify storage folder in Settings!'))
-                        self.__settings__.openSettings()
-                        temp_dir = file_encode(self.__settings__.getSetting("storage"))
+            try:
+                temp_dir = tempfile.gettempdir()
+            except:
+                if not self.platform['system']=='android':
+                    temp_dir = tempdir()
+                else:
+                    dialog=xbmcgui.Dialog()
+                    dialog.ok(self.localize('Android Support'),
+                                self.localize('Android has no temprorary folder'),
+                                self.localize('Please specify storage folder in Settings!'))
+                    self.__settings__.openSettings()
+                    temp_dir = file_encode(self.__settings__.getSetting("storage"))
 
         else:
             temp_dir = self.userStorageDirectory
@@ -91,6 +91,7 @@ class Core:
         if self.__settings__.getSetting('plugin_name')!=self.__plugin__:
             if self.__plugin__ == 'Torrenter v.2.3.1':
                 first_run_230(self.__settings__.getSetting('delete_russian')=='true')
+                first_run_231()
             if self.__settings__.getSetting('delete_russian')!='false':
                 not_russian=delete_russian(ok=self.__settings__.getSetting('delete_russian')=='true', action='delete')
                 if not_russian:

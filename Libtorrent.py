@@ -32,9 +32,8 @@ import xbmc
 import xbmcgui
 import xbmcvfs
 import Localization
-from platform_pulsar import get_platform
 from functions import file_decode, file_encode, isSubtitle, DownloadDB
-from ctypes import *
+from platform_pulsar import get_platform
 
 
 class Libtorrent:
