@@ -254,6 +254,9 @@ def localize(text):
             'Now you can use your login on trackers or write and install your own searcher!':'Теперь можно использовать свой логин или даже написать и установить свой серчер.',
             'Would you like to install %s from "MyShows.me Kodi Repo" in Programs section?':'Хотите установить %s из "MyShows.me Kodi Repo" в Программах?',
             'Open installation window?':'Открыть окно установки?',
+            'Android Support':'Поддержка Android',
+            'Android has no temprorary folder':'У Android отсутствует стандартная временная папка',
+            'Please specify storage folder in Settings!':'Пожалуйста, укажите папку хранилища файлов!',
         },
         'uk': {
             'Seeds searching.': 'Йде пошук сідів.',

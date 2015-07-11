@@ -32,6 +32,7 @@ from functions import *
 from resources.utorrent.net import *
 from resources.scrapers.scrapers import Scrapers
 from resources.skins.DialogXml import *
+from platform_pulsar import get_platform
 
 
 class Core:
@@ -40,6 +41,7 @@ class Core:
     ROOT = sys.modules["__main__"].__root__  #.decode('utf-8').encode(sys.getfilesystemencoding())
     userStorageDirectory = file_encode(__settings__.getSetting("storage"))
     torrentFilesDirectory = 'torrents'
+    platform = get_platform()
     debug = __settings__.getSetting('debug') == 'true'
     torrent_player=__settings__.getSetting("torrent_player")
     history_bool = __settings__.getSetting('history') == 'true'
@@ -68,17 +70,26 @@ class Core:
 
     def __init__(self):
         if 0 == len(self.userStorageDirectory):
-            try:
-                temp_dir = tempfile.gettempdir()
-            except:
-                temp_dir = tempdir()
+                try:
+                    temp_dir = tempfile.gettempdir()
+                except:
+                    if not self.platform['system']=='android':
+                        temp_dir = tempdir()
+                    else:
+                        dialog=xbmcgui.Dialog()
+                        dialog.ok(self.localize('Android Support'),
+                                    self.localize('Android has no temprorary folder'),
+                                    self.localize('Please specify storage folder in Settings!'))
+                        self.__settings__.openSettings()
+                        temp_dir = file_encode(self.__settings__.getSetting("storage"))
+
         else:
             temp_dir = self.userStorageDirectory
         self.userStorageDirectory = os.path.join(temp_dir, 'Torrenter')
 
     def sectionMenu(self):
         if self.__settings__.getSetting('plugin_name')!=self.__plugin__:
-            if self.__plugin__ == 'Torrenter v.2.3.0':
+            if self.__plugin__ == 'Torrenter v.2.3.1':
                 first_run_230(self.__settings__.getSetting('delete_russian')=='true')
             if self.__settings__.getSetting('delete_russian')!='false':
                 not_russian=delete_russian(ok=self.__settings__.getSetting('delete_russian')=='true', action='delete')

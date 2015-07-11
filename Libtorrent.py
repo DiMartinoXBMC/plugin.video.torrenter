@@ -26,6 +26,7 @@ import hashlib
 import re
 from StringIO import StringIO
 import gzip
+import imp
 
 import xbmc
 import xbmcgui
@@ -33,6 +34,7 @@ import xbmcvfs
 import Localization
 from platform_pulsar import get_platform
 from functions import file_decode, file_encode, isSubtitle, DownloadDB
+from ctypes import *
 
 
 class Libtorrent:
@@ -49,27 +51,23 @@ class Libtorrent:
     lt = None
 
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
-
-        '''
-            #from ctypes import *
-            #cdll.LoadLibrary(dirname + '/libtorrent-rasterbar.so.7')'''
-
         self.platform = get_platform()
         try:
             import libtorrent
 
-            print '[script.module.libtorrent]: Imported libtorrent v' + libtorrent.version + ' from system'
+            print '[Torrenter v2]: Imported libtorrent v' + libtorrent.version + ' from system'
         except Exception, e:
-            print '[script.module.libtorrent]: Error importing from system. Exception: ' + str(e)
-            import python_libtorrent as libtorrent
+            print '[Torrenter v2]: Error importing from system. Exception: ' + str(e)
+            from python_libtorrent import get_libtorrent
+            libtorrent=get_libtorrent()
 
         try:
             self.lt = libtorrent
             del libtorrent
-            print 'Imported libtorrent v' + self.lt.version + ' from python_libtorrent.' + self.platform[
+            print '[Torrenter v2]: Imported libtorrent v' + self.lt.version + ' from python_libtorrent.' + self.platform[
                     'system']
         except Exception, e:
-            print 'Error importing python_libtorrent.' + self.platform['system'] + '. Exception: ' + str(e)
+            print '[Torrenter v2]: Error importing python_libtorrent.' + self.platform['system'] + '. Exception: ' + str(e)
             xbmcgui.Dialog().ok(Localization.localize('Python-Libtorrent Not Found'),
                                 Localization.localize(self.platform["message"][0]),
                                 Localization.localize(self.platform["message"][1]))
@@ -335,12 +333,18 @@ class Libtorrent:
 
     def encryptSession(self):
         # Encryption settings
-        encryption_settings = self.lt.pe_settings()
-        encryption_settings.out_enc_policy = self.lt.enc_policy(self.lt.enc_policy.forced)
-        encryption_settings.in_enc_policy = self.lt.enc_policy(self.lt.enc_policy.forced)
-        encryption_settings.allowed_enc_level = self.lt.enc_level.both
-        encryption_settings.prefer_rc4 = True
-        self.session.set_pe_settings(encryption_settings)
+        print '[Torrenter v2]: Encryption enabling...'
+        try:
+            encryption_settings = self.lt.pe_settings()
+            encryption_settings.out_enc_policy = self.lt.enc_policy(self.lt.enc_policy.forced)
+            encryption_settings.in_enc_policy = self.lt.enc_policy(self.lt.enc_policy.forced)
+            encryption_settings.allowed_enc_level = self.lt.enc_level.both
+            encryption_settings.prefer_rc4 = True
+            self.session.set_pe_settings(encryption_settings)
+            print '[Torrenter v2]: Encryption on!'
+        except Exception, e:
+            print '[Torrenter v2]: Encryption failed! Exception: ' + str(e)
+            pass
 
     def startSession(self):
         if None == self.magnetLink:
