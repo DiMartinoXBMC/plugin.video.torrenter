@@ -1774,11 +1774,19 @@ def first_run_230(delete_russian):
                                         Localization.localize('Would you like to install %s from "MyShows.me Kodi Repo" in Programs section?') % 'RuTrackerOrg',
                                         Localization.localize('Open installation window?'))
             if yes:
+                xbmc.executebuiltin('Dialog.Close(all,true)')
                 xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher'))
 
 def first_run_231():
     if not __settings__.getSetting('first_run_231')=='True':
         __settings__.setSetting('first_run_231','True')
         ok = xbmcgui.Dialog().ok('< %s >' % Localization.localize('Torrenter Update 2.3.1'),
-                                    Localization.localize('I added custom searchers to Torrenter v2!'),
-                                    Localization.localize('Now you can use your login on trackers or write and install your own searcher!'))
+                                    Localization.localize('We added Android ARM full support to Torrenter v2!'),
+                                    Localization.localize('With external searcher support I deleted pre-installed ones!'))
+
+        yes=xbmcgui.Dialog().yesno('< %s >' % Localization.localize('Torrenter Update 2.3.1'),
+                                        Localization.localize('You have no installed searchers!'),
+                                        Localization.localize('Would you like to install searcher from "MyShows.me Kodi Repo" in Programs section?'),)
+        if yes:
+            xbmc.executebuiltin('Dialog.Close(all,true)')
+            xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher'))

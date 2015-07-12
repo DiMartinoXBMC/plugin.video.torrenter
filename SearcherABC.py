@@ -29,7 +29,6 @@ import os
 from StringIO import StringIO
 import gzip
 import socket
-import xml.etree.ElementTree as ET
 import sys
 
 import xbmcgui
@@ -180,25 +179,6 @@ class SearcherABC:
                 os.mkdir(dirname)
         return dirname
 
-    def getByLabel(self, label):
-        clean_label = self.clean(label)
-        url = 'http://ruhunt.org/feed?q=%s' % urllib.quote_plus(clean_label)
-
-        response = self.makeRequest(url)
-        if None != response and 0 < len(response):
-            #print response
-            try:
-                dat = ET.fromstring(response)
-                url = dat.findall('channel')[0].findall('item')[0].find('link').text
-                #print str(url)
-                response = self.makeRequest(url)
-                if None != response and 0 < len(response):
-                    #print response
-                    magnet = re.compile('<a href="(magnet.+?)">', re.DOTALL | re.MULTILINE).findall(response)[0]
-                    return magnet
-            except:
-                return
-
     def timeout(self, add_seconds=0):
         seconds=10+(10*int(self.timeout_multi))+int(add_seconds)
         socket.setdefaulttimeout(int(seconds))
@@ -225,3 +205,6 @@ class SearcherABC:
         localFile.close()
 
         return localFileName
+
+    def logout(self):
+        pass
