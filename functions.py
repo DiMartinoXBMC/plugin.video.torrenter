@@ -1775,7 +1775,7 @@ def first_run_230(delete_russian):
         __settings__.setSetting('first_run_230','True')
         if not delete_russian:
             yes=xbmcgui.Dialog().yesno('< %s >' % Localization.localize('Torrenter Update 2.3.0'),
-                                        Localization.localize('Would you like to install %s from "MyShows.me Kodi Repo" in Programs section?') % 'RuTrackerOrg',
+                                        Localization.localize('Would you like to install %s from "MyShows.me Kodi Repo" in Programs (Scripts) section?') % 'RuTrackerOrg',
                                         Localization.localize('Open installation window?'))
             if yes:
                 xbmc.executebuiltin('Dialog.Close(all,true)')
@@ -1790,7 +1790,7 @@ def first_run_231():
 
         yes=xbmcgui.Dialog().yesno('< %s >' % Localization.localize('Torrenter Update 2.3.1'),
                                         Localization.localize('You have no installed or active searchers! More info in Search Control Window!'),
-                                        Localization.localize('Would you like to install %s from "MyShows.me Kodi Repo" in Programs section?' % ''),)
+                                        Localization.localize('Would you like to install %s from "MyShows.me Kodi Repo" in Programs (Scripts) section?') % '',)
         if yes:
             xbmc.executebuiltin('Dialog.Close(all,true)')
             xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher'))
@@ -1798,7 +1798,7 @@ def first_run_231():
 def noActiveSerachers():
     yes=xbmcgui.Dialog().yesno('< %s >' % Localization.localize('Torrenter v2'),
                                         Localization.localize('You have no installed or active searchers! More info in Search Control Window!'),
-                                        Localization.localize('Would you like to install %s from "MyShows.me Kodi Repo" in Programs section?' % ''),)
+                                        Localization.localize('Would you like to install %s from "MyShows.me Kodi Repo" in Programs (Scripts) section?') % '',)
     if yes:
         xbmc.executebuiltin('Dialog.Close(all,true)')
         xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher'))

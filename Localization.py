@@ -252,7 +252,7 @@ def localize(text):
             'But you can use torrent-client control functions.':'Но все остальные функции кроме прямого стриминга с торрента работают.',
             'I added custom searchers to Torrenter v2!':'Я добавил внешние серчеры для трекеров в стиле Pulsar!',
             'Now you can use your login on trackers or write and install your own searcher!':'Теперь можно использовать свой логин или даже написать и установить свой серчер.',
-            'Would you like to install %s from "MyShows.me Kodi Repo" in Programs section?':'Хотите установить %s из "MyShows.me Kodi Repo" в Программах?',
+            'Would you like to install %s from "MyShows.me Kodi Repo" in Programs (Scripts) section?':'Хотите установить %s из "MyShows.me Kodi Repo" в Программах (Скрипты)?',
             'Open installation window?':'Открыть окно установки?',
             'Android Support':'Поддержка Android',
             'Android has no temprorary folder':'У Android отсутствует стандартная временная папка',
