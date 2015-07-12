@@ -385,10 +385,12 @@ class ControlCenter(AddonDialogWindow):
             xbmcgui.Dialog().ok(__language__(30415), slist)
 
     def installSearcher(self):
+        xbmc.executebuiltin('Dialog.Close(all,true)')
         xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher'))
         self.close()
 
     def openUtorrent(self):
+        xbmc.executebuiltin('Dialog.Close(all,true)')
         xbmc.executebuiltin('ActivateWindow(Videos,plugin://plugin.video.torrenter/?action=uTorrentBrowser)')
         self.close()
 
