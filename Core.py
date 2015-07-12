@@ -90,7 +90,7 @@ class Core:
     def sectionMenu(self):
         if self.__settings__.getSetting('plugin_name')!=self.__plugin__:
             if self.__plugin__ == 'Torrenter v.2.3.1':
-                first_run_230(self.__settings__.getSetting('delete_russian')=='true')
+                #first_run_230(self.__settings__.getSetting('delete_russian')=='true')
                 first_run_231()
             if self.__settings__.getSetting('delete_russian')!='false':
                 not_russian=delete_russian(ok=self.__settings__.getSetting('delete_russian')=='true', action='delete')
