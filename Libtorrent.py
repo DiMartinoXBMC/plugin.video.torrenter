@@ -18,7 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-# import time
 import thread
 import os
 import urllib2
@@ -26,7 +25,6 @@ import hashlib
 import re
 from StringIO import StringIO
 import gzip
-import imp
 
 import xbmc
 import xbmcgui
