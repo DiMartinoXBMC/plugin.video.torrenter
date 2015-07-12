@@ -28,7 +28,7 @@ import os
 import json
 import urllib
 import hashlib
-import shutil
+import traceback
 
 import xbmcplugin
 import xbmcgui
@@ -1127,6 +1127,7 @@ class Searchers():
         except Exception, e:
             print 'Unable to use searcher: ' + searcher + ' at ' + __plugin__ + ' searchWithSearcher(). Exception: ' + str(
                 e)
+            print(traceback.format_exc())
         return filesList
 
     def downloadWithSearcher(self, url, searcher):
@@ -1145,7 +1146,10 @@ class Searchers():
 
 def search(url, searchersList, isApi=None):
     from threading import Thread
-    from Queue import Queue
+    try:
+        from Queue import Queue
+    except ImportError:
+        from queue import Queue
 
     num_threads = 3
     queue = Queue()
@@ -1782,11 +1786,19 @@ def first_run_231():
         __settings__.setSetting('first_run_231','True')
         ok = xbmcgui.Dialog().ok('< %s >' % Localization.localize('Torrenter Update 2.3.1'),
                                     Localization.localize('We added Android ARM full support to Torrenter v2!'),
-                                    Localization.localize('With external searcher support I deleted pre-installed ones!'))
+                                    Localization.localize('I deleted pre-installed ones, install them in Search Control Window!'))
 
         yes=xbmcgui.Dialog().yesno('< %s >' % Localization.localize('Torrenter Update 2.3.1'),
-                                        Localization.localize('You have no installed searchers!'),
-                                        Localization.localize('Would you like to install searcher from "MyShows.me Kodi Repo" in Programs section?'),)
+                                        Localization.localize('You have no installed or active searchers! More info in Search Control Window!'),
+                                        Localization.localize('Would you like to install %s from "MyShows.me Kodi Repo" in Programs section?' % ''),)
         if yes:
             xbmc.executebuiltin('Dialog.Close(all,true)')
             xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher'))
+
+def noActiveSerachers():
+    yes=xbmcgui.Dialog().yesno('< %s >' % Localization.localize('Torrenter v2'),
+                                        Localization.localize('You have no installed or active searchers! More info in Search Control Window!'),
+                                        Localization.localize('Would you like to install %s from "MyShows.me Kodi Repo" in Programs section?' % ''),)
+    if yes:
+        xbmc.executebuiltin('Dialog.Close(all,true)')
+        xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher'))

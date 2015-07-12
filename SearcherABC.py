@@ -90,6 +90,16 @@ class SearcherABC:
         self.cookieJar = cookielib.MozillaCookieJar(cookie)
         if os.path.exists(cookie): self.cookieJar.load(ignore_discard=True)
 
+    def clear_cookie(self, domain):
+        cookie=os.path.join(self.tempdir(),'cookie.txt')
+        self.cookieJar = cookielib.MozillaCookieJar(cookie)
+        if os.path.exists(cookie):
+            try:
+                self.cookieJar.clear('.'+domain)
+                print '[SearcherABC] '+self.__class__.__name__+': Cookie Deleted!'
+            except:
+                print '[SearcherABC] '+self.__class__.__name__+': Cookie clear failed!'
+
     def makeRequest(self, url, data={}, headers={}):
         self.load_cookie()
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookieJar))

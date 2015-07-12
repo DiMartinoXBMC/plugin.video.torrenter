@@ -1727,6 +1727,10 @@ class Core:
         return title
 
     def search(self, params={}):
+        if len(Searchers().get_active())<1:
+            noActiveSerachers()
+            return
+
         defaultKeyword = params.get('url')
         showKey=params.get('showKey')
 

@@ -257,6 +257,12 @@ def localize(text):
             'Android Support':'Поддержка Android',
             'Android has no temprorary folder':'У Android отсутствует стандартная временная папка',
             'Please specify storage folder in Settings!':'Пожалуйста, укажите папку хранилища файлов!',
+            'You have no installed or active searchers! More info in Search Control Window!':'У вас нет установленных или активных серчеров. Подробнее в Окне Управления Поиском.',
+            'Please contact DiMartino on kodi.tv forum. We compiled python-libtorrent for Android,':'Свяжитесь с DiMartino на xbmc.ru. Мы собрали python-libtorrent на Android',
+            'but we need your help with some tests on different processors.':'но нам нужна помощь в тестировании на разные процессоры.',
+            'We added Android ARM full support to Torrenter v2!':'Мы добавили полную поддержку Android ARM в Torrenter v2!',
+            'I deleted pre-installed ones, install them in Search Control Window!':'Теперь серчеры нужно устанавливать отдельно в Окне Управления Поиском!'
+
         },
         'uk': {
             'Seeds searching.': 'Йде пошук сідів.',
