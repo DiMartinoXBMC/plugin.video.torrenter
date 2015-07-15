@@ -51,7 +51,10 @@ class FastTorrent(Content.Content):
     '''
     sourceWeight = 1
 
-    def isLabel(self):
+    def isTracker(self):
+        return False
+
+    def isSearcher(self):
         return False
 
     def isScrappable(self):

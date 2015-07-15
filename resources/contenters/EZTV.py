@@ -40,8 +40,11 @@ class EZTV(Content.Content):
     '''
     sourceWeight = 1
 
-    def isLabel(self):
+    def isTracker(self):
         return True
+
+    def isSearcher(self):
+        return False
 
     def isScrappable(self):
         return False

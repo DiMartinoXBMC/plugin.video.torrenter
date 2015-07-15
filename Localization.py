@@ -261,7 +261,9 @@ def localize(text):
             'Please contact DiMartino on kodi.tv forum. We compiled python-libtorrent for Android,':'Свяжитесь с DiMartino на xbmc.ru. Мы собрали python-libtorrent на Android',
             'but we need your help with some tests on different processors.':'но нам нужна помощь в тестировании на разные процессоры.',
             'We added Android ARM full support to Torrenter v2!':'Мы добавили полную поддержку Android ARM в Torrenter v2!',
-            'I deleted pre-installed ones, install them in Search Control Window!':'Теперь серчеры нужно устанавливать отдельно в Окне Управления Поиском!'
+            'I deleted pre-installed ones, install them in Search Control Window!':'Теперь серчеры нужно устанавливать отдельно в Окне Управления Поиском!',
+            'Torrenter didn\'t find %s searcher':'Торрентер не нашел серчер трекера %s',
+            'Torrenter Tracker Install':'Установка трекеров в Torrenter',
 
         },
         'uk': {

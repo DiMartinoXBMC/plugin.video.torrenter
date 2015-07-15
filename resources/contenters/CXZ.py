@@ -98,7 +98,10 @@ class CXZ(Content.Content):
     sourceWeight = 2
 
 
-    def isLabel(self):
+    def isTracker(self):
+        return False
+
+    def isSearcher(self):
         return False
 
     def isInfoLink(self):

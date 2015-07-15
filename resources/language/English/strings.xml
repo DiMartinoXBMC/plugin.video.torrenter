@@ -53,6 +53,7 @@
     <string id="50315">Login</string>
     <string id="50316">Password</string>
     <string id="50311">Torrent Client</string>
+    <string id="50317">URL (only No SSL)</string>
     <string id="30426">Path replacement (remote only)</string>
     <string id="30412">Close</string>
     <string id="30413">Open Settings</string>

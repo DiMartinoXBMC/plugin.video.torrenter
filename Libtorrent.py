@@ -316,15 +316,26 @@ class Libtorrent:
         self.session.start_natpmp()
         self.session.listen_on(6881, 6891)
 
+        #self.session.set_severity_level(self.lt.alert.severity_levels.info)
+        #self.session.add_extension(self.lt.create_ut_pex_plugin)
+        #self.session.add_extension(self.lt.create_ut_metadata_plugin)
+        #self.session.add_extension(self.lt.create_metadata_plugin)
+
         # Session settings
-        session_settings = self.session.settings()
-        session_settings.announce_to_all_tiers = True
-        session_settings.announce_to_all_trackers = True
-        session_settings.connection_speed = 100
-        session_settings.peer_connect_timeout = 2
-        session_settings.rate_limit_ip_overhead = True
-        session_settings.request_timeout = 5
-        session_settings.torrent_connect_boost = 100
+        session_settings = self.session.get_settings()
+
+        #session_settings['user_agent'] = 'python_client/' + self.lt.version
+        #session_settings['auto_manage_startup'] = 30
+        #session_settings['auto_manage_interval'] = 30
+        #session_settings['dht_announce_interval'] = 60
+
+        session_settings['announce_to_all_tiers'] = True
+        session_settings['announce_to_all_trackers'] = True
+        session_settings['connection_speed'] = 100
+        session_settings['peer_connect_timeout'] = 2
+        session_settings['rate_limit_ip_overhead'] = True
+        session_settings['request_timeout'] = 5
+        session_settings['torrent_connect_boost'] = 100
 
         self.session.set_settings(session_settings)
 
@@ -353,6 +364,8 @@ class Libtorrent:
         else:
             self.torrentFileInfo = self.getMagnetInfo()
         self.torrentHandle.set_sequential_download(True)
+        #self.torrentHandle.set_max_connections(60)
+        #self.torrentHandle.set_max_uploads(-1)
         self.stopSession()
 
     def stopSession(self):

@@ -45,7 +45,10 @@ class RiperAM(Content.Content):
     '''
     sourceWeight = 1
 
-    def isLabel(self):
+    def isTracker(self):
+        return True
+
+    def isSearcher(self):
         return True
 
     def isScrappable(self):

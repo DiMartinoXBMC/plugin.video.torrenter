@@ -168,7 +168,7 @@
         <setting id="torrent_vuze_login" type="text" label="50315" visible="eq(-12,2)" default=""/>
         <setting id="torrent_vuze_password" type="text" label="50316" visible="eq(-13,2)" default="" option="hidden"/>
         <setting id="torrent_deluge_host" type="ipaddress" label="50312" visible="eq(-14,3)" default="127.0.0.1"/>
-        <setting id="torrent_deluge_url" type="enum" label="50314" visible="eq(-15,3)" values="http:// (only No SSL)" default="0"/>
+        <setting id="torrent_deluge_path" type="text" label="50317" visible="eq(-15,3)" default="/"/>
         <setting id="torrent_deluge_port" type="number" label="50313" visible="eq(-16,3)" default="8112"/>
         <setting id="torrent_deluge_password" type="text" label="50316" visible="eq(-17,3)" default="deluge" option="hidden"/>
     </category>

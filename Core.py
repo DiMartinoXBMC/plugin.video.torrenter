@@ -89,7 +89,7 @@ class Core:
 
     def sectionMenu(self):
         if self.__settings__.getSetting('plugin_name')!=self.__plugin__:
-            if self.__plugin__ == 'Torrenter v.2.3.1':
+            if self.__plugin__ == 'Torrenter v.2.3.2':
                 #first_run_230(self.__settings__.getSetting('delete_russian')=='true')
                 first_run_231()
             if self.__settings__.getSetting('delete_russian')!='false':
@@ -630,7 +630,7 @@ class Core:
         else:
             if provider:
                 self.Content = self.contenterObject[provider]
-                if not self.Content.isLabel():
+                if not self.Content.isTracker():
                     self.draw(apps, mode='content')
                 else:
                     self.draw(apps, mode='tracker')
@@ -878,6 +878,8 @@ class Core:
 
     def drawtrackerList(self, provider, contentList):
         contentList = sorted(contentList, key=lambda x: x[0], reverse=True)
+        if self.contenterObject[provider].isSearcher():
+            Searchers().checkExist(provider)
         for num, originaltitle, title, year, img, info in contentList:
             if not info.get('label'):
                 continue
@@ -888,17 +890,16 @@ class Core:
                 continue
             label = info.get('label').encode('utf-8', 'ignore')
 
-            if self.contenterObject[provider].isInfoLink() and info.get('link'):
+            if info.get('link'):
                 if isinstance(info.get('link'), tuple):
                     url=info.get('link')[0]
                 else:
                     url=info.get('link')
-                if not '::' in url:
+
+                if self.contenterObject[provider].isSearcher():
                     link = {'url': '%s::%s' % (provider, url), 'thumbnail': img}
                 else:
                     link = {'url': url, 'thumbnail': img}
-            elif self.contenterObject[provider].isLabel():
-                link = {'url': '%s::%s' % (provider, urllib.quote_plus(label)), 'thumbnail': img}
 
             contextMenu = [
                     (self.localize('Download via T-client'),
@@ -1640,10 +1641,8 @@ class Core:
                     searcher = classMatch.group(1)
                     url = Searchers().downloadWithSearcher(classMatch.group(2), searcher)
 
-                    torrent = Downloader.Torrent(self.userStorageDirectory,
-                                                 torrentFilesDirectory=self.torrentFilesDirectory)
-                    if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
-                                                                 torrentFilesDirectory=self.torrentFilesDirectory)
+        torrent = Downloader.Torrent(self.userStorageDirectory,
+                                     torrentFilesDirectory=self.torrentFilesDirectory)
 
         if re.match("^magnet\:.+$", url):
             if not dirname:

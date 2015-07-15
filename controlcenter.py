@@ -32,7 +32,7 @@ __version__ = __settings__.getAddonInfo('version')
 __plugin__ = __settings__.getAddonInfo('name') + " v." + __version__
 __root__ = __settings__.getAddonInfo('path')
 
-print 'SYS ARGV: ' + str(sys.argv)
+#print 'SYS ARGV: ' + str(sys.argv)
 
 if len(sys.argv) > 1:
     params = getParameters(sys.argv[1])
@@ -47,6 +47,8 @@ class ControlCenter(AddonDialogWindow):
         self.db = None
         self.addtime = None
         self.has_searchers=len(self.dic)>0
+        self.more_one_searcher=len(self.dic)>1
+        self.more_two_searcher=len(self.dic)>2
         if self.has_searchers:
             if addtime:
                 self.addtime = addtime
@@ -66,6 +68,7 @@ class ControlCenter(AddonDialogWindow):
 
             self.keys = self.dic.keys()
             self.placed, self.button_columns, self.last_column_row = self.place()
+            #print str((self.placed, self.button_columns, self.last_column_row))
         else:
             self.button_columns=0
 
@@ -87,22 +90,10 @@ class ControlCenter(AddonDialogWindow):
             else:
                 i += 1
             placed[item] = (j, i)
-            # print item+str((j, i))
+            #print item+str((j, i))
         return placed, j, i
 
     def set_info_controls(self):
-        # Demo for PyXBMCt UI controls.
-        # no_int_label = Label(__language__(30146), alignment=ALIGN_CENTER)
-        # self.placeControl(no_int_label, 0, 0, 1, 3)
-        #
-        # label_timeout = Label(__language__(30410))
-        # self.placeControl(label_timeout, 1, 0)
-        # Label
-        # self.label = Label(__language__(30545) % TimeOut().timeout())
-        # self.placeControl(self.label, 1, 1)
-        #
-        # label_watched = Label(__language__(30414) % (WatchedDB().count()))
-        # self.placeControl(label_watched, 2, 0)
         pass
 
     def set_active_controls(self):
@@ -167,27 +158,28 @@ class ControlCenter(AddonDialogWindow):
                     self.radiobutton[searcher].controlUp(self.radiobutton[ser])
 
                 # self.button_columns, self.last_column_row
-                if place[1] == 0 and place[0] == self.button_columns:
-                    if self.last_column_row > 0:
-                        ser = placed_keys[placed_values.index((place[0], self.last_column_row))]
+                if self.more_one_searcher:
+                    if place[1] == 0 and place[0] == self.button_columns:
+                        if self.last_column_row > 0:
+                            ser = placed_keys[placed_values.index((place[0], self.last_column_row))]
+                        else:
+                            ser = placed_keys[placed_values.index((place[0] - 1, 2))]
+                    elif place[1] == 0:
+                        ser = placed_keys[placed_values.index((place[0], 2))]
                     else:
-                        ser = placed_keys[placed_values.index((place[0] - 1, 2))]
-                elif place[1] == 0:
-                    ser = placed_keys[placed_values.index((place[0], 2))]
-                else:
-                    ser = placed_keys[placed_values.index((place[0], place[1] - 1))]
-                self.radiobutton[searcher].controlLeft(self.radiobutton[ser])
+                        ser = placed_keys[placed_values.index((place[0], place[1] - 1))]
+                    self.radiobutton[searcher].controlLeft(self.radiobutton[ser])
 
-                # print str((self.button_columns, self.last_column_row))
-                # print searcher
-
-                if place == (self.button_columns, self.last_column_row) and self.last_column_row < 2:
-                    ser = placed_keys[placed_values.index((place[0] - 1, place[1] + 1))]
-                elif place[1] == 2:
-                    ser = placed_keys[placed_values.index((place[0], 0))]
-                else:
-                    ser = placed_keys[placed_values.index((place[0], place[1] + 1))]
-                self.radiobutton[searcher].controlRight(self.radiobutton[ser])
+                    #print str((self.button_columns, self.last_column_row))
+                    #print searcher
+                    if self.more_two_searcher:
+                        if place == (self.button_columns, self.last_column_row) and self.last_column_row < 2:
+                            ser = placed_keys[placed_values.index((place[0] - 1, place[1] + 1))]
+                        elif place[1] == 2:
+                            ser = placed_keys[placed_values.index((place[0], 0))]
+                        else:
+                            ser = placed_keys[placed_values.index((place[0], place[1] + 1))]
+                        self.radiobutton[searcher].controlRight(self.radiobutton[ser])
 
                 if place[0] == self.button_columns - 1 and place[1] > self.last_column_row or \
                                 place[0] == self.button_columns:
@@ -197,11 +189,22 @@ class ControlCenter(AddonDialogWindow):
                     self.radiobutton[searcher].controlDown(self.radiobutton[ser])
 
             self.button_install.controlUp(self.radiobutton_bottom[0])
-            self.button_openserchset.controlUp(self.radiobutton_bottom[1])
-            self.button_clearstor.controlUp(self.radiobutton_bottom[2])
             self.button_openset.controlDown(self.radiobutton_top[0])
-            self.button_utorrent.controlDown(self.radiobutton_top[1])
-            self.button_close.controlDown(self.radiobutton_top[2])
+            if self.more_one_searcher:
+                self.button_openserchset.controlUp(self.radiobutton_bottom[1])
+                self.button_utorrent.controlDown(self.radiobutton_top[1])
+            else:
+                self.button_openserchset.controlUp(self.radiobutton_bottom[0])
+                self.button_utorrent.controlDown(self.radiobutton_top[0])
+            if self.more_two_searcher:
+                self.button_clearstor.controlUp(self.radiobutton_bottom[2])
+                self.button_close.controlDown(self.radiobutton_top[2])
+            elif self.more_one_searcher:
+                self.button_clearstor.controlUp(self.radiobutton_bottom[1])
+                self.button_close.controlDown(self.radiobutton_top[1])
+            else:
+                self.button_clearstor.controlUp(self.radiobutton_bottom[0])
+                self.button_close.controlDown(self.radiobutton_top[0])
         else:
             self.button_install.controlUp(self.button_openset)
             self.button_openserchset.controlUp(self.button_utorrent)

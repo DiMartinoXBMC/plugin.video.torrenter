@@ -849,10 +849,11 @@ class Deluge:
         self.login = login
         self.password = password
 
-        self.url = ['http://', 'https://'][int(url)] + host
+        self.url = 'http://'+host
         if port:
             self.url += ':' + str(port)
-
+        self.url += url
+        print str(self.url)
         self.http = HTTP()
 
     def get_info(self):
@@ -1299,7 +1300,7 @@ class Download():
             config = {
                 'host': self.setting.getSetting("torrent_deluge_host"),
                 'port': self.setting.getSetting("torrent_deluge_port"),
-                'url': self.setting.getSetting("torrent_deluge_url"),
+                'url': self.setting.getSetting("torrent_deluge_path"),
                 'login': '',
                 'password': self.setting.getSetting("torrent_deluge_password")
             }

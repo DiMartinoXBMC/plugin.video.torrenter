@@ -1091,6 +1091,7 @@ class Searchers():
                                          'path':path,
                                          'searcher':os.path.join(path,name+'.py'),
                                          'type':'external'}
+                    #if len(searchersDict)>1: break
         return searchersDict
 
     def dic(self, providers=[]):
@@ -1142,6 +1143,16 @@ class Searchers():
             print 'Unable to use searcher: ' + searcher + ' at ' + __plugin__ + ' downloadWithSearcher(). Exception: ' + str(
                 e)
         return url
+
+    def checkExist(self, searcher):
+        if searcher not in self.list():
+            yes=xbmcgui.Dialog().yesno('< %s >' % Localization.localize('Torrenter Tracker Install'),
+                                        Localization.localize('Torrenter didn\'t find %s searcher' % searcher),
+                                        Localization.localize('Would you like to install %s from "MyShows.me Kodi Repo" in Programs section?') % searcher,)
+            if yes:
+                xbmc.executebuiltin('Dialog.Close(all,true)')
+                xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher %s' % searcher))
+
 
 
 def search(url, searchersList, isApi=None):

@@ -38,8 +38,11 @@ class Content:
     cookieJar = None
     baseurl = ''
 
-    def isLabel(self):
-        return 'Should search on ruhunt?'
+    def isTracker(self):
+        return 'Never seen'
+
+    def isSearcher(self):
+        return False
 
     def isPages(self):
         return False

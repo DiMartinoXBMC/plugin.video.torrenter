@@ -38,7 +38,7 @@ class ThePirateBaySe(Content.Content):
                                                              {'name': 'by Date', 'url_after': '/0/3/0'}]}),
     }
 
-    baseurl = "https://thepiratebay.se"
+    baseurl = "thepiratebay.gd"
     headers = [('User-Agent',
                 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124' + \
                 ' YaBrowser/14.10.2062.12061 Safari/537.36'),
@@ -50,8 +50,11 @@ class ThePirateBaySe(Content.Content):
     '''
     sourceWeight = 1
 
-    def isLabel(self):
+    def isTracker(self):
         return True
+
+    def isSearcher(self):
+        return False
 
     def isScrappable(self):
         return False
@@ -72,7 +75,7 @@ class ThePirateBaySe(Content.Content):
         contentList = []
         url = self.get_url(category, subcategory, apps_property)
 
-        response = self.makeRequest(url, headers=self.headers)
+        response = self.open2(url)
 
         if None != response and 0 < len(response):
             # print response
@@ -80,6 +83,17 @@ class ThePirateBaySe(Content.Content):
                 contentList = self.mode(response)
         # print str(contentList)
         return contentList
+
+    def open2(self, url=''):
+        import httplib
+        conn = httplib.HTTPConnection(self.baseurl)
+        conn.request("GET", url.replace(self.baseurl,''))
+        r1 = conn.getresponse()
+        status = str(r1.status) + " " + r1.reason
+        content = r1.read()
+        #print str(status)
+        #print str(content)
+        return content
 
     def mode(self, response):
         contentList = []

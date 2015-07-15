@@ -52,6 +52,7 @@
     <string id="50314">URL</string>
     <string id="50315">Логин</string>
     <string id="50316">Пароль</string>
+    <string id="50317">URL (только без SSL)</string>
     <string id="50311">Торрент-клиент</string>
     <string id="30426">Замена пути (remote only)</string>
     <string id="30412">Закрыть</string>

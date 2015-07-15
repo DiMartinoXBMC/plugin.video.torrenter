@@ -118,7 +118,7 @@ class SWESUB(Content.Content):
             # info
 
             info['label'] = info['title'] = self.unescape(title)
-            info['link'] = '%s::%s' % ('Nyaa', self.baseurl + '/downloads' + link + '/')
+            info['link'] = self.baseurl + '/downloads' + link + '/'
             info['infolink'] = self.baseurl + link + '.html'
 
             info['plot'] = article.find('div', {'class': 'item-content'}).text
