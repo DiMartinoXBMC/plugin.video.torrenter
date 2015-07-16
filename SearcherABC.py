@@ -45,8 +45,6 @@ class SearcherABC:
     cookieJar = None
     timeout_multi=int(sys.modules["__main__"].__settings__.getSetting("timeout"))
     __plugin__='Empty v 0 0 0'
-    log=log
-    debug=debug
 
     socket.setdefaulttimeout(10+(10*int(timeout_multi)))
 
@@ -222,3 +220,9 @@ class SearcherABC:
 
     def logout(self):
         pass
+
+    def log(self, msg):
+        log(msg)
+
+    def debug(self, msg):
+        debug(msg)
