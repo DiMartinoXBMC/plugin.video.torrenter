@@ -32,7 +32,7 @@ __version__ = __settings__.getAddonInfo('version')
 __plugin__ = __settings__.getAddonInfo('name') + " v." + __version__
 __root__ = __settings__.getAddonInfo('path')
 
-#print 'SYS ARGV: ' + str(sys.argv)
+print 'SYS ARGV: ' + str(sys.argv)
 
 if len(sys.argv) > 1:
     params = getParameters(sys.argv[1])

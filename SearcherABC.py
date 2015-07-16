@@ -34,6 +34,7 @@ import sys
 import xbmcgui
 import xbmc
 import Localization
+from functions import log, debug
 
 
 class SearcherABC:
@@ -43,6 +44,9 @@ class SearcherABC:
     sourceWeight = 1
     cookieJar = None
     timeout_multi=int(sys.modules["__main__"].__settings__.getSetting("timeout"))
+    __plugin__='Empty v 0 0 0'
+    log=log
+    debug=debug
 
     socket.setdefaulttimeout(10+(10*int(timeout_multi)))
 
@@ -96,9 +100,9 @@ class SearcherABC:
         if os.path.exists(cookie):
             try:
                 self.cookieJar.clear('.'+domain)
-                print '[SearcherABC] '+self.__class__.__name__+': Cookie Deleted!'
+                self.log('[SearcherABC] '+self.__plugin__+': Cookie Deleted!')
             except:
-                print '[SearcherABC] '+self.__class__.__name__+': Cookie clear failed!'
+                self.log('[SearcherABC] '+self.__plugin__+': Cookie clear failed!')
 
     def makeRequest(self, url, data={}, headers={}):
         self.load_cookie()
@@ -112,13 +116,13 @@ class SearcherABC:
             response = opener.open(url, encodedData)
         except urllib2.HTTPError as e:
             if e.code == 404:
-                print self.__class__.__name__+' [makeRequest]: Not Found! HTTP Error, e.code=' + str(e.code)
+                self.log(self.__plugin__+' [makeRequest]: Not Found! HTTP Error, e.code=' + str(e.code))
                 return
             elif e.code in [503]:
-                print self.__class__.__name__+' [makeRequest]: Denied, HTTP Error, e.code=' + str(e.code)
+                self.log(self.__plugin__+' [makeRequest]: Denied, HTTP Error, e.code=' + str(e.code))
                 return
             else:
-                print self.__class__.__name__+' [makeRequest]: HTTP Error, e.code=' + str(e.code)
+                self.log(self.__plugin__+' [makeRequest]: HTTP Error, e.code=' + str(e.code))
                 return
         #self.cookieJar.extract_cookies(response, urllib2)
         if response.info().get('Content-Encoding') == 'gzip':

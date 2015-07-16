@@ -102,12 +102,18 @@ def md5(string):
     return hasher.hexdigest()
 
 
-def Debug(msg, force=False):
-    if (1 == 1 or debug == 'true' or force):
-        try:
-            print "[Torrenter v2] " + msg
-        except UnicodeEncodeError:
-            print "[Torrenter v2] " + msg.encode("utf-8", "ignore")
+def log(msg):
+    try:
+        xbmc.log("### [%s]: %s" % (__plugin__,msg,), level=xbmc.LOGNOTICE )
+    except UnicodeEncodeError:
+        xbmc.log("### [%s]: %s" % (__plugin__,msg.encode("utf-8", "ignore"),), level=xbmc.LOGNOTICE )
+
+
+def debug(msg):
+    try:
+        xbmc.log("### [%s]: %s" % (__plugin__,msg,), level=xbmc.LOGDEBUG )
+    except UnicodeEncodeError:
+        xbmc.log("### [%s]: %s" % (__plugin__,msg.encode("utf-8", "ignore"),), level=xbmc.LOGDEBUG )
 
 
 def showMessage(heading, message, times=10000, forced=False):
@@ -210,22 +216,22 @@ def get_url(cookie, url):
     try:
         conn = urllib2.urlopen(urllib2.Request(url, urllib.urlencode({}), headers))
         array = conn.read()
-        # Debug('[get_url]: arr"'+str(array)+'"')
+        # debug('[get_url]: arr"'+str(array)+'"')
         if array == '':
-            # Debug('[get_url][2]: arr=""')
+            # debug('[get_url][2]: arr=""')
             array = True
         return array
     except urllib2.HTTPError as e:
-        # Debug('[get_url]: HTTPError, e.code='+str(e.code))
+        # debug('[get_url]: HTTPError, e.code='+str(e.code))
         if e.code == 401:
-            Debug('[get_url]: Denied! Wrong login or api is broken!')
+            debug('[get_url]: Denied! Wrong login or api is broken!')
             return
         elif e.code in [503]:
-            Debug('[get_url]: Denied, HTTP Error, e.code=' + str(e.code))
+            debug('[get_url]: Denied, HTTP Error, e.code=' + str(e.code))
             return
         else:
             showMessage('HTTP Error', str(e.code))
-            Debug('[get_url]: HTTP Error, e.code=' + str(e.code))
+            debug('[get_url]: HTTP Error, e.code=' + str(e.code))
             xbmc.sleep(2000)
             return
     except:
@@ -317,7 +323,7 @@ def cutFileNames(l):
     text2 = cutStr(text[1][0:len(text[1]) - 1 - len(text[1].split('.')[-1])])
     sep_file = " "
     result = list(d.compare(text1.split(sep_file), text2.split(sep_file)))
-    Debug('[cutFileNames] ' + unicode(result))
+    debug('[cutFileNames] ' + unicode(result))
 
     start = ''
     end = ''
@@ -334,8 +340,8 @@ def cutFileNames(l):
 
     newl = l
     l = []
-    Debug('[cutFileNames] [start] ' + start)
-    Debug('[cutFileNames] [end] ' + end)
+    debug('[cutFileNames] [start] ' + start)
+    debug('[cutFileNames] [end] ' + end)
     for fl in newl:
         if cutStr(fl[0:len(start)]) == cutStr(start): fl = fl[len(start):]
         if cutStr(fl[len(fl) - len(end):]) == cutStr(end): fl = fl[0:len(fl) - len(end)]
@@ -345,7 +351,7 @@ def cutFileNames(l):
         except:
             pass
         l.append(fl)
-    Debug('[cutFileNames] [sorted l]  ' + unicode(sorted(l, key=lambda x: x)), True)
+    debug('[cutFileNames] [sorted l]  ' + unicode(sorted(l, key=lambda x: x)))
     return l
 
 
@@ -363,7 +369,7 @@ def sortext(filelist):
             result[ext] = 1
     lol = result.iteritems()
     lol = sorted(lol, key=lambda x: x[1])
-    Debug('[sortext]: lol:' + str(lol))
+    debug('[sortext]: lol:' + str(lol))
     popext = lol[-1][0]
     result, i = [], 0
     for name in filelist:
@@ -371,7 +377,7 @@ def sortext(filelist):
             result.append(name)
             i = i + 1
     result = sweetpair(result)
-    Debug('[sortext]: result:' + str(result))
+    debug('[sortext]: result:' + str(result))
     return result
 
 
@@ -433,13 +439,13 @@ def sweetpair(l):
         if ratio[id1] <= ratio[i] and i != id2 or id2 == id1 and ratio[id1] == ratio[i]:
             id2 = id1
             id1 = i
-            # Debug('1 - %d %d' % (id1, id2))
+            # debug('1 - %d %d' % (id1, id2))
         elif (ratio[id2] <= ratio[i] or id1 == id2) and i != id1:
             id2 = i
-            # Debug('2 - %d %d' % (id1, id2))
+            # debug('2 - %d %d' % (id1, id2))
 
-    Debug('[sweetpair]: id1 ' + l[id1] + ':' + str(ratio[id1]))
-    Debug('[sweetpair]: id2 ' + l[id2] + ':' + str(ratio[id2]))
+    debug('[sweetpair]: id1 ' + l[id1] + ':' + str(ratio[id1]))
+    debug('[sweetpair]: id2 ' + l[id2] + ':' + str(ratio[id2]))
 
     return [l[id1], l[id2]]
 
@@ -451,7 +457,7 @@ def FileNamesPrepare(filename):
     try:
         if int(filename):
             my_episode = int(filename)
-            Debug('[FileNamesPrepare] ' + str([my_season, my_episode, filename]))
+            debug('[FileNamesPrepare] ' + str([my_season, my_episode, filename]))
             return [my_season, my_episode, filename]
     except:
         pass
@@ -477,7 +483,7 @@ def FileNamesPrepare(filename):
                             break
             if my_season and my_season > 100: my_season = None
             if my_episode and my_episode > 365: my_episode = None
-            Debug('[FileNamesPrepare] ' + str([my_season, my_episode, filename]))
+            debug('[FileNamesPrepare] ' + str([my_season, my_episode, filename]))
             return [my_season, my_episode, filename]
 
 
@@ -493,7 +499,7 @@ def filename2match(filename, no_date=False):
             results['showtitle'] = results['showtitle'].replace('.', ' ').replace('_', ' ').strip().replace(
                 'The Daily Show', 'The Daily Show With Jon Stewart')
             results['season'], results['episode'] = int(results['season']), int(results['episode'])
-            # Debug('[filename2match] '+str(results))
+            # debug('[filename2match] '+str(results))
             return results
     if no_date: return
     urls = ['(.+)(\d{4})\.(\d{2,4})\.(\d{2,4})', '(.+)(\d{4}) (\d{2}) (\d{2})']  # same in service
@@ -503,7 +509,7 @@ def filename2match(filename, no_date=False):
             results['showtitle'] = match[0][0].replace('.', ' ').strip().replace('The Daily Show',
                                                                                  'The Daily Show With Jon Stewart')
             results['date'] = '%s.%s.%s' % (match[0][3], match[0][2], match[0][1])
-            Debug('[filename2match] ' + str(results))
+            debug('[filename2match] ' + str(results))
             return results
 
 
@@ -549,7 +555,7 @@ def view_style(func):
         num_skin = 1
 
     style = styles.get(func)
-    # Debug('[view_style]: lock '+str(style))
+    # debug('[view_style]: lock '+str(style))
     lockView(style, num_skin)
 
 
@@ -626,7 +632,7 @@ def smbtopath(path):
         path = x[1]
     else:
         path = path.replace('smb://', '')
-    Debug('[smbtopath]:' + '\\\\' + path.replace('/', '\\'))
+    debug('[smbtopath]:' + '\\\\' + path.replace('/', '\\'))
     return '\\\\' + path.replace('/', '\\')
 
 
@@ -696,10 +702,10 @@ class RateShow():
             try:
                 self.watched_jdata = json.loads(watched_data.get())
             except:
-                Debug('[RateShow] no watched_jdata1')
+                debug('[RateShow] no watched_jdata1')
                 return
             if not self.watched_jdata:
-                Debug('[RateShow] no watched_jdata2')
+                debug('[RateShow] no watched_jdata2')
                 return
 
     def seasonrates(self):
@@ -716,10 +722,10 @@ class RateShow():
                                 ratedict[i].append(self.watched_jdata[j]['rating'])
                             else:
                                 ratedict[i] = [self.watched_jdata[j]['rating']]
-            # Debug('[ratedict]:'+str(ratedict))
+            # debug('[ratedict]:'+str(ratedict))
             for i in ratedict:
                 ratedict[i] = (round(float(sum(ratedict[i])) / len(ratedict[i]), 2), len(ratedict[i]))
-            Debug('[ratedict]:' + str(ratedict))
+            debug('[ratedict]:' + str(ratedict))
         else:
             ratedict = {}
         return ratedict
@@ -736,7 +742,7 @@ class RateShow():
                 ratings.append(self.watched_jdata[id]['rating'])
                 if id in self.list[str(seasonNumber)]:
                     seasonratings.append(self.watched_jdata[id]['rating'])
-        # Debug('ratings:'+str(ratings)+'; seasonratings:'+str(seasonratings))
+        # debug('ratings:'+str(ratings)+'; seasonratings:'+str(seasonratings))
         if len(ratings) > 0:
             rating = round(float(sum(ratings)) / len(ratings), 2)
         else:
@@ -759,7 +765,7 @@ class RateShow():
                     listSE[str(jdata['episodes'][id]['seasonNumber'])] = [id]
                 if jdata['episodes'][id]['seasonNumber'] > seasonNumber:
                     seasonNumber = jdata['episodes'][id]['seasonNumber']
-        # Debug('[listSE] '+str(listSE)+str(seasonNumber))
+        # debug('[listSE] '+str(listSE)+str(seasonNumber))
         return listSE, seasonNumber
 
 
@@ -767,11 +773,11 @@ def isRemoteTorr():
     localhost = ['127.0.0.1', '0.0.0.0', 'localhost']
     if __settings__.getSetting("torrent") == '0':
         if __settings__.getSetting("torrent_utorrent_host") not in localhost:
-            Debug('[isRemoteTorr]: uTorrent is Remote!')
+            debug('[isRemoteTorr]: uTorrent is Remote!')
             return True
     elif __settings__.getSetting("torrent") == '1':
         if __settings__.getSetting("torrent_transmission_host") not in localhost:
-            Debug('[isRemoteTorr]: Transmission is Remote!')
+            debug('[isRemoteTorr]: Transmission is Remote!')
             return True
 
 
@@ -782,14 +788,14 @@ def changeDBTitle(showId):
         {'jsonrpc': '2.0', 'method': 'VideoLibrary.GetTVShows', 'params': {'properties': ['title']}, 'id': 0})
 
     if not shows:
-        Debug('[changeDBTitle]: XBMC JSON Result was empty.')
+        debug('[changeDBTitle]: XBMC JSON Result was empty.')
         return
 
     if 'tvshows' in shows:
         shows = shows['tvshows']
-        Debug("[changeDBTitle]: XBMC JSON Result: '%s'" % str(shows))
+        debug("[changeDBTitle]: XBMC JSON Result: '%s'" % str(shows))
     else:
-        Debug("[changeDBTitle]: Key 'tvshows' not found")
+        debug("[changeDBTitle]: Key 'tvshows' not found")
         return
 
     if len(shows) > 0:
@@ -812,7 +818,7 @@ def changeDBTitle(showId):
                 if result in [newtitle, 'OK']:
                     showMessage(__language__(30208), __language__(30536) % (newtitle), forced=True)
                 else:
-                    Debug("[changeDBTitle]: XBMC JSON Result: '%s'" % str(result))
+                    debug("[changeDBTitle]: XBMC JSON Result: '%s'" % str(result))
         return
 
 
@@ -832,11 +838,11 @@ class TimeOut():
             gone_online = 0
         if not manual:
             if gone_online and gone_online + self.online >= int(round(time.time())):
-                Debug('[TimeOut]: too soon to go back offline! %d s' % (
+                debug('[TimeOut]: too soon to go back offline! %d s' % (
                     (gone_online + self.online * 4) - int(round(time.time()))))
                 return
         if self.timeout() == self.online:
-            Debug('[TimeOut]: Gone offline! %d s' % ((gone_online + self.online * 4) - int(round(time.time()))))
+            debug('[TimeOut]: Gone offline! %d s' % ((gone_online + self.online * 4) - int(round(time.time()))))
             showMessage(__language__(30520), __language__(30545) % (self.offline))
             if self.get: self.scan.delete()
             self.scan.add()
@@ -844,7 +850,7 @@ class TimeOut():
     def go_online(self):
         if self.get:
             self.scan.delete()
-            Debug('[TimeOut]: Gone online!')
+            debug('[TimeOut]: Gone online!')
             showMessage(__language__(30521), __language__(30545) % (self.online))
             if self.gone_online.get():
                 self.gone_online.delete()
@@ -855,7 +861,7 @@ class TimeOut():
             to = self.offline
         else:
             to = self.online
-        # Debug('[TimeOut]: '+str(to))
+        # debug('[TimeOut]: '+str(to))
         return to
 
 
@@ -1154,7 +1160,6 @@ class Searchers():
                 xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher %s' % searcher))
 
 
-
 def search(url, searchersList, isApi=None):
     from threading import Thread
     try:
@@ -1319,7 +1324,7 @@ class WatchedDB:
 
     def _get(self, id):
         self._connect()
-        Debug('[WatchedDB][_get]: Checking ' + id)
+        debug('[WatchedDB][_get]: Checking ' + id)
         id = id.replace("'", "<&amp>").decode('utf-8', 'ignore')
         self.where = " where id='%s'" % (id)
         try:
@@ -1371,7 +1376,7 @@ class WatchedDB:
             elif db_rating != None and rating == db_rating:
                 showMessage(__language__(30520), __language__(30527) % (str(rating)))
 
-        Debug('[WatchedDB][check]: rating: %s DB: %s, ok1: %s, ok3: %s' % (
+        debug('[WatchedDB][check]: rating: %s DB: %s, ok1: %s, ok3: %s' % (
             str(rating), str(db_rating), str(ok1), str(ok3)))
 
         if ok1:
@@ -1383,7 +1388,7 @@ class WatchedDB:
             return True
 
     def onaccess(self):
-        # Debug('[WatchedDB][onaccess]: Start')
+        # debug('[WatchedDB][onaccess]: Start')
         TimeOut().go_online()
         self._connect()
         try:
@@ -1397,7 +1402,7 @@ class WatchedDB:
         i = 0
 
         if res > 0:
-            # Debug('[WatchedDB][onaccess]: Found %s' % (str(res)))
+            # debug('[WatchedDB][onaccess]: Found %s' % (str(res)))
             silentofflinesend = getSettingAsBool('silentofflinesend')
             if not silentofflinesend:
                 ok2 = self.dialog.yesno(__language__(30521), __language__(30528) % (str(res)), __language__(30529))
@@ -1424,7 +1429,7 @@ class WatchedDB:
         __settings__.setSetting("duo_last_id", '')
         self._connect()
         id = id.replace("'", "<&amp>").decode('utf-8', 'ignore')
-        Debug('[WatchedDB][_add]: Adding %s with rate %d' % (id, rating))
+        debug('[WatchedDB][_add]: Adding %s with rate %d' % (id, rating))
         self.cur.execute('insert into watched(addtime, rating, id) values(?,?,?)', (int(time.time()), int(rating), id))
         self.db.commit()
         self._close()
@@ -1524,7 +1529,7 @@ def isSubtitle(filename, filename2):
     filename_if = filename[:len(filename) - len(filename.split('.')[-1]) - 1]
     filename_if = filename_if.split('/')[-1].split('\\')[-1]
     filename_if2 = filename2.split('/')[-1].split('\\')[-1][:len(filename_if)]
-    # Debug('Compare ' + filename_if.lower() + ' and ' + filename_if2.lower() + ' and ' + filename2.lower().split('.')[-1])
+    # debug('Compare ' + filename_if.lower() + ' and ' + filename_if2.lower() + ' and ' + filename2.lower().split('.')[-1])
     ext = ['ass', 'mpsub', 'rum', 'sbt', 'sbv', 'srt', 'ssa', 'sub', 'sup', 'w32']
     if filename2.lower().split('.')[-1] in ext and \
                     filename_if.lower() == filename_if2.lower():
@@ -1613,7 +1618,7 @@ class DownloadDB:
                 self.cur = self.db.cursor()
             else:
                 self._close()
-                Debug('[DownloadDB]: DELETE ' + str(self.filename))
+                debug('[DownloadDB]: DELETE ' + str(self.filename))
                 xbmcvfs.delete(self.filename)
             self._connect()
             self.cur.execute(sql)
@@ -1739,7 +1744,7 @@ def unquote(string, ret=None):
 
 
 def itemScrap(item, kwarg):
-    # Debug('[itemTVDB]:meta '+str(kwarg))
+    # debug('[itemTVDB]:meta '+str(kwarg))
     if 'title' in kwarg and kwarg['title']:
         item.setLabel(kwarg['title'])
 
@@ -1777,7 +1782,7 @@ def get_ids_video(contentList):
                 pass
         if len(ids_video) > 1:
             break
-    # print Debug('[get_ids_video]:'+str(ids_video))
+    # print debug('[get_ids_video]:'+str(ids_video))
     return ids_video
 
 
