@@ -107,6 +107,8 @@ def log(msg):
         xbmc.log("### [%s]: %s" % (__plugin__,msg,), level=xbmc.LOGNOTICE )
     except UnicodeEncodeError:
         xbmc.log("### [%s]: %s" % (__plugin__,msg.encode("utf-8", "ignore"),), level=xbmc.LOGNOTICE )
+    except:
+        xbmc.log("### [%s]: %s" % (__plugin__,'ERROR LOG',), level=xbmc.LOGNOTICE )
 
 
 def debug(msg):
@@ -114,6 +116,8 @@ def debug(msg):
         xbmc.log("### [%s]: %s" % (__plugin__,msg,), level=xbmc.LOGDEBUG )
     except UnicodeEncodeError:
         xbmc.log("### [%s]: %s" % (__plugin__,msg.encode("utf-8", "ignore"),), level=xbmc.LOGDEBUG )
+    except:
+        xbmc.log("### [%s]: %s" % (__plugin__,'ERROR DEBUG',), level=xbmc.LOGDEBUG )
 
 
 def showMessage(heading, message, times=10000, forced=False):
