@@ -1123,7 +1123,7 @@ class Searchers():
         get_active = []
         for searcher in self.list().keys():
             if self.old(searcher): get_active.append(searcher + '.py')
-        print 'Active Searchers: ' + str(get_active)
+        log('Active Searchers: ' + str(get_active))
         return get_active
 
     def searchWithSearcher(self, keyword, searcher):
@@ -1163,6 +1163,12 @@ class Searchers():
                 xbmc.executebuiltin('Dialog.Close(all,true)')
                 xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher %s' % searcher))
 
+    def activeExternal(self):
+        slist = []
+        for searcher in self.list('external').keys():
+            if self.old(searcher): slist.append(searcher)
+        return slist
+
 
 def search(url, searchersList, isApi=None):
     from threading import Thread
@@ -1171,7 +1177,11 @@ def search(url, searchersList, isApi=None):
     except ImportError:
         from queue import Queue
 
-    num_threads = 3
+    num_threads=__settings__.getSetting('num_threads')
+    if num_threads not in ['',None] and int(num_threads)>0:
+        num_threads = int(num_threads)
+    else:
+        num_threads = 3
     queue = Queue()
     result = {}
     iterator, filesList, left_searchers = 0, [], []

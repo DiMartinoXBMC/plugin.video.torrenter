@@ -250,7 +250,7 @@ class ControlCenter(AddonDialogWindow):
         __settings__.openSettings()
 
     def openSearcherSettings(self):
-        slist = Searchers().list('external').keys()
+        slist=Searchers().activeExternal()
         if len(slist)>0:
             ret = xbmcgui.Dialog().select(__language__(30418), slist)
             if ret > -1 and ret < len(slist):
