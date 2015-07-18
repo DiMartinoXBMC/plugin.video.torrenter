@@ -904,10 +904,10 @@ class Core:
             contextMenu = [
                     (self.localize('Download via T-client'),
                      'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
-                     sys.argv[0], 'downloadFilesList', urllib.quote_plus('%s::%s' % (provider, info.get('link'))))),
+                     sys.argv[0], 'downloadFilesList', urllib.quote_plus(link['url']))),
                     (self.localize('Download via Libtorrent'),
                      'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
-                     sys.argv[0], 'downloadLibtorrent', urllib.quote_plus('%s::%s' % (provider, info.get('link')))))
+                     sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(link['url'])))
                 ]
 
             if isinstance(info, dict) and info.get('infolink'):
@@ -1623,10 +1623,15 @@ class Core:
                 dirname = keyboard.getText()
                 if not keyboard.isConfirmed():
                     return
-                if not dirname and len(clean)>0:
+                if dirname in ['',None,0] and len(clean)>0:
                     dirname = clean[0]
         else:
             dirname = self.__settings__.getSetting("torrent_dir")
+
+        if dirname=='':
+            log('[downloadFilesList] dirname: \'\'')
+        else:
+            log('[downloadFilesList] dirname:'+str(dirname))
 
         get = params.get
         url = unquote(get("url"), self.__settings__.getSetting("lastTorrent").decode('utf-8'))
@@ -1635,6 +1640,7 @@ class Core:
             self.__settings__.setSetting("lastTorrentUrl", url)
             classMatch = re.search('(\w+)::(.+)', url)
             if classMatch:
+                debug('[downloadFilesList] classMatch:'+str(classMatch.group(1))+' '+str(classMatch.group(2)))
                 if re.match("^magnet\:.+$", classMatch.group(2)) and dirname:
                     url=classMatch.group(2)
                 else:
@@ -1645,7 +1651,7 @@ class Core:
                                      torrentFilesDirectory=self.torrentFilesDirectory)
 
         if re.match("^magnet\:.+$", url):
-            if not dirname:
+            if dirname in [None,0]:
                 torrent.magnetToTorrent(url)
                 url = torrent.torrentFile
             else:

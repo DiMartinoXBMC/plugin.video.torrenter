@@ -123,6 +123,7 @@ def debug(msg):
 def showMessage(heading, message, times=10000, forced=False):
     xbmc.executebuiltin('XBMC.Notification("%s", "%s", %s, "%s")' % (
         heading.replace('"', "'"), message.replace('"', "'"), times, icon))
+    debug(str((heading.replace('"', "'"), message.replace('"', "'"), times, icon)))
 
 
 def magnet_alert():

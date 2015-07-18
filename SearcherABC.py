@@ -226,3 +226,13 @@ class SearcherABC:
 
     def debug(self, msg):
         debug(msg)
+
+    def open2(self, url=''):
+        import httplib
+        conn = httplib.HTTPConnection(self.baseurl)
+        conn.request("GET", str(url))
+        r1 = conn.getresponse()
+        status = str(r1.status) + " " + r1.reason
+        content = r1.read()
+        self.debug('[open2] status:'+str(status))
+        return content

@@ -41,7 +41,7 @@ def localize(text):
             'Peers': 'Пиры',
             'Materials are loading now.': 'Идёт загрузка материалов.',
             'Search Phrase': 'Фраза для поиска',
-            'Magnet-link is converting.': 'Идёт преобразование magnet-ссылки.',
+            'Magnet-link is converting': 'Идёт преобразование magnet-ссылки',
             'Error': 'Ошибка',
             'Your library out of date and can\'t save magnet-links.': 'Ваша библиотека устарела и не может сохранять магнет-ссылки.',
             'Bookmarks': 'Закладки',
