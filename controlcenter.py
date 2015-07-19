@@ -148,11 +148,12 @@ class ControlCenter(AddonDialogWindow):
             placed_keys = self.placed.keys()
             for searcher in placed_keys:
 
-                buttons = [self.button_install, self.button_openserchset, self.button_clearstor]
+                buttons_upper = [self.button_install, self.button_openserchset, self.button_clearstor]
+                buttons_lower = [self.button_openset, self.button_utorrent, self.button_close]
                 place = self.placed[searcher]
 
                 if place[0] == 0:
-                    self.radiobutton[searcher].controlUp(buttons[place[1]])
+                    self.radiobutton[searcher].controlUp(buttons_lower[place[1]])
                 else:
                     ser = placed_keys[placed_values.index((place[0] - 1, place[1]))]
                     self.radiobutton[searcher].controlUp(self.radiobutton[ser])
@@ -183,7 +184,7 @@ class ControlCenter(AddonDialogWindow):
 
                 if place[0] == self.button_columns - 1 and place[1] > self.last_column_row or \
                                 place[0] == self.button_columns:
-                    self.radiobutton[searcher].controlDown(buttons[place[1]])
+                    self.radiobutton[searcher].controlDown(buttons_upper[place[1]])
                 else:
                     ser = placed_keys[placed_values.index((place[0] + 1, place[1]))]
                     self.radiobutton[searcher].controlDown(self.radiobutton[ser])
@@ -213,33 +214,27 @@ class ControlCenter(AddonDialogWindow):
             self.button_utorrent.controlDown(self.button_openserchset)
             self.button_close.controlDown(self.button_clearstor)
 
-
         self.button_install.controlDown(self.button_openset)
         self.button_install.controlLeft(self.button_clearstor)
         self.button_install.controlRight(self.button_openserchset)
 
-
         self.button_openserchset.controlDown(self.button_utorrent)
         self.button_openserchset.controlLeft(self.button_install)
         self.button_openserchset.controlRight(self.button_clearstor)
-
 
         self.button_clearstor.controlDown(self.button_close)
         self.button_clearstor.controlLeft(self.button_openserchset)
         self.button_clearstor.controlRight(self.button_install)
 
         self.button_openset.controlUp(self.button_install)
-
         self.button_openset.controlLeft(self.button_close)
         self.button_openset.controlRight(self.button_utorrent)
 
         self.button_utorrent.controlUp(self.button_openserchset)
-
         self.button_utorrent.controlLeft(self.button_openset)
         self.button_utorrent.controlRight(self.button_close)
 
         self.button_close.controlUp(self.button_clearstor)
-
         self.button_close.controlLeft(self.button_utorrent)
         self.button_close.controlRight(self.button_openset)
 

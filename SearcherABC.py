@@ -45,6 +45,7 @@ class SearcherABC:
     cookieJar = None
     timeout_multi=int(sys.modules["__main__"].__settings__.getSetting("timeout"))
     __plugin__='Empty v 0 0 0'
+    baseurl = 'site.com'
 
     socket.setdefaulttimeout(10+(10*int(timeout_multi)))
 
