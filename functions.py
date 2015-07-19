@@ -1179,7 +1179,7 @@ def search(url, searchersList, isApi=None):
         from queue import Queue
 
     num_threads=__settings__.getSetting('num_threads')
-    if num_threads not in ['',None] and int(num_threads)>0:
+    if num_threads and int(num_threads)>0:
         num_threads = int(num_threads)
     else:
         num_threads = 3
