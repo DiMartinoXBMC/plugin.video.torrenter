@@ -105,7 +105,7 @@ class PageParser:
                         results.append(origResult)
                 else:
                     results.append(result)
-            results.extend(resultsMap.viewvalues())
+            results.extend(resultsMap.values())
 
         if mediaAltName:
             moreResults = self.queryKinoPoisk(mediaAltName, mediaYear)
@@ -124,7 +124,7 @@ class PageParser:
                         results.append(origResult)
                 else:
                     results.append(result)
-            results.extend(resultsMap.viewvalues())
+            results.extend(resultsMap.values())
 
         # Sort all results based on their score.
         results.sort(key=operator.itemgetter(3))
