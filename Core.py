@@ -138,7 +138,7 @@ class Core:
             self.drawItem('full_download', 'full_download', image=self.ROOT + '/icons/magnet.png')
             self.drawItem('test', 'test', image=self.ROOT + '/icons/magnet.png')
 
-        if 'true' == self.__settings__.getSetting("keep_files"):
+        if '0' != self.__settings__.getSetting("keep_files"):
             self.drawItem('< %s >' % self.localize('Clear Storage'), 'clearStorage', isFolder=True,
                           image=self.ROOT + '/icons/clear.png')
         view_style('sectionMenu')
@@ -1287,16 +1287,21 @@ class Core:
             xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
     def userStorage(self, params):
-        if self.__settings__.getSetting("keep_files")=='true' \
-            and self.__settings__.getSetting("ask_dir")=='true':
-            try:
-                save_folder = urllib.unquote_plus(params.get('save_folder'))
-            except:
-                save_folder = ''
+        save=False
+        if self.__settings__.getSetting("keep_files")=='2':
+            dialog = xbmcgui.Dialog()
+            save = dialog.yesno(self.localize('Ask to save'), self.localize('Would you like to save this file?'))
+            if save:
+                self.userStorageDirectory = os.path.join(self.userStorageDirectory, 'Saved Files')
+        if self.__settings__.getSetting("keep_files")=='1' and\
+                        self.__settings__.getSetting("ask_dir")=='true' or\
+                                self.__settings__.getSetting("keep_files")=='2' and\
+                        self.__settings__.getSetting("ask_dir")=='true' and save:
+            save_folder = unquote(params.get('save_folder'), '')
             if len(save_folder)>0:
-                default=os.path.join(self.userStorageDirectory, save_folder)
+                default = os.path.join(self.userStorageDirectory, save_folder)
             else:
-                default=self.userStorageDirectory
+                default = self.userStorageDirectory
             keyboard = xbmc.Keyboard(default, self.localize('Save to path') + ':')
             keyboard.doModal()
             dirname = keyboard.getText()

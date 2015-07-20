@@ -129,7 +129,7 @@ class TorrentPlayer(xbmc.Player):
     torrentFilesDirectory = 'torrents'
     debug = __settings__.getSetting('debug') == 'true'
     subs_dl = __settings__.getSetting('subs_dl') == 'true'
-    seeding = __settings__.getSetting('keep_seeding') == 'true' and __settings__.getSetting('keep_files') == 'true'
+    seeding = __settings__.getSetting('keep_seeding') == 'true' and __settings__.getSetting('keep_files') == '1'
     seeding_status = False
     seeding_run = False
     ids_video = None
@@ -171,7 +171,7 @@ class TorrentPlayer(xbmc.Player):
         self.torrent.stopSession()
         self.torrent.threadComplete = True
         self.torrent.checkThread()
-        if 'false' == self.__settings__.getSetting("keep_files"):
+        if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
             clearStorage(self.userStorageDirectory)
         else:
             if self.seeding_status:

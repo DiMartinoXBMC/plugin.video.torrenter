@@ -30,7 +30,7 @@ import xbmc
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import file_decode, file_encode, isSubtitle, DownloadDB
+from functions import file_decode, file_encode, isSubtitle, DownloadDB, log, debug
 from platform_pulsar import get_platform
 
 
@@ -320,9 +320,12 @@ class Libtorrent:
 
         #tribler example never tested
         #self.session.set_severity_level(self.lt.alert.severity_levels.info)
-        #self.session.add_extension(self.lt.create_ut_pex_plugin)
-        #self.session.add_extension(self.lt.create_ut_metadata_plugin)
-        #self.session.add_extension(self.lt.create_metadata_plugin)
+        self.session.add_extension("ut_pex")
+        self.session.add_extension("lt_trackers")
+        self.session.add_extension("metadata_transfer")
+        self.session.add_extension("ut_metadata")
+        # Ban peers that sends bad data
+        self.session.add_extension("smart_ban")
 
         # Session settings
         session_settings = self.session.settings()
@@ -372,7 +375,7 @@ class Libtorrent:
         if None == self.magnetLink:
             self.torrentHandle = self.session.add_torrent({'ti': self.torrentFileInfo,
                                                            'save_path': self.storageDirectory,
-                                                           'flags': 0x300,
+                                                           #'flags': 0x300,
                                                            # 'storage_mode': self.lt.storage_mode_t.storage_mode_allocate,
                                                            })
         else:
@@ -421,8 +424,11 @@ class Libtorrent:
 
     def checkThread(self):
         if self.threadComplete == True:
-            print 'checkThread KIIIIIIIIIIILLLLLLLLLLLLLLL'
-            self.session.remove_torrent(self.torrentHandle)
+            log('checkThread KIIIIIIIIIIILLLLLLLLLLLLLLL')
+            try:
+                self.session.remove_torrent(self.torrentHandle)
+            except:
+                log('RuntimeError: invalid torrent handle used')
             self.session.stop_natpmp()
             self.session.stop_upnp()
             self.session.stop_lsd()

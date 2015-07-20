@@ -264,6 +264,8 @@ def localize(text):
             'I deleted pre-installed ones, install them in Search Control Window!':'Теперь серчеры нужно устанавливать отдельно в Окне Управления Поиском!',
             'Torrenter didn\'t find %s searcher':'Торрентер не нашел серчер трекера %s',
             'Torrenter Tracker Install':'Установка трекеров в Torrenter',
+            'Ask to save':'Спросить о сохранении',
+            'Would you like to save this file?':'Хотите сохранить данный файл?',
 
         },
         'uk': {

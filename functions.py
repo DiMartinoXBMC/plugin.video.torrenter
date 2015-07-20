@@ -53,7 +53,6 @@ __language__ = __settings__.getLocalizedString
 ROOT = __settings__.getAddonInfo('path')  # .decode('utf-8').encode(sys.getfilesystemencoding())
 userStorageDirectory = __settings__.getSetting("storage")
 USERAGENT = "Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0"
-torrentFilesDirectory = 'torrents'
 __addonpath__ = __settings__.getAddonInfo('path')
 icon = __addonpath__ + '/icon.png'
 debug = __settings__.getSetting("debug")
@@ -62,22 +61,40 @@ __plugin__ = __settings__.getAddonInfo('name') + " v." + __version__
 
 
 def clearStorage(userStorageDirectory):
-    try:
-        userStorageDirectory = userStorageDirectory.decode('utf-8')
-    except:
-        pass
+    userStorageDirectory = decode(userStorageDirectory)
     if xbmcvfs.exists(userStorageDirectory + os.sep):
         import shutil
 
         temp = userStorageDirectory.rstrip('Torrenter').rstrip('/\\')
-        torrents_temp, i = None, 0
-        while not torrents_temp or xbmcvfs.exists(torrents_temp):
+        torrents_temp, saved_temp, i = None, None, ''
+        while not torrents_temp or os.path.exists(torrents_temp) or os.path.exists(saved_temp):
             torrents_temp = os.path.join(temp, 'torrents' + str(i)) + os.sep
-            i += 1
-        shutil.move(os.path.join(userStorageDirectory, 'torrents'), torrents_temp)
+            saved_temp = os.path.join(temp, 'Saved Files' + str(i)) + os.sep
+            if i=='':
+                i=0
+            else:
+                i += 1
+
+        torrents = os.path.join(userStorageDirectory, 'torrents')
+        saved = os.path.join(userStorageDirectory, 'Saved Files')
+        torrents_bool, saved_bool = False, False
+
+        if os.path.exists(torrents):
+            torrents_bool = shutil.move(torrents, torrents_temp)
+            torrents_bool = True
+
+        if os.path.exists(saved):
+            saved_bool = shutil.move(saved, saved_temp)
+            saved_bool = True
+
         shutil.rmtree(userStorageDirectory, ignore_errors=True)
         xbmcvfs.mkdir(userStorageDirectory)
-        shutil.move(torrents_temp, os.path.join(userStorageDirectory, 'torrents'))
+
+        if torrents_bool:
+            shutil.move(torrents_temp, torrents)
+        if saved_bool:
+            shutil.move(saved_temp, saved)
+
     DownloadDB().clear()
     showMessage(Localization.localize('Storage'), Localization.localize('Storage was cleared'), forced=True)
 
@@ -1833,3 +1850,22 @@ def noActiveSerachers():
     if yes:
         xbmc.executebuiltin('Dialog.Close(all,true)')
         xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher'))
+
+def windows_check():
+    import platform
+    """
+    Checks if the current platform is Windows
+    :returns: True or False
+    :rtype: bool
+    """
+    return platform.system() in ('Windows', 'Microsoft')
+
+
+def vista_check():
+    import platform
+    """
+    Checks if the current platform is Windows Vista
+    :returns: True or False
+    :rtype: bool
+    """
+    return platform.release() == "Vista"

@@ -40,6 +40,9 @@
     <string id="30040">Дополнительная фраза в вариантах поиска</string>
     <string id="30041">Шифрование</string>
     <string id="30042">Количество параллельных потоков поиска</string>
+    <string id="30043">Удалять файлы</string>
+    <string id="30044">Сохранять файлы</string>
+    <string id="30045">Спросить о сохранении</string>
     <string id="30101">Интерфейс</string>
     <string id="30102">P2P Сеть</string>
     <string id="30103">Дополнительные</string>
