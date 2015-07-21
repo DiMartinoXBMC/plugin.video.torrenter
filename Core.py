@@ -1693,14 +1693,7 @@ class Core:
             classMatch = re.search('(\w+)::(.+)', url)
             if classMatch:
                 searcher = classMatch.group(1)
-                if self.ROOT + os.sep + 'resources' + os.sep + 'searchers' not in sys.path:
-                    sys.path.insert(0, self.ROOT + os.sep + 'resources' + os.sep + 'searchers')
-                try:
-                    searcherObject = getattr(__import__(searcher), searcher)()
-                except Exception, e:
-                    print 'Unable to use searcher: ' + searcher + ' at ' + self.__plugin__ + ' openTorrent(). Exception: ' + str(e)
-                    return
-                url = searcherObject.getTorrentFile(classMatch.group(2))
+                url = Searchers().downloadWithSearcher(classMatch.group(2), searcher)
         torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
         torrent.initSession()
         encryption = self.__settings__.getSetting('encryption') == 'true'
