@@ -25,7 +25,7 @@
         <setting id="download_limit"    type="number"   label="30011" default="0"       visible="eq(-6,0)"/>
         <setting id="blank"             type="text"     label="30024" default=""        visible="eq(-7,1)"/>
         <setting id="subs_dl"           type="bool"     label="30029" default="true"    visible="eq(-8,0)"/>
-        <setting id="keep_seeding"      type="bool"     label="30030" default="false"   visible="eq(-9,0)" enable="eq(-7,true)"/>
+        <setting id="keep_seeding"      type="bool"     label="30030" default="false"   visible="eq(-9,0)" enable="eq(-7,1)"/>
         <setting id="encryption"        type="bool"     label="30041" default="true"    visible="eq(-10,0)"/>
     </category>
     <category label="Torrent-client">
