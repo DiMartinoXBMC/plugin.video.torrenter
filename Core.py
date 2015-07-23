@@ -1247,8 +1247,6 @@ class Core:
         if url:
             self.__settings__.setSetting("lastTorrentUrl", url)
             torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
-            if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
-                                                         torrentFilesDirectory=self.torrentFilesDirectory)
             self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
             contentList = []
             for filedict in torrent.getContentList():
@@ -1330,11 +1328,7 @@ class Core:
             ind = get("url")
             icon = get("thumbnail") if get("thumbnail") else ''
             path = torrent.getFilePath(int(ind))
-            label = os.path.basename(path)
-            try:
-                label = urllib.unquote_plus(get("label"))
-            except:
-                print 'except'
+            label = unquote(get("label"), os.path.basename(path))
             torrent.play_url_ind(int(ind), label, icon)
             torrent.__exit__()
             __ASsettings__.setSetting("folder", folder)
@@ -1364,12 +1358,10 @@ class Core:
     def playSTRM(self, params={}):
         get = params.get
         xbmc.executebuiltin('xbmc.Playlist.Clear')
-        url = unquote(get("url"),None)
+        url = unquote(get("url"), None)
         if url:
             self.__settings__.setSetting("lastTorrentUrl", url)
             torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
-            if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
-                                                         torrentFilesDirectory=self.torrentFilesDirectory)
             self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
             contentList = []
             for filedict in torrent.getContentList():

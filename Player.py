@@ -134,6 +134,7 @@ class TorrentPlayer(xbmc.Player):
     seeding_run = False
     ids_video = None
     episodeId = None
+    basename = ''
 
     def __init__(self, userStorageDirectory, torrentUrl, params={}):
         self.userStorageDirectory = userStorageDirectory
@@ -425,10 +426,11 @@ class TorrentPlayer(xbmc.Player):
         ]
 
     def db_delete(self):
-        db = DownloadDB()
-        get = db.get(self.basename)
-        if get:
-            db.delete(get[0])
+        if self.basename:
+            db = DownloadDB()
+            get = db.get(self.basename)
+            if get:
+                db.delete(get[0])
 
     def seed(self, contentId):
         self.db_delete()

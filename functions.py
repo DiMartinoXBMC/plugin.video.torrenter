@@ -55,7 +55,6 @@ userStorageDirectory = __settings__.getSetting("storage")
 USERAGENT = "Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0"
 __addonpath__ = __settings__.getAddonInfo('path')
 icon = __addonpath__ + '/icon.png'
-debug = __settings__.getSetting("debug")
 __version__ = __settings__.getAddonInfo('version')
 __plugin__ = __settings__.getAddonInfo('name') + " v." + __version__
 

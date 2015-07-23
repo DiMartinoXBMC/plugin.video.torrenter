@@ -123,7 +123,7 @@ class Libtorrent:
                     xbmcvfs.mkdirs(self.torrentFilesPath)
                 newFile = self.torrentFilesPath + self.md5(baseName) + '.' + self.md5(
                     torrentUrl) + '.torrent'  # + '.'+ baseName
-                if not xbmcvfs.exists(newFile):
+                if xbmcvfs.exists(newFile):
                     xbmcvfs.delete(newFile)
                 if not xbmcvfs.exists(newFile):
                     try:
@@ -328,33 +328,17 @@ class Libtorrent:
         #self.session.add_extension("smart_ban")
 
         # Session settings
-        session_settings = self.session.settings()
-
-        session_settings.announce_to_all_tiers = True
-        session_settings.announce_to_all_trackers = True
-        session_settings.connection_speed = 100
-        session_settings.peer_connect_timeout = 2
-        session_settings.rate_limit_ip_overhead = True
-        session_settings.request_timeout = 5
-        session_settings.torrent_connect_boost = 100
-
-        #libtorrent 0.15 compability
-        #session_settings = self.session.get_settings()
-        #session_settings['announce_to_all_tiers'] = True
-        #session_settings['announce_to_all_trackers'] = True
-        #session_settings['connection_speed'] = 100
-        #session_settings['peer_connect_timeout'] = 2
-        #session_settings['rate_limit_ip_overhead'] = True
-        #session_settings['request_timeout'] = 5
-        #session_settings['torrent_connect_boost'] = 100
-
-        #tribler example never tested
-        #session_settings['user_agent'] = 'python_client/' + self.lt.version
-        #session_settings['auto_manage_startup'] = 30
-        #session_settings['auto_manage_interval'] = 30
-        #session_settings['dht_announce_interval'] = 60
-
-        self.session.set_settings(session_settings)
+        #session_settings = self.session.settings()
+        #
+        #session_settings.announce_to_all_tiers = True
+        #session_settings.announce_to_all_trackers = True
+        #session_settings.connection_speed = 100
+        #session_settings.peer_connect_timeout = 2
+        #session_settings.rate_limit_ip_overhead = True
+        #session_settings.request_timeout = 5
+        #session_settings.torrent_connect_boost = 100
+        #
+        #self.session.set_settings(session_settings)
 
     def encryptSession(self):
         # Encryption settings
@@ -375,14 +359,16 @@ class Libtorrent:
         if None == self.magnetLink:
             self.torrentHandle = self.session.add_torrent({'ti': self.torrentFileInfo,
                                                            'save_path': self.storageDirectory,
-                                                           'flags': 0x300,
-                                                           # 'storage_mode': self.lt.storage_mode_t.storage_mode_allocate,
+                                                           #'flags': 0x300,
+                                                           'paused': False,
+                                                           'auto_managed': False,
+                                                           'storage_mode': self.lt.storage_mode_t.storage_mode_allocate,
                                                            })
         else:
             self.torrentFileInfo = self.getMagnetInfo()
         self.torrentHandle.set_sequential_download(True)
-        #self.torrentHandle.set_max_connections(60)
-        #self.torrentHandle.set_max_uploads(-1)
+        self.torrentHandle.set_max_connections(60)
+        self.torrentHandle.set_max_uploads(-1)
         self.stopSession()
 
     def stopSession(self):
@@ -400,7 +386,7 @@ class Libtorrent:
         self.endPart = int((selectedFileInfo['offset'] + selectedFileInfo['size']) / self.piece_length)
         # print 'part ' + str(self.startPart)+ str(' ')+ str(self.endPart)
         multiplier = self.partOffset / 5
-        print 'continueSession: multiplier ' + str(multiplier)
+        log('continueSession: multiplier ' + str(multiplier))
         for i in range(self.startPart, self.startPart + self.partOffset):
             if i <= self.endPart:
                 self.torrentHandle.piece_priority(i, 7)
@@ -446,11 +432,12 @@ class Libtorrent:
 
             state_str = ['queued', 'checking', 'downloading metadata',
                          'downloading', 'finished', 'seeding', 'allocating']
-            print '[%s] %.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s' % \
+            log('[%s] %.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s' % \
                   (self.lt.version, s.progress * 100, s.download_rate / 1000,
                    s.upload_rate / 1000,
-                   s.num_peers, state_str[s.state])
-            i = 0
+                   s.num_peers, state_str[s.state]))
+            debug('TRACKERS:' +str(self.torrentHandle.trackers()))
+            #i = 0
             # for t in s.pieces:
             #    if t: i=i+1
             # print str(self.session.pop_alert())
