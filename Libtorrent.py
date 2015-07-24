@@ -30,9 +30,8 @@ import xbmc
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import file_decode, file_encode, isSubtitle, DownloadDB, log, debug
+from functions import file_encode, isSubtitle, DownloadDB, log, debug
 from platform_pulsar import get_platform
-
 
 class Libtorrent:
     torrentFile = None
@@ -74,7 +73,8 @@ class Libtorrent:
         self.torrentFilesPath = os.path.join(self.storageDirectory, torrentFilesDirectory) + os.sep
         if xbmcvfs.exists(torrentFile):
             self.torrentFile = torrentFile
-            self.torrentFileInfo = self.lt.torrent_info(file_decode(self.torrentFile))
+            e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())
+            self.torrentFileInfo = self.lt.torrent_info(e)
         elif re.match("^magnet\:.+$", torrentFile):
             self.magnetLink = torrentFile
 
@@ -91,7 +91,7 @@ class Libtorrent:
                 torrentUrl) + '.torrent'
             try:
                 if not re.match("^http\:.+$", torrentUrl):
-                    content = xbmcvfs.File(file_decode(torrentUrl), "rb").read()
+                    content = xbmcvfs.File(torrentUrl, "rb").read()
                 else:
                     request = urllib2.Request(torrentUrl)
                     request.add_header('Referer', torrentUrl)
@@ -113,7 +113,8 @@ class Libtorrent:
                 return
             if xbmcvfs.exists(torrentFile):
                 try:
-                    self.torrentFileInfo = self.lt.torrent_info(file_decode(torrentFile))
+                    e=self.lt.bdecode(xbmcvfs.File(torrentFile,'rb').read())
+                    self.torrentFileInfo = self.lt.torrent_info(e)
                 except Exception, e:
                     print 'Exception: ' + str(e)
                     xbmcvfs.delete(torrentFile)
@@ -134,7 +135,8 @@ class Libtorrent:
                         return
                 self.torrentFile = newFile
                 if not self.torrentFileInfo:
-                    self.torrentFileInfo = self.lt.torrent_info(file_decode(self.torrentFile))
+                    e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())
+                    self.torrentFileInfo = self.lt.torrent_info(e)
                 return self.torrentFile
 
     def getMagnetInfo(self):
@@ -177,7 +179,8 @@ class Libtorrent:
             torentFileHandler = xbmcvfs.File(self.torrentFile, "w+b")
             torentFileHandler.write(self.lt.bencode(torrentFile.generate()))
             torentFileHandler.close()
-            self.torrentFileInfo = self.lt.torrent_info(file_decode(self.torrentFile))
+            e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())
+            self.torrentFileInfo = self.lt.torrent_info(e)
         except:
             xbmc.executebuiltin("Notification(%s, %s, 7500)" % (Localization.localize('Error'), Localization.localize(
                 'Can\'t download torrent, probably no seeds available.')))
@@ -328,17 +331,18 @@ class Libtorrent:
         #self.session.add_extension("smart_ban")
 
         # Session settings
-        #session_settings = self.session.settings()
+        session_settings = self.session.settings()
         #
-        #session_settings.announce_to_all_tiers = True
-        #session_settings.announce_to_all_trackers = True
-        #session_settings.connection_speed = 100
-        #session_settings.peer_connect_timeout = 2
-        #session_settings.rate_limit_ip_overhead = True
-        #session_settings.request_timeout = 5
-        #session_settings.torrent_connect_boost = 100
+        session_settings.announce_to_all_tiers = True
+        session_settings.announce_to_all_trackers = True
+        session_settings.connection_speed = 100
+        session_settings.peer_connect_timeout = 2
+        session_settings.rate_limit_ip_overhead = True
+        session_settings.request_timeout = 1
+        session_settings.torrent_connect_boost = 100
+        session_settings.user_agent = 'uTorrent/3430(40298)'
         #
-        #self.session.set_settings(session_settings)
+        self.session.set_settings(session_settings)
 
     def encryptSession(self):
         # Encryption settings
@@ -359,10 +363,10 @@ class Libtorrent:
         if None == self.magnetLink:
             self.torrentHandle = self.session.add_torrent({'ti': self.torrentFileInfo,
                                                            'save_path': self.storageDirectory,
-                                                           #'flags': 0x300,
+                                                           'flags': 0x300,
                                                            'paused': False,
-                                                           'auto_managed': False,
-                                                           'storage_mode': self.lt.storage_mode_t.storage_mode_allocate,
+                                                           #'auto_managed': False,
+                                                           #'storage_mode': self.lt.storage_mode_t.storage_mode_allocate,
                                                            })
         else:
             self.torrentFileInfo = self.getMagnetInfo()
@@ -432,11 +436,13 @@ class Libtorrent:
 
             state_str = ['queued', 'checking', 'downloading metadata',
                          'downloading', 'finished', 'seeding', 'allocating']
-            log('[%s] %.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s' % \
+            log('[%s] %.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s %s %s' % \
                   (self.lt.version, s.progress * 100, s.download_rate / 1000,
-                   s.upload_rate / 1000,
-                   s.num_peers, state_str[s.state]))
+                   s.upload_rate / 1000, s.num_peers, state_str[s.state],
+                   self.get_debug_info('dht_state'), self.get_debug_info('trackers_sum')))
             debug('TRACKERS:' +str(self.torrentHandle.trackers()))
+            #log('is_dht_running:' +str(self.session.is_dht_running()))
+            #log('dht_state:' +str(self.session.dht_state()))
             #i = 0
             # for t in s.pieces:
             #    if t: i=i+1
@@ -448,6 +454,28 @@ class Libtorrent:
         except:
             print 'debug error'
             pass
+
+    def get_debug_info(self, info):
+        result=''
+        if info in ['trackers_full','trackers_sum']:
+            trackers=[]
+            for tracker in self.torrentHandle.trackers():
+                trackers.append((tracker['url'], tracker['fails'], tracker['verified']))
+            if info=='trackers_full':
+                for url, fails, verified in trackers:
+                    result=result+'%s: f=%d, v=%s' %(url, fails, str(verified))
+            if info=='trackers_sum':
+                fails_sum, verified_sum = 0, 0
+                for url, fails, verified in trackers:
+                    fails_sum+=fails
+                    if verified: verified_sum+=1
+                result=result+'Trakers: verified %d/%d, fails=%d' %(verified_sum, len(trackers)-1, fails_sum)
+        if info=='dht_state':
+            is_dht_running='ON' if self.session.is_dht_running() else 'OFF'
+            nodes=self.session.dht_state().get('nodes')
+            nodes=len(nodes) if nodes else 0
+            result='DHT: %s (%d)' % (is_dht_running, nodes)
+        return result
 
     def dump(self, obj):
         for attr in dir(obj):

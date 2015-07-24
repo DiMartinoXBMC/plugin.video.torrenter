@@ -94,7 +94,11 @@ def clearStorage(userStorageDirectory):
         if saved_bool:
             shutil.move(saved_temp, saved)
 
-    DownloadDB().clear()
+    try:
+        DownloadDB().clear()
+    except Exception, e:
+        log('[clearStorage]: DownloadDB().clear() failed. '+str(e))
+
     showMessage(Localization.localize('Storage'), Localization.localize('Storage was cleared'), forced=True)
 
 
@@ -1521,11 +1525,12 @@ def fetchData(url, referer=None):
 
 
 def file_decode(filename):
-    if not __settings__.getSetting('delete_russian') == 'true':
-        try:
-            filename = filename.decode('utf-8')  # ,'ignore')
-        except:
-            pass
+    pass
+    #if not __settings__.getSetting('delete_russian') == 'true':
+    #    try:
+    #        filename = filename.decode('utf-8')  # ,'ignore')
+    #    except:
+    #        pass
     return filename
 
 

@@ -158,7 +158,7 @@ class TorrentPlayer(xbmc.Player):
             while True:
                 if self.setup_play():
                     # print '************************************* GOING LOOP'
-                    self.torrent.continueSession(self.contentId)
+                    #self.torrent.continueSession(self.contentId)
                     self.loop()
                 else:
                     break
@@ -252,6 +252,9 @@ class TorrentPlayer(xbmc.Player):
                 speedsText = '%s: %s Mbit/s; %s: %s Mbit/s' % (
                     Localization.localize('Downloading'), str(self.torrent.getDownloadRate() * 8 / 1000000),
                     Localization.localize('Uploading'), str(self.torrent.getUploadRate() * 8 / 1000000))
+                if self.debug:
+                    peersText=peersText + ' ' + self.torrent.get_debug_info('dht_state')
+                    dialogText=dialogText.replace(Localization.localize('Preloaded: '),'') + ' ' + self.torrent.get_debug_info('trackers_sum')
                 progressBar.update(iterator, Localization.localize('Seeds searching.') + peersText, dialogText,
                                    speedsText)
             else:
@@ -264,6 +267,7 @@ class TorrentPlayer(xbmc.Player):
                 return
         progressBar.update(0)
         progressBar.close()
+        self.torrent.continueSession(self.contentId)
         return True
 
     def setup_subs(self, label, path):
@@ -419,7 +423,7 @@ class TorrentPlayer(xbmc.Player):
     def _get_status_lines(self, s):
         return [
             self.display_name.decode('utf-8'),
-            "%.2f%% %s" % (s.progress * 100, Localization.localize(STATE_STRS[s.state]).decode('utf-8')),
+            "%.2f%% %s %s %s" % (s.progress * 100, Localization.localize(STATE_STRS[s.state]).decode('utf-8'), self.torrent.get_debug_info('dht_state'), self.torrent.get_debug_info('trackers_sum')),
             "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate / 1000, Localization.localize('kb/s').decode('utf-8'),
                                              s.upload_rate / 1000, Localization.localize('kb/s').decode('utf-8'),
                                              s.num_seeds, s.num_peers)
