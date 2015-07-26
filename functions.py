@@ -1877,6 +1877,8 @@ def vista_check():
     return platform.release() == "Vista"
 
 def is_writable(path):
+    if not os.path.exists(path):
+        xbmcvfs.mkdirs(path)
     try:
         open(os.path.join(path, 'temp'), 'w')
     except:
