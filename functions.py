@@ -131,13 +131,16 @@ def log(msg):
         xbmc.log("### [%s]: %s" % (__plugin__,'ERROR LOG',), level=xbmc.LOGNOTICE )
 
 
-def debug(msg):
+def debug(msg, forced=False):
+    level=xbmc.LOGDEBUG
+    if getSettingAsBool('debug') and forced:
+        level=xbmc.LOGNOTICE
     try:
-        xbmc.log("### [%s]: %s" % (__plugin__,msg,), level=xbmc.LOGDEBUG )
+        xbmc.log("### [%s]: %s" % (__plugin__,msg,), level=level )
     except UnicodeEncodeError:
-        xbmc.log("### [%s]: %s" % (__plugin__,msg.encode("utf-8", "ignore"),), level=xbmc.LOGDEBUG )
+        xbmc.log("### [%s]: %s" % (__plugin__,msg.encode("utf-8", "ignore"),), level=level )
     except:
-        xbmc.log("### [%s]: %s" % (__plugin__,'ERROR DEBUG',), level=xbmc.LOGDEBUG )
+        xbmc.log("### [%s]: %s" % (__plugin__,'ERROR DEBUG',), level=level )
 
 
 def showMessage(heading, message, times=10000, forced=False):
@@ -1115,6 +1118,7 @@ class Searchers():
             addons_dir = os.path.join(xbmc.translatePath('special://home'),'addons')
             addons_dirsList = xbmcvfs.listdir(addons_dir)[0]
             for searcherDir in addons_dirsList:
+                #if len(searchersDict)>1: break
                 if re.match('^torrenter\.searcher\.(\w+)$', searcherDir):
                     name=searcherDir.replace('torrenter.searcher.', '')
                     path=os.path.join(addons_dir, searcherDir)
@@ -1122,7 +1126,6 @@ class Searchers():
                                          'path':path,
                                          'searcher':os.path.join(path,name+'.py'),
                                          'type':'external'}
-                    #if len(searchersDict)>1: break
         return searchersDict
 
     def dic(self, providers=[]):
@@ -1864,7 +1867,6 @@ def windows_check():
     """
     return platform.system() in ('Windows', 'Microsoft')
 
-
 def vista_check():
     import platform
     """
@@ -1873,3 +1875,12 @@ def vista_check():
     :rtype: bool
     """
     return platform.release() == "Vista"
+
+def is_writable(path):
+    try:
+        open(os.path.join(path, 'temp'), 'w')
+    except:
+         return False
+    else:
+         os.remove(os.path.join(path, 'temp'))
+         return True

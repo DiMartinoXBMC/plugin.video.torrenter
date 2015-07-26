@@ -30,7 +30,7 @@ import Downloader
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import calculate, showMessage, clearStorage, DownloadDB, get_ids_video
+from functions import calculate, showMessage, clearStorage, DownloadDB, get_ids_video, log, debug
 
 ROOT = sys.modules["__main__"].__root__
 RESOURCES_PATH = os.path.join(ROOT, 'resources')
@@ -140,7 +140,7 @@ class TorrentPlayer(xbmc.Player):
         self.userStorageDirectory = userStorageDirectory
         self.torrentUrl = torrentUrl
         xbmc.Player.__init__(self)
-        print ("[TorrentPlayer] Initalized")
+        log("[TorrentPlayer] Initalized")
         self.params = params
         self.get = self.params.get
         self.contentId = int(self.get("url"))
@@ -157,35 +157,37 @@ class TorrentPlayer(xbmc.Player):
         if self.buffer():
             while True:
                 if self.setup_play():
-                    # print '************************************* GOING LOOP'
-                    #self.torrent.continueSession(self.contentId)
+                    debug('************************************* GOING LOOP')
+                    self.torrent.startSession()
+                    self.torrent.continueSession(self.contentId)
                     self.loop()
                 else:
                     break
-                # print '************************************* GO NEXT?'
+                debug('************************************* GO NEXT?')
                 if self.next_dl and self.next_dling and isinstance(self.next_contentId, int) and self.iterator == 100:
                     self.contentId = self.next_contentId
                     continue
-                # print '************************************* NO! break'
+                debug('************************************* NO! break')
                 break
 
         self.torrent.stopSession()
         self.torrent.threadComplete = True
         self.torrent.checkThread()
         if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
+            xbmc.sleep(1000)
             clearStorage(self.userStorageDirectory)
         else:
             if self.seeding_status:
-                showMessage(Localization.localize('Information'),
-                            Localization.localize('Torrent is seeding. To stop it use Download Status.'), forced=True)
+                showMessage(self.localize('Information'),
+                            self.localize('Torrent is seeding. To stop it use Download Status.'), forced=True)
             else:
                 if self.seeding: self.db_delete()
-                showMessage(Localization.localize('Information'),
-                            Localization.localize('Torrent downloading is stopped.'), forced=True)
+                showMessage(self.localize('Information'),
+                            self.localize('Torrent downloading is stopped.'), forced=True)
 
     def init(self):
         self.next_dl = True if self.__settings__.getSetting('next_dl') == 'true' and self.ids_video else False
-        print '[TorrentPlayer]: init - ' + str(self.next_dl)
+        log('[TorrentPlayer]: init - ' + str(self.next_dl))
         self.next_contentId = False
         self.display_name = ''
         self.downloadedSize = 0
@@ -212,21 +214,21 @@ class TorrentPlayer(xbmc.Player):
         self.torrent.status = False
         self.fullSize = self.torrent.getFileSize(self.contentId)
         Offset = calculate(self.fullSize)
-        # print 'Offset: '+str(Offset)
+        debug('Offset: '+str(Offset))
 
         # mp4 fix
         label = os.path.basename(self.torrent.getFilePath(self.contentId))
         isMP4 = False
         if '.' in label and  str(label.split('.')[-1]).lower() == 'mp4':
             isMP4 = True
-        # print 'setup_torrent: '+str((self.contentId, Offset, isMP4, label, ext))
+        debug('setup_torrent: '+str((self.contentId, Offset, isMP4, label)))
         self.torrent.continueSession(self.contentId, Offset=Offset, isMP4=isMP4)
 
     def buffer(self):
         iterator = 0
         progressBar = xbmcgui.DialogProgress()
-        progressBar.create(Localization.localize('Please Wait') + str(' [%s]' % str(self.torrent.lt.version)),
-                           Localization.localize('Seeds searching.'))
+        progressBar.create(self.localize('Please Wait') + str(' [%s]' % str(self.torrent.lt.version)),
+                           self.localize('Seeds searching.'))
         if self.subs_dl:
             subs = self.torrent.getSubsIds(os.path.basename(self.torrent.getFilePath(self.contentId)))
             if len(subs) > 0:
@@ -242,41 +244,43 @@ class TorrentPlayer(xbmc.Player):
             if status.state == 0 or (status.progress == 0 and status.num_pieces > 0):
                 iterator = int(status.num_pieces * 100 / num_pieces)
                 if iterator > 99: iterator = 99
-                progressBar.update(iterator, Localization.localize('Checking preloaded files...'), ' ', ' ')
+                progressBar.update(iterator, self.localize('Checking preloaded files...'), ' ', ' ')
             elif status.state == 3:
-                dialogText = Localization.localize('Preloaded: ') + str(downloadedSize / 1024 / 1024) + ' MB / ' + str(
+                dialogText = self.localize('Preloaded: ') + str(downloadedSize / 1024 / 1024) + ' MB / ' + str(
                     self.fullSize / 1024 / 1024) + ' MB'
                 peersText = ' [%s: %s; %s: %s]' % (
-                    Localization.localize('Seeds'), str(self.torrent.getSeeds()), Localization.localize('Peers'),
+                    self.localize('Seeds'), str(self.torrent.getSeeds()), self.localize('Peers'),
                     str(self.torrent.getPeers()),)
                 speedsText = '%s: %s Mbit/s; %s: %s Mbit/s' % (
-                    Localization.localize('Downloading'), str(self.torrent.getDownloadRate() * 8 / 1000000),
-                    Localization.localize('Uploading'), str(self.torrent.getUploadRate() * 8 / 1000000))
+                    self.localize('Downloading'), str(self.torrent.getDownloadRate() * 8 / 1000000),
+                    self.localize('Uploading'), str(self.torrent.getUploadRate() * 8 / 1000000))
                 if self.debug:
                     peersText=peersText + ' ' + self.torrent.get_debug_info('dht_state')
-                    dialogText=dialogText.replace(Localization.localize('Preloaded: '),'') + ' ' + self.torrent.get_debug_info('trackers_sum')
-                progressBar.update(iterator, Localization.localize('Seeds searching.') + peersText, dialogText,
+                    dialogText=dialogText.replace(self.localize('Preloaded: '),'') + ' ' + self.torrent.get_debug_info('trackers_sum')
+                progressBar.update(iterator, self.localize('Seeds searching.') + peersText, dialogText,
                                    speedsText)
             else:
-                progressBar.update(iterator, Localization.localize('UNKNOWN STATUS'), ' ', ' ')
+                progressBar.update(iterator, self.localize('UNKNOWN STATUS'), ' ', ' ')
             if progressBar.iscanceled():
                 progressBar.update(0)
                 progressBar.close()
                 self.torrent.threadComplete = True
                 self.torrent.checkThread()
                 return
+        #self.torrent.torrentHandle.flush_cache()
+        self.torrent.resume_data()
+        self.torrent.session.remove_torrent(self.torrent.torrentHandle)
         progressBar.update(0)
         progressBar.close()
-        self.torrent.continueSession(self.contentId)
         return True
 
     def setup_subs(self, label, path):
         iterator = 0
         subs = self.torrent.getSubsIds(label)
-        # print str(subs)
+        debug('[setup_subs] subs: '+str(subs))
         if len(subs) > 0:
-            showMessage(Localization.localize('Information'),
-                        Localization.localize('Downloading and copy subtitles. Please wait.'), forced=True)
+            showMessage(self.localize('Information'),
+                        self.localize('Downloading and copy subtitles. Please wait.'), forced=True)
             for ind, title in subs:
                 self.torrent.continueSession(ind)
             while iterator < 100:
@@ -292,7 +296,7 @@ class TorrentPlayer(xbmc.Player):
                 ext = temp.split('.')[-1]
                 temp = temp[:len(temp) - len(ext) - 1] + '.' + addition + '.' + ext
                 newFileName = os.path.join(os.path.dirname(path), temp)
-                # print str((os.path.join(os.path.dirname(os.path.dirname(path)),title),newFileName))
+                debug('[setup_subs]: '+str((os.path.join(os.path.dirname(os.path.dirname(path)),title),newFileName)))
                 if not xbmcvfs.exists(newFileName):
                     xbmcvfs.copy(os.path.join(os.path.dirname(os.path.dirname(path)), title), newFileName)
 
@@ -326,7 +330,7 @@ class TorrentPlayer(xbmc.Player):
                                                            'season': int(seasonId),
                                                            'tvshowtitle': title})
         except:
-            print '[TorrentPlayer] Operation INFO failed!'
+            log('[TorrentPlayer] Operation INFO failed!')
 
         thumbnail = self.get("thumbnail")
         if thumbnail:
@@ -354,7 +358,7 @@ class TorrentPlayer(xbmc.Player):
     def onPlayBackStarted(self):
         for f in self.on_playback_started:
             f()
-        print(str(("video", "play", self.display_name)))
+        log('[onPlayBackStarted]: '+(str(("video", "play", self.display_name))))
 
     def onPlayBackResumed(self):
         for f in self.on_playback_resumed:
@@ -364,12 +368,12 @@ class TorrentPlayer(xbmc.Player):
     def onPlayBackPaused(self):
         for f in self.on_playback_paused:
             f()
-        print(str(("video", "pause", self.display_name)))
+        log('[onPlayBackPaused]: '+(str(("video", "pause", self.display_name))))
 
     def onPlayBackStopped(self):
         for f in self.on_playback_stopped:
             f()
-        print(str(("video", "stop", self.display_name)))
+        log('[onPlayBackStopped]: '+(str(("video", "stop", self.display_name))))
 
     @contextmanager
     def attach(self, callback, *events):
@@ -403,7 +407,7 @@ class TorrentPlayer(xbmc.Player):
                             self.next_contentId = int(self.ids_video[next_contentId_index])
                         else:
                             self.next_contentId = False
-                            # print str(self.next_contentId)+'xxxxxx23'
+                            debug('[loop] next_contentId: '+str(self.next_contentId))
                     if not self.seeding_run and self.iterator == 100 and self.seeding:
                         self.seeding_run = True
                         self.seed(self.contentId)
@@ -411,8 +415,8 @@ class TorrentPlayer(xbmc.Player):
                         # xbmc.sleep(7000)
                     if self.iterator == 100 and self.next_dl and not self.next_dling and isinstance(self.next_contentId,
                                                                                                     int) and self.next_contentId != False:
-                        showMessage(Localization.localize('Torrent Downloading'),
-                                    Localization.localize('Starting download next episode!'), forced=True)
+                        showMessage(self.localize('Torrent Downloading'),
+                                    self.localize('Starting download next episode!'), forced=True)
                         self.torrent.stopSession()
                         # xbmc.sleep(1000)
                         path = self.torrent.getFilePath(self.next_contentId)
@@ -422,10 +426,10 @@ class TorrentPlayer(xbmc.Player):
 
     def _get_status_lines(self, s):
         return [
-            self.display_name.decode('utf-8'),
-            "%.2f%% %s %s %s" % (s.progress * 100, Localization.localize(STATE_STRS[s.state]).decode('utf-8'), self.torrent.get_debug_info('dht_state'), self.torrent.get_debug_info('trackers_sum')),
-            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate / 1000, Localization.localize('kb/s').decode('utf-8'),
-                                             s.upload_rate / 1000, Localization.localize('kb/s').decode('utf-8'),
+            self.display_name.decode('utf-8')+'; '+self.torrent.get_debug_info('dht_state'),
+            "%.2f%% %s; %s" % (s.progress * 100, self.localize(STATE_STRS[s.state]).decode('utf-8'), self.torrent.get_debug_info('trackers_sum')),
+            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate / 1000, self.localize('kb/s').decode('utf-8'),
+                                             s.upload_rate / 1000, self.localize('kb/s').decode('utf-8'),
                                              s.num_seeds, s.num_peers)
         ]
 
@@ -450,3 +454,9 @@ class TorrentPlayer(xbmc.Player):
             contentList.append((filedict.get('title'), str(filedict.get('ind'))))
         contentList = sorted(contentList, key=lambda x: x[0])
         return get_ids_video(contentList)
+
+    def localize(self, string):
+        try:
+            return Localization.localize(string)
+        except:
+            return string

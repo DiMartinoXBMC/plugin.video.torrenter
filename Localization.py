@@ -266,6 +266,7 @@ def localize(text):
             'Torrenter Tracker Install':'Установка трекеров в Torrenter',
             'Ask to save':'Спросить о сохранении',
             'Would you like to save this file?':'Хотите сохранить данный файл?',
+            'Your storage path is not writable or not local! Please change it in settings!':'Ваше хранилище не доступно для записи или не локально! Измените в настройках!',
 
         },
         'uk': {

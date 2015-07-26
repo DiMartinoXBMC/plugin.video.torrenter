@@ -25,18 +25,17 @@ import hashlib
 import re
 from StringIO import StringIO
 import gzip
+import sys
 
 import xbmc
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import file_encode, isSubtitle, DownloadDB, log, debug
+from functions import file_encode, isSubtitle, DownloadDB, log, debug, is_writable
 from platform_pulsar import get_platform
 
 class Libtorrent:
-    torrentFile = None
     magnetLink = None
-    storageDirectory = ''
     startPart = 0
     endPart = 0
     partOffset = 0
@@ -45,9 +44,19 @@ class Libtorrent:
     downloadThread = None
     threadComplete = False
     lt = None
+    save_resume_data = None
 
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
         self.platform = get_platform()
+        self.storageDirectory = storageDirectory
+        self.torrentFilesPath = os.path.join(self.storageDirectory, torrentFilesDirectory) + os.sep
+        if not is_writable(self.storageDirectory):
+            xbmcgui.Dialog().ok(Localization.localize('Torrenter v2'),
+                    Localization.localize('Your storage path is not writable or not local! Please change it in settings!'),
+                    Localization.localize(self.storageDirectory))
+
+            sys.exit(1)
+
         try:
             import libtorrent
 
@@ -69,8 +78,6 @@ class Libtorrent:
                                 Localization.localize(self.platform["message"][1]))
             return
 
-        self.storageDirectory = storageDirectory
-        self.torrentFilesPath = os.path.join(self.storageDirectory, torrentFilesDirectory) + os.sep
         if xbmcvfs.exists(torrentFile):
             self.torrentFile = torrentFile
             e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())
@@ -232,10 +239,22 @@ class Libtorrent:
         return subs
 
     def setUploadLimit(self, bytesPerSecond):
-        self.session.set_upload_rate_limit(int(bytesPerSecond))
+        try:
+            session_settings = self.session.get_settings()
+            session_settings['upload_rate_limit'] = int(bytesPerSecond)
+            self.session.set_settings(session_settings)
+        except:
+            #0.16 compatibility
+            self.session.set_upload_rate_limit(int(bytesPerSecond))
 
     def setDownloadLimit(self, bytesPerSecond):
-        self.session.set_download_rate_limit(int(bytesPerSecond))
+        try:
+            session_settings = self.session.get_settings()
+            session_settings['download_rate_limit'] = int(bytesPerSecond)
+            self.session.set_settings(session_settings)
+        except:
+            #0.16 compatibility
+            self.session.set_download_rate_limit(int(bytesPerSecond))
 
     def md5(self, string):
         hasher = hashlib.md5()
@@ -306,19 +325,16 @@ class Libtorrent:
         return
 
     def initSession(self):
-        try:
-            self.session.remove_torrent(self.torrentHandle)
-        except:
-            pass
         self.session = self.lt.session()
         self.session.set_alert_mask(self.lt.alert.category_t.error_notification | self.lt.alert.category_t.status_notification | self.lt.alert.category_t.storage_notification)
+        #self.session.set_alert_mask(self.lt.alert.category_t.all_categories)
         self.session.start_dht()
         self.session.add_dht_router("router.bittorrent.com", 6881)
         self.session.add_dht_router("router.utorrent.com", 6881)
         self.session.add_dht_router("router.bitcomet.com", 6881)
-        self.session.start_lsd()
-        self.session.start_upnp()
-        self.session.start_natpmp()
+        #self.session.start_lsd()
+        #self.session.start_upnp()
+        #self.session.start_natpmp()
         self.session.listen_on(6881, 6891)
 
         #tribler example never tested
@@ -331,22 +347,39 @@ class Libtorrent:
         #self.session.add_extension("smart_ban")
 
         # Session settings
-        session_settings = self.session.settings()
-        #
-        session_settings.announce_to_all_tiers = True
-        session_settings.announce_to_all_trackers = True
-        session_settings.connection_speed = 100
-        session_settings.peer_connect_timeout = 2
-        session_settings.rate_limit_ip_overhead = True
-        session_settings.request_timeout = 1
-        session_settings.torrent_connect_boost = 100
-        session_settings.user_agent = 'uTorrent/3430(40298)'
+        try:
+            session_settings = self.session.get_settings()
+            #
+            session_settings['announce_to_all_tiers'] = True
+            session_settings['announce_to_all_trackers'] = True
+            session_settings['connection_speed'] = 100
+            session_settings['peer_connect_timeout'] = 2
+            session_settings['rate_limit_ip_overhead'] = True
+            session_settings['request_timeout'] = 1
+            session_settings['torrent_connect_boost'] = 100
+            session_settings['user_agent'] = 'uTorrent/3430(40298)'
+            #session_settings['cache_size'] = 0
+            #session_settings['use_read_cache'] = False
+
+        except:
+            #0.15 compatibility
+            log('[initSession]: Session settings 0.15 compatibility')
+            session_settings = self.session.settings()
+
+            session_settings.announce_to_all_tiers = True
+            session_settings.announce_to_all_trackers = True
+            session_settings.connection_speed = 100
+            session_settings.peer_connect_timeout = 2
+            session_settings.rate_limit_ip_overhead = True
+            session_settings.request_timeout = 1
+            session_settings.torrent_connect_boost = 100
+            session_settings.user_agent = 'uTorrent/3430(40298)'
         #
         self.session.set_settings(session_settings)
 
     def encryptSession(self):
         # Encryption settings
-        print '[Torrenter v2]: Encryption enabling...'
+        log('Encryption enabling...')
         try:
             encryption_settings = self.lt.pe_settings()
             encryption_settings.out_enc_policy = self.lt.enc_policy(self.lt.enc_policy.forced)
@@ -354,22 +387,26 @@ class Libtorrent:
             encryption_settings.allowed_enc_level = self.lt.enc_level.both
             encryption_settings.prefer_rc4 = True
             self.session.set_pe_settings(encryption_settings)
-            print '[Torrenter v2]: Encryption on!'
+            log('Encryption on!')
         except Exception, e:
-            print '[Torrenter v2]: Encryption failed! Exception: ' + str(e)
+            log('Encryption failed! Exception: ' + str(e))
             pass
 
     def startSession(self):
-        if None == self.magnetLink:
-            self.torrentHandle = self.session.add_torrent({'ti': self.torrentFileInfo,
-                                                           'save_path': self.storageDirectory,
-                                                           'flags': 0x300,
-                                                           'paused': False,
-                                                           #'auto_managed': False,
-                                                           #'storage_mode': self.lt.storage_mode_t.storage_mode_allocate,
-                                                           })
-        else:
+        if self.magnetLink:
             self.torrentFileInfo = self.getMagnetInfo()
+        torrent_info={'ti': self.torrentFileInfo,
+                      'save_path': self.storageDirectory,
+                       #'storage_mode': self.lt.storage_mode_t(1),
+                       'paused': False,
+                       #'auto_managed': False,
+                       #'duplicate_is_error': True
+                      }
+        if self.save_resume_data:
+            log('loading resume data')
+            torrent_info['resume_data']=self.save_resume_data
+        self.torrentHandle = self.session.add_torrent(torrent_info)
+
         self.torrentHandle.set_sequential_download(True)
         self.torrentHandle.set_max_connections(60)
         self.torrentHandle.set_max_uploads(-1)
@@ -419,15 +456,30 @@ class Libtorrent:
                 self.session.remove_torrent(self.torrentHandle)
             except:
                 log('RuntimeError: invalid torrent handle used')
-            self.session.stop_natpmp()
-            self.session.stop_upnp()
-            self.session.stop_lsd()
+            #self.session.stop_natpmp()
+            #self.session.stop_upnp()
+            #self.session.stop_lsd()
             self.session.stop_dht()
+
+    def resume_data(self):
+        self.torrentHandle.save_resume_data()
+        received=False
+        while not received:   
+            self.session.wait_for_alert(1000)
+            a = self.session.pop_alert()
+            log('[save_resume_data]: ['+str(type(a))+'] the alert '+str(a)+' is received')
+            if type(a) == self.lt.save_resume_data_alert:
+                received = True
+                debug('[save_resume_data]: '+str(dir(a)))
+                self.save_resume_data=self.lt.bencode(a.resume_data)
+        log('[save_resume_data]: the torrent resume data are saved')
 
     def debug(self):
         try:
             # print str(self.getFilePath(0))
             s = self.torrentHandle.status()
+            #get_cache_status=self.session.get_cache_status()
+            #log('get_cache_status - %s/%s' % (str(get_cache_status.blocks_written), str(get_cache_status.blocks_read)))
             # get_settings=self.torrentHandle.status
             # print s.num_pieces
             # priorities = self.torrentHandle.piece_priorities()
@@ -438,15 +490,23 @@ class Libtorrent:
                          'downloading', 'finished', 'seeding', 'allocating']
             log('[%s] %.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s %s %s' % \
                   (self.lt.version, s.progress * 100, s.download_rate / 1000,
-                   s.upload_rate / 1000, s.num_peers, state_str[s.state],
-                   self.get_debug_info('dht_state'), self.get_debug_info('trackers_sum')))
+                   s.upload_rate / 1000, s.num_peers, state_str[s.state], self.get_debug_info('dht_state'), self.get_debug_info('trackers_sum')))
+            #log('%s %s' % (self.get_debug_info('dht_state'), self.get_debug_info('trackers_sum')))
             debug('TRACKERS:' +str(self.torrentHandle.trackers()))
+
+            received=self.session.pop_alert()
+            while received:
+                debug('[debug]: ['+str(type(received))+'] the alert '+str(received)+' is received')
+                #if type(received) == self.lt.torrent_finished_alert:
+                #    self.session.pause()
+                received = self.session.pop_alert()
+
             #log('is_dht_running:' +str(self.session.is_dht_running()))
             #log('dht_state:' +str(self.session.dht_state()))
             #i = 0
             # for t in s.pieces:
             #    if t: i=i+1
-            # print str(self.session.pop_alert())
+            #print str(self.session.pop_alert())
             # print str(s.pieces[self.startPart:self.endPart])
             # print 'True pieces: %d' % i
             # print s.current_tracker
@@ -469,10 +529,13 @@ class Libtorrent:
                 for url, fails, verified in trackers:
                     fails_sum+=fails
                     if verified: verified_sum+=1
-                result=result+'Trakers: verified %d/%d, fails=%d' %(verified_sum, len(trackers)-1, fails_sum)
+                result=result+'Trackers: verified %d/%d, fails=%d' %(verified_sum, len(trackers)-1, fails_sum)
         if info=='dht_state':
             is_dht_running='ON' if self.session.is_dht_running() else 'OFF'
-            nodes=self.session.dht_state().get('nodes')
+            try:
+                nodes=self.session.dht_state().get('nodes')
+            except:
+                nodes=None
             nodes=len(nodes) if nodes else 0
             result='DHT: %s (%d)' % (is_dht_running, nodes)
         return result
