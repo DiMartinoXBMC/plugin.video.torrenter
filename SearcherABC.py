@@ -141,7 +141,7 @@ class SearcherABC:
         if isinstance(temp_dir, list): temp_dir = temp_dir[0]
         image = xbmcgui.ControlImage(460, 20, 360, 160, temp_dir + '/captcha.png')
         window.addControl(image)
-        keyboardCaptcha = xbmc.Keyboard('', Localization.localize('Input symbols from CAPTCHA image:'))
+        keyboardCaptcha = xbmc.Keyboard('', '[%s] %s' % (self.__plugin__, Localization.localize('Input symbols from CAPTCHA image:')))
         keyboardCaptcha.doModal()
         captchaText = keyboardCaptcha.getText()
         window.removeControl(image)
