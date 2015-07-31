@@ -18,18 +18,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import Content
+import Content, re
 from BeautifulSoup import BeautifulSoup
 
 
 class RiperAM(Content.Content):
     category_dict = {
-        #'movies':('Movies', '/popular/'),
-        #'tvshows':('TV Shows', '/top/serial/list/'),
-        #'cartoons':('Cartoons', '/top/id_genre/14/'),
-        #'anime':('Anime', '/search/title?count=100&genres=animation&keywords=anime&num_votes=1000,&explore=title_type&ref_=gnr_kw_an'),
         'hot': ('Most Recent', '/', {'page': '/portal.php?tp=%d', 'increase': 30, 'second_page': 30}),
-        #'top':('Top 250 Movies', '/top/'),
     }
 
     baseurl = "http://www.riper.am"
@@ -64,50 +59,52 @@ class RiperAM(Content.Content):
         return False
 
     def get_contentList(self, category, subcategory=None, apps_property=None):
+        #self.debug=self.log
         contentList = []
         url = self.get_url(category, subcategory, apps_property)
 
         response = self.makeRequest(url, headers=self.headers)
 
         if None != response and 0 < len(response):
-            #print response
+            response=response.decode('utf-8')
+            #self.debug(str(response))
             if category in ['hot']:
                 contentList = self.popmode(response)
-        #print str(contentList)
+        self.debug('[get_contentList] contentList '+str(contentList))
         return contentList
 
     def popmode(self, response):
         contentList = []
-        Soup = BeautifulSoup(response)
-        result = Soup.findAll('table', 'postbody postbody_portal')
-        #print str(result)
         num = 31
-        bad_forum = [u'Безопасность', u'Книги и журналы', u'Action & Shooter', u'RPG/MMORPG']
-        for tr in result:
-            #main
-            info = {}
-            forum = tr.find('div', {'style': 'height:20px;overflow:hidden;'}).find('a').text
-            if forum and forum in bad_forum:
-                continue
-            link = tr.find('div', {'style': 'width:200px;overflow:hidden;'}).find('a').get('href')
-            num = num - 1
-            label = tr.find('strong').text
-            original_title = None
-            year = 0
-            title = self.unescape(label)
-            img = tr.findAll('a')[0].find('img').get('src')
-            if img:
-                img = img.replace('.webp', '.jpg')
+        bad_forum = [u'Безопасность', u'Книги и журналы', u'Action & Shooter', u'RPG/MMORPG', u'Книги', u'Журналы']
 
-            #info
+        regex = u'<table class="postbody postbody_portal"(.+?)</table>'
+        regex_tr = u'''<img height="200" src="(.+?)".+?></a>.+?<h4 class="first"><a href="(.+?)" title=".+?"><strong>(.+?)</strong></a></h4></div>.+?<div style="height:20px;overflow:hidden;">.+?<a href=".+?">(.+?)</a>'''
+        for tr in re.compile(regex, re.DOTALL).findall(response):
 
-            info['label'] = label
-            info['link'] = link
-            info['title'] = title
-            info['year'] = int(year)
+            result=re.compile(regex_tr, re.DOTALL).findall(tr)
+            self.debug(tr+' -> '+str(result))
+            if result:
+                (img, link, label, forum)=result[0]
+                info = {}
+                if forum and forum in bad_forum:
+                    continue
+                num = num - 1
+                original_title = None
+                year = 0
+                title = self.unescape(label)
+                if img:
+                    img = img.replace('.webp', '.jpg')
 
-            contentList.append((
-                int(int(self.sourceWeight) * (int(num))),
-                original_title, title, int(year), img, info,
-            ))
+                #info
+
+                info['label'] = label
+                info['link'] = link
+                info['title'] = title
+                info['year'] = int(year)
+
+                contentList.append((
+                    int(int(self.sourceWeight) * (int(num))),
+                    original_title, title, int(year), img, info,
+                ))
         return contentList

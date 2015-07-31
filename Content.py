@@ -28,6 +28,7 @@ import gzip
 import HTMLParser
 
 import Localization
+from functions import log, debug
 
 
 class Content:
@@ -269,3 +270,9 @@ class Content:
             size = str(long(sizeBytes)) + 'B'
 
         return size
+
+    def log(self, msg):
+        log(msg)
+
+    def debug(self, msg):
+        debug(msg)
