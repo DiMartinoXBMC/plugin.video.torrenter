@@ -58,21 +58,20 @@ class Libtorrent:
             sys.exit(1)
 
         try:
-            import libtorrent
-
-            print '[Torrenter v2]: Imported libtorrent v' + libtorrent.version + ' from system'
-        except Exception, e:
-            print '[Torrenter v2]: Error importing from system. Exception: ' + str(e)
             from python_libtorrent import get_libtorrent
             libtorrent=get_libtorrent()
+            log('Imported libtorrent v%s from python_libtorrent/%s' %(libtorrent.version, self.platform['system']))
+        except Exception, e:
+            log('Error importing python_libtorrent.%s. Exception: %s' %(self.platform['system'], str(e)))
+            import libtorrent
 
         try:
+            log('Imported libtorrent v' + libtorrent.version + ' from system')
             self.lt = libtorrent
             del libtorrent
-            print '[Torrenter v2]: Imported libtorrent v' + self.lt.version + ' from python_libtorrent.' + self.platform[
-                    'system']
+
         except Exception, e:
-            print '[Torrenter v2]: Error importing python_libtorrent.' + self.platform['system'] + '. Exception: ' + str(e)
+            log('Error importing from system. Exception: ' + str(e))
             xbmcgui.Dialog().ok(Localization.localize('Python-Libtorrent Not Found'),
                                 Localization.localize(self.platform["message"][0]),
                                 Localization.localize(self.platform["message"][1]))
