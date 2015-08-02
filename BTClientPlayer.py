@@ -23,6 +23,8 @@ import urllib
 import json
 import sys
 from contextlib import contextmanager, closing, nested
+import traceback
+from argparse import Namespace
 
 import xbmc
 import xbmcgui
@@ -31,14 +33,8 @@ import xbmcgui
 import xbmcvfs
 import Localization
 from platform_pulsar import get_platform
-import traceback
-from btclient import *
-from functions import calculate, showMessage, clearStorage, DownloadDB, get_ids_video, log, debug, is_writable
-from argparse import Namespace
+from functions import showMessage, DownloadDB, get_ids_video, log, debug
 from Player import OverlayText
-from Libtorrent import Libtorrent
-
-
 
 ROOT = sys.modules["__main__"].__root__
 RESOURCES_PATH = os.path.join(ROOT, 'resources')
