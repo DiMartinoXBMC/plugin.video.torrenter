@@ -365,14 +365,15 @@ class BTClientPlayer(xbmc.Player):
         self.display_name = label
 
         base = 'http://127.0.0.1:' + str(self.free_port) + '/'
-        url = urlparse.urljoin(base, urllib.quote(path))
+        url = urlparse.urljoin(base, urllib.quote(self.c._file.path))
         # мегакостыль!
         rpc = ({'jsonrpc': '2.0', 'method': 'Files.GetDirectory', 'params': {
-            'media': 'video', 'directory': os.path.dirname(path)}, 'id': 0})
+            'media': 'video', 'directory': path}, 'id': 0})
         data = json.dumps(rpc)
         request = xbmc.executeJSONRPC(data)
         response = json.loads(request)
-        xbmc.sleep(300)
+        while not response:
+            xbmc.sleep(100)
         if response:
             playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
             playlist.clear()

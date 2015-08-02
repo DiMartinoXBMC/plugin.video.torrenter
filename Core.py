@@ -11,7 +11,7 @@
     
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the#
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
@@ -26,12 +26,7 @@ import xbmcaddon
 import xbmcgui
 import xbmcplugin
 import xbmcvfs
-import Content
-from Player import TorrentPlayer
 from functions import *
-from resources.utorrent.net import *
-from resources.scrapers.scrapers import Scrapers
-from resources.skins.DialogXml import *
 from platform_pulsar import get_platform
 
 
@@ -136,7 +131,7 @@ class Core:
                       image=self.ROOT + '/icons/magnet.png')
         if self.debug:
             self.drawItem('full_download', 'full_download', image=self.ROOT + '/icons/magnet.png')
-            self.drawItem('test', 'test', image=self.ROOT + '/icons/magnet.png')
+            self.drawItem('test', 'test', image=self.ROOT + '/icons/magnet.png', isFolder=False)
 
         if '0' != self.__settings__.getSetting("keep_files"):
             self.drawItem('< %s >' % self.localize('Clear Storage'), 'clearStorage', isFolder=True,
@@ -273,18 +268,23 @@ class Core:
         lockView('wide')
 
     def test(self, params={}):
-        #db=DownloadDB()
-        #db.add(u'XXX2', 'file', json.dumps({'seeds':1,'leechers':1}), 20)
-        #url='magnet:?xt=urn:btih:6698E0950DCD257A6B03AF2E8B068B7FF9D4619D&dn=game+of+thrones+season+2+720p+bluray+x264+shaanig&tr=udp%3A%2F%2Fcoppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Fopen.demonii.com%3A1337'
-        #filename='D:\\torrents\\Torrenter\\torrents\\Jimmy.Fallon.2015.01.09.Don.Cheadle.HDTV.x264-CROOKS.mp4.torrent'
-        #torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
-        #self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(filename))
-        #torrent.downloadProcess()
-        #self.DownloadStatus()
-        url='http://torcache.net/torrent/6698E0950DCD257A6B03AF2E8B068B7FF9D4619D.torrent?title=[kickass.to]game.of.thrones.season.2.720p.bluray.x264.shaanig'
-        #xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=openTorrent&external=ThePirateBaySe&url=ThePirateBaySe%3A%3A'+urllib.quote_plus(url)+'&not_download_only=True")')
-        #print str(Searchers().list())
-        first_run_230(False)
+        from BTClientPlayer import BTClientPlayer
+        torrentUrl='D:\\ntest.torrent'
+        params['url']='0'
+        if not xbmcvfs.exists(torrentUrl):
+            action = xbmcgui.Dialog()
+            torrentUrl = action.browse(1, self.localize('Choose .torrent in video library'), 'video', '.torrent')
+        if torrentUrl and xbmcvfs.exists(torrentUrl):
+            if 0 != len(torrentUrl):
+                self.Player = BTClientPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
+            else:
+                print self.__plugin__ + " Unexpected access to method playTorrent() without torrent content"
+        #path='http://127.0.0.1:5001/Inception.2010.1080p.BluRay.x264.5xRus.Eng-Otaibi.mkv'
+        #listitem = xbmcgui.ListItem('Inception.2010.1080p.BluRay.x264.5xRus.Eng-Otaibi.mkv', path=path)
+        #playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+        #playlist.clear()
+        #playlist.add(path, listitem)
+        #xbmc.Player().play(playlist)
 
     def DownloadStatus(self, params={}):
         db = DownloadDB()
@@ -592,6 +592,7 @@ class Core:
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
     def openContent(self, params={}):
+        import Content
         self.contenterObject = {}
         self.Content = Content.Content()
         self.Contenters = Contenters()
@@ -675,6 +676,7 @@ class Core:
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
     def full_download(self, params={}):
+        import Content
         self.contenterObject = {}
         self.Content = Content.Content()
         self.Contenters = Contenters()
@@ -759,6 +761,7 @@ class Core:
             xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
     def drawcontentList(self, contentList, params={}):
+        from resources.scrapers.scrapers import Scrapers
         contentList = sorted(contentList, key=lambda x: x[0], reverse=True)
         self.Scraper = Scrapers()
         progressBar = xbmcgui.DialogProgress()
@@ -926,6 +929,7 @@ class Core:
             #self.drawItem(title, 'openTorrent', link, img, info=info, contextMenu=contextMenu, replaceMenu=False)
 
     def ActionInfo(self, params={}):
+        from resources.skins.DialogXml import DialogXml
         get = params.get
         contenter=get('provider')
         infolink=get('url')
@@ -1058,6 +1062,7 @@ class Core:
             self.sectionMenu()
 
     def uTorrentBrowser(self, params={}):
+        from resources.utorrent.net import Download
         menu, dirs = [], []
         contextMenustring = 'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (sys.argv[0], 'uTorrentBrowser', '%s')
         get = params.get
@@ -1312,8 +1317,15 @@ class Core:
         torrentUrl = self.__settings__.getSetting("lastTorrent")
         self.userStorage(params)
         if self.torrent_player == '0':
+            from Player import TorrentPlayer
             if 0 != len(torrentUrl):
                 self.Player = TorrentPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
+            else:
+                print self.__plugin__ + " Unexpected access to method playTorrent() without torrent content"
+        elif self.torrent_player == '2':
+            from BTClientPlayer import BTClientPlayer
+            if 0 != len(torrentUrl):
+                self.Player = BTClientPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
             else:
                 print self.__plugin__ + " Unexpected access to method playTorrent() without torrent content"
         elif self.torrent_player == '1':
@@ -1596,6 +1608,7 @@ class Core:
         return
 
     def downloadFilesList(self, params={}):
+        from resources.utorrent.net import Download
         dirname = None
         dat = Download().listdirs()
         if dat == False:
@@ -1667,7 +1680,7 @@ class Core:
             if success:
                 showMessage(self.localize('Torrent-client Browser'), self.localize('Added!'), forced=True)
                 if ind:
-                    id = self.chooseHASH()[0]
+                    id = self.chooseHASH(Download().list())[0]
                     Download().setprio(id, ind)
 
     def downloadLibtorrent(self, params={}):
@@ -1744,10 +1757,10 @@ class Core:
         else:
             self.openSection(params)
 
-    def chooseHASH(self):
+    def chooseHASH(self, list):
         dialog_items, dialog_items_clean = [], []
         dialog_files = []
-        dat = Download().list()
+        dat = list
         if dat == False:
             showMessage(self.localize('Error'), self.localize('No connection! Check settings!'), forced=True)
             return

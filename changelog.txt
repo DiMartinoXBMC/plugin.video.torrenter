@@ -1,5 +1,9 @@
 ﻿English changelog at http://bit.ly/1MfSVUP
 
+[B]Version 2.3.6[/B]
+[+] Оптимизация импорта
+[+] Новый Проигрыватель BTclient (https://github.com/izderadicka/btclient) в тестовом режиме.
+
 [B]Version 2.3.5[/B]
 [+] Проигрыватель: Уменьшена просадка после загрузки буфера
 [+] Проигрыватель: Проверка на запись хранилища

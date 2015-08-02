@@ -36,7 +36,6 @@ import xbmc
 import xbmcaddon
 import xbmcvfs
 import Localization
-from resources.scrapers.scrapers import Scrapers
 
 try:
     from hashlib import md5
@@ -1265,6 +1264,7 @@ class Contenters():
         pass
 
     def first_time(self, scrapperDB_ver, language='ru'):
+        from resources.scrapers.scrapers import Scrapers
         searcher = 'metadata'
         redl = False
         scrapperDB_ver = scrapperDB_ver[language]

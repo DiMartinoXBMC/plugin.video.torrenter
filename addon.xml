@@ -3,6 +3,7 @@
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
         <import addon="script.module.libtorrent"/>
+        <import addon="script.module.btclient"/>
         <import addon="script.module.torrent.ts"/>
     </requires>
     <extension point="xbmc.python.pluginsource" provides="video" library="default.py">

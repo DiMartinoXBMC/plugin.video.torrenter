@@ -61,12 +61,14 @@ class Libtorrent:
             from python_libtorrent import get_libtorrent
             libtorrent=get_libtorrent()
             log('Imported libtorrent v%s from python_libtorrent/%s' %(libtorrent.version, self.platform['system']))
+            module=True
         except Exception, e:
+            module=False
             log('Error importing python_libtorrent.%s. Exception: %s' %(self.platform['system'], str(e)))
             import libtorrent
 
         try:
-            log('Imported libtorrent v' + libtorrent.version + ' from system')
+            if not module: log('Imported libtorrent v' + libtorrent.version + ' from system')
             self.lt = libtorrent
             del libtorrent
 

@@ -16,7 +16,7 @@
         <setting id="debug"             type="bool"     label="30015" default="false"/>
     </category>
     <category label="30102">
-        <setting id="torrent_player"    type="enum"     label="30023" default="0"       lvalues="30021|30022" />
+        <setting id="torrent_player"    type="enum"     label="30023" default="0"       lvalues="30021|30022|30046" />
         <setting id="storage"           type="folder"   label="30004" default=""/>
         <setting id="keep_files"        type="enum"     label="30008" default="1"       lvalues="30043|30044|30045"/>
         <setting id="ask_dir"           type="bool"     label="30031" default="false"   enable="!eq(-1,0)" />
