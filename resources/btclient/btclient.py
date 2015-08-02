@@ -15,15 +15,13 @@ import urllib
 import SocketServer
 import socket
 import pickle
-import thread
 import json
 import shutil
 
 from cachebt import CacheBT
-#from player import Player
+
 from common import AbstractFile, Hasher, BaseMonitor, BaseClient, Resolver
 from htclient import HTClient
-#import plugins  # @UnresolvedImport
 
 logging.basicConfig()
 logger = logging.getLogger()

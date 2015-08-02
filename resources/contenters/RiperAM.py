@@ -18,8 +18,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import Content, re
-from BeautifulSoup import BeautifulSoup
+import re
+
+import Content
 
 
 class RiperAM(Content.Content):

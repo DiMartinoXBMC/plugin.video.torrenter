@@ -19,11 +19,7 @@
 '''
 
 import os
-import urllib
-import json
-import sys
 from contextlib import contextmanager, closing, nested
-import traceback
 from argparse import Namespace
 
 import xbmc

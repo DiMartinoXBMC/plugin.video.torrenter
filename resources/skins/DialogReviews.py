@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import sys, urllib, urllib2, re, os, cookielib, traceback, datetime, htmlentitydefs
-import xbmc, xbmcgui, xbmcaddon
+import re
+import htmlentitydefs
+
+import xbmcgui
 
 pattern = re.compile("&(\w+?);")
 

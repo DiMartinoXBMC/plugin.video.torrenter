@@ -34,6 +34,7 @@ import Localization
 from functions import file_encode, isSubtitle, DownloadDB, log, debug, is_writable
 from platform_pulsar import get_platform
 
+
 class Libtorrent:
     magnetLink = None
     startPart = 0

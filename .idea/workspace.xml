@@ -2,17 +2,97 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="56e91349-2444-4553-bc78-90c2bab49e9c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/btclient/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/btclient/_version.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/btclient/btclient.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/btclient/cachebt.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/btclient/common.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/btclient/htclient.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/btclient/opensubtitle.py" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\__init__.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\adapters.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\api.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\auth.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\cacert.pem" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\certs.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\compat.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\cookies.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\exceptions.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\hooks.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\models.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\__init__.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\__init__.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\big5freq.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\big5prober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\chardetect.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\chardistribution.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\charsetgroupprober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\charsetprober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\codingstatemachine.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\compat.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\constants.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\cp949prober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\escprober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\escsm.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\eucjpprober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\euckrfreq.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\euckrprober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\euctwfreq.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\euctwprober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\gb2312freq.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\gb2312prober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\hebrewprober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\jisfreq.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\jpcntx.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\langbulgarianmodel.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\langcyrillicmodel.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\langgreekmodel.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\langhebrewmodel.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\langhungarianmodel.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\langthaimodel.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\latin1prober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\mbcharsetprober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\mbcsgroupprober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\mbcssm.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\sbcharsetprober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\sbcsgroupprober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\sjisprober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\universaldetector.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\chardet\utf8prober.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\__init__.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\_collections.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\connection.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\connectionpool.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\contrib\__init__.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\contrib\ntlmpool.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\contrib\pyopenssl.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\exceptions.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\fields.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\filepost.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\packages\__init__.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\packages\ordered_dict.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\packages\six.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\packages\ssl_match_hostname\__init__.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\packages\ssl_match_hostname\_implementation.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\poolmanager.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\request.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\response.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\util\__init__.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\util\connection.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\util\request.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\util\response.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\util\retry.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\util\ssl_.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\util\timeout.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\packages\urllib3\util\url.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\sessions.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\status_codes.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\structures.py" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\scrapers\requests\utils.py" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BTClientPlayer.py" afterPath="$PROJECT_DIR$/BTClientPlayer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/__init__.py" afterPath="$PROJECT_DIR$/resources/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/utorrent/__init__.py" afterPath="$PROJECT_DIR$/resources/utorrent/__init__.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/skins/DialogReviews.py" afterPath="$PROJECT_DIR$/resources/skins/DialogReviews.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Libtorrent.py" afterPath="$PROJECT_DIR$/Libtorrent.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/contenters/RiperAM.py" afterPath="$PROJECT_DIR$/resources/contenters/RiperAM.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/scrapers/fuzzywuzzy/StringMatcher.py" afterPath="$PROJECT_DIR$/resources/scrapers/fuzzywuzzy/StringMatcher.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addon.xml" afterPath="$PROJECT_DIR$/addon.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/btclient/btclient.py" afterPath="$PROJECT_DIR$/resources/btclient/btclient.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/utorrent/dopal/class_defs.py" afterPath="$PROJECT_DIR$/resources/utorrent/dopal/class_defs.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/btclient/common.py" afterPath="$PROJECT_DIR$/resources/btclient/common.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/scrapers/fuzzywuzzy/fuzz.py" afterPath="$PROJECT_DIR$/resources/scrapers/fuzzywuzzy/fuzz.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/scrapers/kinopoisk/pageparser.py" afterPath="$PROJECT_DIR$/resources/scrapers/kinopoisk/pageparser.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="plugin.video.torrenter.iws" />
@@ -50,7 +130,6 @@
                   <caret line="613" column="9" selection-start-line="613" selection-start-column="9" selection-end-line="613" selection-end-column="19" />
                   <folding>
                     <element signature="e#24#832#1" expanded="false" />
-                    <element signature="e#834#848#0" expanded="true" />
                     <element signature="e#3397#3636#0" expanded="false" />
                     <element signature="e#3660#3819#0" expanded="false" />
                     <element signature="e#3840#4149#0" expanded="false" />
@@ -188,16 +267,16 @@
           <file leaf-file-name="BTClientPlayer.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/BTClientPlayer.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.45257902">
-                  <caret line="31" column="14" selection-start-line="31" selection-start-column="14" selection-end-line="31" selection-end-column="14" />
+                <state vertical-scroll-proportion="0.17">
+                  <caret line="20" column="9" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="9" />
                   <folding>
-                    <element signature="e#11455#12803#0" expanded="false" />
-                    <element signature="e#15423#15506#0" expanded="false" />
-                    <element signature="e#15923#16056#0" expanded="false" />
-                    <element signature="e#19234#19375#0" expanded="false" />
-                    <element signature="e#19416#19752#0" expanded="false" />
-                    <element signature="e#19785#20042#0" expanded="false" />
-                    <element signature="e#20084#20179#0" expanded="false" />
+                    <element signature="e#11443#12791#0" expanded="false" />
+                    <element signature="e#15411#15494#0" expanded="false" />
+                    <element signature="e#15911#16044#0" expanded="false" />
+                    <element signature="e#19222#19363#0" expanded="false" />
+                    <element signature="e#19404#19740#0" expanded="false" />
+                    <element signature="e#19773#20030#0" expanded="false" />
+                    <element signature="e#20072#20167#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
@@ -207,50 +286,36 @@
       </split-first>
       <split-second>
         <leaf>
-          <file leaf-file-name="Libtorrent.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Libtorrent.py">
+          <file leaf-file-name="addon.xml" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/addon.xml">
               <provider selected="true" editor-type-id="text-editor">
                 <state vertical-scroll-proportion="0.0">
-                  <caret line="383" column="12" selection-start-line="383" selection-start-column="12" selection-end-line="383" selection-end-column="12" />
+                  <caret line="6" column="47" selection-start-line="6" selection-start-column="47" selection-end-line="6" selection-end-column="47" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="RiperAM.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/resources/contenters/RiperAM.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
                   <folding>
-                    <element signature="e#24#836#1" expanded="false" />
-                    <element signature="e#1479#3287#0" expanded="false" />
-                    <element signature="e#3336#6313#0" expanded="false" />
-                    <element signature="e#6352#7489#0" expanded="false" />
-                    <element signature="e#7538#8583#0" expanded="false" />
-                    <element signature="e#8622#8754#0" expanded="false" />
-                    <element signature="e#8795#8929#0" expanded="false" />
-                    <element signature="e#8963#9085#0" expanded="false" />
-                    <element signature="e#9119#9241#0" expanded="false" />
-                    <element signature="e#9291#9338#0" expanded="false" />
-                    <element signature="e#9388#9492#0" expanded="false" />
-                    <element signature="e#9532#9846#0" expanded="false" />
-                    <element signature="e#9892#10062#0" expanded="false" />
-                    <element signature="e#10483#10794#0" expanded="false" />
-                    <element signature="e#10831#11010#0" expanded="false" />
-                    <element signature="e#11078#12455#0" expanded="false" />
-                    <element signature="e#12500#13428#0" expanded="false" />
-                    <element signature="e#13465#15926#0" expanded="false" />
-                    <element signature="e#16647#17445#0" expanded="false" />
-                    <element signature="e#17482#17584#0" expanded="false" />
-                    <element signature="e#17676#18848#0" expanded="false" />
-                    <element signature="e#18884#19301#0" expanded="false" />
-                    <element signature="e#19338#19742#0" expanded="false" />
-                    <element signature="e#19779#20334#0" expanded="false" />
-                    <element signature="e#20365#22387#0" expanded="false" />
-                    <element signature="e#22433#23530#0" expanded="false" />
-                    <element signature="e#23565#23708#0" expanded="false" />
+                    <element signature="e#783#792#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="addon.xml" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/addon.xml">
+          <file leaf-file-name="StringMatcher.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/resources/scrapers/fuzzywuzzy/StringMatcher.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.028286189">
-                  <caret line="1" column="66" selection-start-line="1" selection-start-column="66" selection-end-line="1" selection-end-column="66" />
-                  <folding />
+                <state vertical-scroll-proportion="1.0766667">
+                  <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#147#172#0" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -259,10 +324,8 @@
             <entry file="file://$PROJECT_DIR$/cal.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state vertical-scroll-proportion="0.0">
-                  <caret line="54" column="15" selection-start-line="54" selection-start-column="15" selection-end-line="54" selection-end-column="15" />
-                  <folding>
-                    <element signature="e#0#23#0" expanded="true" />
-                  </folding>
+                  <caret line="56" column="15" selection-start-line="56" selection-start-column="15" selection-end-line="56" selection-end-column="15" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -380,9 +443,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/../torrenter.searcher.MagnetDL/resources/settings.xml" />
-        <option value="$PROJECT_DIR$/../torrenter.searcher.MagnetDL/MagnetDL.py" />
-        <option value="$PROJECT_DIR$/../torrenter.searcher.Monova/addon.xml" />
         <option value="$PROJECT_DIR$/../torrenter.searcher.Monova/resources/settings.xml" />
         <option value="$PROJECT_DIR$/../torrenter.searcher.Monova/Monova.py" />
         <option value="$PROJECT_DIR$/../torrenter.searcher.Torrentz/Torrentz.py" />
@@ -429,8 +489,11 @@
         <option value="$PROJECT_DIR$/Libtorrent.py" />
         <option value="$PROJECT_DIR$/resources/settings.xml" />
         <option value="$PROJECT_DIR$/../script.module.btclient/lib/btclient.py" />
-        <option value="$PROJECT_DIR$/addon.xml" />
         <option value="$PROJECT_DIR$/BTClientPlayer.py" />
+        <option value="$PROJECT_DIR$/addon.xml" />
+        <option value="$PROJECT_DIR$/resources/btclient/btclient.py" />
+        <option value="$PROJECT_DIR$/resources/utorrent/dopal/class_defs.py" />
+        <option value="$PROJECT_DIR$/resources/scrapers/fuzzywuzzy/fuzz.py" />
       </list>
     </option>
   </component>
@@ -495,6 +558,24 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="plugin.video.torrenter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="plugin.video.torrenter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scrapers" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -763,18 +844,6 @@
       <created>1420801533300</created>
       <option name="number" value="Default" />
       <updated>1420801533300</updated>
-    </task>
-    <task id="LOCAL-00067" summary="uk ru exchange">
-      <created>1435487115851</created>
-      <option name="number" value="00067" />
-      <option name="project" value="LOCAL" />
-      <updated>1435487115852</updated>
-    </task>
-    <task id="LOCAL-00068" summary="script.module.libtorrent update is comming">
-      <created>1435488457062</created>
-      <option name="number" value="00068" />
-      <option name="project" value="LOCAL" />
-      <updated>1435488457062</updated>
     </task>
     <task id="LOCAL-00069" summary="false import fix">
       <created>1435498101019</created>
@@ -1058,7 +1127,19 @@
       <option name="project" value="LOCAL" />
       <updated>1438536323762</updated>
     </task>
-    <option name="localTasksCounter" value="116" />
+    <task id="LOCAL-00116" summary="include btclient">
+      <created>1438544862088</created>
+      <option name="number" value="00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1438544862089</updated>
+    </task>
+    <task id="LOCAL-00117" summary="include btclient">
+      <created>1438544896770</created>
+      <option name="number" value="00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1438544896770</updated>
+    </task>
+    <option name="localTasksCounter" value="118" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1087,10 +1168,11 @@
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.13224447" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295583" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3011111" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30144605" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32777777" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1098,7 +1180,6 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25226244" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -1119,7 +1200,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="2.3.1" />
     <MESSAGE value="cc fix" />
     <MESSAGE value="media list, cc, deluge fixes" />
     <MESSAGE value="searcher update" />
@@ -1144,7 +1224,8 @@
     <MESSAGE value="module over system" />
     <MESSAGE value="btclient" />
     <MESSAGE value="speed &amp; encryption" />
-    <option name="LAST_COMMIT_MESSAGE" value="speed &amp; encryption" />
+    <MESSAGE value="include btclient" />
+    <option name="LAST_COMMIT_MESSAGE" value="include btclient" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1153,38 +1234,10 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../plugin.video.myshows/resources/settings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.3397212">
-          <caret line="17" column="63" selection-start-line="17" selection-start-column="62" selection-end-line="17" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../script.myshows/resources/settings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.31011608">
-          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../plugin.video.youtube/resources/settings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6898839">
-          <caret line="40" column="8" selection-start-line="40" selection-start-column="8" selection-end-line="40" selection-end-column="109" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../torrenter.searcher.Torrentz/Torrentz.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="3.1575456">
           <caret line="119" column="40" selection-start-line="119" selection-start-column="40" selection-end-line="119" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/scrapers/kinopoisk/pageparser.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="108" column="0" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -1255,6 +1308,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="268" column="169" selection-start-line="268" selection-start-column="169" selection-end-line="268" selection-end-column="169" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1356,20 +1410,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/contenters/RiperAM.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="62" column="24" selection-start-line="62" selection-start-column="24" selection-end-line="62" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cal.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="54" column="15" selection-start-line="54" selection-start-column="15" selection-end-line="54" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
+          <caret line="56" column="15" selection-start-line="56" selection-start-column="15" selection-end-line="56" selection-end-column="15" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1515,49 +1560,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Libtorrent.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="383" column="12" selection-start-line="383" selection-start-column="12" selection-end-line="383" selection-end-column="12" />
-          <folding>
-            <element signature="e#24#836#1" expanded="false" />
-            <element signature="e#1479#3287#0" expanded="false" />
-            <element signature="e#3336#6313#0" expanded="false" />
-            <element signature="e#6352#7489#0" expanded="false" />
-            <element signature="e#7538#8583#0" expanded="false" />
-            <element signature="e#8622#8754#0" expanded="false" />
-            <element signature="e#8795#8929#0" expanded="false" />
-            <element signature="e#8963#9085#0" expanded="false" />
-            <element signature="e#9119#9241#0" expanded="false" />
-            <element signature="e#9291#9338#0" expanded="false" />
-            <element signature="e#9388#9492#0" expanded="false" />
-            <element signature="e#9532#9846#0" expanded="false" />
-            <element signature="e#9892#10062#0" expanded="false" />
-            <element signature="e#10483#10794#0" expanded="false" />
-            <element signature="e#10831#11010#0" expanded="false" />
-            <element signature="e#11078#12455#0" expanded="false" />
-            <element signature="e#12500#13428#0" expanded="false" />
-            <element signature="e#13465#15926#0" expanded="false" />
-            <element signature="e#16647#17445#0" expanded="false" />
-            <element signature="e#17482#17584#0" expanded="false" />
-            <element signature="e#17676#18848#0" expanded="false" />
-            <element signature="e#18884#19301#0" expanded="false" />
-            <element signature="e#19338#19742#0" expanded="false" />
-            <element signature="e#19779#20334#0" expanded="false" />
-            <element signature="e#20365#22387#0" expanded="false" />
-            <element signature="e#22433#23530#0" expanded="false" />
-            <element signature="e#23565#23708#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/functions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-6.551724">
           <caret line="613" column="9" selection-start-line="613" selection-start-column="9" selection-end-line="613" selection-end-column="19" />
           <folding>
             <element signature="e#24#832#1" expanded="false" />
-            <element signature="e#834#848#0" expanded="true" />
             <element signature="e#3397#3636#0" expanded="false" />
             <element signature="e#3660#3819#0" expanded="false" />
             <element signature="e#3840#4149#0" expanded="false" />
@@ -1691,14 +1699,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/addon.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.028286189">
-          <caret line="1" column="66" selection-start-line="1" selection-start-column="66" selection-end-line="1" selection-end-column="66" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1707,18 +1707,139 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/resources/btclient/btclient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.19833334">
+          <caret line="25" column="21" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
+          <folding>
+            <element signature="e#22#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/scrapers/fuzzywuzzy/fuzz.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.51">
+          <caret line="30" column="19" selection-start-line="30" selection-start-column="19" selection-end-line="30" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/skins/DialogReviews.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.425">
+          <caret line="15" column="31" selection-start-line="15" selection-start-column="31" selection-end-line="15" selection-end-column="31" />
+          <folding>
+            <element signature="e#25#34#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/btclient/common.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5709282">
+          <caret line="217" column="37" selection-start-line="217" selection-start-column="37" selection-end-line="217" selection-end-column="37" />
+          <folding>
+            <element signature="e#46#55#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/utorrent/dopal/class_defs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7083333">
+          <caret line="70" column="0" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
+          <folding>
+            <element signature="e#2804#2849#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/BTClientPlayer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.45257902">
-          <caret line="31" column="14" selection-start-line="31" selection-start-column="14" selection-end-line="31" selection-end-column="14" />
+        <state vertical-scroll-proportion="0.17">
+          <caret line="20" column="9" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="9" />
           <folding>
-            <element signature="e#11455#12803#0" expanded="false" />
-            <element signature="e#15423#15506#0" expanded="false" />
-            <element signature="e#15923#16056#0" expanded="false" />
-            <element signature="e#19234#19375#0" expanded="false" />
-            <element signature="e#19416#19752#0" expanded="false" />
-            <element signature="e#19785#20042#0" expanded="false" />
-            <element signature="e#20084#20179#0" expanded="false" />
+            <element signature="e#11443#12791#0" expanded="false" />
+            <element signature="e#15411#15494#0" expanded="false" />
+            <element signature="e#15911#16044#0" expanded="false" />
+            <element signature="e#19222#19363#0" expanded="false" />
+            <element signature="e#19404#19740#0" expanded="false" />
+            <element signature="e#19773#20030#0" expanded="false" />
+            <element signature="e#20072#20167#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/scrapers/kinopoisk/pageparser.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="2.89">
+          <caret line="108" column="0" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Libtorrent.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="2.21">
+          <caret line="384" column="12" selection-start-line="384" selection-start-column="12" selection-end-line="384" selection-end-column="12" />
+          <folding>
+            <element signature="e#24#836#1" expanded="false" />
+            <element signature="e#838#851#0" expanded="true" />
+            <element signature="e#1480#3288#0" expanded="false" />
+            <element signature="e#3337#6314#0" expanded="false" />
+            <element signature="e#6353#7490#0" expanded="false" />
+            <element signature="e#7539#8584#0" expanded="false" />
+            <element signature="e#8623#8755#0" expanded="false" />
+            <element signature="e#8796#8930#0" expanded="false" />
+            <element signature="e#8964#9086#0" expanded="false" />
+            <element signature="e#9120#9242#0" expanded="false" />
+            <element signature="e#9292#9339#0" expanded="false" />
+            <element signature="e#9389#9493#0" expanded="false" />
+            <element signature="e#9533#9847#0" expanded="false" />
+            <element signature="e#9893#10063#0" expanded="false" />
+            <element signature="e#10484#10795#0" expanded="false" />
+            <element signature="e#10832#11011#0" expanded="false" />
+            <element signature="e#11079#12456#0" expanded="false" />
+            <element signature="e#12501#13429#0" expanded="false" />
+            <element signature="e#13466#15927#0" expanded="false" />
+            <element signature="e#16648#17446#0" expanded="false" />
+            <element signature="e#17483#17585#0" expanded="false" />
+            <element signature="e#17677#18849#0" expanded="false" />
+            <element signature="e#18885#19302#0" expanded="false" />
+            <element signature="e#19339#19743#0" expanded="false" />
+            <element signature="e#19780#20335#0" expanded="false" />
+            <element signature="e#20366#22388#0" expanded="false" />
+            <element signature="e#22434#23531#0" expanded="false" />
+            <element signature="e#23566#23709#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addon.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="6" column="47" selection-start-line="6" selection-start-column="47" selection-end-line="6" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/contenters/RiperAM.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding>
+            <element signature="e#783#792#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/scrapers/fuzzywuzzy/StringMatcher.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.0766667">
+          <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+          <folding>
+            <element signature="e#147#172#0" expanded="true" />
           </folding>
         </state>
       </provider>

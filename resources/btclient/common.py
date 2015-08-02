@@ -19,7 +19,6 @@ from hachoir_parser import guessParser
 import hachoir_core.config as hachoir_config
 from hachoir_core.stream.input import InputIOStream
 from opensubtitle import OpenSubtitles
-from cachebt import CacheBT
 
 logger = logging.getLogger('common')
 hachoir_config.quiet = True

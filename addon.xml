@@ -6,6 +6,7 @@
         <import addon="script.module.beautifulsoup4"/>
         <import addon="script.module.hachoir"/>
         <import addon="script.module.torrent.ts"/>
+        <import addon="script.module.requests"/>
     </requires>
     <extension point="xbmc.python.pluginsource" provides="video" library="default.py">
         <provides>video</provides>
