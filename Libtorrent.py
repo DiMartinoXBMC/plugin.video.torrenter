@@ -328,13 +328,13 @@ class Libtorrent:
         self.session = self.lt.session()
         self.session.set_alert_mask(self.lt.alert.category_t.error_notification | self.lt.alert.category_t.status_notification | self.lt.alert.category_t.storage_notification)
         #self.session.set_alert_mask(self.lt.alert.category_t.all_categories)
-        self.session.start_dht()
         self.session.add_dht_router("router.bittorrent.com", 6881)
         self.session.add_dht_router("router.utorrent.com", 6881)
         self.session.add_dht_router("router.bitcomet.com", 6881)
-        #self.session.start_lsd()
-        #self.session.start_upnp()
-        #self.session.start_natpmp()
+        self.session.start_dht()
+        self.session.start_lsd()
+        self.session.start_upnp()
+        self.session.start_natpmp()
         self.session.listen_on(6881, 6891)
 
         #tribler example never tested
@@ -357,7 +357,7 @@ class Libtorrent:
             session_settings['rate_limit_ip_overhead'] = True
             session_settings['request_timeout'] = 1
             session_settings['torrent_connect_boost'] = 100
-            session_settings['user_agent'] = 'uTorrent/3430(40298)'
+            session_settings['user_agent'] = 'uTorrent/2200(24683)'
             #session_settings['cache_size'] = 0
             #session_settings['use_read_cache'] = False
 
@@ -373,7 +373,7 @@ class Libtorrent:
             session_settings.rate_limit_ip_overhead = True
             session_settings.request_timeout = 1
             session_settings.torrent_connect_boost = 100
-            session_settings.user_agent = 'uTorrent/3430(40298)'
+            session_settings.user_agent = 'uTorrent/2200(24683)'
         #
         self.session.set_settings(session_settings)
 
@@ -456,9 +456,9 @@ class Libtorrent:
                 self.session.remove_torrent(self.torrentHandle)
             except:
                 log('RuntimeError: invalid torrent handle used')
-            #self.session.stop_natpmp()
-            #self.session.stop_upnp()
-            #self.session.stop_lsd()
+            self.session.stop_natpmp()
+            self.session.stop_upnp()
+            self.session.stop_lsd()
             self.session.stop_dht()
 
     def resume_data(self):

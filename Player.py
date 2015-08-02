@@ -235,8 +235,9 @@ class TorrentPlayer(xbmc.Player):
                 for ind, title in subs:
                     self.torrent.continueSession(ind)
         num_pieces = int(self.torrent.torrentFileInfo.num_pieces())
+        xbmc.sleep(1000)
+        self.torrent.torrentHandle.force_dht_announce()
         while iterator < 100:
-            xbmc.sleep(1000)
             self.torrent.debug()
             downloadedSize = self.torrent.torrentHandle.file_progress()[self.contentId]
             status = self.torrent.torrentHandle.status()
@@ -267,6 +268,7 @@ class TorrentPlayer(xbmc.Player):
                 self.torrent.threadComplete = True
                 self.torrent.checkThread()
                 return
+            xbmc.sleep(1000)
         #self.torrent.torrentHandle.flush_cache()
         self.torrent.resume_data()
         self.torrent.session.remove_torrent(self.torrent.torrentHandle)
@@ -352,7 +354,7 @@ class TorrentPlayer(xbmc.Player):
             playlist.add(path, listitem)
             xbmc.Player().play(playlist)
 
-            xbmc.sleep(3000)  # very important, do not edit this, podavan
+            xbmc.sleep(2000)  # very important, do not edit this, podavan
             return True
 
     def onPlayBackStarted(self):
@@ -385,6 +387,8 @@ class TorrentPlayer(xbmc.Player):
 
     def loop(self):
         debug_counter=0
+        xbmc.sleep(1000)
+        self.torrent.torrentHandle.force_dht_announce()
         with closing(
                 OverlayText(w=OVERLAY_WIDTH, h=OVERLAY_HEIGHT, alignment=XBFONT_CENTER_X | XBFONT_CENTER_Y)) as overlay:
             with nested(self.attach(overlay.show, self.on_playback_paused),
