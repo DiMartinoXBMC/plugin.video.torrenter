@@ -20,13 +20,13 @@
         <setting id="storage"           type="folder"   label="30004" default=""/>
         <setting id="keep_files"        type="enum"     label="30008" default="1"       lvalues="30043|30044|30045"/>
         <setting id="ask_dir"           type="bool"     label="30031" default="false"   enable="!eq(-1,0)" />
-        <setting id="next_dl"           type="bool"     label="30013" default="true"    visible="eq(-4,0)"/>
-        <setting id="upload_limit"      type="number"   label="30010" default="0"       visible="eq(-5,0)"/>
-        <setting id="download_limit"    type="number"   label="30011" default="0"       visible="eq(-6,0)"/>
+        <setting id="next_dl"           type="bool"     label="30013" default="true"    visible="!eq(-4,1)+"/>
+        <setting id="upload_limit"      type="number"   label="30010" default="0"       visible="!eq(-5,1)"/>
+        <setting id="download_limit"    type="number"   label="30011" default="0"       visible="!eq(-6,1)"/>
         <setting id="blank"             type="text"     label="30024" default=""        visible="eq(-7,1)"/>
-        <setting id="subs_dl"           type="bool"     label="30029" default="true"    visible="eq(-8,0)"/>
-        <setting id="keep_seeding"      type="bool"     label="30030" default="false"   visible="eq(-9,0)" enable="eq(-7,1)"/>
-        <setting id="encryption"        type="bool"     label="30041" default="true"    visible="eq(-10,0)"/>
+        <setting id="subs_dl"           type="bool"     label="30029" default="true"    visible="!eq(-8,1)"/>
+        <setting id="keep_seeding"      type="bool"     label="30030" default="false"   visible="!eq(-9,1)" enable="eq(-7,1)"/>
+        <setting id="encryption"        type="bool"     label="30041" default="true"    visible="!eq(-10,1)"/>
     </category>
     <category label="Torrent-client">
         <setting id="torrent_save"                  type="enum"         label="50301" lvalues="50302|50303" default="0"/>

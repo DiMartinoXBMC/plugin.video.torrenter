@@ -114,8 +114,8 @@ class BTClientPlayer(xbmc.Player):
         except:
             pass
 
-        args=Namespace(bt_download_limit=0,#KB
-                  bt_upload_limit=0,
+        args=Namespace(bt_download_limit=self.download_limit,#KB
+                  bt_upload_limit=self.upload_limit,
                   choose_subtitles=False,
                   clear_older=0,
                   debug_log='',#os.path.join(self.userStorageDirectory, 'log.txt'),
@@ -136,6 +136,7 @@ class BTClientPlayer(xbmc.Player):
                   url=self.torrentUrl)
         args=main(args) #config
         self.free_port = args.port
+        log('BTClientPlayer: args '+str(args))
 
         self.btclient=self.stream(args, BTClient)
 
@@ -195,6 +196,7 @@ class BTClientPlayer(xbmc.Player):
 
             log('Starting btclient - libtorrent version %s' % self.lt.version)
             self.c.start_url(args.url)
+            self.setup_torrent()
 
             if self.buffer():
                 f = self.c._file
@@ -233,38 +235,23 @@ class BTClientPlayer(xbmc.Player):
         self.on_playback_paused = []
         self.on_playback_stopped = []
         self.fullSize = 0
+        if self.__settings__.getSetting("upload_limit") == "":
+            self.upload_limit = 0.0
+        else:
+            self.upload_limit = float(self.__settings__.getSetting("upload_limit")) / 8 * 1024
+        if self.__settings__.getSetting("download_limit") == "":
+            self.download_limit = 0.0
+        else:
+            self.download_limit = float(self.__settings__.getSetting("download_limit")) / 8 * 1024
 
     def setup_torrent(self):
-        self.torrent.initSession()
         if self.__settings__.getSetting('encryption') == 'true':
-            self.torrent.encryptSession()
-        self.torrent.startSession()
-        upload_limit = self.__settings__.getSetting("upload_limit") if self.__settings__.getSetting(
-            "upload_limit") != "" else 0
-        if 0 < int(upload_limit):
-            self.torrent.setUploadLimit(int(upload_limit) * 1000000 / 8)  # MBits/second
-        download_limit = self.__settings__.getSetting("download_limit") if self.__settings__.getSetting(
-            "download_limit") != "" else 0
-        if 0 < int(download_limit):
-            self.torrent.setDownloadLimit(
-                int(download_limit) * 1000000 / 8)  # MBits/second
-        self.torrent.status = False
-        self.fullSize = self.torrent.getFileSize(self.contentId)
-        Offset = calculate(self.fullSize)
-        debug('Offset: '+str(Offset))
-        if self.subs_dl:
-            subs = self.torrent.getSubsIds(os.path.basename(self.torrent.getFilePath(self.contentId)))
-            if len(subs) > 0:
-                for ind, title in subs:
-                    self.torrent.continueSession(ind)
-
-        # mp4 fix
-        label = os.path.basename(self.torrent.getFilePath(self.contentId))
-        isMP4 = False
-        if '.' in label and  str(label.split('.')[-1]).lower() == 'mp4':
-            isMP4 = True
-        debug('setup_torrent: '+str((self.contentId, Offset, isMP4, label)))
-        self.torrent.continueSession(self.contentId, Offset=Offset, isMP4=isMP4)
+            self.c.encrypt()
+        #if self.subs_dl:
+        #    subs = self.torrent.getSubsIds(os.path.basename(self.torrent.getFilePath(self.contentId)))
+        #    if len(subs) > 0:
+        #        for ind, title in subs:
+        #            self.torrent.continueSession(ind)
 
     def buffer(self):
         #iterator = 0
@@ -455,8 +442,8 @@ class BTClientPlayer(xbmc.Player):
         return [
             self.display_name.decode('utf-8'),
             "%.2f%% %s" % (s.progress * 100, self.localize(STATE_STRS[s.state]).decode('utf-8')),
-            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate / 1000, self.localize('kb/s').decode('utf-8'),
-                                             s.upload_rate / 1000, self.localize('kb/s').decode('utf-8'),
+            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate / 1024, self.localize('kb/s').decode('utf-8'),
+                                             s.upload_rate / 1024, self.localize('kb/s').decode('utf-8'),
                                              s.num_seeds, s.num_peers)
         ]
 
