@@ -33,6 +33,7 @@ import xbmcgui
 import xbmcvfs
 import Localization
 from platform_pulsar import get_platform
+from resources.btclient.btclient import *
 from functions import showMessage, DownloadDB, get_ids_video, log, debug
 from Player import OverlayText
 
