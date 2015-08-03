@@ -131,7 +131,7 @@ class BaseClient(object):
         self._delete_on_close = True if args and args.delete_on_finish else False
 
     def _on_file_ready(self, filehash):
-        self._file.filehash = filehash
+        #self._file.filehash = filehash
         self._ready = True
         if self._on_ready_action:
             self._on_ready_action(self._file, self.is_file_complete)
@@ -224,10 +224,6 @@ class PieceCache(object):
             c._cache = copy.copy(self._cache)
             c._cache_first = self._cache_first
         return c
-
-    @property
-    def cached_piece(self):
-        self._cache_first
 
     def fill_cache(self, first):
         to_request = []

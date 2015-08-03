@@ -27,7 +27,7 @@ import gzip
 import json
 from collections import deque
 
-from common import AbstractFile, BaseClient, Hasher, Resolver, TerminalColor
+from common import AbstractFile, BaseClient, Resolver, TerminalColor #Hasher
 from bs4 import BeautifulSoup
 
 logger = logging.getLogger('htclient')
@@ -321,7 +321,7 @@ class HTClient(BaseClient):
                 if not self._file.pieces[i]:
                     self._pool.add_piece(i)
 
-        self.hash = Hasher(self._file, self._on_file_ready)
+        #self.hash = Hasher(self._file, self._on_file_ready)
 
     @property
     def is_file_complete(self):

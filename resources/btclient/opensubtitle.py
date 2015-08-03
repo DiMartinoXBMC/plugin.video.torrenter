@@ -13,8 +13,6 @@ import subprocess
 import struct
 import time
 
-from _version import __version__
-
 logger = logging.getLogger('opensubtitles')
 
 
@@ -33,7 +31,7 @@ class Urllib2Transport(xmlrpclib.Transport):
 
 
 class OpenSubtitles(object):
-    USER_AGENT = 'BTClient v%s' % __version__
+    USER_AGENT = 'BTClient'
 
     def __init__(self, lang, user='', pwd=''):
         self._lang = lang

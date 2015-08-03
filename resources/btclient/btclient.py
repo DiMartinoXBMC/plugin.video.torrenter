@@ -100,7 +100,6 @@ class StreamServer(SocketServer.ThreadingMixIn, htserver.HTTPServer):
             # pprint.pprint(e)
         else:
             logger.exception("HTTP Server Error")
-            # TODO: remove print
             traceback.print_exc()
 
 
