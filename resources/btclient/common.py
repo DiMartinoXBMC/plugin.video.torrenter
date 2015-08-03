@@ -446,7 +446,11 @@ class AbstractFile(object):
         if not self._rate:
             d = self.duration
             if d:
-                self._rate = self.size / d.total_seconds()
+                if hasattr(d, 'total_seconds'):
+                    total_seconds=d.total_seconds()
+                else:
+                    total_seconds=(d.microseconds + (d.seconds + d.days * 24 * 3600) * 10**6) / 10**6
+                self._rate = self.size / total_seconds
         return self._rate
 
     def __str__(self):
