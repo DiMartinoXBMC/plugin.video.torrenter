@@ -223,34 +223,43 @@ class BTClientPlayer(xbmc.Player):
         #            self.torrent.continueSession(ind)
 
     def buffer(self):
-        #iterator = 0
+        iterator = 0
         progressBar = xbmcgui.DialogProgress()
         progressBar.create(self.localize('Please Wait') + str(' [%s]' % str(self.lt.version)),
                            self.localize('Seeds searching.'))
-        while not self.c.is_file_ready: #iterator < 100:#or not self.torrent.is_playble()
+        while iterator < 100 or not self.c.is_file_ready:# not self.c.is_file_ready
+            iterator = 0
+            ready_list=[]
             status = self.c.get_normalized_status()
-            iterator = int(status['progress'] * 10000)
-            if iterator > 99: iterator = 99
+            conditions=[status['state'] in ['downloading', 'finished', 'seeding'], status['desired_rate'] > 0,
+                        status['progress'] > 0,
+                        status['desired_rate'] > 0 and (status['download_rate'] > status['desired_rate'] or
+                                                        status['download_rate'] * status['progress'] * 100 > status['desired_rate'])]
+            for cond in conditions:
+                if cond:
+                    ready_list.append(True)
+                    iterator+=100/len(conditions)
+                else:
+                    ready_list.append(False)
+
+            speedsText = '%s: %s Mbit/s %s %s: %s Mbit/s' % (self.localize('Bitrate'), str(int(status['desired_rate'] * 8 / (1024 * 1024))) if status['desired_rate'] else 0,
+                                                   '[COLOR=green]>[/COLOR]' if ready_list[3] else '[COLOR=red]<[/COLOR]',
+                                              self.localize('Download speed'),str(status['download_rate'] * 8 / 1000000))
+
             if status['state'] in ['queued','checking','checking fastresume'] or (status['progress'] == 0 and status['num_pieces'] > 0):
-                progressBar.update(iterator, self.localize('Checking preloaded files...'), ' ', ' ')
-            elif status['state'] == 'downloading':
-                dialogText = self.localize('Preloaded: ') + str(status['downloaded'] / 1024 / 1024) + ' MB / ' + str(
-                    status['total_size'] / 1024 / 1024) + ' MB'
-                peersText = ' [%s: %s; %s: %s]' % (
-                    self.localize('Seeds'), str(status['seeds_connected']), self.localize('Peers'),
+                progressBar.update(iterator, self.localize('Checking preloaded files...'), speedsText, ' ')
+
+            elif status['state'] in ['downloading', 'finished', 'seeding']:
+                dialogText = self.localize('Preloaded: ') + '%s MB / %s MB' % \
+                        (str(status['downloaded'] / 1024 / 1024), str(status['total_size'] / 1024 / 1024))
+                peersText = '[%s: %s; %s: %s]' % (self.localize('Seeds'), str(status['seeds_connected']), self.localize('Peers'),
                     str(status['peers_connected']),)
-                speedsText = '%s: %s Mbit/s; %s: %s Mbit/s' % (
-                    self.localize('Downloading'), str(status['download_rate'] * 8 / 1000000),
-                    self.localize('Uploading'), str(status['upload_rate'] * 8 / 1000000))
-                #if self.debug:
-                #    peersText=peersText + ' ' + self.torrent.get_debug_info('dht_state')
-                #    dialogText=dialogText.replace(self.localize('Preloaded: '),'') + ' ' + self.torrent.get_debug_info('trackers_sum')
-                progressBar.update(iterator, self.localize('Seeds searching.') + peersText, dialogText,
-                                   speedsText)
+                progressBar.update(iterator, peersText, speedsText, dialogText,
+                                   )
             else:
                 progressBar.update(iterator, self.localize('UNKNOWN STATUS'), ' ', ' ')
             if progressBar.iscanceled():
-                self.c.close()
+                self.on_exit()
                 break
             xbmc.sleep(1000)
         progressBar.update(0)
@@ -291,6 +300,7 @@ class BTClientPlayer(xbmc.Player):
         self.basename = label
         #self.seeding_run = False
         listitem = xbmcgui.ListItem(label)
+        info={}
 
         #if self.subs_dl:
         #    self.setup_subs(label, path)
@@ -306,16 +316,15 @@ class BTClientPlayer(xbmc.Player):
                 title, int(seasonId), int(self.episodeId), self.basename.split('.')[-1], self.basename)
 
             if seasonId and self.episodeId and label and title:
-                listitem = xbmcgui.ListItem(label)
-
-                listitem.setInfo(type='video', infoLabels={'title': label,
-                                                           'episode': int(self.episodeId),
-                                                           'season': int(seasonId),
-                                                           'tvshowtitle': title})
+                info={'title': label,
+                     'episode': int(self.episodeId),
+                     'season': int(seasonId),
+                     'tvshowtitle': title}
         except:
             log('[BTClientPlayer] Operation INFO failed!')
 
         thumbnail = self.get("thumbnail")
+        listitem.setInfo(type='Video', infoLabels=info)
         if thumbnail:
             listitem.setThumbnailImage(urllib.unquote_plus(thumbnail))
         self.display_name = label

@@ -18,7 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import abc
 import urllib
 import urllib2
 import cookielib
@@ -38,8 +37,6 @@ from functions import log, debug
 
 
 class SearcherABC:
-    __metaclass__ = abc.ABCMeta
-
     searchIcon = '/icons/video.png'
     sourceWeight = 1
     cookieJar = None
@@ -56,7 +53,6 @@ class SearcherABC:
     def __init__(self):
         print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
 
-    @abc.abstractmethod
     def search(self, keyword):
         '''
         Retrieve keyword from the input and return a list of tuples:
@@ -70,7 +66,6 @@ class SearcherABC:
         '''
         return
 
-    @abc.abstractproperty
     def isMagnetLinkSource(self):
         return 'Should never see this'
 

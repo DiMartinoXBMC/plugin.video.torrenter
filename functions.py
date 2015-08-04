@@ -1066,13 +1066,14 @@ class Searchers():
     def searchWithSearcher(self, keyword, searcher):
         import traceback
         filesList = []
-        slist = Searchers().list()
+        slist = self.list()
         if slist[searcher]['path'] not in sys.path:
             sys.path.insert(0, slist[searcher]['path'])
             print 'Added %s in sys.path' % (slist[searcher]['path'])
         try:
-            searcherObject = getattr(__import__(searcher), searcher)()
-            filesList = searcherObject.search(keyword)
+            searcherObject = getattr(__import__(searcher), searcher)
+            filesList = searcherObject().search(keyword)
+            del searcherObject
         except Exception, e:
             print 'Unable to use searcher: ' + searcher + ' at ' + __plugin__ + ' searchWithSearcher(). Exception: ' + str(
                 e)
@@ -1111,9 +1112,9 @@ class Searchers():
 def search(url, searchersList, isApi=None):
     from threading import Thread
     try:
-        from Queue import Queue
+        from Queue import Queue, Empty
     except ImportError:
-        from queue import Queue
+        from queue import Queue, Empty
 
     num_threads=__settings__.getSetting('num_threads')
     if num_threads and int(num_threads)>0:
@@ -1124,38 +1125,54 @@ def search(url, searchersList, isApi=None):
     result = {}
     iterator, filesList, left_searchers = 0, [], []
     timeout_multi=int(sys.modules["__main__"].__settings__.getSetting("timeout"))
-    wait_time=10+(10*timeout_multi)
     left_searchers.extend(searchersList)
     if not isApi:
         progressBar = xbmcgui.DialogProgress()
         progressBar.create(Localization.localize('Please Wait'), Localization.localize('Materials are loading now.'))
 
+    class CleanExit:
+        pass
+
     def search_one(i, q):
         while True:
-            if not isApi and progressBar.iscanceled():
-                progressBar.update(0)
-                progressBar.close()
-                return
-            iterator=100*int(len(searchersList)-len(left_searchers))/len(searchersList)
-            if not isApi:
-                progressBar.update(int(iterator), join_list(left_searchers, replace='.py'))
-            searcherFile = q.get()
-            searcher=searcherFile.replace('.py','')
-            print "Thread %s: Searching at %s" % (i, searcher)
-            result[searcherFile]=Searchers().searchWithSearcher(url, searcher)
-            left_searchers.remove(searcherFile)
-            q.task_done()
+            try:
+                if not isApi and progressBar.iscanceled():
+                    progressBar.update(0)
+                    progressBar.close()
+                    return
+                iterator=100*int(len(searchersList)-len(left_searchers))/len(searchersList)
+                if not isApi:
+                    progressBar.update(int(iterator), join_list(left_searchers, replace='.py'))
+                searcherFile = q.get_nowait()
+                if searcherFile == CleanExit:
+                    sys.exit()
+                searcher=searcherFile.replace('.py','')
+                print "Thread %s: Searching at %s" % (i, searcher)
+                result[searcherFile]=Searchers().searchWithSearcher(url, searcher)
+                left_searchers.remove(searcherFile)
+                q.task_done()
+            except Empty:
+                pass
 
+    workers=[]
     for i in range(num_threads):
         worker = Thread(target=search_one, args=(i, queue))
         worker.setDaemon(True)
         worker.start()
+        workers.append(worker)
 
     for searcherFile in searchersList:
-        queue.put(searcherFile, timeout=wait_time)
+        queue.put(searcherFile)
 
     print "Main Thread Waiting"
     queue.join()
+    for i in range(num_threads):
+        queue.put(CleanExit)
+
+    print "Main Thread Waiting for Threads"
+    for w in workers:
+        w.join()
+
     print "Done"
 
     if not isApi:
