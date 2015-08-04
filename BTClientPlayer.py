@@ -214,8 +214,9 @@ class BTClientPlayer(xbmc.Player):
             self.download_limit = float(self.__settings__.getSetting("download_limit")) / 8 * 1024
 
     def setup_torrent(self):
-        if self.__settings__.getSetting('encryption') == 'true':
-            self.c.encrypt()
+        pass
+        #if self.__settings__.getSetting('encryption') == 'true':
+        #    self.c.encrypt()
         #if self.subs_dl:
         #    subs = self.torrent.getSubsIds(os.path.basename(self.torrent.getFilePath(self.contentId)))
         #    if len(subs) > 0:
