@@ -1145,7 +1145,7 @@ def search(url, searchersList, isApi=None):
                     progressBar.update(int(iterator), join_list(left_searchers, replace='.py'))
                 searcherFile = q.get_nowait()
                 if searcherFile == CleanExit:
-                    sys.exit()
+                    return
                 searcher=searcherFile.replace('.py','')
                 print "Thread %s: Searching at %s" % (i, searcher)
                 result[searcherFile]=Searchers().searchWithSearcher(url, searcher)
