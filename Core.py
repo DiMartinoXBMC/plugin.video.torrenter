@@ -46,7 +46,11 @@ class Core:
 
     print 'SYS ARGV: ' + str(sys.argv)
 
+    def __del__(self):
+        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
+
     def __init__(self):
+        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         if 0 == len(self.userStorageDirectory):
             try:
                 temp_dir = tempfile.gettempdir()

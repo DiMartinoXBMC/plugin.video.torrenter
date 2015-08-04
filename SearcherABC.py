@@ -49,6 +49,13 @@ class SearcherABC:
 
     socket.setdefaulttimeout(10+(10*int(timeout_multi)))
 
+
+    def __del__(self):
+        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
+
+    def __init__(self):
+        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
+
     @abc.abstractmethod
     def search(self, keyword):
         '''

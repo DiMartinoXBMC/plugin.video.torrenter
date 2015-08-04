@@ -39,6 +39,12 @@ class Content:
     cookieJar = None
     baseurl = ''
 
+    def __del__(self):
+        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
+
+    def __init__(self):
+        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
+
     def isTracker(self):
         return 'Never seen'
 

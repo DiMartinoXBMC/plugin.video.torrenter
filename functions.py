@@ -27,8 +27,6 @@ import sys
 import os
 import json
 import urllib
-import hashlib
-import traceback
 
 import xbmcplugin
 import xbmcgui
@@ -36,11 +34,6 @@ import xbmc
 import xbmcaddon
 import xbmcvfs
 import Localization
-
-try:
-    from hashlib import md5
-except ImportError:
-    from md5 import md5
 
 try:
     from sqlite3 import dbapi2 as sqlite
@@ -113,6 +106,10 @@ def sortcomma(dict, json):
 
 
 def md5(string):
+    try:
+        from hashlib import md5
+    except ImportError:
+        from md5 import md5
     hasher = hashlib.md5()
     try:
         hasher.update(string)
@@ -701,101 +698,6 @@ def PrepareSearch(filename):
     return titles
 
 
-def kinorate(title, year, titleAlt=None, kinopoiskId=None):
-    if kinopoiskId:
-        match = {'title': title.replace('"', ''), 'year': str(year), 'kinopoiskId': str(kinopoiskId)}
-    else:
-        match = {'title': title.replace('"', ''), 'year': str(year)}
-    if titleAlt:
-        match['titleAlt'] = titleAlt.replace('"', '')
-    try:
-        xbmc.executebuiltin(
-            'xbmc.RunScript(' + xbmcaddon.Addon("script.myshows").getAddonInfo("path") + os.sep +
-            'sync_exec.py,' + json.dumps(match).replace(',', '|:|') + ')')
-    except:
-        return False
-
-
-class RateShow():
-    def __init__(self, showId, watched_jdata=None):
-        self.dialog = xbmcgui.Dialog()
-        self.showId = showId
-        self.list = {}
-        if watched_jdata:
-            self.watched_jdata = watched_jdata
-        else:
-            watched_data = Data(cookie_auth, __baseurl__ + '/profile/shows/' + str(showId) + '/',
-                                __baseurl__ + '/profile/shows/' + str(showId) + '/')
-            try:
-                self.watched_jdata = json.loads(watched_data.get())
-            except:
-                debug('[RateShow] no watched_jdata1')
-                return
-            if not self.watched_jdata:
-                debug('[RateShow] no watched_jdata2')
-                return
-
-    def seasonrates(self):
-        jload = Data(cookie_auth, __baseurl__ + '/profile/shows/').get()
-        jshowdata = json.loads(jload)
-        if str(self.showId) in jshowdata:
-            self.list, seasonNumber = self.listSE(jshowdata[str(self.showId)]['totalEpisodes'])
-            ratedict = {}
-            for i in self.list:
-                for j in self.list[i]:
-                    if self.watched_jdata.has_key(j):
-                        if self.watched_jdata[j]['rating']:
-                            if ratedict.has_key(i):
-                                ratedict[i].append(self.watched_jdata[j]['rating'])
-                            else:
-                                ratedict[i] = [self.watched_jdata[j]['rating']]
-            # debug('[ratedict]:'+str(ratedict))
-            for i in ratedict:
-                ratedict[i] = (round(float(sum(ratedict[i])) / len(ratedict[i]), 2), len(ratedict[i]))
-            debug('[ratedict]:' + str(ratedict))
-        else:
-            ratedict = {}
-        return ratedict
-
-    def count(self):
-        ratings, seasonratings = [], []
-        showId = str(self.showId)
-        jload = Data(cookie_auth, __baseurl__ + '/profile/shows/').get()
-        jshowdata = json.loads(jload)
-        self.list, seasonNumber = self.listSE(jshowdata[showId]['totalEpisodes'])
-        old_rating = jshowdata[showId]['rating']
-        for id in self.watched_jdata:
-            if self.watched_jdata[id]['rating']:
-                ratings.append(self.watched_jdata[id]['rating'])
-                if id in self.list[str(seasonNumber)]:
-                    seasonratings.append(self.watched_jdata[id]['rating'])
-        # debug('ratings:'+str(ratings)+'; seasonratings:'+str(seasonratings))
-        if len(ratings) > 0:
-            rating = round(float(sum(ratings)) / len(ratings), 2)
-        else:
-            rating = 0
-        if len(seasonratings) > 0:
-            seasonrating = round(float(sum(seasonratings)) / len(seasonratings), 2)
-        else:
-            seasonrating = 0
-        return rating, seasonNumber, seasonrating, old_rating
-
-    def listSE(self, maxep):
-        listSE, seasonNumber = {}, 0
-        data = Data(cookie_auth, __baseurl__ + '/shows/' + str(self.showId))
-        jdata = json.loads(data.get())
-        for id in jdata['episodes']:
-            if maxep >= jdata['episodes'][id]['sequenceNumber']:
-                if listSE.has_key(str(jdata['episodes'][id]['seasonNumber'])):
-                    listSE[str(jdata['episodes'][id]['seasonNumber'])].append(id)
-                else:
-                    listSE[str(jdata['episodes'][id]['seasonNumber'])] = [id]
-                if jdata['episodes'][id]['seasonNumber'] > seasonNumber:
-                    seasonNumber = jdata['episodes'][id]['seasonNumber']
-        # debug('[listSE] '+str(listSE)+str(seasonNumber))
-        return listSE, seasonNumber
-
-
 def isRemoteTorr():
     localhost = ['127.0.0.1', '0.0.0.0', 'localhost']
     if __settings__.getSetting("torrent") == '0':
@@ -893,7 +795,11 @@ class TimeOut():
 
 
 class ListDB:
+    def __del__(self):
+        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
+
     def __init__(self, version=1.0):
+        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         self.dbname = 'list' + '.db3'
         dirname = xbmc.translatePath('special://temp')
         self.dbfilename = os.path.join(dirname, 'xbmcup',
@@ -952,7 +858,11 @@ class ListDB:
 
 
 class HistoryDB:
+    def __del__(self):
+        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
+
     def __init__(self, version=1.1):
+        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         self.name = 'history.db3'
         self.version = version
 
@@ -1092,7 +1002,11 @@ class HistoryDB:
 
 
 class Searchers():
+    def __del__(self):
+        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
+
     def __init__(self):
+        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         pass
 
     def getBoolSetting(self, setting):
@@ -1150,6 +1064,7 @@ class Searchers():
         return get_active
 
     def searchWithSearcher(self, keyword, searcher):
+        import traceback
         filesList = []
         slist = Searchers().list()
         if slist[searcher]['path'] not in sys.path:
@@ -1260,7 +1175,11 @@ def join_list(l, char=', ', replace=''):
 
 
 class Contenters():
+    def __del__(self):
+        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
+
     def __init__(self):
+        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         pass
 
     def first_time(self, scrapperDB_ver, language='ru'):
@@ -1346,149 +1265,6 @@ class Contenters():
         for searcher in self.list():
             if self.old(searcher): get_active.append(searcher)
         return get_active
-
-
-class WatchedDB:
-    def __init__(self):
-        dirname = xbmc.translatePath('special://temp')
-        for subdir in ('xbmcup', __settings__.getAddonInfo('id').replace('plugin://', '').replace('/', '')):
-            dirname = os.path.join(dirname, subdir)
-            if not xbmcvfs.exists(dirname):
-                xbmcvfs.mkdir(dirname)
-        self.dbfilename = os.path.join(dirname, 'data.db3')
-        if not xbmcvfs.exists(self.dbfilename):
-            creat_db(self.dbfilename)
-        self.dialog = xbmcgui.Dialog()
-
-    def _get(self, id):
-        self._connect()
-        debug('[WatchedDB][_get]: Checking ' + id)
-        id = id.replace("'", "<&amp>").decode('utf-8', 'ignore')
-        self.where = " where id='%s'" % (id)
-        try:
-            self.cur.execute('select rating from watched' + self.where)
-        except:
-            self.cur.execute('create table watched(addtime integer, rating integer, id varchar(32) PRIMARY KEY)')
-            self.cur.execute('select rating from watched' + self.where)
-        res = self.cur.fetchone()
-        self._close()
-        return res[0] if res else None
-
-    def _get_all(self):
-        self._connect()
-        self.cur.execute('select id, rating from watched order by addtime desc')
-        res = [[unicode(x[0]).replace("<&amp>", "'").encode('utf-8', 'ignore'), x[1]] for x in self.cur.fetchall()]
-        self._close()
-        return res
-
-    def check(self, id, rating=0):
-        ok1, ok3 = None, None
-        db_rating = self._get(id)
-        title = titlesync(id)
-        TimeOut().go_offline()
-        if getSettingAsBool("silentoffline"):
-            if db_rating == None and rating >= 0:
-                showMessage(__language__(30520), __language__(30522) % (str(rating)))
-                ok1 = True
-            elif db_rating >= 0 and rating != db_rating and rating > 0:
-                showMessage(__language__(30520), __language__(30523) % (str(rating)))
-                ok3 = True
-            elif db_rating != None and rating == db_rating:
-                showMessage(__language__(30520), __language__(30524) % (str(rating)))
-        else:
-            if db_rating == None and rating >= 0:
-                if title:
-                    title = title.encode('utf-8', 'ignore')
-                    ok1 = self.dialog.yesno(__language__(30520), __language__(30525) % (str(rating)), title)
-                else:
-                    ok1 = True
-            elif db_rating and rating != db_rating:
-                if title:
-                    title = title.encode('utf-8', 'ignore')
-                    ok3 = self.dialog.yesno(__language__(30520), __language__(30526) % (str(db_rating), str(rating)),
-                                            title)
-                else:
-                    ok3 = True
-            elif db_rating == 0 and rating != db_rating:
-                ok3 = True
-            elif db_rating != None and rating == db_rating:
-                showMessage(__language__(30520), __language__(30527) % (str(rating)))
-
-        debug('[WatchedDB][check]: rating: %s DB: %s, ok1: %s, ok3: %s' % (
-            str(rating), str(db_rating), str(ok1), str(ok3)))
-
-        if ok1:
-            self._add(id, rating)
-            return True
-        if ok3:
-            self._delete(id)
-            self._add(id, rating)
-            return True
-
-    def onaccess(self):
-        # debug('[WatchedDB][onaccess]: Start')
-        TimeOut().go_online()
-        self._connect()
-        try:
-            self.cur.execute('select count(id) from watched')
-        except:
-            self.cur.execute('create table watched(addtime integer, rating integer, id varchar(32) PRIMARY KEY)')
-            self.cur.execute('select count(id) from watched')
-        x = self.cur.fetchone()
-        res = int(x[0])
-        self._close()
-        i = 0
-
-        if res > 0:
-            # debug('[WatchedDB][onaccess]: Found %s' % (str(res)))
-            silentofflinesend = getSettingAsBool('silentofflinesend')
-            if not silentofflinesend:
-                ok2 = self.dialog.yesno(__language__(30521), __language__(30528) % (str(res)), __language__(30529))
-            else:
-                ok2 = True
-            if ok2:
-                for id, rating in self._get_all():
-                    from addon import SyncXBMC
-
-                    j = SyncXBMC(id, int(rating)).doaction()
-                    if j:
-                        i = i + int(j)
-                        self._delete(id)
-                        showMessage(__language__(30521), __language__(30530) % (i))
-                __settings__.setSetting("duo_last_id", '')
-            else:
-                ok2 = self.dialog.yesno(__language__(30521), __language__(30531) % (str(res)))
-                if ok2:
-                    for id, rating in self._get_all():
-                        self._delete(id)
-        return res
-
-    def _add(self, id, rating=0):
-        __settings__.setSetting("duo_last_id", '')
-        self._connect()
-        id = id.replace("'", "<&amp>").decode('utf-8', 'ignore')
-        debug('[WatchedDB][_add]: Adding %s with rate %d' % (id, rating))
-        self.cur.execute('insert into watched(addtime, rating, id) values(?,?,?)', (int(time.time()), int(rating), id))
-        self.db.commit()
-        self._close()
-
-    def _delete(self, id):
-        self._connect()
-        id = id.replace("'", "<&amp>").decode('utf-8', 'ignore')
-        self.cur.execute("delete from watched where id=('" + id + "')")
-        self.db.commit()
-        self._close()
-
-    def count(self):
-        return len(self._get_all())
-
-    def _connect(self):
-        self.db = sqlite.connect(self.dbfilename)
-        self.cur = self.db.cursor()
-
-    def _close(self):
-        self.cur.close()
-        self.db.close()
 
 
 def countSeasons(jdata):
@@ -1613,7 +1389,11 @@ def delete_russian(ok=False, action='delete'):
 
 
 class DownloadDB:
+    def __del__(self):
+        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
+
     def __init__(self, version=1.41):
+        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         self.name = 'download.db3'
         self.version = version
 
@@ -1661,7 +1441,6 @@ class DownloadDB:
                 xbmcvfs.delete(self.filename)
             self._connect()
             self.cur.execute(sql)
-
 
     def get_status(self, title):
         self._connect()
@@ -1886,3 +1665,69 @@ def is_writable(path):
     else:
          os.remove(os.path.join(path, 'temp'))
          return True
+
+def unescape(string):
+    htmlCodes = (
+        ('&', '&amp;'),
+        ('<', '&lt;'),
+        ('>', '&gt;'),
+        ('"', '&quot;'),
+        ("'", '&#39;'),
+    )
+    for (symbol, code) in htmlCodes:
+        string = re.sub(code, symbol, string)
+    return string
+
+def stripHtml(string):
+    stripPairs = (
+        ('<p>', '\n'),
+        ('<li>', '\n'),
+        ('<br>', '\n'),
+        ('<.+?>', ' '),
+        ('</.+?>', ' '),
+        ('&nbsp;', ' '),
+        ('&laquo;', '"'),
+        ('&raquo;', '"'),
+    )
+    for (html, replacement) in stripPairs:
+        string = re.sub(html, replacement, string)
+    return string
+
+def chooseFile(filelist):
+    myshows_items, myshows_files, contentList, myshows_sizes = [], [], [], {}
+    for filedict in filelist:
+        fileTitle = ''
+        if filedict.get('size'):
+            myshows_sizes[str(filedict.get('ind'))]='[%d MB] ' % (filedict.get('size') / 1024 / 1024)
+        title = filedict.get('title')
+        fileTitle = fileTitle + '[%s]%s' % (title[len(title) - 3:], title)
+        contentList.append((unescape(fileTitle), str(filedict.get('ind'))))
+    contentList = sorted(contentList, key=lambda x: x[0])
+    EXTS=['avi','mp4','mkv','flv','mov','vob','wmv','ogm','asx','mpg','mpeg','avc','vp3','fli','flc','m4v','iso','mp3']
+    for title, identifier in contentList:
+        try:
+            if title.split('.')[-1].lower() in EXTS:
+                myshows_items.append(title)
+                myshows_files.append(identifier)
+        except:
+            pass
+    if len(myshows_items) > 1:
+        if len(myshows_sizes)==0:
+            myshows_items = cutFileNames(myshows_items)
+        else:
+            myshows_cut = cutFileNames(myshows_items)
+            myshows_items=[]
+            x=-1
+            for i in myshows_files:
+                x=x+1
+                fileTitle=myshows_sizes[str(i)]+myshows_cut[x]
+                myshows_items.append(fileTitle)
+
+    log('[chooseFile]: myshows_items '+str(myshows_items))
+    if len(myshows_items) == 1:
+        ret = 0
+    else:
+        ret = xbmcgui.Dialog().select(Localization.localize('Search results:'), myshows_items)
+
+    if ret > -1:
+        return myshows_files[ret]

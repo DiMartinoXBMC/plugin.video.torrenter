@@ -28,7 +28,11 @@ import AceStream
 class Torrent():
     __settings__ = sys.modules["__main__"].__settings__
 
+    def __del__(self):
+        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
+
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
+        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         self.get_torrent_client()
         if self.player == 'libtorrent':
             self.player = Libtorrent.Libtorrent(storageDirectory, torrentFile, torrentFilesDirectory)

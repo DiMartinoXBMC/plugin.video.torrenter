@@ -80,7 +80,11 @@ class BTClientPlayer(xbmc.Player):
     episodeId = None
     basename = ''
 
+    def __del__(self):
+        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
+
     def __init__(self, userStorageDirectory, torrentUrl, params={}):
+        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         self.userStorageDirectory = userStorageDirectory
         self.torrentUrl = torrentUrl
         xbmc.Player.__init__(self)

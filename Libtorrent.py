@@ -47,7 +47,11 @@ class Libtorrent:
     lt = None
     save_resume_data = None
 
+    def __del__(self):
+        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
+
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
+        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         self.platform = get_platform()
         self.storageDirectory = storageDirectory
         self.torrentFilesPath = os.path.join(self.storageDirectory, torrentFilesDirectory) + os.sep

@@ -72,7 +72,11 @@ ENCRYPTION_SETTINGS = {
 
 
 class OverlayText(object):
+    def __del__(self):
+        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
+
     def __init__(self, w, h, *args, **kwargs):
+        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         self.window = xbmcgui.Window(WINDOW_FULLSCREEN_VIDEO)
         viewport_w, viewport_h = self._get_skin_resolution()
         # Adjust size based on viewport, we are using 1080p coordinates
@@ -136,7 +140,11 @@ class TorrentPlayer(xbmc.Player):
     episodeId = None
     basename = ''
 
+    def __del__(self):
+        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
+
     def __init__(self, userStorageDirectory, torrentUrl, params={}):
+        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         self.userStorageDirectory = userStorageDirectory
         self.torrentUrl = torrentUrl
         xbmc.Player.__init__(self)
