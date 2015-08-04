@@ -42,23 +42,6 @@ class Core:
     history_bool = __settings__.getSetting('history') == 'true'
     open_option = int(__settings__.getSetting('open_option'))
     language = {0: 'en', 1: 'ru', 2: 'ru'}.get(int(__settings__.getSetting("language")))
-    htmlCodes = (
-        ('&', '&amp;'),
-        ('<', '&lt;'),
-        ('>', '&gt;'),
-        ('"', '&quot;'),
-        ("'", '&#39;'),
-    )
-    stripPairs = (
-        ('<p>', '\n'),
-        ('<li>', '\n'),
-        ('<br>', '\n'),
-        ('<.+?>', ' '),
-        ('</.+?>', ' '),
-        ('&nbsp;', ' '),
-        ('&laquo;', '"'),
-        ('&raquo;', '"'),
-    )
     scrapperDB_ver = {'en':'1.1', 'ru':'1.3'}
 
     print 'SYS ARGV: ' + str(sys.argv)
@@ -1044,16 +1027,6 @@ class Core:
                     commands[name] = value
         return commands
 
-    def unescape(self, string):
-        for (symbol, code) in self.htmlCodes:
-            string = re.sub(code, symbol, string)
-        return string
-
-    def stripHtml(self, string):
-        for (html, replacement) in self.stripPairs:
-            string = re.sub(html, replacement, string)
-        return string
-
     def executeAction(self, params={}):
         get = params.get
         if hasattr(self, get("action")):
@@ -1230,9 +1203,9 @@ class Core:
                 showMessage(self.localize('Error'), self.localize('Not a magnet-link!'))
                 return
             elif keyboard.isConfirmed():
-                params["url"] = urllib.quote_plus(self.unescape(urllib.unquote_plus(query)))
+                params["url"] = urllib.quote_plus(unescape(urllib.unquote_plus(query)))
         else:
-            params["url"] = urllib.quote_plus(self.unescape(urllib.unquote_plus(defaultKeyword)))
+            params["url"] = urllib.quote_plus(unescape(urllib.unquote_plus(defaultKeyword)))
         #print str(params)
         self.torrentPlayer(params)
 
@@ -1258,7 +1231,7 @@ class Core:
                 fileTitle = filedict.get('title')
                 if filedict.get('size'):
                     fileTitle += ' [%d MB]' % (filedict.get('size') / 1024 / 1024)
-                contentList.append((self.unescape(fileTitle), str(filedict.get('ind'))))
+                contentList.append((unescape(fileTitle), str(filedict.get('ind'))))
             contentList = sorted(contentList, key=lambda x: x[0])
 
             #print str(contentList)
@@ -1375,16 +1348,9 @@ class Core:
             self.__settings__.setSetting("lastTorrentUrl", url)
             torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
             self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
-            contentList = []
-            for filedict in torrent.getContentList():
-                fileTitle = filedict.get('title')
-                if filedict.get('size'):
-                    fileTitle += ' [%d MB]' % (filedict.get('size') / 1024 / 1024)
-                    contentList.append((filedict.get('size'), self.unescape(fileTitle), str(filedict.get('ind'))))
-            if len(contentList)>0:
-                contentList = sorted(contentList, key=lambda x: x[0], reverse=True)
-                #self.playTorrent({'url':contentList[0][2]})
-                xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url='+contentList[0][2]+'")')
+            fileIndex = chooseFile(torrent.getContentList())
+            if fileIndex:
+                xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url='+fileIndex+'")')
 
     def openTorrent(self, params={}):
         get = params.get
@@ -1413,47 +1379,16 @@ class Core:
         self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
         if silent != 'true':
             if external:
-                myshows_items, myshows_files, contentList, myshows_sizes = [], [], [], {}
-                for filedict in torrent.getContentList():
-                    fileTitle = ''
-                    if filedict.get('size'):
-                        myshows_sizes[str(filedict.get('ind'))]='[%d MB] ' % (filedict.get('size') / 1024 / 1024)
-                    title = filedict.get('title')
-                    fileTitle = fileTitle + '[%s]%s' % (title[len(title) - 3:], title)
-                    contentList.append((self.unescape(fileTitle), str(filedict.get('ind'))))
-                contentList = sorted(contentList, key=lambda x: x[0])
-                for title, identifier in contentList:
-                    try:
-                        if title.split('.')[-1].lower() in ['avi','mp4','mkv','flv','mov','vob','wmv','ogm','asx','mpg','mpeg','avc','vp3','fli','flc','m4v','iso','mp3']:
-                            myshows_items.append(title)
-                            myshows_files.append(identifier)
-                    except:
-                        pass
-                if len(myshows_items) > 1:
-                    if len(myshows_sizes)==0:
-                        myshows_items = cutFileNames(myshows_items)
-                    else:
-                        myshows_cut = cutFileNames(myshows_items)
-                        myshows_items=[]
-                        x=-1
-                        for i in myshows_files:
-                            x=x+1
-                            fileTitle=myshows_sizes[str(i)]+myshows_cut[x]
-                            myshows_items.append(fileTitle)
-                dialog = xbmcgui.Dialog()
-                if len(myshows_items) == 1:
-                    ret = 0
-                else:
-                    ret = dialog.select(self.localize('Search results:'), myshows_items)
-                if ret > -1:
-                    xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url=' + myshows_files[ret] + '")')
+                fileIndex = chooseFile(torrent.getContentList())
+                if fileIndex:
+                    xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url=' + fileIndex + '")')
             else:
                 contentList = []
                 for filedict in torrent.getContentList():
                     fileTitle = filedict.get('title')
                     if filedict.get('size'):
                         fileTitle += ' [%d MB]' % (filedict.get('size') / 1024 / 1024)
-                    contentList.append((self.unescape(fileTitle), str(filedict.get('ind'))))
+                    contentList.append((unescape(fileTitle), str(filedict.get('ind'))))
                 contentList = sorted(contentList, key=lambda x: x[0])
 
                 dirList, contentListNew = cutFolder(contentList, tdir)

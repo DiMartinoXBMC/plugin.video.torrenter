@@ -154,8 +154,8 @@ class Libtorrent:
             'save_path': self.storageDirectory,
             'storage_mode': self.lt.storage_mode_t(0),
             'paused': True,
-            'auto_managed': True,
-            'duplicate_is_error': True
+            #'auto_managed': True,
+            #'duplicate_is_error': True
         }
         progressBar = xbmcgui.DialogProgress()
         progressBar.create(Localization.localize('Please Wait'), Localization.localize('Magnet-link is converting'))
@@ -180,21 +180,25 @@ class Libtorrent:
         self.magnetLink = magnet
         self.initSession()
         torrentInfo = self.getMagnetInfo()
-        try:
-            torrentFile = self.lt.create_torrent(torrentInfo)
-            baseName = os.path.basename(self.storageDirectory + os.sep + torrentInfo.files()[0].path)
-            if not xbmcvfs.exists(self.torrentFilesPath):
-                xbmcvfs.mkdirs(self.torrentFilesPath)
-            self.torrentFile = self.torrentFilesPath + self.md5(baseName) + '.torrent'
-            torentFileHandler = xbmcvfs.File(self.torrentFile, "w+b")
-            torentFileHandler.write(self.lt.bencode(torrentFile.generate()))
-            torentFileHandler.close()
-            e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())
-            self.torrentFileInfo = self.lt.torrent_info(e)
-        except:
-            xbmc.executebuiltin("Notification(%s, %s, 7500)" % (Localization.localize('Error'), Localization.localize(
-                'Can\'t download torrent, probably no seeds available.')))
-            self.torrentFileInfo = torrentInfo
+        if torrentInfo:
+            try:
+                torrentFile = self.lt.create_torrent(torrentInfo)
+                baseName = os.path.basename(self.storageDirectory + os.sep + torrentInfo.files()[0].path)
+                if not xbmcvfs.exists(self.torrentFilesPath):
+                    xbmcvfs.mkdirs(self.torrentFilesPath)
+                self.torrentFile = self.torrentFilesPath + self.md5(baseName) + '.torrent'
+                torentFileHandler = xbmcvfs.File(self.torrentFile, "w+b")
+                torentFileHandler.write(self.lt.bencode(torrentFile.generate()))
+                torentFileHandler.close()
+                e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())
+                self.torrentFileInfo = self.lt.torrent_info(e)
+            except:
+                xbmc.executebuiltin("Notification(%s, %s, 7500)" % (Localization.localize('Error'), Localization.localize(
+                    'Can\'t download torrent, probably no seeds available.')))
+                self.torrentFileInfo = torrentInfo
+            finally:
+                self.session.remove_torrent(self.torrentHandle)
+                self.torrentHandle = None
 
     def getUploadRate(self):
         if None == self.torrentHandle:
@@ -538,7 +542,7 @@ class Libtorrent:
             try:
                 nodes=self.session.dht_state().get('nodes')
             except:
-                nodes=None
+                nodes=self.session.status().get('nodes_num')
             nodes=len(nodes) if nodes else 0
             result='DHT: %s (%d)' % (is_dht_running, nodes)
         return result
