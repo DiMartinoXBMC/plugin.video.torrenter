@@ -150,6 +150,7 @@ class Libtorrent:
 
     def getMagnetInfo(self):
         magnetSettings = {
+            'url': self.magnetLink,
             'save_path': self.storageDirectory,
             'storage_mode': self.lt.storage_mode_t(0),
             'paused': True,
@@ -158,7 +159,9 @@ class Libtorrent:
         }
         progressBar = xbmcgui.DialogProgress()
         progressBar.create(Localization.localize('Please Wait'), Localization.localize('Magnet-link is converting'))
-        self.torrentHandle = self.lt.add_magnet_uri(self.session, self.magnetLink, magnetSettings)
+        if not self.session:
+            self.initSession()
+        self.torrentHandle = self.session.add_torrent(magnetSettings)
         iterator = 0
         while iterator < 100:
             xbmc.sleep(500)
