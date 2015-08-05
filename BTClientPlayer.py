@@ -232,10 +232,10 @@ class BTClientPlayer(xbmc.Player):
             iterator = 0
             ready_list=[]
             status = self.c.get_normalized_status()
-            conditions=[status['state'] in ['downloading', 'finished', 'seeding'], status['desired_rate'] > 0,
+            conditions=[status['state'] in ['downloading', 'finished', 'seeding'], status['desired_rate'] > 0 or status['progress'] > 0.02,
                         status['progress'] > 0,
-                        status['desired_rate'] > 0 and (status['download_rate'] > status['desired_rate'] or
-                                                        status['download_rate'] * status['progress'] * 100 > status['desired_rate'])]
+                        status['desired_rate'] > 0 or status['progress'] > 0.02 and (status['download_rate'] > status['desired_rate'] or
+                        status['download_rate'] * status['progress'] * 100 > status['desired_rate'])]
             for cond in conditions:
                 if cond:
                     ready_list.append(True)
@@ -341,11 +341,13 @@ class BTClientPlayer(xbmc.Player):
         while not response:
             xbmc.sleep(100)
         if response:
+            xbmc.sleep(3000)
+            #if 1==1:
             playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
             playlist.clear()
             playlist.add(url, listitem)
-            xbmc.Player().play(playlist)
-        print "\nServing file on %s" % url
+            xbmc.Player().play(playlist, listitem)
+        log("Serving file on %s" % url)
         return True
 
     def onPlayBackStarted(self):
@@ -367,6 +369,19 @@ class BTClientPlayer(xbmc.Player):
         for f in self.on_playback_stopped:
             f()
         log('[onPlayBackStopped]: '+(str(("video", "stop", self.display_name))))
+
+
+    def onPlayBackSeek(self):
+        log('[onPlayBackSeek]: '+(str(("video", "seek", self.display_name))))
+        self.pause()
+        self.buffer()
+        self.play()
+
+    def onPlayBackSeekChapter(self):
+        log('[onPlayBackSeek]: '+(str(("video", "seek", self.display_name))))
+        self.pause()
+        self.buffer()
+        self.play()
 
     @contextmanager
     def attach(self, callback, *events):

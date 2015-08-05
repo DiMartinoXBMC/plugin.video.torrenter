@@ -267,7 +267,10 @@ def localize(text):
             'Ask to save':'Спросить о сохранении',
             'Would you like to save this file?':'Хотите сохранить данный файл?',
             'Your storage path is not writable or not local! Please change it in settings!':'Ваше хранилище не доступно для записи или не локально! Измените в настройках!',
-
+            'Upgrade advancedsettings.xml':'Обновление advancedsettings.xml',
+            'We would like to set some advanced settings for you!':'Нам нужно обновить продвинутые настройки для работы!',
+            'Do it!':'Скажите "ДА"!',
+            'Please, restart Kodi now!':'Теперь перезагрузите Коди, пожалуйста!',
         },
         'uk': {
             'Seeds searching.': 'Йде пошук сідів.',

@@ -18,7 +18,7 @@ from hachoir_metadata import extractMetadata
 from hachoir_parser import guessParser
 import hachoir_core.config as hachoir_config
 from hachoir_core.stream.input import InputIOStream
-from opensubtitle import OpenSubtitles
+#from opensubtitle import OpenSubtitles
 
 logger = logging.getLogger('common')
 hachoir_config.quiet = True
@@ -64,11 +64,47 @@ class Hasher(Thread):
         self.start()
 
     def run(self):
+        pass
         with self._btfile.create_cursor() as c:
             filehash = OpenSubtitles.hash_file(c, self._btfile.size)
             self.hash = filehash
             self._hash_cb(filehash)
 
+
+class OpenSubtitles(object):
+    USER_AGENT = 'BTClient'
+
+    def __init__(self, lang, user='', pwd=''):
+        self._lang = lang
+        self._token = None
+        self._user = user
+        self._pwd = pwd
+
+    @staticmethod
+    def hash_file(f, filesize):
+        import struct
+
+        longlongformat = '<q'  # little-endian long long
+        bytesize = struct.calcsize(longlongformat)
+
+        hash = filesize  # @ReservedAssignment
+        if filesize < 65536 * 2:
+            raise ValueError("SizeError")
+
+        for _x in range(65536 / bytesize):
+            buffer = f.read(bytesize)  # @ReservedAssignment
+            (l_value,) = struct.unpack(longlongformat, buffer)
+            hash += l_value
+            hash = hash & 0xFFFFFFFFFFFFFFFF  # to remain as 64bit number  @ReservedAssignment
+
+        f.seek(max(0, filesize - 65536))
+        for _x in range(65536 / bytesize):
+            buffer = f.read(bytesize)  # @ReservedAssignment
+            (l_value,) = struct.unpack(longlongformat, buffer)
+            hash += l_value
+            hash = hash & 0xFFFFFFFFFFFFFFFF  # @ReservedAssignment
+        returnedhash = "%016x" % hash
+        return returnedhash
 
 class BaseMonitor(Thread):
     def __init__(self, client, name):

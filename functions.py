@@ -1748,3 +1748,74 @@ def chooseFile(filelist):
 
     if ret > -1:
         return myshows_files[ret]
+
+def check_network_advancedsettings():
+    path=xbmc.translatePath('special://profile/advancedsettings.xml')
+    updated=False
+    #path='''C:\\Users\\Admin\\AppData\\Roaming\\Kodi\\userdata\\advancedsettings.xml'''
+    settings={'buffermode':2, 'curlclienttimeout':100, 'cachemembuffersize':252420, 'readbufferfactor':5}
+    add, update = {}, {}
+
+    if not os.path.exists(path):
+        updated=True
+        file_cont='''<advancedsettings>
+  <network>
+    <buffermode>2</buffermode>
+	<curlclienttimeout>100</curlclienttimeout>
+    <cachemembuffersize>252420</cachemembuffersize>
+    <readbufferfactor>5</readbufferfactor>
+  </network>
+</advancedsettings>'''
+    else:
+        with open(path) as f:
+            file_cont=f.read()
+
+        print str(file_cont)
+
+    if not updated and not re.search('<network>.+?</network>', file_cont, re.DOTALL):
+        updated=True
+        file_cont=file_cont.replace('<advancedsettings>',
+'''<advancedsettings>
+  <network>
+    <buffermode>2</buffermode>
+	<curlclienttimeout>100</curlclienttimeout>
+    <cachemembuffersize>252420</cachemembuffersize>
+    <readbufferfactor>5</readbufferfactor>
+  </network>
+</advancedsettings>''')
+    elif not updated:
+        for key in settings.keys():
+            search=re.search('<'+key+'>(.+?)</'+key+'>', file_cont, re.DOTALL)
+            if not search:
+                add[key]=settings[key]
+            elif int(search.group(1))<int(settings[key]):
+                print str(int(search.group(1)))
+                update[key]=settings[key]
+        print str(add)
+        print str(update)
+        if len(add)>0 or len(update)>0:
+            updated=True
+            for key in add.keys():
+                file_cont=file_cont.replace('<network>','<network>\r\n    <'+key+'>'+str(add[key])+'</'+key+'>')
+            for key in update.keys():
+                file_cont=re.sub(r'<'+key+'>\d+</'+key+'>', '<'+key+'>'+str(update[key])+'</'+key+'>', file_cont)
+                print str(file_cont)
+
+    if updated:
+        dialog=xbmcgui.Dialog()
+        ok=dialog.yesno(Localization.localize('Upgrade advancedsettings.xml'),
+                        Localization.localize('We would like to set some advanced settings for you!'),
+                        Localization.localize('Do it!'))
+        if ok:
+            print 'OUTPUT: '
+            print str(file_cont)
+
+            f=open(path, mode='w')
+            f.write(file_cont)
+            f.close()
+            dialog.ok(Localization.localize('Upgrade advancedsettings.xml'),
+                      Localization.localize('Please, restart Kodi now!'))
+            print 'Restart Kodi'
+        else:
+            print 'UPDATE advancedsettings.xml disabled by user!'
+        sys.exit(1)

@@ -203,7 +203,7 @@ class BTClient(BaseClient):
         self.lt=lt
         self._cache = CacheBT(path_to_store, self.lt)
         self._torrent_params = {'save_path': path_to_store,
-                                'storage_mode': self.lt.storage_mode_t.storage_mode_sparse
+                                #'storage_mode': self.lt.storage_mode_t.storage_mode_sparse
                                 }
         if not state_file:
             state_file=os.path.join(path_to_store,'.btclient_state')
@@ -249,6 +249,7 @@ class BTClient(BaseClient):
         if s.state in [3, 4, 5] and not self._file and s.progress > 0:
             self._meta_ready(self._th.torrent_file())
             logger.debug('Got torrent metadata and start download')
+            self.hash = True
             self.hash = Hasher(self._file, self._on_file_ready)
 
     def _choose_file(self, files, i):
@@ -425,6 +426,7 @@ class BTClient(BaseClient):
     def close(self):
         self.remove_all_dispatcher_listeners()
         self._monitor.stop()
+        self._cache.close()
         if self._ses:
             self._ses.pause()
             if self._th:
@@ -435,7 +437,7 @@ class BTClient(BaseClient):
                 self._ses.remove_torrent(self._th)
             except:
                 print 'RuntimeError: invalid torrent handle used'
-        #BaseClient.close(self)
+        BaseClient.close(self)
 
     @property
     def status(self):
@@ -504,7 +506,6 @@ class BTClient(BaseClient):
             print('[%s] %.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s' %
                   (self.lt.version, s.progress * 100, s.download_rate / 1000, s.upload_rate / 1000,
                    s.num_peers, state_str[s.state]))
-
 
     def get_normalized_status(self):
         s = self.status
