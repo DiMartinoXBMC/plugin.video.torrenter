@@ -1753,7 +1753,7 @@ def check_network_advancedsettings():
     path=xbmc.translatePath('special://profile/advancedsettings.xml')
     updated=False
     #path='''C:\\Users\\Admin\\AppData\\Roaming\\Kodi\\userdata\\advancedsettings.xml'''
-    settings={'buffermode':2, 'curlclienttimeout':100, 'cachemembuffersize':252420, 'readbufferfactor':5}
+    settings={'buffermode':2, 'curlclienttimeout':30, 'cachemembuffersize':252420, 'readbufferfactor':5}
     add, update = {}, {}
 
     if not os.path.exists(path):
@@ -1761,7 +1761,7 @@ def check_network_advancedsettings():
         file_cont='''<advancedsettings>
   <network>
     <buffermode>2</buffermode>
-	<curlclienttimeout>100</curlclienttimeout>
+	<curlclienttimeout>30</curlclienttimeout>
     <cachemembuffersize>252420</cachemembuffersize>
     <readbufferfactor>5</readbufferfactor>
   </network>
@@ -1778,7 +1778,7 @@ def check_network_advancedsettings():
 '''<advancedsettings>
   <network>
     <buffermode>2</buffermode>
-	<curlclienttimeout>100</curlclienttimeout>
+	<curlclienttimeout>30</curlclienttimeout>
     <cachemembuffersize>252420</cachemembuffersize>
     <readbufferfactor>5</readbufferfactor>
   </network>

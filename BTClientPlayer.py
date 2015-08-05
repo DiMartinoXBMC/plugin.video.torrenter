@@ -371,17 +371,17 @@ class BTClientPlayer(xbmc.Player):
         log('[onPlayBackStopped]: '+(str(("video", "stop", self.display_name))))
 
 
-    def onPlayBackSeek(self):
+    def onPlayBackSeek(self, x ,y):
         log('[onPlayBackSeek]: '+(str(("video", "seek", self.display_name))))
-        self.pause()
-        self.buffer()
-        self.play()
+        xbmc.Player().pause()
+        if self.buffer():
+            xbmc.Player().play()
 
-    def onPlayBackSeekChapter(self):
+    def onPlayBackSeekChapter(self, x):
         log('[onPlayBackSeek]: '+(str(("video", "seek", self.display_name))))
-        self.pause()
-        self.buffer()
-        self.play()
+        xbmc.Player().pause()
+        if self.buffer():
+            xbmc.Player().play()
 
     @contextmanager
     def attach(self, callback, *events):
