@@ -1803,8 +1803,7 @@ def check_network_advancedsettings():
             for key in add.keys():
                 file_cont=file_cont.replace('<network>','<network>\r\n    <'+key+'>'+str(add[key])+'</'+key+'>')
             for key in update.keys():
-                file_cont=re.sub(r'<'+key+'>\d+</'+key+'>', '<'+key+'>'+str(update[key])+'</'+key+'>', file_cont)
-                print str(file_cont)
+                file_cont=re.sub(r'<'+key+'>.+?</'+key+'>', '<'+key+'>'+str(update[key])+'</'+key+'>', file_cont)
 
     if updated:
         dialog=xbmcgui.Dialog()
