@@ -1753,8 +1753,9 @@ def check_network_advancedsettings():
     path=xbmc.translatePath('special://profile/advancedsettings.xml')
     updated=False
     #path='''C:\\Users\\Admin\\AppData\\Roaming\\Kodi\\userdata\\advancedsettings.xml'''
-    settings={'buffermode':2, 'curlclienttimeout':30, 'cachemembuffersize':252420, 'readbufferfactor':5}
+    settings={'buffermode':2, 'curlclienttimeout':30, 'cachemembuffersize':252420, 'readbufferfactor':5.0}
     add, update = {}, {}
+
 
     if not os.path.exists(path):
         updated=True
@@ -1770,7 +1771,7 @@ def check_network_advancedsettings():
         with open(path) as f:
             file_cont=f.read()
 
-        print str(file_cont)
+        log('[check_network_advancedsettings]: old file_cont '+str(file_cont))
 
     if not updated and not re.search('<network>.+?</network>', file_cont, re.DOTALL):
         updated=True
@@ -1788,11 +1789,15 @@ def check_network_advancedsettings():
             search=re.search('<'+key+'>(.+?)</'+key+'>', file_cont, re.DOTALL)
             if not search:
                 add[key]=settings[key]
-            elif int(search.group(1))<int(settings[key]):
-                print str(int(search.group(1)))
-                update[key]=settings[key]
-        print str(add)
-        print str(update)
+            else:
+                present_value=search.group(1)
+                if key == 'buffermode' and int(present_value)==3:
+                    update[key]=settings[key]
+                elif key in ['curlclienttimeout', 'cachemembuffersize'] and int(present_value)<int(settings[key]):
+                    update[key]=settings[key]
+                elif key == 'readbufferfactor' and float(present_value)<settings[key]:
+                    update[key]=settings[key]
+        log('[check_network_advancedsettings]: add '+str(add)+' update '+str(update))
         if len(add)>0 or len(update)>0:
             updated=True
             for key in add.keys():
@@ -1807,8 +1812,7 @@ def check_network_advancedsettings():
                         Localization.localize('We would like to set some advanced settings for you!'),
                         Localization.localize('Do it!'))
         if ok:
-            print 'OUTPUT: '
-            print str(file_cont)
+            log('[check_network_advancedsettings]: new file_cont '+str(file_cont))
 
             f=open(path, mode='w')
             f.write(file_cont)
@@ -1818,4 +1822,3 @@ def check_network_advancedsettings():
             print 'Restart Kodi'
         else:
             print 'UPDATE advancedsettings.xml disabled by user!'
-        sys.exit(1)

@@ -71,10 +71,11 @@ class Core:
 
     def sectionMenu(self):
         if self.__settings__.getSetting('plugin_name')!=self.__plugin__:
+            self.__settings__.setSetting('plugin_name',self.__plugin__)
+            check_network_advancedsettings()
             if self.__plugin__ == 'Torrenter v.2.3.7':
                 #first_run_231()
-                check_network_advancedsettings()
-            self.__settings__.setSetting('plugin_name',self.__plugin__)
+                pass
 
         ListString = 'XBMC.RunPlugin(%s)' % (sys.argv[0] + '?action=%s&action2=%s&%s=%s')
         contextMenu = [(self.localize('Search Control Window'),

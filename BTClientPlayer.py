@@ -228,12 +228,12 @@ class BTClientPlayer(xbmc.Player):
         progressBar = xbmcgui.DialogProgress()
         progressBar.create(self.localize('Please Wait') + str(' [%s]' % str(self.lt.version)),
                            self.localize('Seeds searching.'))
-        while iterator < 100 or not self.c.is_file_ready:# not self.c.is_file_ready
+        while iterator < 100:# not self.c.is_file_ready
             iterator = 0
             ready_list=[]
             status = self.c.get_normalized_status()
             conditions=[status['state'] in ['downloading', 'finished', 'seeding'], status['desired_rate'] > 0 or status['progress'] > 0.02,
-                        status['progress'] > 0,
+                        status['progress'] > 0.01, self.c.is_file_ready or status['progress'] > 0.02,
                         status['desired_rate'] > 0 or status['progress'] > 0.02 and (status['download_rate'] > status['desired_rate'] or
                         status['download_rate'] * status['progress'] * 100 > status['desired_rate'])]
             for cond in conditions:
@@ -244,17 +244,17 @@ class BTClientPlayer(xbmc.Player):
                     ready_list.append(False)
 
             speedsText = '%s: %s Mbit/s %s %s: %s Mbit/s' % (self.localize('Bitrate'), str(int(status['desired_rate'] * 8 / (1024 * 1024))) if status['desired_rate'] else 0,
-                                                   '[COLOR=green]>[/COLOR]' if ready_list[3] else '[COLOR=red]<[/COLOR]',
+                                                   '[COLOR=green]>[/COLOR]' if ready_list[4] else '[COLOR=red]<[/COLOR]',
                                               self.localize('Download speed'),str(status['download_rate'] * 8 / 1000000))
 
             if status['state'] in ['queued','checking','checking fastresume'] or (status['progress'] == 0 and status['num_pieces'] > 0):
                 progressBar.update(iterator, self.localize('Checking preloaded files...'), speedsText, ' ')
 
             elif status['state'] in ['downloading', 'finished', 'seeding']:
-                dialogText = self.localize('Preloaded: ') + '%s MB / %s MB' % \
-                        (str(status['downloaded'] / 1024 / 1024), str(status['total_size'] / 1024 / 1024))
-                peersText = '[%s: %s; %s: %s]' % (self.localize('Seeds'), str(status['seeds_connected']), self.localize('Peers'),
-                    str(status['peers_connected']),)
+                dialogText = self.localize('Preloaded: ') + '%s MB %s %s MB (%s MB)' % \
+                        (str(status['downloaded'] / 1024 / 1024), '[COLOR=green]>[/COLOR]' if ready_list[3] else '[COLOR=red]<[/COLOR]', str(status['total_size'] / 1024 / 1024 /100), str(status['total_size'] / 1024 / 1024))
+                peersText = '[%s: %s; %s: %s] %s: %s' % (self.localize('Seeds'), str(status['seeds_connected']), self.localize('Peers'),
+                    str(status['peers_connected']), self.localize('File ready: '), '[COLOR=green]YES[/COLOR]' if ready_list[2] else '[COLOR=red]NO[/COLOR]')
                 progressBar.update(iterator, peersText, speedsText, dialogText,
                                    )
             else:
