@@ -109,7 +109,7 @@ class BTClientPlayer(xbmc.Player):
                   bt_upload_limit=self.upload_limit,
                   choose_subtitles=False,
                   clear_older=0,
-                  debug_log='',#os.path.join(self.userStorageDirectory, 'log.txt'),
+                  debug_log=os.path.join(self.userStorageDirectory, 'log.txt'),
                   delete_on_finish=False,
                   directory=self.userStorageDirectory,
                   listen_port_max=6891,#
@@ -122,7 +122,7 @@ class BTClientPlayer(xbmc.Player):
                   stdin=False,
                   stream=True,
                   subtitles=None,
-                  trace=False,
+                  trace=True,
                   content_id=self.contentId,
                   url=self.torrentUrl)
         args=main(args) #config
@@ -226,16 +226,16 @@ class BTClientPlayer(xbmc.Player):
     def buffer(self):
         iterator = 0
         progressBar = xbmcgui.DialogProgress()
-        progressBar.create(self.localize('Please Wait') + str(' [%s]' % str(self.lt.version)),
+        progressBar.create('%s [%s]' % (self.__class__.__name__,str(self.lt.version)),
                            self.localize('Seeds searching.'))
-        while iterator < 100:# not self.c.is_file_ready
+        while not self.c.is_file_ready:#iterator < 100:
             iterator = 0
             ready_list=[]
             status = self.c.get_normalized_status()
-            conditions=[status['state'] in ['downloading', 'finished', 'seeding'], status['desired_rate'] > 0 or status['progress'] > 0.02,
-                        status['progress'] > 0.01, self.c.is_file_ready or status['progress'] > 0.02,
-                        status['desired_rate'] > 0 or status['progress'] > 0.02 and (status['download_rate'] > status['desired_rate'] or
-                        status['download_rate'] * status['progress'] * 100 > status['desired_rate'])]
+            conditions=[status['state'] in ['downloading', 'finished', 'seeding'], status['desired_rate'] > 0 or status['progress'] > 0.01,
+                        status['progress'] > 0.005, self.c.is_file_ready,# or status['progress'] > 0.02
+                        (status['download_rate'] > status['desired_rate'] or
+                        status['download_rate'] * int(status['progress'] * 100) > status['desired_rate'])]
             for cond in conditions:
                 if cond:
                     ready_list.append(True)
@@ -243,18 +243,18 @@ class BTClientPlayer(xbmc.Player):
                 else:
                     ready_list.append(False)
 
-            speedsText = '%s: %s Mbit/s %s %s: %s Mbit/s' % (self.localize('Bitrate'), str(int(status['desired_rate'] * 8 / (1024 * 1024))) if status['desired_rate'] else 0,
+            speedsText = '%s: %s Mbit/s %s %s: %s Mbit/s' % (self.localize('Download speed'),str(status['download_rate'] * 8 / 1000000),
                                                    '[COLOR=green]>[/COLOR]' if ready_list[4] else '[COLOR=red]<[/COLOR]',
-                                              self.localize('Download speed'),str(status['download_rate'] * 8 / 1000000))
+                                              self.localize('Bitrate'), str(int(status['desired_rate'] * 8 / (1024 * 1024))) if status['desired_rate'] else 0,)
 
             if status['state'] in ['queued','checking','checking fastresume'] or (status['progress'] == 0 and status['num_pieces'] > 0):
                 progressBar.update(iterator, self.localize('Checking preloaded files...'), speedsText, ' ')
 
             elif status['state'] in ['downloading', 'finished', 'seeding']:
                 dialogText = self.localize('Preloaded: ') + '%s MB %s %s MB (%s MB)' % \
-                        (str(status['downloaded'] / 1024 / 1024), '[COLOR=green]>[/COLOR]' if ready_list[3] else '[COLOR=red]<[/COLOR]', str(status['total_size'] / 1024 / 1024 /100), str(status['total_size'] / 1024 / 1024))
-                peersText = '[%s: %s; %s: %s] %s: %s' % (self.localize('Seeds'), str(status['seeds_connected']), self.localize('Peers'),
-                    str(status['peers_connected']), self.localize('File ready: '), '[COLOR=green]YES[/COLOR]' if ready_list[2] else '[COLOR=red]NO[/COLOR]')
+                        (str(status['downloaded'] / 1024 / 1024), '[COLOR=green]>[/COLOR]' if ready_list[2] else '[COLOR=red]<[/COLOR]', str(status['total_size'] / 1024 / 1024 /200), str(status['total_size'] / 1024 / 1024))
+                peersText = '%s: %s [%s: %s; %s: %s]' % (self.localize('File ready: '), '[COLOR=green]YES[/COLOR]' if ready_list[3] else '[COLOR=red]NO[/COLOR]',
+                                self.localize('Seeds'), str(status['seeds_connected']), self.localize('Peers'), str(status['peers_connected']),)
                 progressBar.update(iterator, peersText, speedsText, dialogText,
                                    )
             else:
@@ -346,7 +346,7 @@ class BTClientPlayer(xbmc.Player):
             playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
             playlist.clear()
             playlist.add(url, listitem)
-            xbmc.Player().play(playlist, listitem)
+            xbmc.Player().play(playlist)
         log("Serving file on %s" % url)
         return True
 
@@ -370,18 +370,17 @@ class BTClientPlayer(xbmc.Player):
             f()
         log('[onPlayBackStopped]: '+(str(("video", "stop", self.display_name))))
 
-
     def onPlayBackSeek(self, x ,y):
         log('[onPlayBackSeek]: '+(str(("video", "seek", self.display_name))))
-        xbmc.Player().pause()
-        if self.buffer():
-            xbmc.Player().play()
+        #xbmc.Player().pause()
+        #if self.buffer():
+        #    xbmc.Player().play()
 
     def onPlayBackSeekChapter(self, x):
         log('[onPlayBackSeek]: '+(str(("video", "seek", self.display_name))))
-        xbmc.Player().pause()
-        if self.buffer():
-            xbmc.Player().play()
+        #xbmc.Player().pause()
+        #if self.buffer():
+        #    xbmc.Player().play()
 
     @contextmanager
     def attach(self, callback, *events):

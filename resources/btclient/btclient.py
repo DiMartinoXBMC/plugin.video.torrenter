@@ -21,7 +21,6 @@ import shutil
 from cachebt import CacheBT
 
 from common import AbstractFile, Hasher, BaseMonitor, BaseClient, Resolver
-from htclient import HTClient
 
 logging.basicConfig()
 logger = logging.getLogger()
@@ -74,7 +73,7 @@ class StreamServer(SocketServer.ThreadingMixIn, htserver.HTTPServer):
     def set_file(self, f):
         self.file = f
 
-    def serve(self, w=0.1):
+    def serve(self, w):
         while self._running:
             try:
                 self.handle_request()
@@ -83,8 +82,8 @@ class StreamServer(SocketServer.ThreadingMixIn, htserver.HTTPServer):
                 print >> sys.stderr, str(e)
 
     def run(self):
-        self.timeout = 0.1
-        t = Thread(target=self.serve, args=[0.1], name='HTTP Server')
+        self.timeout = 0.5
+        t = Thread(target=self.serve, args=[self.timeout], name='HTTP Server')
         t.daemon = True
         t.start()
 
@@ -107,7 +106,6 @@ class BTFileHandler(htserver.BaseHTTPRequestHandler):
     protocol_version = 'HTTP/1.1'
 
     def do_GET(self):
-
         if self.do_HEAD(only_header=False):
             with self.server.file.create_cursor(self._offset) as f:
                 send_something = False
@@ -150,7 +148,7 @@ class BTFileHandler(htserver.BaseHTTPRequestHandler):
             range = None  # @ReservedAssignment
             if self.server.allow_range:
                 range = parse_range(self.headers.get('Range', None))  # @ReservedAssignment
-                if range:
+                if range not in [None, False]:
                     self._offset = range
                     range = (range, size - 1, size)  # @ReservedAssignment
                     logger.debug('Request range %s - (header is %s', range, self.headers.get('Range', None))
@@ -162,8 +160,8 @@ class BTFileHandler(htserver.BaseHTTPRequestHandler):
             self.send_error(404, 'Not Found')
 
     def send_resp_header(self, cont_type, cont_length, range=False, only_header=False):  # @ReservedAssignment
-        # logger.debug('range is %s'% str(range))
-        if self.server.allow_range and range:
+        logger.debug('range is %s'% str(range))
+        if self.server.allow_range and range not in [None, False]:
             self.send_response(206, 'Partial Content')
         else:
             self.send_response(200, 'OK')
@@ -175,13 +173,14 @@ class BTFileHandler(htserver.BaseHTTPRequestHandler):
             self.send_header('Accept-Ranges', 'bytes')
         else:
             self.send_header('Accept-Ranges', 'none')
-        if self.server.allow_range and range:
+        if self.server.allow_range and range not in [None, False]:
             if isinstance(range, (types.TupleType, types.ListType)) and len(range) == 3:
                 self.send_header('Content-Range', 'bytes %d-%d/%d' % range)
                 self.send_header('Content-Length', range[1] - range[0] + 1)
             else:
                 raise ValueError('Invalid range value')
         else:
+            self.send_header('Content-Range', 'bytes %d-%d/%d' % (range, cont_length-1, cont_length))
             self.send_header('Content-Length', cont_length)
         self._finish_header(only_header)
 
@@ -203,7 +202,7 @@ class BTClient(BaseClient):
         self.lt=lt
         self._cache = CacheBT(path_to_store, self.lt)
         self._torrent_params = {'save_path': path_to_store,
-                                #'storage_mode': self.lt.storage_mode_t.storage_mode_sparse
+                                'storage_mode': self.lt.storage_mode_t.storage_mode_sparse
                                 }
         if not state_file:
             state_file=os.path.join(path_to_store,'.btclient_state')
@@ -232,9 +231,9 @@ class BTClient(BaseClient):
         self._hash = None
         self._url = None
 
-        #if args and args.debug_log and args.trace:
-        #    self.add_monitor_listener(self.debug_download_queue)
-        #    self.add_dispatcher_listener(self.debug_alerts)
+        if args and args.debug_log and args.trace:
+            self.add_monitor_listener(self.debug_download_queue)
+            self.add_dispatcher_listener(self.debug_alerts)
 
     @property
     def is_file_complete(self):
@@ -247,7 +246,10 @@ class BTClient(BaseClient):
 
     def _check_ready(self, s, **kwargs):
         if s.state in [3, 4, 5] and not self._file and s.progress > 0:
-            self._meta_ready(self._th.torrent_file())
+            try:
+                self._meta_ready(self._th.torrent_file())
+            except:
+                self._meta_ready(self._th.get_torrent_info())
             logger.debug('Got torrent metadata and start download')
             self.hash = True
             self.hash = Hasher(self._file, self._on_file_ready)
@@ -277,7 +279,11 @@ class BTClient(BaseClient):
                (f.path, fmap.piece, fmap.start, fmap.length,
                      meta.num_pieces(), meta.piece_length()))
 
-        self._cache.file_complete(self._th.torrent_file(),
+        try:
+            meta = self._th.torrent_file()
+        except:
+            meta=self._th.get_torrent_info()
+        self._cache.file_complete(meta,
                                   self._url if self._url and self._url.startswith('http') else None)
 
     def prioritize_piece(self, pc, idx):
@@ -294,7 +300,10 @@ class BTClient(BaseClient):
                 self._th.reset_piece_deadline(i)
 
     def prioritize_file(self):
-        meta = self._th.torrent_file()
+        try:
+            meta = self._th.torrent_file()
+        except:
+            meta=self._th.get_torrent_info()
         priorities = [1 if i >= self._file.first_piece and i <= self.file.last_piece else 0 \
                       for i in xrange(meta.num_pieces())]
         self._th.prioritize_pieces(priorities)
@@ -316,7 +325,11 @@ class BTClient(BaseClient):
 
     @property
     def unique_file_id(self):
-        return str(self._th.torrent_file().info_hash())
+        try:
+            meta = self._th.torrent_file()
+        except:
+            meta=self._th.get_torrent_info()
+        return str(meta.info_hash())
 
     @property
     def pieces(self):
@@ -378,8 +391,6 @@ class BTClient(BaseClient):
         self._th.set_sequential_download(True)
         time.sleep(1)
         self._th.force_dht_announce()
-        #         if tp.has_key('ti'):
-        #             self._meta_ready(self._th.torrent_file())
 
         self._monitor.start()
         self._dispatcher.do_start(self._th, self._ses)
@@ -652,7 +663,7 @@ def main(args=None):
             SPEED_LIMIT = 300
             THREADS = 2
 
-        stream(args, HTClient, TestResolver)
+        #stream(args, HTClient, TestResolver)
     else:
         #rclass = plugins.find_matching_plugin(args.url)
         #if rclass:

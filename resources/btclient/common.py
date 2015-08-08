@@ -6,7 +6,6 @@ Created on May 3, 2015
 import os
 from collections import deque
 import logging
-from threading import Lock, Event, Thread
 import copy
 import threading
 import traceback
@@ -18,7 +17,6 @@ from hachoir_metadata import extractMetadata
 from hachoir_parser import guessParser
 import hachoir_core.config as hachoir_config
 from hachoir_core.stream.input import InputIOStream
-#from opensubtitle import OpenSubtitles
 
 logger = logging.getLogger('common')
 hachoir_config.quiet = True
@@ -52,9 +50,9 @@ def debug_fn(fn):
     return _fn
 
 
-class Hasher(Thread):
+class Hasher(threading.Thread):
     def __init__(self, btfile, hash_cb):
-        Thread.__init__(self, name="Hasher")
+        threading.Thread.__init__(self, name="Hasher")
         if btfile is None:
             raise ValueError('BTFile is None!')
         self._btfile = btfile
@@ -64,7 +62,6 @@ class Hasher(Thread):
         self.start()
 
     def run(self):
-        pass
         with self._btfile.create_cursor() as c:
             filehash = OpenSubtitles.hash_file(c, self._btfile.size)
             self.hash = filehash
@@ -106,19 +103,16 @@ class OpenSubtitles(object):
         returnedhash = "%016x" % hash
         return returnedhash
 
-class BaseMonitor(Thread):
+class BaseMonitor(threading.Thread):
     def __init__(self, client, name):
-        Thread.__init__(self, name=name)
+        threading.Thread.__init__(self, name=name)
         self.daemon = True
         self._listeners = []
-        self._lock = Lock()
-        self._wait_event = Event()
+        self._lock = threading.Lock()
+        self._wait_event = threading.Event()
         self._running = True
         self._client = client
         self._ses = None
-
-    def add_to_ctx(self, key, val):
-        self._ctx[key] = val
 
     def stop(self):
         self._running = False
@@ -148,7 +142,6 @@ class BaseClient(object):
             self._client = client
 
         def run(self):
-
             while (self._running):
                 s = self._client.status
                 with self._lock:
@@ -244,8 +237,8 @@ class PieceCache(object):
     def __init__(self, btfile):
         # self._btfile=btfile
         self._cache = [None] * self.size
-        self._lock = Lock()
-        self._event = Event()
+        self._lock = threading.Lock()
+        self._event = threading.Event()
         self._cache_first = btfile.first_piece
         self._piece_size = btfile.piece_size
         self._map_offset = btfile.map_piece
@@ -400,7 +393,7 @@ class AbstractFile(object):
         self._full_path = os.path.join(base, path)
         self._cursors = []
         self._cursors_history = deque(maxlen=3)
-        self._lock = Lock()
+        self._lock = threading.Lock()
         self.first_piece = 0
         self.last_piece = self.first_piece + (max(size - 1, 0)) // piece_size
 
