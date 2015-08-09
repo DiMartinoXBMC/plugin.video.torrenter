@@ -48,16 +48,18 @@ class Core:
 
     def __init__(self):
         print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
-        if 0 == len(self.userStorageDirectory):
-            download_dir = download_dir_check()
+        if len(self.userStorageDirectory) == 0:
+            download_dir = get_download_dir()
         else:
             download_dir = self.userStorageDirectory
         self.userStorageDirectory = os.path.join(download_dir, 'Torrenter')
 
     def sectionMenu(self):
         if self.__settings__.getSetting('plugin_name')!=self.__plugin__:
+            #Every update run
             self.__settings__.setSetting('plugin_name',self.__plugin__)
             check_network_advancedsettings()
+            check_download_dir()
             if self.__plugin__ == 'Torrenter v.2.3.7':
                 #first_run_231()
                 pass

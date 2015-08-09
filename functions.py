@@ -1821,7 +1821,7 @@ def check_network_advancedsettings():
         else:
             print 'UPDATE advancedsettings.xml disabled by user!'
 
-def download_dir_check():
+def get_download_dir():
     from platform_pulsar import get_platform
     import tempfile
     platform = get_platform()
@@ -1839,3 +1839,10 @@ def download_dir_check():
     except:
         download_dir = tempdir()
     return download_dir
+
+def check_download_dir():
+    if len(__settings__.getSetting("storage"))==0:
+        dialog=xbmcgui.Dialog()
+        dialog.ok(Localization.localize('Torrenter'),
+                    Localization.localize('Please specify storage folder in Settings!'))
+        __settings__.openSettings()
