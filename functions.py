@@ -1331,9 +1331,8 @@ def file_decode(filename):
 
 
 def file_encode(filename):
-    if not __settings__.getSetting('delete_russian') == 'true':
-        if sys.getfilesystemencoding() == 'mbcs' and isAsciiString(filename):
-            filename = filename.decode('cp1251').encode('utf-8')
+    if sys.getfilesystemencoding() == 'mbcs' and isAsciiString(filename):
+        filename = filename.decode('cp1251').encode('utf-8')
     return filename
 
 
@@ -1821,3 +1820,22 @@ def check_network_advancedsettings():
             print 'Restart Kodi'
         else:
             print 'UPDATE advancedsettings.xml disabled by user!'
+
+def download_dir_check():
+    from platform_pulsar import get_platform
+    import tempfile
+    platform = get_platform()
+
+    dialog=xbmcgui.Dialog()
+    dialog.ok(Localization.localize('Torrenter'),
+                Localization.localize('Please specify storage folder in Settings!'))
+    __settings__.openSettings()
+
+    try:
+        if not platform['system']=='android':
+            download_dir = tempfile.gettempdir()
+        else:
+            download_dir = tempdir()
+    except:
+        download_dir = tempdir()
+    return download_dir
