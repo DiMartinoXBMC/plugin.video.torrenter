@@ -1090,6 +1090,17 @@ class Core:
                 elif tdir and action == 'copy':
                     path=os.path.join(folder, tdir)
                     dirs, files=xbmcvfs.listdir(path)
+                    if len(dirs) > 0:
+                        dirs.insert(0, self.localize('./ (Root folder)'))
+                        for dd in dirs:
+                            dds=xbmcvfs.listdir(os.path.join(path,dd))[0]
+                            if len(dds)>0:
+                                for d in dds:
+                                    dirs.append(dd+os.sep+d)
+                        ret = xbmcgui.Dialog().select(self.localize('Choose directory:'), dirs)
+                        if ret > 0:
+                            path=os.path.join(path, dirs[ret])
+                            dirs, files=xbmcvfs.listdir(path)
                     for file in files:
                         if not xbmcvfs.exists(os.path.join(path,file)):
                             xbmcvfs.delete(os.path.join(path,file))

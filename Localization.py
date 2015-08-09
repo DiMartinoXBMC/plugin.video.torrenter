@@ -271,6 +271,7 @@ def localize(text):
             'We would like to set some advanced settings for you!':'Нам нужно обновить продвинутые настройки для работы!',
             'Do it!':'Скажите "ДА"!',
             'Please, restart Kodi now!':'Теперь перезагрузите Коди, пожалуйста!',
+            './ (Root folder)':'./ (Корневой каталог)',
         },
         'uk': {
             'Seeds searching.': 'Йде пошук сідів.',
