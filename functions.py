@@ -1540,10 +1540,16 @@ class DownloadDB:
                     self.db.commit()
                     self.cur.close()
             except:
-                self.cur.execute('drop table downloads')
-                first = True
-                self.db.commit()
-                self.cur.close()
+                try:
+                    self.cur.execute('drop table downloads')
+                    first = True
+                    self.db.commit()
+                    self.cur.close()
+                except:
+                    self.db.close()
+                    os.remove(self.filename)
+                    first = True
+                    self.db = sqlite.connect(self.filename, check_same_thread=False)
 
         if first:
             cur = self.db.cursor()
