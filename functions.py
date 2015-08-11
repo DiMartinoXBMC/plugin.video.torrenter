@@ -1546,6 +1546,7 @@ class DownloadDB:
                     self.db.commit()
                     self.cur.close()
                 except:
+                    self.cur.close()
                     self.db.close()
                     os.remove(self.filename)
                     first = True
