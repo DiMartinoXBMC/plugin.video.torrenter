@@ -53,7 +53,9 @@ __plugin__ = __settings__.getAddonInfo('name') + " v." + __version__
 
 def clearStorage(userStorageDirectory):
     userStorageDirectory = decode(userStorageDirectory)
-    if xbmcvfs.exists(userStorageDirectory + os.sep):
+    #log('[clearStorage]: storage '+str(userStorageDirectory) + os.sep)
+    if xbmcvfs.exists(userStorageDirectory + os.sep) or os.path.exists(userStorageDirectory):
+        log('[clearStorage]: storage exists')
         import shutil
 
         temp = userStorageDirectory.rstrip('Torrenter').rstrip('/\\')
@@ -86,12 +88,16 @@ def clearStorage(userStorageDirectory):
         if saved_bool:
             shutil.move(saved_temp, saved)
 
+        showMessage(Localization.localize('Storage'), Localization.localize('Storage was cleared'), forced=True)
+
+    else:
+        showMessage(Localization.localize('Storage'), Localization.localize('Does not exists'), forced=True)
+        log('[clearStorage]: fail storage '+userStorageDirectory + os.sep)
+
     try:
         DownloadDB().clear()
     except Exception, e:
         log('[clearStorage]: DownloadDB().clear() failed. '+str(e))
-
-    showMessage(Localization.localize('Storage'), Localization.localize('Storage was cleared'), forced=True)
 
 
 def sortcomma(dict, json):
@@ -1322,11 +1328,10 @@ def fetchData(url, referer=None):
 
 def file_decode(filename):
     pass
-    #if not __settings__.getSetting('delete_russian') == 'true':
-    #    try:
-    #        filename = filename.decode('utf-8')  # ,'ignore')
-    #    except:
-    #        pass
+    try:
+        filename = filename.decode('utf-8')  # ,'ignore')
+    except:
+        pass
     return filename
 
 
@@ -1672,14 +1677,14 @@ def vista_check():
     return platform.release() == "Vista"
 
 def is_writable(path):
-    if not os.path.exists(path):
+    if not xbmcvfs.exists(path+os.sep):
         xbmcvfs.mkdirs(path)
     try:
-        open(os.path.join(path, 'temp'), 'w')
+        open(os.path.join(file_decode(path), 'temp'), 'w')
     except:
          return False
     else:
-         os.remove(os.path.join(path, 'temp'))
+         os.remove(os.path.join(file_decode(path), 'temp'))
          return True
 
 def unescape(string):

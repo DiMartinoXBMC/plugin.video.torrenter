@@ -55,9 +55,9 @@ class Core:
         self.userStorageDirectory = os.path.join(download_dir, 'Torrenter')
 
     def sectionMenu(self):
-        if self.__settings__.getSetting('plugin_name')!=self.__plugin__:
+        if self.__settings__.getSetting('plugin_name') != self.__plugin__:
             #Every update run
-            self.__settings__.setSetting('plugin_name',self.__plugin__)
+            self.__settings__.setSetting('plugin_name', self.__plugin__)
             check_network_advancedsettings()
             check_download_dir()
             if self.__plugin__ == 'Torrenter v.2.3.7':
