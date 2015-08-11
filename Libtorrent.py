@@ -506,18 +506,18 @@ class Libtorrent:
 
             state_str = ['queued', 'checking', 'downloading metadata',
                          'downloading', 'finished', 'seeding', 'allocating']
-            log('[%s] %.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s %s %s' % \
+            log('[%s] %.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s' % \
                   (self.lt.version, s.progress * 100, s.download_rate / 1000,
-                   s.upload_rate / 1000, s.num_peers, state_str[s.state], self.get_debug_info('dht_state'), self.get_debug_info('trackers_sum')))
+                   s.upload_rate / 1000, s.num_peers, state_str[s.state]))
             #log('%s %s' % (self.get_debug_info('dht_state'), self.get_debug_info('trackers_sum')))
-            debug('TRACKERS:' +str(self.torrentHandle.trackers()))
+            #debug('TRACKERS:' +str(self.torrentHandle.trackers()))
 
-            received=self.session.pop_alert()
-            while received:
-                debug('[debug]: ['+str(type(received))+'] the alert '+str(received)+' is received')
-                #if type(received) == self.lt.torrent_finished_alert:
-                #    self.session.pause()
-                received = self.session.pop_alert()
+            #received=self.session.pop_alert()
+            #while received:
+            #    debug('[debug]: ['+str(type(received))+'] the alert '+str(received)+' is received')
+            #    #if type(received) == self.lt.torrent_finished_alert:
+            #    #    self.session.pause()
+            #    received = self.session.pop_alert()
 
             #log('is_dht_running:' +str(self.session.is_dht_running()))
             #log('dht_state:' +str(self.session.dht_state()))
