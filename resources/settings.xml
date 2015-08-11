@@ -8,8 +8,6 @@
         <setting id="open_option"       type="enum"     label="30034" default="0"   lvalues="30035|30036|30037|30038"/>
     </category>
     <category label="30103">
-        <setting id="delete_russian"    type="bool"     label="30032" default=""/>
-        <setting                        type="action"   label="30033" action="RunPlugin(plugin://plugin.video.torrenter/?action=returnRussian)" visible="eq(-1,false)"/>
         <setting id="timeout"           type="enum"     lvalues="30026|30027|30028" label="30025" default="1"/>
         <setting id="search_phrase"     type="text"     label="30040"/>
         <setting id="num_threads"       type="slider"   label="30042" default="3" range="1,1,9" option="int"/>
