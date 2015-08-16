@@ -1103,6 +1103,7 @@ class Core:
                     if len(dirs) > 0:
                         dirs.insert(0, self.localize('./ (Root folder)'))
                         for dd in dirs:
+                            dd = file_decode(dd)
                             dds=xbmcvfs.listdir(os.path.join(path,dd))[0]
                             if len(dds)>0:
                                 for d in dds:
