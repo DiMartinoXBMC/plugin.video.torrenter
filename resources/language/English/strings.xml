@@ -44,6 +44,10 @@
     <string id="30044">Save files</string>
     <string id="30045">Ask to save</string>
     <string id="30046">BTclient (python-libtorrent via http)</string>
+    <string id="30047">Auto-unblocking proxy</string>
+    <string id="30048">None</string>
+    <string id="30049">Anti-zapret</string>
+    <string id="30050">Immunicity</string>
     <string id="30101">Interface</string>
     <string id="30102">P2P Network</string>
     <string id="30103">Advanced</string>
@@ -68,5 +72,6 @@
     <string id="30417">Clear Storage</string>
     <string id="30418">Choose searcher</string>
     <string id="30419">You don't have external searcher. Please install it first.</string>
+
 
 </strings>

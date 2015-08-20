@@ -41,6 +41,7 @@ class SearcherABC:
     sourceWeight = 1
     cookieJar = None
     timeout_multi=int(sys.modules["__main__"].__settings__.getSetting("timeout"))
+    proxy=int(sys.modules["__main__"].__settings__.getSetting("proxy"))
     __plugin__='Empty v 0 0 0'
     baseurl = 'site.com'
 
@@ -107,7 +108,20 @@ class SearcherABC:
 
     def makeRequest(self, url, data={}, headers={}):
         self.load_cookie()
-        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookieJar))
+        if self.proxy == 1:
+            from resources.proxy import antizapret
+            opener = urllib2.build_opener(antizapret.AntizapretProxyHandler(), urllib2.HTTPCookieProcessor(self.cookieJar))
+            config = antizapret.config()
+            self.debug('[antizapret]: '+str(config["domains"]))
+            self.debug('[antizapret]: '+str(config["server"]))
+        elif self.proxy == 2:
+            from resources.proxy import immunicity
+            opener = urllib2.build_opener(immunicity.ImmunicityProxyHandler(), urllib2.HTTPCookieProcessor(self.cookieJar))
+            config = immunicity.config()
+            self.debug('[immunicity]: '+str(config["domains"]))
+            self.debug('[immunicity]: '+str(config["server"]))
+        else:
+            opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookieJar))
         opener.addheaders = headers
         if 0 < len(data):
             encodedData = urllib.urlencode(data)

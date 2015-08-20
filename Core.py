@@ -254,28 +254,33 @@ class Core:
         #playlist.add(path, listitem)
         #xbmc.Player().play(playlist)
 
-        try:
-            import cherrytorrent
-            http_config    = {
-                        'port': 8089,
-                     }
+        from resources.proxy import antizapret
+        config = antizapret.config()
+        log('[antizapret]: '+str(config["domains"]))
+        log('[antizapret]: '+str(config["server"]))
 
-            torrent_config = {
-                                'port':                 6900,
-                                'max_download_rate':    0,
-                                'max_upload_rate':      0,
-                                'keep_files':           False
-                             }
-            server = cherrytorrent.Server(http_config, torrent_config)
-            server.run()
-            url="http://localhost:8089/add?uri=magnet%3A%3Fxt%3Durn%3Abtih%3Ac39fe3eefbdb62da9c27eb6398ff4a7d2e26e7ab%26dn%3Dbig%2Bbuck%2Bbunny%2Bbdrip%2Bxvid%2Bmedic%26tr%3Dudp%253A%252F%252Ftracker.publicbt.com%253A80%252Fannounce%26tr%3Dudp%253A%252F%252Fopen.demonii.com%253A1337"
-            print str(get_url('',url))
-            xbmc.sleep(3000)
-            path="http://localhost:8089/video"#?info_hash=c39fe3eefbdb62da9c27eb6398ff4a7d2e26e7ab
-            xbmc.Player().play(path)
-            xbmc.sleep(30000)
-        finally:
-            get_url('',"http://localhost:8089/shutdown")
+        #try:
+        #    import cherrytorrent
+        #    http_config    = {
+        #                'port': 8089,
+        #             }
+
+        #    torrent_config = {
+        #                        'port':                 6900,
+        #                        'max_download_rate':    0,
+        #                        'max_upload_rate':      0,
+        #                        'keep_files':           False
+        #                     }
+        #    server = cherrytorrent.Server(http_config, torrent_config)
+        #    server.run()
+        #    url="http://localhost:8089/add?uri=magnet%3A%3Fxt%3Durn%3Abtih%3Ac39fe3eefbdb62da9c27eb6398ff4a7d2e26e7ab%26dn%3Dbig%2Bbuck%2Bbunny%2Bbdrip%2Bxvid%2Bmedic%26tr%3Dudp%253A%252F%252Ftracker.publicbt.com%253A80%252Fannounce%26tr%3Dudp%253A%252F%252Fopen.demonii.com%253A1337"
+        #    print str(get_url('',url))
+        #    xbmc.sleep(3000)
+        #    path="http://localhost:8089/video"#?info_hash=c39fe3eefbdb62da9c27eb6398ff4a7d2e26e7ab
+        #    xbmc.Player().play(path)
+        #    xbmc.sleep(30000)
+        #finally:
+        #    get_url('',"http://localhost:8089/shutdown")
 
     def DownloadStatus(self, params={}):
         db = DownloadDB()

@@ -416,7 +416,7 @@ class Libtorrent:
                       'save_path': self.storageDirectory,
                        #'storage_mode': self.lt.storage_mode_t(1),
                        'paused': False,
-                       #'auto_managed': False,
+                       'auto_managed': False,
                        #'duplicate_is_error': True
                       }
         self.torrentHandle = self.session.add_torrent(torrent_info)
@@ -452,17 +452,6 @@ class Libtorrent:
                     self.torrentHandle.piece_priority(self.endPart - i, 7)
                     # print str(i)
 
-    def fetchParts(self):
-        priorities = self.torrentHandle.piece_priorities()
-        status = self.torrentHandle.status()
-        if len(status.pieces) == 0:
-            return
-        if priorities[self.startPart] == 0:
-            self.torrentHandle.piece_priority(self.startPart, 2)
-        for part in range(self.startPart, self.endPart + 1):
-            if priorities[part] == 0:
-                self.torrentHandle.piece_priority(part, 1)
-
     def checkThread(self):
         if self.threadComplete == True:
             log('checkThread KIIIIIIIIIIILLLLLLLLLLLLLLL')
@@ -476,19 +465,20 @@ class Libtorrent:
             self.session.stop_dht()
 
     def debug(self):
-        try:
+        #try:
+        if 1==1:
             # print str(self.getFilePath(0))
             s = self.torrentHandle.status()
             #get_cache_status=self.session.get_cache_status()
             #log('get_cache_status - %s/%s' % (str(get_cache_status.blocks_written), str(get_cache_status.blocks_read)))
             # get_settings=self.torrentHandle.status
             # print s.num_pieces
-            # priorities = self.torrentHandle.piece_priorities()
-            # self.dump(priorities)
+            priorities = self.torrentHandle.piece_priorities()
+            str(priorities)
             # print str('anonymous_mode '+str(get_settings['anonymous_mode']))
 
             state_str = ['queued', 'checking', 'downloading metadata',
-                         'downloading', 'finished', 'seeding', 'allocating']
+                         'downloading', 'finished', 'seeding', 'allocating', 'checking fastresume']
             log('[%s] %.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s' % \
                   (self.lt.version, s.progress * 100, s.download_rate / 1000,
                    s.upload_rate / 1000, s.num_peers, state_str[s.state]))
@@ -512,7 +502,8 @@ class Libtorrent:
             # print 'True pieces: %d' % i
             # print s.current_tracker
             # print str(s.pieces)
-        except:
+        #except:
+        else:
             print 'debug error'
             pass
 
