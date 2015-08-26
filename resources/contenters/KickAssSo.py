@@ -89,31 +89,34 @@ class KickAssSo(Content.Content):
         # print str(result)
         num = 51
         good_forums = ['TV', 'Anime', 'Movies']
-        result = re.compile(
-            r'''title="Download torrent file" href="(.+?\.torrent).+?" class=".+?"><i.+?<a.+?<a.+?<a href="(.+?html)" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>.+?<td class="nobr center">(.+?)</td>.+?<td class="center">(\d+&nbsp;.+?)</td>.+?<td class="green center">(\d+?)</td>.+?<td class="red lasttd center">(\d+?)</td>''',
-            re.DOTALL).findall(response)
-        for link, infolink, title, forum, size, date, seeds, leechers in result:
+        regex = '''<tr class=".+?" id=.+?</tr>'''
+        regex_tr = r'''title="Download torrent file" href="(.+?\.torrent).+?" class=".+?"><i.+?<a.+?<a.+?<a href="(.+?html)" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>.+?<td class="nobr center">(.+?)</td>.+?<td class="center".+?>(\d+&nbsp;.+?)</td>.+?<td class="green center">(\d+?)</td>.+?<td class="red lasttd center">(\d+?)</td>'''
+        for tr in re.compile(regex, re.DOTALL).findall(response):
+            result=re.compile(regex_tr, re.DOTALL).findall(tr)
+            #print str(result)
+            if result:
+                (link, infolink, title, forum, size, date, seeds, leechers)=result[0]
             # main
-            if forum in good_forums:
-                info = {}
-                num = num - 1
-                original_title = None
-                year = 0
-                img = ''
-                # info
+                if forum in good_forums:
+                    info = {}
+                    num = num - 1
+                    original_title = None
+                    year = 0
+                    img = ''
+                    # info
 
-                info['label'] = info['title'] = self.unescape(title)
-                info['link'] = link
-                info['infolink'] = self.baseurl + infolink
-                size = self.unescape(self.stripHtml(size))
-                date = self.unescape(self.stripHtml(date))
-                info['plot'] = info['title'] + '\r\n[I](%s) [S/L: %s/%s] [/I]\r\nAge: %s' % (
-                size, seeds, leechers, date)
+                    info['label'] = info['title'] = self.unescape(title)
+                    info['link'] = link
+                    info['infolink'] = self.baseurl + infolink
+                    size = self.unescape(self.stripHtml(size))
+                    date = self.unescape(self.stripHtml(date))
+                    info['plot'] = info['title'] + '\r\n[I](%s) [S/L: %s/%s] [/I]\r\nAge: %s' % (
+                    size, seeds, leechers, date)
 
-                contentList.append((
-                    int(int(self.sourceWeight) * (int(num))),
-                    original_title, title, int(year), img, info,
-                ))
+                    contentList.append((
+                        int(int(self.sourceWeight) * (int(num))),
+                        original_title, title, int(year), img, info,
+                    ))
         return contentList
 
     def get_info(self, url):

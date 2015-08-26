@@ -1,5 +1,9 @@
 ﻿English changelog at http://bit.ly/1MfSVUP
 
+[B]Version 2.3.8[/B]
+[+] Добавлен АнтиЗапрет
+[+] Списки Медиа: Исправлен KickAssSo
+
 [B]Version 2.3.6[/B]
 [+] Оптимизация импорта, ускорена работа меню
 [+] Новый Проигрыватель [url=https://github.com/izderadicka/btclient]BTclient[/url] в тестовом режиме, требует python-libtorrent >=1.0.4.
