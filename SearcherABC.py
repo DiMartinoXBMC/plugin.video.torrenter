@@ -97,6 +97,7 @@ class SearcherABC:
         try:
             if os.path.exists(cookie): self.cookieJar.load(ignore_discard=True)
         except:
+            self.log('[load_cookie]: os.remove(cookie)')
             os.remove(cookie)
             self.cookieJar = cookielib.MozillaCookieJar(cookie)
 
