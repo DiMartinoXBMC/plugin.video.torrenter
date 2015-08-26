@@ -94,7 +94,11 @@ class SearcherABC:
     def load_cookie(self):
         cookie=os.path.join(self.tempdir(),'cookie.txt')
         self.cookieJar = cookielib.MozillaCookieJar(cookie)
-        if os.path.exists(cookie): self.cookieJar.load(ignore_discard=True)
+        try:
+            if os.path.exists(cookie): self.cookieJar.load(ignore_discard=True)
+        except:
+            os.remove(cookie)
+            self.cookieJar = cookielib.MozillaCookieJar(cookie)
 
     def clear_cookie(self, domain):
         cookie=os.path.join(self.tempdir(),'cookie.txt')
