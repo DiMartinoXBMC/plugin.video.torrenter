@@ -1483,25 +1483,25 @@ class Core:
         silent = get("silent")
         thumbnail = unquote(get("thumbnail"),'')
         save_folder = unquote(get("save_folder"),'')
-        if external:
+        if external and not get('from_searcher'):
             try:
-                s = json.loads(json.loads(urllib.unquote_plus(get("sdata"))))
+            #if 1==1:
+                sdata = json.loads(json.loads(urllib.unquote_plus(get("sdata"))))
                 if len(filesList) < 1:
                     xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
                     if not silent:
                         xbmc.executebuiltin(
                             'XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.myshows/?mode=3013')
                     else:
-                        xbmc.executebuiltin(
-                            'XBMC.Notification("%s", "%s", %s)' % ("Поиск", "Ничего не найдено :(", "2500"))
+                        showMessage(self.localize('Information'), self.localize('Torrent list is empty.'))
                     return
                 if silent:
                     order, seeds, leechers, size, title, link, image = filesList[0]
                     xbmc.executebuiltin('XBMC.RunPlugin(%s)' % (
                     'plugin://plugin.video.myshows/?mode=3010&sort=activate&action=silent&stringdata=' + urllib.quote_plus(
                         '{"filename":"%s", "stype":%s, "showId":%s, "seasonId":%s, "id":%s, "episodeId":%s}' % (
-                        link, jstr(s['stype']), jstr(s['showId']), jstr(s['seasonId']), jstr(s['id']),
-                        jstr(s['episodeId'])))))
+                        link, jstr(sdata['stype']), jstr(sdata['showId']), jstr(sdata['seasonId']), jstr(sdata['id']),
+                        jstr(sdata['episodeId'])))))
                     return
                 else:
                     for (order, seeds, leechers, size, title, link, image) in filesList:
@@ -1515,8 +1515,8 @@ class Core:
                              'XBMC.RunPlugin(%s)' % (
                              'plugin://plugin.video.myshows/?mode=3010&sort=activate&stringdata=' + urllib.quote_plus(
                                  '{"filename":"%s", "stype":%s, "showId":%s, "seasonId":%s, "id":%s, "episodeId":%s}' % (
-                                 link, jstr(s['stype']), jstr(s['showId']), jstr(s['seasonId']), jstr(s['id']),
-                                 jstr(s['episodeId']))))),
+                                 link, jstr(sdata['stype']), jstr(sdata['showId']), jstr(sdata['seasonId']), jstr(sdata['id']),
+                                 jstr(sdata['episodeId']))))),
                             (self.localize('Open (no return)'),
                              'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
                              sys.argv[0], 'openTorrent', link_url)),
@@ -1526,8 +1526,9 @@ class Core:
                         title = self.titleMake(seeds, leechers, size, title)
                         self.drawItem(title, 'context', link, image, contextMenu=contextMenu)
             except:
+            #else:
                 showMessage(self.localize('Information'), self.localize('Torrent list is empty.'))
-                xbmc.executebuiltin('XBMC.RunPlugin(%s)' % 'plugin://plugin.video.myshows/?mode=3013')
+                if get("sdata"): xbmc.executebuiltin('XBMC.RunPlugin(%s)' % 'plugin://plugin.video.myshows/?mode=3013')
                 return
         else:
             for (order, seeds, leechers, size, title, link, image) in filesList:
