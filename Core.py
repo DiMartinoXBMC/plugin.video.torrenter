@@ -376,16 +376,16 @@ class Core:
                     progress=int(jsoninfo.get('progress'))
                     if status=='pause':
                         status_sign='[||]'
-                        img=self.ROOT + '/icons/pause-icon.png'
+                        img = os.path.join(self.ROOT, '/icons/', 'pause-icon.png')
                     elif status=='stopped':
                         status_sign='[X]'
-                        img=self.ROOT + '/icons/stop-icon.png'
+                        img = os.path.join(self.ROOT, '/icons/', 'stop-icon.png')
                     else:
                         status_sign='[>]'
                         if progress==100:
-                            img=self.ROOT + '/icons/upload-icon.png'
+                            img = os.path.join(self.ROOT, '/icons/', 'upload-icon.png')
                         else:
-                            img=self.ROOT + '/icons/download-icon.png'
+                            img = os.path.join(self.ROOT, '/icons/', 'download-icon.png')
 
                     title = '[%d%%]%s %s'  % (progress, status_sign, title)
                     if jsoninfo.get('seeds')!=None and jsoninfo.get('peers')!=None and \
@@ -1147,10 +1147,10 @@ class Core:
                     status = TextBB(' [||] ', 'b')
                 elif data['status'] in ('seeding', 'downloading'):
                     status = TextBB(' [>] ', 'b')
-                if data['status']=='seed_pending':img=self.ROOT + '/icons/pause-icon.png'
-                elif data['status']=='stopped': img=self.ROOT + '/icons/stop-icon.png'
-                elif data['status']=='seeding':img=self.ROOT + '/icons/upload-icon.png'
-                elif data['status']=='downloading':img=self.ROOT + '/icons/download-icon.png'
+                if data['status']   == 'seed_pending':    os.path.join(self.ROOT, '/icons/', 'pause-icon.png')
+                elif data['status'] == 'stopped':         os.path.join(self.ROOT, '/icons/', 'stop-icon.png')
+                elif data['status'] == 'seeding':         os.path.join(self.ROOT, '/icons/', 'upload-icon.png')
+                elif data['status'] == 'downloading':     os.path.join(self.ROOT, '/icons/', 'download-icon.png')
                 menu.append(
                     {"title": '[' + str(data['progress']) + '%]' + status + data['name'] + ' [' + str(
                         data['ratio']) + ']', "image":img,

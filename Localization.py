@@ -313,7 +313,7 @@ def localize(text):
             'Torrent Downloading': 'Завантаження торренту',
             'Auth expired, please relogin': 'Авторизація сплила, будь ласка, увійдіть знову',
             'Storage': 'Сховище',
-            'Storage was cleared': 'Сховище очищене',
+            'Storage has been cleared': 'Сховище очищене',
             'Clear Storage': 'Очистити сховище',
             'Popular': 'Популярне',
             'Views': 'Перегляди',

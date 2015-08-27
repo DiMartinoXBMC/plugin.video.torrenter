@@ -355,6 +355,7 @@ class TorrentPlayer(xbmc.Player):
 
         if response:
             # xbmc.Player().play(path, listitem)
+            log('Megakostil worked! Start playing '+str(path))
             playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
             playlist.clear()
             playlist.add(path, listitem)

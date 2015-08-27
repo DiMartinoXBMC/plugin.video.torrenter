@@ -46,7 +46,7 @@ ROOT = __settings__.getAddonInfo('path')  # .decode('utf-8').encode(sys.getfiles
 userStorageDirectory = __settings__.getSetting("storage")
 USERAGENT = "Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0"
 __addonpath__ = __settings__.getAddonInfo('path')
-icon = __addonpath__ + '/icon.png'
+icon = os.path.join(__addonpath__, '/icon.png')
 __version__ = __settings__.getAddonInfo('version')
 __plugin__ = __settings__.getAddonInfo('name') + " v." + __version__
 
@@ -73,11 +73,11 @@ def clearStorage(userStorageDirectory):
         torrents_bool, saved_bool = False, False
 
         if os.path.exists(torrents):
-            torrents_bool = shutil.move(torrents, torrents_temp)
+            shutil.move(torrents, torrents_temp)
             torrents_bool = True
 
         if os.path.exists(saved):
-            saved_bool = shutil.move(saved, saved_temp)
+            shutil.move(saved, saved_temp)
             saved_bool = True
 
         shutil.rmtree(userStorageDirectory, ignore_errors=True)
@@ -88,7 +88,7 @@ def clearStorage(userStorageDirectory):
         if saved_bool:
             shutil.move(saved_temp, saved)
 
-        showMessage(Localization.localize('Storage'), Localization.localize('Storage was cleared'), forced=True)
+        showMessage(Localization.localize('Storage'), Localization.localize('Storage has been cleared'), forced=True)
 
     else:
         showMessage(Localization.localize('Storage'), Localization.localize('Does not exists'), forced=True)
