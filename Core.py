@@ -1702,12 +1702,17 @@ class Core:
 
         defaultKeyword = params.get('url')
         showKey=params.get('showKey')
+        external = unquote(params.get("external"), None)
+        if external and not params.get('from_searcher'):
+            searcher = '[%s] ' % str(external)
+        else:
+            searcher = ''
 
         if showKey == "true" or defaultKeyword == '' or not defaultKeyword:
             if not defaultKeyword:
                 defaultKeyword = ''
             defaultKeyword=unquote(defaultKeyword)
-            keyboard = xbmc.Keyboard(defaultKeyword, self.localize('Search Phrase') + ':')
+            keyboard = xbmc.Keyboard(defaultKeyword, '%s%s:' % (searcher, self.localize('Search Phrase')))
             keyboard.doModal()
             query = keyboard.getText()
             if not query:

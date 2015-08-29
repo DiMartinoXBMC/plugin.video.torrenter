@@ -154,11 +154,10 @@ class SearcherABC:
         return response
 
     def askCaptcha(self, url):
-        temp_dir = tempfile.gettempdir()
+        temp_dir = self.tempdir()
         if isinstance(temp_dir, list): temp_dir = temp_dir[0]
         urllib.URLopener().retrieve(url, temp_dir + '/captcha.png')
         window = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-        temp_dir = tempfile.gettempdir()
         if isinstance(temp_dir, list): temp_dir = temp_dir[0]
         image = xbmcgui.ControlImage(460, 20, 360, 160, temp_dir + '/captcha.png')
         window.addControl(image)
