@@ -1402,6 +1402,7 @@ class Core:
         if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
                                                      torrentFilesDirectory=self.torrentFilesDirectory)
         self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
+        self.__settings__.setSetting("lastTime", str(int(time.time())))
         if silent != 'true':
             if external:
                 fileIndex = chooseFile(torrent.getContentList())
