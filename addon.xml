@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.torrenter" name="Torrenter" version="2.3.8" provider-name="vadim.skorba, DiMartino">
+<addon id="plugin.video.torrenter" name="Torrenter" version="2.3.8c" provider-name="vadim.skorba, DiMartino">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
         <import addon="script.module.libtorrent"/>
@@ -18,6 +18,10 @@
         <description lang='en'>Plugin helps you to watch videos from p2p torrent-networks, without full predownload (uses python-libtorrent or Ace Stream). It also can add, control torrents and play downloaded files with external torrent-client (uTorrent, Transmisson, Vuse, Deluge) or python-libtorrent.
         </description>
         <disclaimer lang='en'>GNU GPLv3 http://www.gnu.org/licenses/</disclaimer>
+		<summary lang='he'>תוסף המאפשר לך לצפות בקטעי וידאו מרשתות טורנט P2P, ללא הורדה מלאה.
+        </summary>
+        <description lang='he'>תוסף המאפשר לך לצפות בקטעי וידאו מרשתות טורנט P2P, ללא הורדה מלאה (משתמש ב-Python-libtorrent או Ace Stream). ניתן גם להוסיף,לשלוט ולנגן בקבצי טורנטים שהורדו עם תוכנת טורנט חיצונית (uTorrent, Transmisson, Vuse, Deluge) או Python-libtorrent.
+        </description>
         <summary lang='ru'>Плагин позволяет просматривать видео из пиринговых торрент-сетей, не дожидаясь полного скачивания.
         </summary>
         <description lang='ru'>Плагин позволяет просматривать видео из пиринговых торрент-сетей, не дожидаясь полного скачивания. Использует библиотеку python-libtorrent или Ace Stream. Так же плагин может добавлять, проигрывать и управлять скачками в торрент клиентах (uTorrent, Transmisson, Deluge и Vuse) или средставми python-libtorrent.
