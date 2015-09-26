@@ -93,7 +93,6 @@ class KickAssSo(Content.Content):
         regex_tr = r'''title="Download torrent file" href="(.+?)" class=".+?"><i.+?<a.+?<a.+?<a href="(.+?html)" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>.+?<td class="nobr center">(.+?)</td>.+?<td class="center".+?>(\d+&nbsp;.+?)</td>.+?<td class="green center">(\d+?)</td>.+?<td class="red lasttd center">(\d+?)</td>'''
         for tr in re.compile(regex, re.DOTALL).findall(response):
             result=re.compile(regex_tr, re.DOTALL).findall(tr)
-            #print str(result)
             if result:
                 (link, infolink, title, forum, size, date, seeds, leechers)=result[0]
             # main
