@@ -54,7 +54,7 @@ class KickAssSo(Content.Content):
         return True
 
     def isSearcher(self):
-        return False
+        return True
 
     def isScrappable(self):
         return False
@@ -90,7 +90,7 @@ class KickAssSo(Content.Content):
         num = 51
         good_forums = ['TV', 'Anime', 'Movies']
         regex = '''<tr class=".+?" id=.+?</tr>'''
-        regex_tr = r'''title="Download torrent file" href="(.+?\.torrent).+?" class=".+?"><i.+?<a.+?<a.+?<a href="(.+?html)" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>.+?<td class="nobr center">(.+?)</td>.+?<td class="center".+?>(\d+&nbsp;.+?)</td>.+?<td class="green center">(\d+?)</td>.+?<td class="red lasttd center">(\d+?)</td>'''
+        regex_tr = r'''title="Download torrent file" href="(.+?)" class=".+?"><i.+?<a.+?<a.+?<a href="(.+?html)" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>.+?<td class="nobr center">(.+?)</td>.+?<td class="center".+?>(\d+&nbsp;.+?)</td>.+?<td class="green center">(\d+?)</td>.+?<td class="red lasttd center">(\d+?)</td>'''
         for tr in re.compile(regex, re.DOTALL).findall(response):
             result=re.compile(regex_tr, re.DOTALL).findall(tr)
             #print str(result)
