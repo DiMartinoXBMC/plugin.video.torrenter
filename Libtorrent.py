@@ -352,7 +352,10 @@ class Libtorrent:
         self.session.start_lsd()
         self.session.start_upnp()
         self.session.start_natpmp()
-        self.session.listen_on(6881, 6891)
+        try:
+            self.session.listen_on(6881, 6891)
+        except:
+            log('listen_on(6881, 6891) error')
 
         #tribler example never tested
         #self.session.set_severity_level(self.lt.alert.severity_levels.info)
