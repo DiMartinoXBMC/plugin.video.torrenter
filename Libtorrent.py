@@ -530,7 +530,13 @@ class Libtorrent:
                 result=result+'Trackers: verified %d/%d, fails=%d' %(verified_sum, len(trackers)-1, fails_sum)
         if info=='dht_state':
             is_dht_running='ON' if self.session.is_dht_running() else 'OFF'
-            nodes=0
+
+            dht_state = self.session.dht_state()
+            if 'nodes' in dht_state:
+                nodes = len(dht_state['nodes'])
+            else:
+                nodes=0
+
             result='DHT: %s (%d)' % (is_dht_running, nodes)
         return result
 
