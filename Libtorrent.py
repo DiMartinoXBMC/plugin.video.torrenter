@@ -350,7 +350,6 @@ class Libtorrent:
         #self.session.set_alert_mask(self.lt.alert.category_t.all_categories)
         self.session.add_dht_router("router.bittorrent.com", 6881)
         self.session.add_dht_router("router.utorrent.com", 6881)
-        self.session.add_dht_router("router.bitcomet.com", 6881)
         self.session.start_dht()
         self.session.start_lsd()
         self.session.start_upnp()
