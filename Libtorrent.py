@@ -169,6 +169,9 @@ class Libtorrent:
         iterator = 0
         while iterator < 100:
             xbmc.sleep(500)
+
+            self.torrentHandle.force_dht_announce()
+
             progressBar.update(iterator, Localization.localize('Please Wait'), Localization.localize('Magnet-link is converting')+'.' * (iterator % 4), ' ')
             iterator += 1
             if progressBar.iscanceled():
