@@ -169,6 +169,9 @@ class Libtorrent:
         iterator = 0
         while iterator < 100:
             xbmc.sleep(500)
+
+            self.torrentHandle.force_dht_announce()
+
             progressBar.update(iterator, Localization.localize('Please Wait'), Localization.localize('Magnet-link is converting')+'.' * (iterator % 4), ' ')
             iterator += 1
             if progressBar.iscanceled():
@@ -347,7 +350,6 @@ class Libtorrent:
         #self.session.set_alert_mask(self.lt.alert.category_t.all_categories)
         self.session.add_dht_router("router.bittorrent.com", 6881)
         self.session.add_dht_router("router.utorrent.com", 6881)
-        self.session.add_dht_router("router.bitcomet.com", 6881)
         self.session.start_dht()
         self.session.start_lsd()
         self.session.start_upnp()
@@ -527,7 +529,13 @@ class Libtorrent:
                 result=result+'Trackers: verified %d/%d, fails=%d' %(verified_sum, len(trackers)-1, fails_sum)
         if info=='dht_state':
             is_dht_running='ON' if self.session.is_dht_running() else 'OFF'
-            nodes=0
+
+            dht_state = self.session.dht_state()
+            if 'nodes' in dht_state:
+                nodes = len(dht_state['nodes'])
+            else:
+                nodes=0
+
             result='DHT: %s (%d)' % (is_dht_running, nodes)
         return result
 
