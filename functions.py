@@ -80,7 +80,7 @@ def clearStorage(userStorageDirectory):
             shutil.move(saved, saved_temp)
             saved_bool = True
 
-        shutil.rmtree(userStorageDirectory, ignore_errors=True)
+        shutil.rmtree(userStorageDirectory.encode('utf-8'), ignore_errors=True)
         xbmcvfs.mkdir(userStorageDirectory)
 
         if torrents_bool:
