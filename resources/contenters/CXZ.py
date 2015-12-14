@@ -132,7 +132,7 @@ class CXZ(Content.Content):
     def mode(self, response):
         contentList = []
         Soup = BeautifulSoup(response)
-        result = Soup.findAll('div', {'class': 'b-poster-tile  '})
+        result = Soup.findAll('div', {'class': 'b-poster-tile   '})
         num = 0
         for tr in result:
             #main
@@ -159,39 +159,3 @@ class CXZ(Content.Content):
             ))
         #print result
         return contentList
-
-
-'''
-                    - Video Values:
-                - genre : string (Comedy)
-                - year : integer (2009)
-                - episode : integer (4)
-                - season : integer (1)
-                - top250 : integer (192)
-                - rating : float (6.4) - range is 0..10
-                - cast : list (Michal C. Hall)
-                - castandrole : list (Michael C. Hall|Dexter)
-                - director : string (Dagur Kari)
-                - mpaa : string (PG-13)
-                - plot : string (Long Description)
-                - plotoutline : string (Short Description)
-                - title : string (Big Fan)
-                - originaltitle : string (Big Fan)
-                - sorttitle : string (Big Fan)
-                - duration : string (3:18)
-                - studio : string (Warner Bros.)
-                - tagline : string (An awesome movie) - short description of movie
-                - writer : string (Robert D. Siegel)
-                - tvshowtitle : string (Heroes)
-                - premiered : string (2005-03-04)
-                - status : string (Continuing) - status of a TVshow
-                - code : string (tt0110293) - IMDb code
-                - aired : string (2008-12-07)
-                - credits : string (Andy Kaufman) - writing credits
-                - lastplayed : string (Y-m-d h:m:s = 2009-04-05 23:16:04)
-                - album : string (The Joshua Tree)
-                - artist : list (['U2'])
-                - votes : string (12345 votes)
-                - trailer : string (/home/user/trailer.avi)
-                - dateadded : string (Y-m-d h:m:s = 2009-04-05 23:16:04)
-                '''
