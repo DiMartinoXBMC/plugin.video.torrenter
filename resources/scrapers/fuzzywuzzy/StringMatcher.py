@@ -7,10 +7,8 @@ ported from python-Levenshtein
 [https://github.com/miohtama/python-Levenshtein]
 """
 
-from warnings import warn
-
 from Levenshtein import *
-
+from warnings import warn
 
 class StringMatcher:
     """A SequenceMatcher-like class built on the top of Levenshtein"""

@@ -58,6 +58,7 @@ source file.
 # class_defs_make.py.
 #
 
+import dopal.classes
 from dopal.aztypes import AzMethod as _method
 from dopal.aztypes import AzureusMethods
 

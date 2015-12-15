@@ -34,7 +34,6 @@ import Localization
 from functions import file_encode, isSubtitle, DownloadDB, log, debug, is_writable
 from platform_pulsar import get_platform
 
-
 class Libtorrent:
     magnetLink = None
     startPart = 0
@@ -45,12 +44,9 @@ class Libtorrent:
     downloadThread = None
     threadComplete = False
     lt = None
-
-    def __del__(self):
-        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
+    save_resume_data = None
 
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
-        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         self.platform = get_platform()
         self.storageDirectory = storageDirectory
         self.torrentFilesPath = os.path.join(self.storageDirectory, torrentFilesDirectory) + os.sep
@@ -169,9 +165,7 @@ class Libtorrent:
         iterator = 0
         while iterator < 100:
             xbmc.sleep(500)
-
             self.torrentHandle.force_dht_announce()
-
             progressBar.update(iterator, Localization.localize('Please Wait'), Localization.localize('Magnet-link is converting')+'.' * (iterator % 4), ' ')
             iterator += 1
             if progressBar.iscanceled():
@@ -419,9 +413,10 @@ class Libtorrent:
             self.torrentFileInfo = self.getMagnetInfo()
         torrent_info={'ti': self.torrentFileInfo,
                       'save_path': self.storageDirectory,
+                      'flags': 0x300,
                        #'storage_mode': self.lt.storage_mode_t(1),
                        'paused': False,
-                       'auto_managed': False,
+                       #'auto_managed': False,
                        #'duplicate_is_error': True
                       }
         self.torrentHandle = self.session.add_torrent(torrent_info)
@@ -478,9 +473,8 @@ class Libtorrent:
             #log('get_cache_status - %s/%s' % (str(get_cache_status.blocks_written), str(get_cache_status.blocks_read)))
             # get_settings=self.torrentHandle.status
             # print s.num_pieces
-            priorities = self.torrentHandle.piece_priorities()
-            str(priorities)
-            # print str('anonymous_mode '+str(get_settings['anonymous_mode']))
+            #priorities = self.torrentHandle.piece_priorities()
+            #print str(priorities)
 
             state_str = ['queued', 'checking', 'downloading metadata',
                          'downloading', 'finished', 'seeding', 'allocating', 'checking fastresume']
@@ -529,13 +523,11 @@ class Libtorrent:
                 result=result+'Trackers: verified %d/%d, fails=%d' %(verified_sum, len(trackers)-1, fails_sum)
         if info=='dht_state':
             is_dht_running='ON' if self.session.is_dht_running() else 'OFF'
-
-            dht_state = self.session.dht_state()
-            if 'nodes' in dht_state:
-                nodes = len(dht_state['nodes'])
-            else:
-                nodes=0
-
+            try:
+                nodes=self.session.dht_state().get('nodes')
+            except:
+                nodes=None
+            nodes=len(nodes) if nodes else 0
             result='DHT: %s (%d)' % (is_dht_running, nodes)
         return result
 

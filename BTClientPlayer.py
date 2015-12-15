@@ -19,8 +19,10 @@
 '''
 
 import os
+import urllib
+import json
+import sys
 from contextlib import contextmanager, closing, nested
-from resources.btclient.argparse import Namespace
 
 import xbmc
 import xbmcgui
@@ -29,9 +31,14 @@ import xbmcgui
 import xbmcvfs
 import Localization
 from platform_pulsar import get_platform
-from resources.btclient.btclient import *
-from functions import showMessage, DownloadDB, get_ids_video, log, debug, clearStorage
+import traceback
+from btclient import *
+from functions import calculate, showMessage, clearStorage, DownloadDB, get_ids_video, log, debug, is_writable
+from argparse import Namespace
 from Player import OverlayText
+from Libtorrent import Libtorrent
+
+
 
 ROOT = sys.modules["__main__"].__root__
 RESOURCES_PATH = os.path.join(ROOT, 'resources')
@@ -65,6 +72,12 @@ VIEWPORT_HEIGHT = 1088.0
 OVERLAY_WIDTH = int(VIEWPORT_WIDTH * 0.7)  # 70% size
 OVERLAY_HEIGHT = 150
 
+ENCRYPTION_SETTINGS = {
+    "Forced": 0,
+    "Enabled": 1,
+    "Disabled": 2,
+}
+
 class BTClientPlayer(xbmc.Player):
     __plugin__ = sys.modules["__main__"].__plugin__
     __settings__ = sys.modules["__main__"].__settings__
@@ -80,11 +93,7 @@ class BTClientPlayer(xbmc.Player):
     episodeId = None
     basename = ''
 
-    def __del__(self):
-        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
-
     def __init__(self, userStorageDirectory, torrentUrl, params={}):
-        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         self.userStorageDirectory = userStorageDirectory
         self.torrentUrl = torrentUrl
         xbmc.Player.__init__(self)
@@ -109,7 +118,7 @@ class BTClientPlayer(xbmc.Player):
                   bt_upload_limit=self.upload_limit,
                   choose_subtitles=False,
                   clear_older=0,
-                  debug_log=os.path.join(self.userStorageDirectory, 'log.txt'),
+                  debug_log='',#os.path.join(self.userStorageDirectory, 'log.txt'),
                   delete_on_finish=False,
                   directory=self.userStorageDirectory,
                   listen_port_max=6891,#
@@ -122,7 +131,7 @@ class BTClientPlayer(xbmc.Player):
                   stdin=False,
                   stream=True,
                   subtitles=None,
-                  trace=True,
+                  trace=False,
                   content_id=self.contentId,
                   url=self.torrentUrl)
         args=main(args) #config
@@ -130,6 +139,42 @@ class BTClientPlayer(xbmc.Player):
         log('BTClientPlayer: args '+str(args))
 
         self.btclient=self.stream(args, BTClient)
+
+        #self.init()
+        #self.setup_torrent()
+        #if self.buffer():
+        #    while True:
+        #        if self.setup_play():
+        #            debug('************************************* GOING LOOP')
+        #            #self.torrent.continueSession(self.contentId)
+        #            self.loop()
+        #        else:
+        #            break
+        #        debug('************************************* GO NEXT?')
+        #        if self.next_dl and self.next_dling and isinstance(self.next_contentId, int) and self.iterator == 100:
+        #            self.contentId = self.next_contentId
+        #            continue
+        #        debug('************************************* NO! break')
+        #        break
+        #self.torrent.stopSession()
+        #self.torrent.threadComplete = True
+        #self.torrent.checkThread()
+
+        #if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
+        #    xbmc.sleep(1000)
+        #    clearStorage(self.userStorageDirectory)
+        #else:
+        #    if self.seeding_status:
+        #        showMessage(self.localize('Information'),
+        #                    self.localize('Torrent is seeding. To stop it use Download Status.'), forced=True)
+        #    else:
+        #        if self.seeding: self.db_delete()
+        #        showMessage(self.localize('Information'),
+        #                    self.localize('Torrent downloading is stopped.'), forced=True)
+
+    def on_exit(self):
+        self.c.close()
+        sys.exit(0)
 
     def stream(self, args, client_class):
         self.c = client_class(args.directory, args=args, lt=self.lt)
@@ -151,38 +196,23 @@ class BTClientPlayer(xbmc.Player):
 
             log('Starting btclient - libtorrent version %s' % self.lt.version)
             self.c.start_url(args.url)
-            self.setup_torrent()
 
             if self.buffer():
                 f = self.c._file
                 self.server.set_file(f)
                 self.setup_play()
 
-                while True:
-                    if self.setup_play():
-                        log('************************************* GOING LOOP')
-                        #self.torrent.continueSession(self.contentId)
-                        self.loop()
-                    else:
-                        break
-                    log('************************************* GO NEXT?')
-                    if self.next_dl and self.next_dling and isinstance(self.next_contentId, int) and self.iterator == 100:
-                        self.contentId = self.next_contentId
-                        continue
-                    log('************************************* NO! break')
-                    break
+                with closing(
+                    OverlayText(w=OVERLAY_WIDTH, h=OVERLAY_HEIGHT, alignment=XBFONT_CENTER_X | XBFONT_CENTER_Y)) as overlay:
+                    with nested(self.attach(overlay.show, self.on_playback_paused),
+                                self.attach(overlay.hide, self.on_playback_resumed, self.on_playback_stopped)):
+                        while True:
+                            if xbmc.abortRequested or not self.isPlaying():
+                                break
 
-            if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
-                xbmc.sleep(1000)
-                clearStorage(self.userStorageDirectory)
-            else:
-                if self.seeding_status:
-                    showMessage(self.localize('Information'),
-                                self.localize('Torrent is seeding. To stop it use Download Status.'), forced=True)
-                else:
-                    if self.seeding: self.db_delete()
-                    showMessage(self.localize('Information'),
-                                self.localize('Torrent downloading is stopped.'), forced=True)
+                            status = self.c.status
+                            overlay.text = "\n".join(self._get_status_lines(status))
+                            xbmc.sleep(1000)
 
             log('Play ended')
             if self.server:
@@ -216,7 +246,10 @@ class BTClientPlayer(xbmc.Player):
     def setup_torrent(self):
         pass
         #if self.__settings__.getSetting('encryption') == 'true':
-        #    self.c.encrypt()
+        #    self.torrent.encryptSession()
+        #self.torrent.startSession()
+
+
         #if self.subs_dl:
         #    subs = self.torrent.getSubsIds(os.path.basename(self.torrent.getFilePath(self.contentId)))
         #    if len(subs) > 0:
@@ -224,43 +257,34 @@ class BTClientPlayer(xbmc.Player):
         #            self.torrent.continueSession(ind)
 
     def buffer(self):
-        iterator = 0
+        #iterator = 0
         progressBar = xbmcgui.DialogProgress()
-        progressBar.create('%s [%s]' % (self.__class__.__name__,str(self.lt.version)),
+        progressBar.create(self.localize('Please Wait') + str(' [%s]' % str(self.lt.version)),
                            self.localize('Seeds searching.'))
-        while not self.c.is_file_ready:#iterator < 100:
-            iterator = 0
-            ready_list=[]
+        while not self.c.is_file_ready: #iterator < 100:#or not self.torrent.is_playble()
             status = self.c.get_normalized_status()
-            conditions=[status['state'] in ['downloading', 'finished', 'seeding'], status['desired_rate'] > 0 or status['progress'] > 0.01,
-                        status['progress'] > 0.005, self.c.is_file_ready,# or status['progress'] > 0.02
-                        (status['download_rate'] > status['desired_rate'] or
-                        status['download_rate'] * int(status['progress'] * 100) > status['desired_rate'])]
-            for cond in conditions:
-                if cond:
-                    ready_list.append(True)
-                    iterator+=100/len(conditions)
-                else:
-                    ready_list.append(False)
-
-            speedsText = '%s: %s Mbit/s %s %s: %s Mbit/s' % (self.localize('Download speed'),str(status['download_rate'] * 8 / 1000000),
-                                                   '[COLOR=green]>[/COLOR]' if ready_list[4] else '[COLOR=red]<[/COLOR]',
-                                              self.localize('Bitrate'), str(int(status['desired_rate'] * 8 / (1024 * 1024))) if status['desired_rate'] else 0,)
-
+            iterator = int(status['progress'] * 10000)
+            if iterator > 99: iterator = 99
             if status['state'] in ['queued','checking','checking fastresume'] or (status['progress'] == 0 and status['num_pieces'] > 0):
-                progressBar.update(iterator, self.localize('Checking preloaded files...'), speedsText, ' ')
-
-            elif status['state'] in ['downloading', 'finished', 'seeding']:
-                dialogText = self.localize('Preloaded: ') + '%s MB %s %s MB (%s MB)' % \
-                        (str(status['downloaded'] / 1024 / 1024), '[COLOR=green]>[/COLOR]' if ready_list[2] else '[COLOR=red]<[/COLOR]', str(status['total_size'] / 1024 / 1024 /200), str(status['total_size'] / 1024 / 1024))
-                peersText = '%s: %s [%s: %s; %s: %s]' % (self.localize('File ready: '), '[COLOR=green]YES[/COLOR]' if ready_list[3] else '[COLOR=red]NO[/COLOR]',
-                                self.localize('Seeds'), str(status['seeds_connected']), self.localize('Peers'), str(status['peers_connected']),)
-                progressBar.update(iterator, peersText, speedsText, dialogText,
-                                   )
+                progressBar.update(iterator, self.localize('Checking preloaded files...'), ' ', ' ')
+            elif status['state'] == 'downloading':
+                dialogText = self.localize('Preloaded: ') + str(status['downloaded'] / 1024 / 1024) + ' MB / ' + str(
+                    status['total_size'] / 1024 / 1024) + ' MB'
+                peersText = ' [%s: %s; %s: %s]' % (
+                    self.localize('Seeds'), str(status['seeds_connected']), self.localize('Peers'),
+                    str(status['peers_connected']),)
+                speedsText = '%s: %s Mbit/s; %s: %s Mbit/s' % (
+                    self.localize('Downloading'), str(status['download_rate'] * 8 / 1000000),
+                    self.localize('Uploading'), str(status['upload_rate'] * 8 / 1000000))
+                #if self.debug:
+                #    peersText=peersText + ' ' + self.torrent.get_debug_info('dht_state')
+                #    dialogText=dialogText.replace(self.localize('Preloaded: '),'') + ' ' + self.torrent.get_debug_info('trackers_sum')
+                progressBar.update(iterator, self.localize('Seeds searching.') + peersText, dialogText,
+                                   speedsText)
             else:
                 progressBar.update(iterator, self.localize('UNKNOWN STATUS'), ' ', ' ')
             if progressBar.iscanceled():
-                self.on_exit()
+                self.c.close()
                 break
             xbmc.sleep(1000)
         progressBar.update(0)
@@ -270,7 +294,7 @@ class BTClientPlayer(xbmc.Player):
     def setup_subs(self, label, path):
         iterator = 0
         subs = self.torrent.getSubsIds(label)
-        log('[setup_subs] subs: '+str(subs))
+        debug('[setup_subs] subs: '+str(subs))
         if len(subs) > 0:
             showMessage(self.localize('Information'),
                         self.localize('Downloading and copy subtitles. Please wait.'), forced=True)
@@ -278,7 +302,7 @@ class BTClientPlayer(xbmc.Player):
                 self.torrent.continueSession(ind)
             while iterator < 100:
                 xbmc.sleep(1000)
-                #self.torrent.debug()
+                self.torrent.debug()
                 status = self.torrent.torrentHandle.status()
                 iterator = int(status.progress * 100)
             # xbmc.sleep(2000)
@@ -289,7 +313,7 @@ class BTClientPlayer(xbmc.Player):
                 ext = temp.split('.')[-1]
                 temp = temp[:len(temp) - len(ext) - 1] + '.' + addition + '.' + ext
                 newFileName = os.path.join(os.path.dirname(path), temp)
-                log('[setup_subs]: '+str((os.path.join(os.path.dirname(os.path.dirname(path)),title),newFileName)))
+                debug('[setup_subs]: '+str((os.path.join(os.path.dirname(os.path.dirname(path)),title),newFileName)))
                 if not xbmcvfs.exists(newFileName):
                     xbmcvfs.copy(os.path.join(os.path.dirname(os.path.dirname(path)), title), newFileName)
 
@@ -301,7 +325,6 @@ class BTClientPlayer(xbmc.Player):
         self.basename = label
         #self.seeding_run = False
         listitem = xbmcgui.ListItem(label)
-        info={}
 
         #if self.subs_dl:
         #    self.setup_subs(label, path)
@@ -317,15 +340,16 @@ class BTClientPlayer(xbmc.Player):
                 title, int(seasonId), int(self.episodeId), self.basename.split('.')[-1], self.basename)
 
             if seasonId and self.episodeId and label and title:
-                info={'title': label,
-                     'episode': int(self.episodeId),
-                     'season': int(seasonId),
-                     'tvshowtitle': title}
+                listitem = xbmcgui.ListItem(label)
+
+                listitem.setInfo(type='video', infoLabels={'title': label,
+                                                           'episode': int(self.episodeId),
+                                                           'season': int(seasonId),
+                                                           'tvshowtitle': title})
         except:
             log('[BTClientPlayer] Operation INFO failed!')
 
         thumbnail = self.get("thumbnail")
-        listitem.setInfo(type='Video', infoLabels=info)
         if thumbnail:
             listitem.setThumbnailImage(urllib.unquote_plus(thumbnail))
         self.display_name = label
@@ -341,13 +365,11 @@ class BTClientPlayer(xbmc.Player):
         while not response:
             xbmc.sleep(100)
         if response:
-            xbmc.sleep(3000)
-            #if 1==1:
             playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
             playlist.clear()
             playlist.add(url, listitem)
             xbmc.Player().play(playlist)
-        log("Serving file on %s" % url)
+        print "\nServing file on %s" % url
         return True
 
     def onPlayBackStarted(self):
@@ -370,18 +392,6 @@ class BTClientPlayer(xbmc.Player):
             f()
         log('[onPlayBackStopped]: '+(str(("video", "stop", self.display_name))))
 
-    def onPlayBackSeek(self, x ,y):
-        log('[onPlayBackSeek]: '+(str(("video", "seek", self.display_name))))
-        #xbmc.Player().pause()
-        #if self.buffer():
-        #    xbmc.Player().play()
-
-    def onPlayBackSeekChapter(self, x):
-        log('[onPlayBackSeek]: '+(str(("video", "seek", self.display_name))))
-        #xbmc.Player().pause()
-        #if self.buffer():
-        #    xbmc.Player().play()
-
     @contextmanager
     def attach(self, callback, *events):
         for event in events:
@@ -391,22 +401,21 @@ class BTClientPlayer(xbmc.Player):
             event.remove(callback)
 
     def loop(self):
-        #debug_counter=0
+        debug_counter=0
         with closing(
-           OverlayText(w=OVERLAY_WIDTH, h=OVERLAY_HEIGHT, alignment=XBFONT_CENTER_X | XBFONT_CENTER_Y)) as overlay:
-           with nested(self.attach(overlay.show, self.on_playback_paused),
-                            self.attach(overlay.hide, self.on_playback_resumed, self.on_playback_stopped)):
-                while True:
-                    if xbmc.abortRequested or not self.isPlaying():
-                        break
-
-                    #if self.iterator == 100 and debug_counter < 100:
-                    #    debug_counter += 1
-                    #else:
-                    #    self.torrent.debug()
-                    #    debug_counter=0
-                    status = self.c.status
+                OverlayText(w=OVERLAY_WIDTH, h=OVERLAY_HEIGHT, alignment=XBFONT_CENTER_X | XBFONT_CENTER_Y)) as overlay:
+            with nested(self.attach(overlay.show, self.on_playback_paused),
+                        self.attach(overlay.hide, self.on_playback_resumed, self.on_playback_stopped)):
+                while not xbmc.abortRequested and self.isPlaying() and not self.torrent.threadComplete:
+                    self.torrent.checkThread()
+                    if self.iterator == 100 and debug_counter < 100:
+                        debug_counter += 1
+                    else:
+                        self.torrent.debug()
+                        debug_counter=0
+                    status = self.torrent.torrentHandle.status()
                     overlay.text = "\n".join(self._get_status_lines(status))
+                    # downloadedSize = torrent.torrentHandle.file_progress()[contentId]
                     self.iterator = int(status.progress * 100)
                     xbmc.sleep(1000)
                     if self.iterator == 100 and self.next_dl:
@@ -415,7 +424,7 @@ class BTClientPlayer(xbmc.Player):
                             self.next_contentId = int(self.ids_video[next_contentId_index])
                         else:
                             self.next_contentId = False
-                            log('[loop] next_contentId: '+str(self.next_contentId))
+                            debug('[loop] next_contentId: '+str(self.next_contentId))
                     if not self.seeding_run and self.iterator == 100 and self.seeding:
                         self.seeding_run = True
                         self.seed(self.contentId)
@@ -468,7 +477,3 @@ class BTClientPlayer(xbmc.Player):
             return Localization.localize(string)
         except:
             return string
-
-    def on_exit(self):
-        self.c.close()
-        sys.exit(0)

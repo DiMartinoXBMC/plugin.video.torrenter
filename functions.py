@@ -99,6 +99,8 @@ def clearStorage(userStorageDirectory):
     except Exception, e:
         log('[clearStorage]: DownloadDB().clear() failed. '+str(e))
 
+    showMessage(Localization.localize('Storage'), Localization.localize('Storage was cleared'), forced=True)
+
 
 def sortcomma(dict, json):
     for x in dict:
@@ -801,11 +803,7 @@ class TimeOut():
 
 
 class ListDB:
-    def __del__(self):
-        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
-
     def __init__(self, version=1.0):
-        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         self.dbname = 'list' + '.db3'
         dirname = xbmc.translatePath('special://temp')
         self.dbfilename = os.path.join(dirname, 'xbmcup',
@@ -864,11 +862,7 @@ class ListDB:
 
 
 class HistoryDB:
-    def __del__(self):
-        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
-
     def __init__(self, version=1.1):
-        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         self.name = 'history.db3'
         self.version = version
 
@@ -1008,11 +1002,7 @@ class HistoryDB:
 
 
 class Searchers():
-    def __del__(self):
-        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
-
     def __init__(self):
-        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         pass
 
     def getBoolSetting(self, setting):
@@ -1131,6 +1121,7 @@ def search(url, searchersList, isApi=None):
     result = {}
     iterator, filesList, left_searchers = 0, [], []
     timeout_multi=int(sys.modules["__main__"].__settings__.getSetting("timeout"))
+    wait_time=10+(10*timeout_multi)
     left_searchers.extend(searchersList)
     if not isApi:
         progressBar = xbmcgui.DialogProgress()
@@ -1198,11 +1189,7 @@ def join_list(l, char=', ', replace=''):
 
 
 class Contenters():
-    def __del__(self):
-        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
-
     def __init__(self):
-        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         pass
 
     def first_time(self, scrapperDB_ver, language='ru'):
@@ -1410,11 +1397,7 @@ def delete_russian(ok=False, action='delete'):
 
 
 class DownloadDB:
-    def __del__(self):
-        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
-
     def __init__(self, version=1.41):
-        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         self.name = 'download.db3'
         self.version = version
 

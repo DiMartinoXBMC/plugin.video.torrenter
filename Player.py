@@ -72,11 +72,7 @@ ENCRYPTION_SETTINGS = {
 
 
 class OverlayText(object):
-    def __del__(self):
-        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
-
     def __init__(self, w, h, *args, **kwargs):
-        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         self.window = xbmcgui.Window(WINDOW_FULLSCREEN_VIDEO)
         viewport_w, viewport_h = self._get_skin_resolution()
         # Adjust size based on viewport, we are using 1080p coordinates
@@ -140,11 +136,7 @@ class TorrentPlayer(xbmc.Player):
     episodeId = None
     basename = ''
 
-    def __del__(self):
-        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
-
     def __init__(self, userStorageDirectory, torrentUrl, params={}):
-        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         self.userStorageDirectory = userStorageDirectory
         self.torrentUrl = torrentUrl
         xbmc.Player.__init__(self)
@@ -277,36 +269,11 @@ class TorrentPlayer(xbmc.Player):
                 self.torrent.checkThread()
                 return
             xbmc.sleep(1000)
-        self.torrent.session.remove_torrent(self.torrent.torrentHandle)
+        #self.torrent.torrentHandle.flush_cache()
+        #self.torrent.session.remove_torrent(self.torrent.torrentHandle)
         progressBar.update(0)
         progressBar.close()
         return True
-
-    def setup_subs(self, label, path):
-        iterator = 0
-        subs = self.torrent.getSubsIds(label)
-        debug('[setup_subs] subs: '+str(subs))
-        if len(subs) > 0:
-            showMessage(self.localize('Information'),
-                        self.localize('Downloading and copy subtitles. Please wait.'), forced=True)
-            for ind, title in subs:
-                self.torrent.continueSession(ind)
-            while iterator < 100:
-                xbmc.sleep(1000)
-                self.torrent.debug()
-                status = self.torrent.torrentHandle.status()
-                iterator = int(status.progress * 100)
-            # xbmc.sleep(2000)
-            for ind, title in subs:
-                folder = title.split(os.sep)[0]
-                temp = os.path.basename(title)
-                addition = os.path.dirname(title).lstrip(folder + os.sep).replace(os.sep, '.').replace(' ', '_').strip()
-                ext = temp.split('.')[-1]
-                temp = temp[:len(temp) - len(ext) - 1] + '.' + addition + '.' + ext
-                newFileName = os.path.join(os.path.dirname(path), temp)
-                debug('[setup_subs]: '+str((os.path.join(os.path.dirname(os.path.dirname(path)),title),newFileName)))
-                if not xbmcvfs.exists(newFileName):
-                    xbmcvfs.copy(os.path.join(os.path.dirname(os.path.dirname(path)), title), newFileName)
 
     def setup_play(self):
         self.next_dling = False
@@ -351,11 +318,10 @@ class TorrentPlayer(xbmc.Player):
         data = json.dumps(rpc)
         request = xbmc.executeJSONRPC(data)
         response = json.loads(request)
-        xbmc.sleep(300)
+        xbmc.sleep(1000)
 
         if response:
             # xbmc.Player().play(path, listitem)
-            log('Megakostil worked! Start playing '+str(path))
             playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
             playlist.clear()
             playlist.add(path, listitem)
@@ -363,6 +329,32 @@ class TorrentPlayer(xbmc.Player):
 
             xbmc.sleep(2000)  # very important, do not edit this, podavan
             return True
+
+    def setup_subs(self, label, path):
+        iterator = 0
+        subs = self.torrent.getSubsIds(label)
+        debug('[setup_subs] subs: '+str(subs))
+        if len(subs) > 0:
+            showMessage(self.localize('Information'),
+                        self.localize('Downloading and copy subtitles. Please wait.'), forced=True)
+            for ind, title in subs:
+                self.torrent.continueSession(ind)
+            while iterator < 100:
+                xbmc.sleep(1000)
+                self.torrent.debug()
+                status = self.torrent.torrentHandle.status()
+                iterator = int(status.progress * 100)
+            # xbmc.sleep(2000)
+            for ind, title in subs:
+                folder = title.split(os.sep)[0]
+                temp = os.path.basename(title)
+                addition = os.path.dirname(title).lstrip(folder + os.sep).replace(os.sep, '.').replace(' ', '_').strip()
+                ext = temp.split('.')[-1]
+                temp = temp[:len(temp) - len(ext) - 1] + '.' + addition + '.' + ext
+                newFileName = os.path.join(os.path.dirname(path), temp)
+                debug('[setup_subs]: '+str((os.path.join(os.path.dirname(os.path.dirname(path)),title),newFileName)))
+                if not xbmcvfs.exists(newFileName):
+                    xbmcvfs.copy(os.path.join(os.path.dirname(os.path.dirname(path)), title), newFileName)
 
     def onPlayBackStarted(self):
         for f in self.on_playback_started:

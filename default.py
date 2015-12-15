@@ -19,7 +19,7 @@
 '''
 
 import sys
-import gc
+
 import xbmcaddon
 
 
@@ -38,7 +38,3 @@ if (__name__ == "__main__" ):
     else:
         params = core.getParameters(sys.argv[2])
         core.executeAction(params)
-    del core
-
-collected = gc.collect()
-print "Garbage collector: collected %d objects." % (collected)

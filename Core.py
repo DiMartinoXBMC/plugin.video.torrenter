@@ -43,9 +43,6 @@ class Core:
 
     print 'SYS ARGV: ' + str(sys.argv)
 
-    def __del__(self):
-        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
-
     def __init__(self):
         print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         if len(self.userStorageDirectory) == 0:
@@ -236,51 +233,23 @@ class Core:
         lockView('wide')
 
     def test(self, params={}):
-        #from BTClientPlayer import BTClientPlayer
-        #torrentUrl='D:\\ntest.torrent'
-        #params['url']='0'
-        #if not xbmcvfs.exists(torrentUrl):
-        #    action = xbmcgui.Dialog()
-        #    torrentUrl = action.browse(1, self.localize('Choose .torrent in video library'), 'video', '.torrent')
-        #if torrentUrl and xbmcvfs.exists(torrentUrl):
-        #    if 0 != len(torrentUrl):
-        #        self.Player = BTClientPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
-        #    else:
-        #        print self.__plugin__ + " Unexpected access to method playTorrent() without torrent content"
+        from BTClientPlayer import BTClientPlayer
+        torrentUrl='D:\\ntest.torrent'
+        params['url']='0'
+        if not xbmcvfs.exists(torrentUrl):
+            action = xbmcgui.Dialog()
+            torrentUrl = action.browse(1, self.localize('Choose .torrent in video library'), 'video', '.torrent')
+        if torrentUrl and xbmcvfs.exists(torrentUrl):
+            if 0 != len(torrentUrl):
+                self.Player = BTClientPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
+            else:
+                print self.__plugin__ + " Unexpected access to method playTorrent() without torrent content"
         #path='http://127.0.0.1:5001/Inception.2010.1080p.BluRay.x264.5xRus.Eng-Otaibi.mkv'
         #listitem = xbmcgui.ListItem('Inception.2010.1080p.BluRay.x264.5xRus.Eng-Otaibi.mkv', path=path)
         #playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         #playlist.clear()
         #playlist.add(path, listitem)
         #xbmc.Player().play(playlist)
-
-        from resources.proxy import antizapret
-        config = antizapret.config()
-        log('[antizapret]: '+str(config["domains"]))
-        log('[antizapret]: '+str(config["server"]))
-
-        #try:
-        #    import cherrytorrent
-        #    http_config    = {
-        #                'port': 8089,
-        #             }
-
-        #    torrent_config = {
-        #                        'port':                 6900,
-        #                        'max_download_rate':    0,
-        #                        'max_upload_rate':      0,
-        #                        'keep_files':           False
-        #                     }
-        #    server = cherrytorrent.Server(http_config, torrent_config)
-        #    server.run()
-        #    url="http://localhost:8089/add?uri=magnet%3A%3Fxt%3Durn%3Abtih%3Ac39fe3eefbdb62da9c27eb6398ff4a7d2e26e7ab%26dn%3Dbig%2Bbuck%2Bbunny%2Bbdrip%2Bxvid%2Bmedic%26tr%3Dudp%253A%252F%252Ftracker.publicbt.com%253A80%252Fannounce%26tr%3Dudp%253A%252F%252Fopen.demonii.com%253A1337"
-        #    print str(get_url('',url))
-        #    xbmc.sleep(3000)
-        #    path="http://localhost:8089/video"#?info_hash=c39fe3eefbdb62da9c27eb6398ff4a7d2e26e7ab
-        #    xbmc.Player().play(path)
-        #    xbmc.sleep(30000)
-        #finally:
-        #    get_url('',"http://localhost:8089/shutdown")
 
     def DownloadStatus(self, params={}):
         db = DownloadDB()
