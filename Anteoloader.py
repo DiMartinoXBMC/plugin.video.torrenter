@@ -24,27 +24,67 @@ import hashlib
 import re
 from StringIO import StringIO
 import gzip
-import sys
-from contextlib import closing
 
 import xbmc
 import xbmcgui
 import xbmcvfs
-import xbmcplugin
 import Localization
 from functions import file_encode, isSubtitle, DownloadDB, log, debug, is_writable, unquote
+
+
+import os
+import urllib
+import json
+import sys
+from contextlib import contextmanager, closing, nested
+
+
+from functions import calculate, showMessage, clearStorage, DownloadDB, get_ids_video, log, debug
+
 from torrent2http import State, Engine, MediaType
 
-class Anteoloader:
+ROOT = sys.modules["__main__"].__root__
+RESOURCES_PATH = os.path.join(ROOT, 'resources')
+TORRENT2HTTP_TIMEOUT = 20
+TORRENT2HTTP_POLL = 1000
+PLAYING_EVENT_INTERVAL = 60
+MIN_COMPLETED_PIECES = 0.5
+
+WINDOW_FULLSCREEN_VIDEO = 12005
+
+XBFONT_LEFT = 0x00000000
+XBFONT_RIGHT = 0x00000001
+XBFONT_CENTER_X = 0x00000002
+XBFONT_CENTER_Y = 0x00000004
+XBFONT_TRUNCATED = 0x00000008
+XBFONT_JUSTIFY = 0x00000010
+
+STATE_STRS = [
+    'Queued',
+    'Checking',
+    'Downloading metadata',
+    'Downloading',
+    'Finished',
+    'Seeding',
+    'Allocating',
+    'Allocating file & Checking resume'
+]
+
+VIEWPORT_WIDTH = 1920.0
+VIEWPORT_HEIGHT = 1088.0
+OVERLAY_WIDTH = int(VIEWPORT_WIDTH * 0.7)  # 70% size
+OVERLAY_HEIGHT = 150
+
+ENCRYPTION_SETTINGS = {
+    "Forced": 0,
+    "Enabled": 1,
+    "Disabled": 2,
+}
+
+class AnteoLoader:
     magnetLink = None
-    startPart = 0
-    endPart = 0
-    partOffset = 0
-    torrentHandle = None
-    session = None
     engine = None
-    downloadThread = None
-    threadComplete = False
+    torrentFile = None
 
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
         self.storageDirectory = storageDirectory
@@ -57,15 +97,10 @@ class Anteoloader:
             sys.exit(1)
 
         #pre settings
-        self.pre_buffer_bytes = 15*1024*1024
-        print torrentFile
-        torrentFile=unquote(torrentFile)
-        print torrentFile
-        print str(xbmcvfs.exists(torrentFile))
-        print str(os.path.exists(torrentFile))
-
-
-        self.engine = Engine(uri=torrentFile)
+        if xbmcvfs.exists(torrentFile):
+            self.torrentFile = "file:///"+torrentFile.replace('\\','//').replace('////','//')
+        elif re.match("^magnet\:.+$", torrentFile):
+            self.magnetLink = torrentFile
 
     def __exit__(self):
         log('on __exit__')
@@ -73,17 +108,22 @@ class Anteoloader:
             self.engine.close()
             log('__exit__ worked!')
 
+    def localize(self, string):
+        try:
+            return Localization.localize(string)
+        except:
+            return string
 
-    def getContentList(self, media_types=None):
+    def getContentList(self):
+        self.engine = Engine(uri=self.torrentFile)
         files = []
         filelist = []
         with closing(self.engine):
             self.engine.start()
-            if media_types is None:
-                media_types=[MediaType.VIDEO, MediaType.AUDIO, MediaType.SUBTITLES, MediaType.UNKNOWN]
+            #media_types=[MediaType.VIDEO, MediaType.AUDIO, MediaType.SUBTITLES, MediaType.UNKNOWN]
 
             while not files and not xbmc.abortRequested:
-                files = self.engine.list(media_types)
+                files = self.engine.list()
                 self.engine.check_torrent_error()
                 xbmc.sleep(200)
 
@@ -91,26 +131,128 @@ class Anteoloader:
                 stringdata = {"title": fs.name, "size": fs.size, "ind": fs.index,
                               'offset': fs.offset}
                 filelist.append(stringdata)
+        return filelist
 
+    def saveTorrent(self, torrentUrl):
+        if not xbmcvfs.exists(torrentUrl):
+            if re.match("^magnet\:.+$", torrentUrl):
+                self.magnetLink = torrentUrl
+                self.magnetToTorrent(torrentUrl)
+                self.magnetLink = None
+                return self.torrentFile
+            else:
+                if not xbmcvfs.exists(self.torrentFilesPath):
+                    xbmcvfs.mkdirs(self.torrentFilesPath)
+                torrentFile = self.torrentFilesPath + self.md5(
+                    torrentUrl) + '.torrent'
+                try:
+                    if not re.match("^http\:.+$", torrentUrl):
+                        content = xbmcvfs.File(torrentUrl, "rb").read()
+                    else:
+                        request = urllib2.Request(torrentUrl)
+                        request.add_header('Referer', torrentUrl)
+                        request.add_header('Accept-encoding', 'gzip')
+                        result = urllib2.urlopen(request)
+                        if result.info().get('Content-Encoding') == 'gzip':
+                            buf = StringIO(result.read())
+                            f = gzip.GzipFile(fileobj=buf)
+                            content = f.read()
+                        else:
+                            content = result.read()
 
-    def stream(self, params):
+                    localFile = xbmcvfs.File(torrentFile, "w+b")
+                    localFile.write(content)
+                    localFile.close()
+                except Exception, e:
+                    print 'Unable to save torrent file from "' + torrentUrl + '" to "' + torrentFile + '" in Torrent::saveTorrent' + '. Exception: ' + str(
+                        e)
+                    return
+        else:
+            torrentFile = torrentUrl
+        if xbmcvfs.exists(torrentFile):
+            self.torrentFile = "file:///"+torrentFile.replace('\\','//').replace('////','//')
+            return self.torrentFile
+
+    def md5(self, string):
+        hasher = hashlib.md5()
+        try:
+            hasher.update(string)
+        except:
+            hasher.update(string.encode('utf-8', 'ignore'))
+        return hasher.hexdigest()
+
+    def magnetToTorrent(self, magnet):
+        self.torrentFile = magnet
+
+class AnteoPlayer(xbmc.Player):
+    __plugin__ = sys.modules["__main__"].__plugin__
+    __settings__ = sys.modules["__main__"].__settings__
+    ROOT = sys.modules["__main__"].__root__  # .decode('utf-8').encode(sys.getfilesystemencoding())
+    USERAGENT = "Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0"
+    torrentFilesDirectory = 'torrents'
+    debug = __settings__.getSetting('debug') == 'true'
+    subs_dl = __settings__.getSetting('subs_dl') == 'true'
+    seeding = __settings__.getSetting('keep_seeding') == 'true' and __settings__.getSetting('keep_files') == '1'
+    seeding_status = False
+    seeding_run = False
+    ids_video = None
+    episodeId = None
+    basename = ''
+
+    def __init__(self, userStorageDirectory, torrentUrl, params={}):
+        self.userStorageDirectory = userStorageDirectory
+        self.torrentUrl = torrentUrl
+        xbmc.Player.__init__(self)
+        log("[TorrentPlayer] Initalized")
         self.params = params
         self.get = self.params.get
-        self.contentId = int(self.get("url")) if self.get("url") else 0
-        #with closing(self.engine):
-        self.engine.start(self.contentId)
+        self.contentId = int(self.get("url"))
+        self.torrent = AnteoLoader(self.userStorageDirectory, self.torrentUrl, self.torrentFilesDirectory)
+        try:
+            if self.get("url2"):
+                self.ids_video = urllib.unquote_plus(self.get("url2")).split(',')
+            else:
+                self.ids_video = self.get_ids()
+        except:
+            pass
+        self.init()
+        self.setup_engine()
+        with closing(self.engine):
+            self.engine.start(self.contentId)
+            ready = self.buffer()
+            if ready:
+                self.stream()
 
-        ready = self.buffer()
-        if ready:
-            file_status = self.engine.file_status(self.contentId)
-            listitem = xbmcgui.ListItem('xxxx')
-            playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-            playlist.clear()
-            playlist.add(file_status.url, listitem)
-            xbmc.Player().play(playlist)
-            while not xbmc.abortRequested and xbmc.Player().isPlaying():
-                xbmc.sleep(500)
-            xbmc.Player().stop()
+
+    def __exit__(self):
+        log('on __exit__')
+        if self.engine:
+            self.engine.close()
+            log('__exit__ worked!')
+
+    def init(self):
+        self.next_dl = True if self.__settings__.getSetting('next_dl') == 'true' and self.ids_video else False
+        log('[AnteoPlayer]: init - ' + str(self.next_dl))
+        self.next_contentId = False
+        self.display_name = ''
+        self.downloadedSize = 0
+        self.dialog = xbmcgui.Dialog()
+        self.on_playback_started = []
+        self.on_playback_resumed = []
+        self.on_playback_paused = []
+        self.on_playback_stopped = []
+        if xbmcvfs.exists(self.torrentUrl):
+            self.torrentUrl = "file:///"+str(self.torrentUrl).replace('\\','//').replace('////','//')
+
+    def setup_engine(self):
+        encryption = True if self.__settings__.getSetting('encryption') == 'true' else False
+
+        upload_limit = self.__settings__.getSetting("upload_limit") if self.__settings__.getSetting(
+            "upload_limit") != "" else 0
+        download_limit = self.__settings__.getSetting("download_limit") if self.__settings__.getSetting(
+            "download_limit") != "" else 0
+        self.pre_buffer_bytes = 15*1024*1024
+        self.engine = Engine(uri=self.torrentUrl)
 
     def buffer(self):
         ready = False
@@ -178,60 +320,19 @@ class Anteoloader:
         progressBar.close()
         return ready
 
+    def stream(self):
+        file_status = self.engine.file_status(self.contentId)
+        listitem = xbmcgui.ListItem('xxxx')
+        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+        playlist.clear()
+        playlist.add(file_status.url, listitem)
+        xbmc.Player().play(playlist)
+        while not xbmc.abortRequested and xbmc.Player().isPlaying():
+            xbmc.sleep(500)
+        xbmc.Player().stop()
+
     def localize(self, string):
         try:
             return Localization.localize(string)
         except:
             return string
-
-
-    def saveTorrent(self, torrentUrl):
-        if not xbmcvfs.exists(torrentUrl):
-            if re.match("^magnet\:.+$", torrentUrl):
-                self.magnetLink = torrentUrl
-                self.magnetToTorrent(torrentUrl)
-                self.magnetLink = None
-                return self.torrentFile
-            else:
-                if not xbmcvfs.exists(self.torrentFilesPath):
-                    xbmcvfs.mkdirs(self.torrentFilesPath)
-                torrentFile = self.torrentFilesPath + self.md5(
-                    torrentUrl) + '.torrent'
-                try:
-                    if not re.match("^http\:.+$", torrentUrl):
-                        content = xbmcvfs.File(torrentUrl, "rb").read()
-                    else:
-                        request = urllib2.Request(torrentUrl)
-                        request.add_header('Referer', torrentUrl)
-                        request.add_header('Accept-encoding', 'gzip')
-                        result = urllib2.urlopen(request)
-                        if result.info().get('Content-Encoding') == 'gzip':
-                            buf = StringIO(result.read())
-                            f = gzip.GzipFile(fileobj=buf)
-                            content = f.read()
-                        else:
-                            content = result.read()
-
-                    localFile = xbmcvfs.File(torrentFile, "w+b")
-                    localFile.write(content)
-                    localFile.close()
-                except Exception, e:
-                    print 'Unable to save torrent file from "' + torrentUrl + '" to "' + torrentFile + '" in Torrent::saveTorrent' + '. Exception: ' + str(
-                        e)
-                    return
-        else:
-            torrentFile = torrentUrl
-        if xbmcvfs.exists(torrentFile):
-            self.torrentFile = "file:///"+torrentFile.replace('\\','//').replace('////','//')
-            return self.torrentFile
-
-    def md5(self, string):
-        hasher = hashlib.md5()
-        try:
-            hasher.update(string)
-        except:
-            hasher.update(string.encode('utf-8', 'ignore'))
-        return hasher.hexdigest()
-
-    def magnetToTorrent(self, magnet):
-        self.torrentFile = magnet

@@ -45,7 +45,6 @@ class Core:
 
     def __init__(self):
         print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
-        print str(self.ROOT)
         if len(self.userStorageDirectory) == 0:
             download_dir = get_download_dir()
         else:
@@ -234,7 +233,7 @@ class Core:
         lockView('wide')
 
     def test(self, params={}):
-        from Anteoloader import Anteoloader
+        from Anteoloader import AnteoLoader
         torrentUrl='D:\\ntest.torrent'
         params['url']='0'
         if not xbmcvfs.exists(torrentUrl):
@@ -242,13 +241,14 @@ class Core:
             torrentUrl = action.browse(1, self.localize('Choose .torrent in video library'), 'video', '.torrent')
         if torrentUrl and xbmcvfs.exists(torrentUrl):
             if 0 != len(torrentUrl):
-                self.Downloader = Anteoloader(self.userStorageDirectory, torrentUrl)
+                self.Downloader = Downloader.Torrent(self.userStorageDirectory, torrentUrl)
             else:
                 print self.__plugin__ + " Unexpected access to method Anteoloader() without torrent content"
         if self.Downloader:
-            self.Downloader.stream()
+            x=self.Downloader.getContentList()
+            print str(x)
             xbmc.sleep(1000)
-            self.Downloader.__exit__()
+            #self.Downloader.__exit__()
 
     def DownloadStatus(self, params={}):
         db = DownloadDB()
@@ -972,7 +972,7 @@ class Core:
     def drawItem(self, title, action, link='', image='', isFolder=True, contextMenu=None, replaceMenu=True, action2='',
                  info={}):
         listitem = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
-        log('[drawItem]:'+str((title, action, image, isFolder, contextMenu, replaceMenu, action2, info)))
+        #log('[drawItem]:'+str((title, action, image, isFolder, contextMenu, replaceMenu, action2, info)))
         if not info: info = {"Title": title, "plot": title}
         if isinstance(link, dict):
             link_url = ''
@@ -1209,8 +1209,8 @@ class Core:
 
     def torrentPlayer(self, params={}):
         get = params.get
-        url = unquote(get("url"),None)
-        tdir = unquote(get("url2"),None)
+        url = unquote(get("url"), None)
+        tdir = unquote(get("url2"), None)
 
         if not url:
             action = xbmcgui.Dialog()
@@ -1294,9 +1294,9 @@ class Core:
             else:
                 print self.__plugin__ + " Unexpected access to method playTorrent() without torrent content"
         elif self.torrent_player == '2':
-            from BTClientPlayer import BTClientPlayer
+            from Anteoloader import AnteoPlayer
             if 0 != len(torrentUrl):
-                self.Player = BTClientPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
+                self.Player = AnteoPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
             else:
                 print self.__plugin__ + " Unexpected access to method playTorrent() without torrent content"
         elif self.torrent_player == '1':

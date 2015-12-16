@@ -38,7 +38,7 @@ class Torrent():
             self.player = AceStream.AceStream(storageDirectory, torrentFile, torrentFilesDirectory)
 
         elif self.player == 'anteo':
-            self.player = Anteoloader.Anteoloader(storageDirectory, torrentFile, torrentFilesDirectory)
+            self.player = Anteoloader.AnteoLoader(storageDirectory, torrentFile, torrentFilesDirectory)
 
     def __exit__(self):
         self.player.__exit__()
