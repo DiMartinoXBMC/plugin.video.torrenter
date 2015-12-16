@@ -45,6 +45,7 @@ class Core:
 
     def __init__(self):
         print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
+        print str(self.ROOT)
         if len(self.userStorageDirectory) == 0:
             download_dir = get_download_dir()
         else:
@@ -233,7 +234,7 @@ class Core:
         lockView('wide')
 
     def test(self, params={}):
-        from BTClientPlayer import BTClientPlayer
+        from Anteoloader import Anteoloader
         torrentUrl='D:\\ntest.torrent'
         params['url']='0'
         if not xbmcvfs.exists(torrentUrl):
@@ -241,15 +242,13 @@ class Core:
             torrentUrl = action.browse(1, self.localize('Choose .torrent in video library'), 'video', '.torrent')
         if torrentUrl and xbmcvfs.exists(torrentUrl):
             if 0 != len(torrentUrl):
-                self.Player = BTClientPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
+                self.Downloader = Anteoloader(self.userStorageDirectory, torrentUrl)
             else:
-                print self.__plugin__ + " Unexpected access to method playTorrent() without torrent content"
-        #path='http://127.0.0.1:5001/Inception.2010.1080p.BluRay.x264.5xRus.Eng-Otaibi.mkv'
-        #listitem = xbmcgui.ListItem('Inception.2010.1080p.BluRay.x264.5xRus.Eng-Otaibi.mkv', path=path)
-        #playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-        #playlist.clear()
-        #playlist.add(path, listitem)
-        #xbmc.Player().play(playlist)
+                print self.__plugin__ + " Unexpected access to method Anteoloader() without torrent content"
+        if self.Downloader:
+            self.Downloader.stream()
+            xbmc.sleep(1000)
+            self.Downloader.__exit__()
 
     def DownloadStatus(self, params={}):
         db = DownloadDB()
@@ -345,16 +344,16 @@ class Core:
                     progress=int(jsoninfo.get('progress'))
                     if status=='pause':
                         status_sign='[||]'
-                        img = os.path.join(self.ROOT, '/icons/', 'pause-icon.png')
+                        img = os.path.join(self.ROOT, 'icons', 'pause-icon.png')
                     elif status=='stopped':
                         status_sign='[X]'
-                        img = os.path.join(self.ROOT, '/icons/', 'stop-icon.png')
+                        img = os.path.join(self.ROOT, 'icons', 'stop-icon.png')
                     else:
                         status_sign='[>]'
                         if progress==100:
-                            img = os.path.join(self.ROOT, '/icons/', 'upload-icon.png')
+                            img = os.path.join(self.ROOT, 'icons', 'upload-icon.png')
                         else:
-                            img = os.path.join(self.ROOT, '/icons/', 'download-icon.png')
+                            img = os.path.join(self.ROOT, 'icons', 'download-icon.png')
 
                     title = '[%d%%]%s %s'  % (progress, status_sign, title)
                     if jsoninfo.get('seeds')!=None and jsoninfo.get('peers')!=None and \
@@ -973,6 +972,7 @@ class Core:
     def drawItem(self, title, action, link='', image='', isFolder=True, contextMenu=None, replaceMenu=True, action2='',
                  info={}):
         listitem = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
+        log('[drawItem]:'+str((title, action, image, isFolder, contextMenu, replaceMenu, action2, info)))
         if not info: info = {"Title": title, "plot": title}
         if isinstance(link, dict):
             link_url = ''
@@ -1116,10 +1116,14 @@ class Core:
                     status = TextBB(' [||] ', 'b')
                 elif data['status'] in ('seeding', 'downloading'):
                     status = TextBB(' [>] ', 'b')
-                if data['status']   == 'seed_pending':    os.path.join(self.ROOT, '/icons/', 'pause-icon.png')
-                elif data['status'] == 'stopped':         os.path.join(self.ROOT, '/icons/', 'stop-icon.png')
-                elif data['status'] == 'seeding':         os.path.join(self.ROOT, '/icons/', 'upload-icon.png')
-                elif data['status'] == 'downloading':     os.path.join(self.ROOT, '/icons/', 'download-icon.png')
+                if data['status']   == 'seed_pending':
+                    img = os.path.join(self.ROOT, 'icons', 'pause-icon.png')
+                elif data['status'] == 'stopped':
+                    img = os.path.join(self.ROOT, 'icons', 'stop-icon.png')
+                elif data['status'] == 'seeding':
+                    img = os.path.join(self.ROOT, 'icons', 'upload-icon.png')
+                elif data['status'] == 'downloading':
+                    img = os.path.join(self.ROOT, 'icons', 'download-icon.png')
                 menu.append(
                     {"title": '[' + str(data['progress']) + '%]' + status + data['name'] + ' [' + str(
                         data['ratio']) + ']', "image":img,

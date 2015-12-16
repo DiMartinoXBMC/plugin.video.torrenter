@@ -23,6 +23,7 @@ import sys
 
 import Libtorrent
 import AceStream
+import Anteoloader
 
 
 class Torrent():
@@ -36,15 +37,20 @@ class Torrent():
         elif self.player == 'acestream':
             self.player = AceStream.AceStream(storageDirectory, torrentFile, torrentFilesDirectory)
 
+        elif self.player == 'anteo':
+            self.player = Anteoloader.Anteoloader(storageDirectory, torrentFile, torrentFilesDirectory)
+
     def __exit__(self):
         self.player.__exit__()
 
     def get_torrent_client(self):
         player = self.__settings__.getSetting("torrent_player")
-        if player in ['0','2']:
+        if player == '0':
             self.player = 'libtorrent'
         elif player == '1':
             self.player = 'acestream'
+        elif player == '2':
+            self.player = 'anteo'
 
     def play_url_ind(self, ind, label, icon):
         return self.player.play_url_ind(int(ind), label, str(icon))
