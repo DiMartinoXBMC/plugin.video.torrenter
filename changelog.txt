@@ -1,5 +1,9 @@
 ﻿English changelog at http://bit.ly/1MfSVUP
 
+[B]Version 2.4.0[/B]
+[+] Удален плеер BTclient
+[+] Добавлен плеер Torrent2HTTP от anteo
+
 [B]Version 2.3.8[/B]
 [+] Добавлен АнтиЗапрет
 [+] Списки Медиа: Исправлен KickAssSo
