@@ -233,8 +233,8 @@ class Core:
         lockView('wide')
 
     def test(self, params={}):
-        from Anteoloader import AnteoLoader
-        torrentUrl='D:\\ntest.torrent'
+        from Anteoloader import AnteoPlayer
+        torrentUrl='D:\\test.torrent'
         params['url']='0'
         if not xbmcvfs.exists(torrentUrl):
             action = xbmcgui.Dialog()
@@ -244,11 +244,12 @@ class Core:
                 self.Downloader = Downloader.Torrent(self.userStorageDirectory, torrentUrl)
             else:
                 print self.__plugin__ + " Unexpected access to method Anteoloader() without torrent content"
-        if self.Downloader:
-            x=self.Downloader.getContentList()
-            print str(x)
-            xbmc.sleep(1000)
-            #self.Downloader.__exit__()
+        #if self.Downloader:
+        #    x=self.Downloader.getContentList()
+        #    print str(x)
+        #    xbmc.sleep(1000)
+        #    self.Downloader.__exit__()
+        self.Player = AnteoPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
 
     def DownloadStatus(self, params={}):
         db = DownloadDB()

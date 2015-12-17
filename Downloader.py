@@ -74,7 +74,7 @@ class Torrent():
         return self.player.getPeers()
 
     def getSeeds(self):
-        return self.player.getMagnetInfo()
+        return self.player.getSeeds()
 
     def getFileSize(self, contentId=0):
         return self.player.getFileSize(contentId)

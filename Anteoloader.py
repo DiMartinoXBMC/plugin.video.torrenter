@@ -81,6 +81,11 @@ ENCRYPTION_SETTINGS = {
     "Disabled": 2,
 }
 
+class Encryption:
+    FORCED = 0
+    ENABLED = 1
+    DISABLED = 2
+
 class AnteoLoader:
     magnetLink = None
     engine = None
@@ -97,10 +102,12 @@ class AnteoLoader:
             sys.exit(1)
 
         #pre settings
-        if xbmcvfs.exists(torrentFile):
+        if os.path.exists(torrentFile):
             self.torrentFile = "file:///"+torrentFile.replace('\\','//').replace('////','//')
         elif re.match("^magnet\:.+$", torrentFile):
             self.magnetLink = torrentFile
+        else:
+            self.torrentFile = torrentFile
 
     def __exit__(self):
         log('on __exit__')
@@ -134,17 +141,15 @@ class AnteoLoader:
         return filelist
 
     def saveTorrent(self, torrentUrl):
-        if not xbmcvfs.exists(torrentUrl):
+        if not xbmcvfs.exists(torrentUrl) or re.match("^http.+$", torrentUrl):
             if re.match("^magnet\:.+$", torrentUrl):
                 self.magnetLink = torrentUrl
                 self.magnetToTorrent(torrentUrl)
                 self.magnetLink = None
                 return self.torrentFile
             else:
-                if not xbmcvfs.exists(self.torrentFilesPath):
-                    xbmcvfs.mkdirs(self.torrentFilesPath)
-                torrentFile = self.torrentFilesPath + self.md5(
-                    torrentUrl) + '.torrent'
+                if not xbmcvfs.exists(self.torrentFilesPath): xbmcvfs.mkdirs(self.torrentFilesPath)
+                torrentFile = self.torrentFilesPath + self.md5(torrentUrl) + '.torrent'
                 try:
                     if not re.match("^http\:.+$", torrentUrl):
                         content = xbmcvfs.File(torrentUrl, "rb").read()
@@ -169,6 +174,10 @@ class AnteoLoader:
                     return
         else:
             torrentFile = torrentUrl
+        if xbmcvfs.exists(torrentFile) and not os.path.exists(torrentFile):
+            if not xbmcvfs.exists(self.torrentFilesPath): xbmcvfs.mkdirs(self.torrentFilesPath)
+            torrentFile = self.torrentFilesPath + self.md5(torrentUrl) + '.torrent'
+            xbmcvfs.copy(torrentUrl, torrentFile)
         if xbmcvfs.exists(torrentFile):
             self.torrentFile = "file:///"+torrentFile.replace('\\','//').replace('////','//')
             return self.torrentFile
@@ -203,26 +212,44 @@ class AnteoPlayer(xbmc.Player):
         self.userStorageDirectory = userStorageDirectory
         self.torrentUrl = torrentUrl
         xbmc.Player.__init__(self)
-        log("[TorrentPlayer] Initalized")
+        log("[AnteoPlayer] Initalized")
         self.params = params
         self.get = self.params.get
         self.contentId = int(self.get("url"))
-        self.torrent = AnteoLoader(self.userStorageDirectory, self.torrentUrl, self.torrentFilesDirectory)
-        try:
-            if self.get("url2"):
-                self.ids_video = urllib.unquote_plus(self.get("url2")).split(',')
-            else:
-                self.ids_video = self.get_ids()
-        except:
-            pass
+        #self.torrent = AnteoLoader(self.userStorageDirectory, self.torrentUrl, self.torrentFilesDirectory)
         self.init()
         self.setup_engine()
         with closing(self.engine):
             self.engine.start(self.contentId)
-            ready = self.buffer()
-            if ready:
-                self.stream()
+            self.setup_nextep()
+            while True:
+                if self.buffer():
+                    log('[AnteoPlayer]: ************************************* GOING LOOP')
+                    if self.setup_play():
+                        self.loop()
+                    else:
+                        log('[AnteoPlayer]: ************************************* break')
+                        break
+                    log('[AnteoPlayer]: ************************************* GO NEXT?')
+                    if self.next_dl and isinstance(self.next_contentId, int) and self.iterator == 100:
+                        self.contentId = self.next_contentId
+                        continue
+                    log('[AnteoPlayer]: ************************************* NO! break')
+                    break
 
+            xbmc.Player().stop()
+
+        if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
+            xbmc.sleep(1000)
+            clearStorage(self.userStorageDirectory)
+        else:
+            if self.seeding_status:
+                showMessage(self.localize('Information'),
+                            self.localize('Torrent is seeding. To stop it use Download Status.'), forced=True)
+            else:
+                if self.seeding: self.db_delete()
+                showMessage(self.localize('Information'),
+                            self.localize('Torrent downloading is stopped.'), forced=True)
 
     def __exit__(self):
         log('on __exit__')
@@ -231,8 +258,6 @@ class AnteoPlayer(xbmc.Player):
             log('__exit__ worked!')
 
     def init(self):
-        self.next_dl = True if self.__settings__.getSetting('next_dl') == 'true' and self.ids_video else False
-        log('[AnteoPlayer]: init - ' + str(self.next_dl))
         self.next_contentId = False
         self.display_name = ''
         self.downloadedSize = 0
@@ -245,16 +270,43 @@ class AnteoPlayer(xbmc.Player):
             self.torrentUrl = "file:///"+str(self.torrentUrl).replace('\\','//').replace('////','//')
 
     def setup_engine(self):
-        encryption = True if self.__settings__.getSetting('encryption') == 'true' else False
+        #uri=None, binaries_path=None, platform=None, download_path=".",
+        #bind_host='127.0.0.1', bind_port=5001, connections_limit=None, download_kbps=None, upload_kbps=None,
+        #enable_dht=True, enable_lsd=True, enable_natpmp=True, enable_upnp=True, enable_scrape=False,
+        #log_stats=False, encryption=Encryption.ENABLED, keep_complete=False, keep_incomplete=False,
+        #keep_files=False, log_files_progress=False, log_overall_progress=False, log_pieces_progress=False,
+        #listen_port=6881, use_random_port=False, max_idle_timeout=None, no_sparse=False, resume_file=None,
+        #user_agent=None, startup_timeout=5, state_file=None, enable_utp=True, enable_tcp=True,
+        #debug_alerts=False, logger=None, torrent_connect_boost=50, connection_speed=50,
+        #peer_connect_timeout=15, request_timeout=20, min_reconnect_time=60, max_failcount=3,
+        #dht_routers=None, trackers=None)
 
-        upload_limit = self.__settings__.getSetting("upload_limit") if self.__settings__.getSetting(
+        encryption = Encryption.ENABLED if self.__settings__.getSetting('encryption') == 'true' else Encryption.DISABLED
+        upload_limit = int(self.__settings__.getSetting("upload_limit"))*1024 if self.__settings__.getSetting(
             "upload_limit") != "" else 0
-        download_limit = self.__settings__.getSetting("download_limit") if self.__settings__.getSetting(
+        download_limit = int(self.__settings__.getSetting("download_limit"))*1024 if self.__settings__.getSetting(
             "download_limit") != "" else 0
-        self.pre_buffer_bytes = 15*1024*1024
-        self.engine = Engine(uri=self.torrentUrl)
+
+        if self.__settings__.getSetting("connections_limit") not in ["",0,"0"]:
+            connections_limit = int(self.__settings__.getSetting("connections_limit"))
+        else:
+            connections_limit = None
+
+        if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
+            keep_complete = False
+            keep_incomplete = False
+        else:
+            keep_complete = True
+            keep_incomplete = True
+
+        dht_routers = ["router.bittorrent.com:6881","router.utorrent.com:6881"]
+        self.engine = Engine(uri=self.torrentUrl, download_path=self.userStorageDirectory,
+                             connections_limit=connections_limit, download_kbps=download_limit, upload_kbps=upload_limit,
+                             encryption=encryption, keep_complete=keep_complete, keep_incomplete=keep_incomplete,
+                             dht_routers=dht_routers)
 
     def buffer(self):
+        self.pre_buffer_bytes = 30*1024*1024 #30 MB
         ready = False
         progressBar = xbmcgui.DialogProgress()
         progressBar.create(self.localize('Please Wait'),
@@ -265,22 +317,14 @@ class AnteoPlayer(xbmc.Player):
         #        for ind, title in subs:
         #            self.torrent.continueSession(ind)
 
-        #FileStatus = namedtuple('FileStatus', "name, save_path, url, size, offset, download, progress, index, media_type")
-
-        #SessionStatus = namedtuple('SessionStatus', "name, state, state_str, error, progress, download_rate, upload_rate, "
-        #                                    "total_download, total_upload, num_peers, num_seeds, total_seeds, "
-        #                                    "total_peers")
-
         while not xbmc.abortRequested and not ready:
             xbmc.sleep(500)
             status = self.engine.status()
+            self.print_debug(status)
             self.engine.check_torrent_error(status)
             file_status = self.engine.file_status(self.contentId)
             if not file_status:
                 continue
-            log('[buffer] file_status:'+str(file_status))
-            log('[buffer] status:'+str(status))
-            #self.torrent.debug()
             fullSize = file_status.size / 1024 / 1024
             downloadedSize = status.total_download / 1024 / 1024
             getDownloadRate = status.download_rate / 1024 * 8
@@ -320,19 +364,227 @@ class AnteoPlayer(xbmc.Player):
         progressBar.close()
         return ready
 
-    def stream(self):
+    def setup_nextep(self):
+        try:
+            if self.get("url2"):
+                debug("url2")
+                self.ids_video = urllib.unquote_plus(self.get("url2")).split(',')
+            else:
+                debug("not url2")
+                self.ids_video = self.get_ids()
+        except:
+            pass
+
+        if self.__settings__.getSetting('next_dl') == 'true' and self.ids_video:
+            self.next_dl = True
+        else:
+            self.next_dl = False
+        log('[AnteoPlayer]: nextdl - %s, ids_video - %s' % (str(self.next_dl), str(self.ids_video)))
+
+    def setup_play(self):
         file_status = self.engine.file_status(self.contentId)
-        listitem = xbmcgui.ListItem('xxxx')
-        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-        playlist.clear()
-        playlist.add(file_status.url, listitem)
-        xbmc.Player().play(playlist)
-        while not xbmc.abortRequested and xbmc.Player().isPlaying():
-            xbmc.sleep(500)
-        xbmc.Player().stop()
+        self.iterator = 0
+        url = file_status.url
+        label = os.path.basename(file_status.name)
+        self.basename = label
+        self.seeding_run = False
+        subtitles = None
+        listitem = xbmcgui.ListItem(label, path=url)
+
+        if self.next_dl:
+            next_contentId_index = self.ids_video.index(str(self.contentId)) + 1
+            if len(self.ids_video) > next_contentId_index:
+                self.next_contentId = int(self.ids_video[next_contentId_index])
+            else:
+                self.next_contentId = False
+            log('[AnteoPlayer][setup_play]: next_contentId: '+str(self.next_contentId))
+
+        if self.subs_dl:
+            sub_files = self.engine.list(media_types=[MediaType.SUBTITLES])
+            if sub_files:
+                log("[AnteoPlayer][setup_play]: Detected subtitles: %s" % str(sub_files[0]))
+                subtitles = sub_files[0]
+        try:
+            seasonId = self.get("seasonId")
+            self.episodeId = self.get("episodeId") if not self.episodeId else int(self.episodeId) + 1
+            title = urllib.unquote_plus(self.get("title")) if self.get("title") else None
+
+            if self.get("label") and self.episodeId == self.get("episodeId"):
+                label = urllib.unquote_plus(self.get("label"))
+            elif seasonId and self.episodeId and title:
+                label = '%s S%02dE%02d.%s (%s)' % (
+                title, int(seasonId), int(self.episodeId), self.basename.split('.')[-1], self.basename)
+
+            if seasonId and self.episodeId and label and title:
+                listitem = xbmcgui.ListItem(label, path=url)
+
+                listitem.setInfo(type='video', infoLabels={'title': label,
+                                                           'episode': int(self.episodeId),
+                                                           'season': int(seasonId),
+                                                           'tvshowtitle': title})
+        except:
+            log('[AnteoPlayer]: Operation INFO failed!')
+
+        thumbnail = self.get("thumbnail")
+        if thumbnail:
+            listitem.setThumbnailImage(urllib.unquote_plus(thumbnail))
+        self.display_name = label
+
+        player = xbmc.Player()
+        player.play(url, listitem)
+        xbmc.sleep(1000)
+        if subtitles:
+            player.setSubtitles(subtitles.url)
+
+        xbmc.sleep(2000)  # very important, do not edit this, podavan
+        return True
+
+    def loop(self):
+        debug_counter=0
+        xbmc.sleep(1000)
+
+        with closing(
+                OverlayText(w=OVERLAY_WIDTH, h=OVERLAY_HEIGHT, alignment=XBFONT_CENTER_X | XBFONT_CENTER_Y)) as overlay:
+            with nested(self.attach(overlay.show, self.on_playback_paused),
+                        self.attach(overlay.hide, self.on_playback_resumed, self.on_playback_stopped)):
+                while not xbmc.abortRequested and self.isPlaying():
+                    #self.print_fulldebug()
+                    status = self.engine.status()
+                    file_status = self.engine.file_status(self.contentId)
+                    if self.iterator == 100 and debug_counter < 100:
+                        debug_counter += 1
+                    else:
+                        self.print_debug(status)
+                        debug_counter=0
+
+                    overlay.text = "\n".join(self._get_status_lines(status, file_status))
+
+                    self.iterator = int(file_status.progress * 100)
+                    xbmc.sleep(1000)
+
+                    #if not self.seeding_run and self.iterator == 100 and self.seeding:
+                        #self.seeding_run = True
+                        #self.seed(self.contentId)
+                        #self.seeding_status = True
+                        # xbmc.sleep(7000)
+
+    def onPlayBackStarted(self):
+        for f in self.on_playback_started:
+            f()
+        log('[onPlayBackStarted]: '+(str(("video", "play", self.display_name))))
+
+    def onPlayBackResumed(self):
+        for f in self.on_playback_resumed:
+            f()
+        self.onPlayBackStarted()
+
+    def onPlayBackPaused(self):
+        for f in self.on_playback_paused:
+            f()
+        log('[onPlayBackPaused]: '+(str(("video", "pause", self.display_name))))
+
+    def onPlayBackStopped(self):
+        for f in self.on_playback_stopped:
+            f()
+        log('[onPlayBackStopped]: '+(str(("video", "stop", self.display_name))))
+
+    @contextmanager
+    def attach(self, callback, *events):
+        for event in events:
+            event.append(callback)
+        yield
+        for event in events:
+            event.remove(callback)
+
+    def _get_status_lines(self, s, f):
+        return [
+            self.display_name,
+            "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state]).decode('utf-8')),
+            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate * 8, self.localize('kb/s').decode('utf-8'),
+                                             s.upload_rate * 8, self.localize('kb/s').decode('utf-8'),
+                                             s.num_seeds, s.num_peers)
+        ]
 
     def localize(self, string):
         try:
             return Localization.localize(string)
         except:
             return string
+
+    def print_debug(self, status=None):
+        #FileStatus = namedtuple('FileStatus', "name, save_path, url, size, offset, download, progress, index, media_type")
+
+        #SessionStatus = namedtuple('SessionStatus', "name, state, state_str, error, progress, download_rate, upload_rate, "
+        #                                    "total_download, total_upload, num_peers, num_seeds, total_seeds, "
+        #                                    "total_peers")
+
+        #log('[buffer] file_status:'+str(file_status))
+        #log('[buffer] status:'+str(status))
+        if not status:
+            status = self.engine.status()
+        self.engine.check_torrent_error(status)
+        log('[AnteoPlayer]: %.2f%% complete (down: %.1f kb/s up: %.1f kb/s peers: %d) %s' % \
+              (status.progress * 100, status.download_rate * 8,
+               status.upload_rate * 8, status.num_peers, status.state_str))
+
+    def print_fulldebug(self):
+        status = self.engine.status()
+        file_status = self.engine.file_status(self.contentId)
+        log('[buffer] file_status:'+str(file_status))
+        log('[buffer] status:'+str(status))
+
+    def get_ids(self):
+        contentList = []
+        for fs in self.engine.list():
+            contentList.append((fs.name, str(fs.index)))
+        contentList = sorted(contentList, key=lambda x: x[0])
+        return get_ids_video(contentList)
+
+class OverlayText(object):
+    def __init__(self, w, h, *args, **kwargs):
+        self.window = xbmcgui.Window(WINDOW_FULLSCREEN_VIDEO)
+        viewport_w, viewport_h = self._get_skin_resolution()
+        # Adjust size based on viewport, we are using 1080p coordinates
+        w = int(w * viewport_w / VIEWPORT_WIDTH)
+        h = int(h * viewport_h / VIEWPORT_HEIGHT)
+        x = (viewport_w - w) / 2
+        y = (viewport_h - h) / 2
+        self._shown = False
+        self._text = ""
+        self._label = xbmcgui.ControlLabel(x, y, w, h, self._text, *args, **kwargs)
+        self._background = xbmcgui.ControlImage(x, y, w, h, os.path.join(RESOURCES_PATH, "images", "black.png"))
+        self._background.setColorDiffuse("0xD0000000")
+
+    def show(self):
+        if not self._shown:
+            self.window.addControls([self._background, self._label])
+            self._shown = True
+            self._background.setColorDiffuse("0xD0000000")
+
+    def hide(self):
+        if self._shown:
+            self._shown = False
+            self.window.removeControls([self._background, self._label])
+            self._background.setColorDiffuse("0xFF000000")
+
+    def close(self):
+        self.hide()
+
+    @property
+    def text(self):
+        return self._text
+
+    @text.setter
+    def text(self, text):
+        self._text = text
+        if self._shown:
+            self._label.setLabel(self._text)
+
+    # This is so hackish it hurts.
+    def _get_skin_resolution(self):
+        import xml.etree.ElementTree as ET
+
+        skin_path = xbmc.translatePath("special://skin/")
+        tree = ET.parse(os.path.join(skin_path, "addon.xml"))
+        res = tree.findall("./extension/res")[0]
+        return int(res.attrib["width"]), int(res.attrib["height"])

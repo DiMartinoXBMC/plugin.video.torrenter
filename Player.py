@@ -205,12 +205,12 @@ class TorrentPlayer(xbmc.Player):
         upload_limit = self.__settings__.getSetting("upload_limit") if self.__settings__.getSetting(
             "upload_limit") != "" else 0
         if 0 < int(upload_limit):
-            self.torrent.setUploadLimit(int(upload_limit) * 1000000 / 8)  # MBits/second
+            self.torrent.setUploadLimit(int(upload_limit) * 1024 * 1024 / 8)  # MBits/second
         download_limit = self.__settings__.getSetting("download_limit") if self.__settings__.getSetting(
             "download_limit") != "" else 0
         if 0 < int(download_limit):
             self.torrent.setDownloadLimit(
-                int(download_limit) * 1000000 / 8)  # MBits/second
+                int(download_limit) * 1024 * 1024 / 8)  # MBits/second
         self.torrent.status = False
         self.fullSize = self.torrent.getFileSize(self.contentId)
         Offset = calculate(self.fullSize)
@@ -253,8 +253,8 @@ class TorrentPlayer(xbmc.Player):
                     self.localize('Seeds'), str(self.torrent.getSeeds()), self.localize('Peers'),
                     str(self.torrent.getPeers()),)
                 speedsText = '%s: %s Mbit/s; %s: %s Mbit/s' % (
-                    self.localize('Downloading'), str(self.torrent.getDownloadRate() * 8 / 1000000),
-                    self.localize('Uploading'), str(self.torrent.getUploadRate() * 8 / 1000000))
+                    self.localize('Downloading'), str(self.torrent.getDownloadRate() * 8 / 1024 / 1024),
+                    self.localize('Uploading'), str(self.torrent.getUploadRate() * 8 / 1024 / 1024))
                 if self.debug:
                     peersText=peersText + ' ' + self.torrent.get_debug_info('dht_state')
                     dialogText=dialogText.replace(self.localize('Preloaded: '),'') + ' ' + self.torrent.get_debug_info('trackers_sum')
@@ -431,8 +431,8 @@ class TorrentPlayer(xbmc.Player):
         return [
             self.display_name.decode('utf-8')+'; '+self.torrent.get_debug_info('dht_state'),
             "%.2f%% %s; %s" % (s.progress * 100, self.localize(STATE_STRS[s.state]).decode('utf-8'), self.torrent.get_debug_info('trackers_sum')),
-            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate / 1000, self.localize('kb/s').decode('utf-8'),
-                                             s.upload_rate / 1000, self.localize('kb/s').decode('utf-8'),
+            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate / 1024, self.localize('kb/s').decode('utf-8'),
+                                             s.upload_rate / 1024, self.localize('kb/s').decode('utf-8'),
                                              s.num_seeds, s.num_peers)
         ]
 
