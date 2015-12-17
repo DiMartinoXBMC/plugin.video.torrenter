@@ -128,7 +128,7 @@ class AnteoLoader:
         listen_port=int(self.__settings__.getSetting("listen_port")) if self.__settings__.getSetting(
             "listen_port") != "" else 6881
 
-        if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
+        if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.storageDirectory:
             keep_complete = False
             keep_incomplete = False
         else:

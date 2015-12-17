@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="56e91349-2444-4553-bc78-90c2bab49e9c" name="Default" comment="anteo beta3 + magnet">
+    <list default="true" id="56e91349-2444-4553-bc78-90c2bab49e9c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Anteoloader.py" afterPath="$PROJECT_DIR$/Anteoloader.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Core.py" afterPath="$PROJECT_DIR$/Core.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addon.xml" afterPath="$PROJECT_DIR$/addon.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/language/English/strings.xml" afterPath="$PROJECT_DIR$/resources/language/English/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/language/Russian/strings.xml" afterPath="$PROJECT_DIR$/resources/language/Russian/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/settings.xml" afterPath="$PROJECT_DIR$/resources/settings.xml" />
     </list>
     <ignored path="plugin.video.torrenter.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -50,49 +45,49 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="Anteoloader.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="Anteoloader.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/Anteoloader.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-42.827587">
-                  <caret line="151" column="18" selection-start-line="151" selection-start-column="18" selection-end-line="151" selection-end-column="18" />
+                <state vertical-scroll-proportion="0.5535714">
+                  <caret line="123" column="36" selection-start-line="123" selection-start-column="36" selection-end-line="123" selection-end-column="36" />
                   <folding>
                     <element signature="e#24#785#1" expanded="false" />
                     <element signature="e#788#802#0" expanded="true" />
                     <element signature="e#2078#2121#0" expanded="false" />
-                    <element signature="e#4710#4805#0" expanded="false" />
-                    <element signature="e#5535#7720#0" expanded="false" />
-                    <element signature="e#7757#7936#0" expanded="false" />
-                    <element signature="e#11026#11136#0" expanded="false" />
-                    <element signature="e#11166#11592#0" expanded="false" />
-                    <element signature="e#11630#14231#0" expanded="false" />
-                    <element signature="e#17243#17787#0" expanded="false" />
-                    <element signature="e#20369#21677#0" expanded="false" />
-                    <element signature="e#21720#21851#0" expanded="false" />
-                    <element signature="e#21894#21977#0" expanded="false" />
-                    <element signature="e#22019#22149#0" expanded="false" />
-                    <element signature="e#22192#22323#0" expanded="false" />
-                    <element signature="e#22394#22527#0" expanded="false" />
-                    <element signature="e#22576#22994#0" expanded="false" />
-                    <element signature="e#23036#23131#0" expanded="false" />
-                    <element signature="e#23181#24035#0" expanded="false" />
-                    <element signature="e#24076#24265#0" expanded="false" />
-                    <element signature="e#24546#26262#0" expanded="false" />
-                    <element signature="e#24597#25252#0" expanded="false" />
-                    <element signature="e#25282#25460#0" expanded="false" />
-                    <element signature="e#25490#25668#0" expanded="false" />
-                    <element signature="e#25699#25710#0" expanded="false" />
-                    <element signature="e#25754#25771#0" expanded="false" />
-                    <element signature="e#25824#25916#0" expanded="false" />
-                    <element signature="e#25991#26262#0" expanded="false" />
+                    <element signature="e#4706#4801#0" expanded="false" />
+                    <element signature="e#5531#7716#0" expanded="false" />
+                    <element signature="e#7753#7932#0" expanded="false" />
+                    <element signature="e#11022#11132#0" expanded="false" />
+                    <element signature="e#11162#11588#0" expanded="false" />
+                    <element signature="e#11626#14227#0" expanded="false" />
+                    <element signature="e#17239#17783#0" expanded="false" />
+                    <element signature="e#20365#21673#0" expanded="false" />
+                    <element signature="e#21716#21847#0" expanded="false" />
+                    <element signature="e#21890#21973#0" expanded="false" />
+                    <element signature="e#22015#22145#0" expanded="false" />
+                    <element signature="e#22188#22319#0" expanded="false" />
+                    <element signature="e#22390#22523#0" expanded="false" />
+                    <element signature="e#22572#22990#0" expanded="false" />
+                    <element signature="e#23032#23127#0" expanded="false" />
+                    <element signature="e#23177#24031#0" expanded="false" />
+                    <element signature="e#24072#24261#0" expanded="false" />
+                    <element signature="e#24542#26258#0" expanded="false" />
+                    <element signature="e#24593#25248#0" expanded="false" />
+                    <element signature="e#25278#25456#0" expanded="false" />
+                    <element signature="e#25486#25664#0" expanded="false" />
+                    <element signature="e#25695#25706#0" expanded="false" />
+                    <element signature="e#25750#25767#0" expanded="false" />
+                    <element signature="e#25820#25912#0" expanded="false" />
+                    <element signature="e#25987#26258#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="addon.xml" pinned="false" current-in-tab="true">
+          <file leaf-file-name="addon.xml" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/addon.xml">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.027419355">
+                <state vertical-scroll-proportion="-0.65384614">
                   <caret line="1" column="67" selection-start-line="1" selection-start-column="67" selection-end-line="1" selection-end-column="67" />
                   <folding />
                 </state>
@@ -289,7 +284,7 @@
           <file leaf-file-name="settings.xml" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/resources/settings.xml">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.7951613">
+                <state vertical-scroll-proportion="0.7964459">
                   <caret line="29" column="68" selection-start-line="29" selection-start-column="68" selection-end-line="29" selection-end-column="68" />
                   <folding />
                 </state>
@@ -387,8 +382,8 @@
         <option value="$PROJECT_DIR$/resources/settings.xml" />
         <option value="$PROJECT_DIR$/resources/language/English/strings.xml" />
         <option value="$PROJECT_DIR$/resources/language/Russian/strings.xml" />
-        <option value="$PROJECT_DIR$/Anteoloader.py" />
         <option value="$PROJECT_DIR$/addon.xml" />
+        <option value="$PROJECT_DIR$/Anteoloader.py" />
       </list>
     </option>
   </component>
@@ -423,6 +418,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -520,7 +516,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -701,12 +696,6 @@
       <created>1420801533300</created>
       <option name="number" value="Default" />
       <updated>1420801533300</updated>
-    </task>
-    <task id="LOCAL-00097" summary="button fix">
-      <created>1437296216076</created>
-      <option name="number" value="00097" />
-      <option name="project" value="LOCAL" />
-      <updated>1437296216076</updated>
     </task>
     <task id="LOCAL-00098" summary="keep_files ask">
       <created>1437409897534</created>
@@ -996,7 +985,13 @@
       <option name="project" value="LOCAL" />
       <updated>1450377825654</updated>
     </task>
-    <option name="localTasksCounter" value="146" />
+    <task id="LOCAL-00146" summary="anteo beta3 + magnet">
+      <created>1450380439935</created>
+      <option name="number" value="00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1450380439935</updated>
+    </task>
+    <option name="localTasksCounter" value="147" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1007,7 +1002,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32925472" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32814237" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2502781" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2505568" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32703003" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1319149" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -1534,9 +1529,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/addon.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.65384614">
+          <caret line="1" column="67" selection-start-line="1" selection-start-column="67" selection-end-line="1" selection-end-column="67" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/resources/settings.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7951613">
+        <state vertical-scroll-proportion="0.7964459">
           <caret line="29" column="68" selection-start-line="29" selection-start-column="68" selection-end-line="29" selection-end-column="68" />
           <folding />
         </state>
@@ -1544,46 +1547,38 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Anteoloader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-42.827587">
-          <caret line="151" column="18" selection-start-line="151" selection-start-column="18" selection-end-line="151" selection-end-column="18" />
+        <state vertical-scroll-proportion="0.5535714">
+          <caret line="123" column="36" selection-start-line="123" selection-start-column="36" selection-end-line="123" selection-end-column="36" />
           <folding>
             <element signature="e#24#785#1" expanded="false" />
             <element signature="e#788#802#0" expanded="true" />
             <element signature="e#2078#2121#0" expanded="false" />
-            <element signature="e#4710#4805#0" expanded="false" />
-            <element signature="e#5535#7720#0" expanded="false" />
-            <element signature="e#7757#7936#0" expanded="false" />
-            <element signature="e#11026#11136#0" expanded="false" />
-            <element signature="e#11166#11592#0" expanded="false" />
-            <element signature="e#11630#14231#0" expanded="false" />
-            <element signature="e#17243#17787#0" expanded="false" />
-            <element signature="e#20369#21677#0" expanded="false" />
-            <element signature="e#21720#21851#0" expanded="false" />
-            <element signature="e#21894#21977#0" expanded="false" />
-            <element signature="e#22019#22149#0" expanded="false" />
-            <element signature="e#22192#22323#0" expanded="false" />
-            <element signature="e#22394#22527#0" expanded="false" />
-            <element signature="e#22576#22994#0" expanded="false" />
-            <element signature="e#23036#23131#0" expanded="false" />
-            <element signature="e#23181#24035#0" expanded="false" />
-            <element signature="e#24076#24265#0" expanded="false" />
-            <element signature="e#24546#26262#0" expanded="false" />
-            <element signature="e#24597#25252#0" expanded="false" />
-            <element signature="e#25282#25460#0" expanded="false" />
-            <element signature="e#25490#25668#0" expanded="false" />
-            <element signature="e#25699#25710#0" expanded="false" />
-            <element signature="e#25754#25771#0" expanded="false" />
-            <element signature="e#25824#25916#0" expanded="false" />
-            <element signature="e#25991#26262#0" expanded="false" />
+            <element signature="e#4706#4801#0" expanded="false" />
+            <element signature="e#5531#7716#0" expanded="false" />
+            <element signature="e#7753#7932#0" expanded="false" />
+            <element signature="e#11022#11132#0" expanded="false" />
+            <element signature="e#11162#11588#0" expanded="false" />
+            <element signature="e#11626#14227#0" expanded="false" />
+            <element signature="e#17239#17783#0" expanded="false" />
+            <element signature="e#20365#21673#0" expanded="false" />
+            <element signature="e#21716#21847#0" expanded="false" />
+            <element signature="e#21890#21973#0" expanded="false" />
+            <element signature="e#22015#22145#0" expanded="false" />
+            <element signature="e#22188#22319#0" expanded="false" />
+            <element signature="e#22390#22523#0" expanded="false" />
+            <element signature="e#22572#22990#0" expanded="false" />
+            <element signature="e#23032#23127#0" expanded="false" />
+            <element signature="e#23177#24031#0" expanded="false" />
+            <element signature="e#24072#24261#0" expanded="false" />
+            <element signature="e#24542#26258#0" expanded="false" />
+            <element signature="e#24593#25248#0" expanded="false" />
+            <element signature="e#25278#25456#0" expanded="false" />
+            <element signature="e#25486#25664#0" expanded="false" />
+            <element signature="e#25695#25706#0" expanded="false" />
+            <element signature="e#25750#25767#0" expanded="false" />
+            <element signature="e#25820#25912#0" expanded="false" />
+            <element signature="e#25987#26258#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addon.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.027419355">
-          <caret line="1" column="67" selection-start-line="1" selection-start-column="67" selection-end-line="1" selection-end-column="67" />
-          <folding />
         </state>
       </provider>
     </entry>
