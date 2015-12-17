@@ -179,7 +179,7 @@ def localize(text):
             'Favourites SH': 'Избранное ИП',
             'Clear %s': 'Очистить %s',
             'Clear!': 'Очищено!',
-            'kb/s': 'Кб/с',
+            'kb/s': 'КБ/с',
             'Queued': 'В очереди',
             'Checking': 'Проверка',
             'Downloading metadata': 'Скачивание мета-данных',

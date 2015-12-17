@@ -17,8 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import thread
-import os
+
 import urllib2
 import hashlib
 import re
@@ -34,7 +33,6 @@ from functions import file_encode, isSubtitle, DownloadDB, log, debug, is_writab
 
 import os
 import urllib
-import json
 import sys
 from contextlib import contextmanager, closing, nested
 
@@ -191,7 +189,10 @@ class AnteoLoader:
         return hasher.hexdigest()
 
     def magnetToTorrent(self, magnet):
-        self.torrentFile = magnet
+        from Libtorrent import Libtorrent
+        torrent = Libtorrent(self.storageDirectory, self.magnetLink)
+        torrent.magnetToTorrent(self.magnetLink)
+        self.torrentFile = "file:///"+torrent.torrentFile.replace('\\','//').replace('////','//')
 
 class AnteoPlayer(xbmc.Player):
     __plugin__ = sys.modules["__main__"].__plugin__
@@ -502,8 +503,8 @@ class AnteoPlayer(xbmc.Player):
         return [
             self.display_name,
             "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state]).decode('utf-8')),
-            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate * 8, self.localize('kb/s').decode('utf-8'),
-                                             s.upload_rate * 8, self.localize('kb/s').decode('utf-8'),
+            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate, self.localize('kb/s').decode('utf-8'),
+                                             s.upload_rate, self.localize('kb/s').decode('utf-8'),
                                              s.num_seeds, s.num_peers)
         ]
 
@@ -526,8 +527,8 @@ class AnteoPlayer(xbmc.Player):
             status = self.engine.status()
         self.engine.check_torrent_error(status)
         log('[AnteoPlayer]: %.2f%% complete (down: %.1f kb/s up: %.1f kb/s peers: %d) %s' % \
-              (status.progress * 100, status.download_rate * 8,
-               status.upload_rate * 8, status.num_peers, status.state_str))
+              (status.progress * 100, status.download_rate,
+               status.upload_rate, status.num_peers, status.state_str))
 
     def print_fulldebug(self):
         status = self.engine.status()
