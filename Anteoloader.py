@@ -88,6 +88,8 @@ class AnteoLoader:
     magnetLink = None
     engine = None
     torrentFile = None
+    __plugin__ = sys.modules["__main__"].__plugin__
+    __settings__ = sys.modules["__main__"].__settings__
 
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
         self.storageDirectory = storageDirectory
@@ -113,6 +115,32 @@ class AnteoLoader:
             self.engine.close()
             log('__exit__ worked!')
 
+    def setup_engine(self):
+        encryption = Encryption.ENABLED if self.__settings__.getSetting('encryption') == 'true' else Encryption.DISABLED
+
+        if self.__settings__.getSetting("connections_limit") not in ["",0,"0"]:
+            connections_limit = int(self.__settings__.getSetting("connections_limit"))
+        else:
+            connections_limit = None
+
+        use_random_port = True if self.__settings__.getSetting('use_random_port') == 'true' else False
+
+        listen_port=int(self.__settings__.getSetting("listen_port")) if self.__settings__.getSetting(
+            "listen_port") != "" else 6881
+
+        if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
+            keep_complete = False
+            keep_incomplete = False
+        else:
+            keep_complete = True
+            keep_incomplete = True
+
+        dht_routers = ["router.bittorrent.com:6881","router.utorrent.com:6881"]
+        self.engine = Engine(uri=self.torrentFile, download_path=self.storageDirectory,
+                             connections_limit=connections_limit,
+                             encryption=encryption, keep_complete=keep_complete, keep_incomplete=keep_incomplete,
+                             dht_routers=dht_routers, use_random_port=use_random_port, listen_port=listen_port)
+
     def localize(self, string):
         try:
             return Localization.localize(string)
@@ -120,7 +148,7 @@ class AnteoLoader:
             return string
 
     def getContentList(self):
-        self.engine = Engine(uri=self.torrentFile)
+        self.setup_engine()
         files = []
         filelist = []
         with closing(self.engine):
@@ -295,6 +323,9 @@ class AnteoPlayer(xbmc.Player):
 
         use_random_port = True if self.__settings__.getSetting('use_random_port') == 'true' else False
 
+        listen_port=int(self.__settings__.getSetting("listen_port")) if self.__settings__.getSetting(
+            "listen_port") != "" else 6881
+
         if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
             keep_complete = False
             keep_incomplete = False
@@ -306,7 +337,7 @@ class AnteoPlayer(xbmc.Player):
         self.engine = Engine(uri=self.torrentUrl, download_path=self.userStorageDirectory,
                              connections_limit=connections_limit, download_kbps=download_limit, upload_kbps=upload_limit,
                              encryption=encryption, keep_complete=keep_complete, keep_incomplete=keep_incomplete,
-                             dht_routers=dht_routers, use_random_port=use_random_port)
+                             dht_routers=dht_routers, use_random_port=use_random_port, listen_port=listen_port)
 
     def buffer(self):
         self.pre_buffer_bytes = 30*1024*1024 #30 MB

@@ -27,7 +27,8 @@
         <setting id="keep_seeding"      type="bool"     label="30030" default="false"   visible="eq(-9,0)" enable="eq(-7,1)"/>
         <setting id="encryption"        type="bool"     label="30041" default="true"    visible="!eq(-10,1)"/>
         <setting id="connections_limit" type="number"   label="30051" default="200"     visible="eq(-11,2)"/>
-        <setting id="use_random_port"   type="bool"     label="30052" default="false"   visible="eq(-12,2)"/>
+        <setting id="listen_port"       type="number"   label="30053" default="6881"     visible="eq(-12,2)"/>
+        <setting id="use_random_port"   type="bool"     label="30052" default="false"   visible="eq(-13,2)"/>
     </category>
     <category label="Torrent-client">
         <setting id="torrent_save"                  type="enum"         label="50301" lvalues="50302|50303" default="0"/>
