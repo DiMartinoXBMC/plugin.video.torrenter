@@ -175,7 +175,7 @@ class AnteoLoader:
                 return self.torrentFile
             else:
                 if not xbmcvfs.exists(self.torrentFilesPath): xbmcvfs.mkdirs(self.torrentFilesPath)
-                torrentFile = self.torrentFilesPath + self.md5(torrentUrl) + '.torrent'
+                torrentFile = os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent')
                 try:
                     if not re.match("^http\:.+$", torrentUrl):
                         content = xbmcvfs.File(torrentUrl, "rb").read()
@@ -202,7 +202,7 @@ class AnteoLoader:
             torrentFile = torrentUrl
         if xbmcvfs.exists(torrentFile) and not os.path.exists(torrentFile):
             if not xbmcvfs.exists(self.torrentFilesPath): xbmcvfs.mkdirs(self.torrentFilesPath)
-            torrentFile = self.torrentFilesPath + self.md5(torrentUrl) + '.torrent'
+            torrentFile = os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent')
             xbmcvfs.copy(torrentUrl, torrentFile)
         if xbmcvfs.exists(torrentFile):
             self.torrentFile = "file:///"+torrentFile.replace('\\','//').replace('////','//')
@@ -255,6 +255,7 @@ class AnteoPlayer(xbmc.Player):
                 if self.buffer():
                     log('[AnteoPlayer]: ************************************* GOING LOOP')
                     if self.setup_play():
+                        self.setup_subs()
                         self.loop()
                     else:
                         log('[AnteoPlayer]: ************************************* break')
@@ -264,7 +265,7 @@ class AnteoPlayer(xbmc.Player):
                         self.contentId = self.next_contentId
                         continue
                     log('[AnteoPlayer]: ************************************* NO! break')
-                    break
+                break
 
             xbmc.Player().stop()
 
@@ -391,6 +392,7 @@ class AnteoPlayer(xbmc.Player):
             else:
                 progressBar.update(iterator, self.localize('UNKNOWN STATUS'), ' ', ' ')
             if progressBar.iscanceled():
+                self.iterator = 0
                 ready = False
                 break
 
@@ -432,12 +434,6 @@ class AnteoPlayer(xbmc.Player):
             else:
                 self.next_contentId = False
             log('[AnteoPlayer][setup_play]: next_contentId: '+str(self.next_contentId))
-
-        if self.subs_dl:
-            sub_files = self.engine.list(media_types=[MediaType.SUBTITLES])
-            if sub_files:
-                log("[AnteoPlayer][setup_play]: Detected subtitles: %s" % str(sub_files[0]))
-                subtitles = sub_files[0]
         try:
             seasonId = self.get("seasonId")
             self.episodeId = self.get("episodeId") if not self.episodeId else int(self.episodeId) + 1
@@ -466,12 +462,23 @@ class AnteoPlayer(xbmc.Player):
 
         player = xbmc.Player()
         player.play(url, listitem)
-        xbmc.sleep(1000)
-        if subtitles:
-            player.setSubtitles(subtitles.url)
 
         xbmc.sleep(2000)  # very important, do not edit this, podavan
         return True
+
+    def setup_subs(self):
+        if self.subs_dl:
+            file_status = self.engine.file_status(self.contentId)
+            subs = []
+            filename = os.path.basename(file_status.name)
+            sub_files = self.engine.list(media_types=[MediaType.SUBTITLES])
+            for i in sub_files:
+                if isSubtitle(filename, i.name):
+                    subs.append(i)
+            if subs:
+                log("[AnteoPlayer][setup_subs]: Detected subtitles: %s" % str(subs))
+                for sub in subs:
+                    xbmc.Player().setSubtitles(sub.url)
 
     def loop(self):
         debug_counter=0
