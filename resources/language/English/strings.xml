@@ -18,7 +18,7 @@
     <string id="30018">Confluence (by DiMartino)</string>
     <string id="30019">Confluence (by RussakHH)</string>
     <string id="30020">Enable Search History</string>
-    <string id="30021">Python-Libtorrent (recommended)</string>
+    <string id="30021">Python-Libtorrent</string>
     <string id="30022">Ace Stream (no magnets)</string>
     <string id="30023">P2P Player</string>
     <string id="30024">Rest Settings in Programms - AceStream Client</string>
@@ -50,7 +50,8 @@
     <string id="30050">Immunicity</string>
     <string id="30051">Max. connections (0 - unlimited)</string>
     <string id="30052">Use random ports</string>
-    <string id="30053">Port for incominc connections</string>
+    <string id="30053">Port for incoming connections</string>
+    <string id="30054">Pre-buffer amount before start playing, Mb</string>
     <string id="30101">Interface</string>
     <string id="30102">P2P Network</string>
     <string id="30103">Advanced</string>

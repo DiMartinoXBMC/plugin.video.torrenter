@@ -18,7 +18,7 @@
     <string id="30018">Confluence (от DiMartino)</string>
     <string id="30019">Confluence (от RussakHH)</string>
     <string id="30020">Включить Историю Поиска</string>
-    <string id="30021">Python-Libtorrent (предпочтительно)</string>
+    <string id="30021">Python-Libtorrent</string>
     <string id="30022">Ace Stream (без магнит-ссылок)</string>
     <string id="30023">P2P Проигрыватель</string>
     <string id="30024">Остальные настройки в "Программы - AceStream Client"</string>
@@ -51,6 +51,7 @@
     <string id="30051">Макс. соединений (0 - безлимит)</string>
     <string id="30052">Использовать случайные порты</string>
     <string id="30053">Порт для входящих соединений</string>
+    <string id="30054">Загружаемый объем файла до начала просмотра, Мб</string>
     <string id="30101">Интерфейс</string>
     <string id="30102">P2P Сеть</string>
     <string id="30103">Дополнительные</string>

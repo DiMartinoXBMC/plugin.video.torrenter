@@ -330,15 +330,20 @@ class AnteoPlayer(xbmc.Player):
         if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
             keep_complete = False
             keep_incomplete = False
+            keep_files = False
         else:
             keep_complete = True
             keep_incomplete = True
+            keep_files = True
 
         dht_routers = ["router.bittorrent.com:6881","router.utorrent.com:6881"]
+        self.pre_buffer_bytes = int(self.__settings__.getSetting("pre_buffer_bytes"))*1024*1024
+
         self.engine = Engine(uri=self.torrentUrl, download_path=self.userStorageDirectory,
                              connections_limit=connections_limit, download_kbps=download_limit, upload_kbps=upload_limit,
                              encryption=encryption, keep_complete=keep_complete, keep_incomplete=keep_incomplete,
-                             dht_routers=dht_routers, use_random_port=use_random_port, listen_port=listen_port)
+                             dht_routers=dht_routers, use_random_port=use_random_port, listen_port=listen_port,
+                             keep_files=keep_files)
 
     def buffer(self):
         self.pre_buffer_bytes = 30*1024*1024 #30 MB
