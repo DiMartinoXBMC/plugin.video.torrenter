@@ -1841,3 +1841,17 @@ def check_download_dir():
         dialog.ok(Localization.localize('Torrenter'),
                     Localization.localize('Please specify storage folder in Settings!'))
         __settings__.openSettings()
+
+def ensure_str(string, encoding='utf-8'):
+    if isinstance(string, unicode):
+        string = string.encode(encoding)
+    if not isinstance(string, str):
+        string = str(string)
+    return string
+
+def file_url(torrentFile):
+    import urlparse
+    if not re.match("^file\:.+$", torrentFile):
+        torrentFile = urlparse.urljoin('file:', urllib.pathname2url(ensure_str(torrentFile)))
+    return torrentFile
+
