@@ -271,13 +271,13 @@ class AnteoPlayer(xbmc.Player):
             xbmc.sleep(1000)
             clearStorage(self.userStorageDirectory)
         else:
-            if self.seeding_status:
-                showMessage(self.localize('Information'),
-                            self.localize('Torrent is seeding. To stop it use Download Status.'), forced=True)
-            else:
-                if self.seeding: self.db_delete()
-                showMessage(self.localize('Information'),
-                            self.localize('Torrent downloading is stopped.'), forced=True)
+            #if self.seeding_status:
+            showMessage(self.localize('Information'),
+                        self.localize('Torrent is seeding. To stop it use Download Status.'), forced=True)
+            #else:
+            #    #if self.seeding: self.db_delete()
+            #    showMessage(self.localize('Information'),
+            #                self.localize('Torrent downloading is stopped.'), forced=True)
 
     def __exit__(self):
         log('on __exit__')
