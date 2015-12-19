@@ -102,7 +102,7 @@ class AnteoLoader:
             sys.exit(1)
 
         #pre settings
-        if os.path.exists(torrentFile):
+        if os.path.exists(torrentFile) and xbmc.getCondVisibility("system.platform.windows") and not re.match("^file\:.+$", torrentFile):
             self.torrentFile = "file:///"+torrentFile.replace('\\','//').replace('////','//')
         elif re.match("^magnet\:.+$", torrentFile):
             self.magnetLink = torrentFile
@@ -204,8 +204,10 @@ class AnteoLoader:
             if not xbmcvfs.exists(self.torrentFilesPath): xbmcvfs.mkdirs(self.torrentFilesPath)
             torrentFile = os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent')
             xbmcvfs.copy(torrentUrl, torrentFile)
-        if xbmcvfs.exists(torrentFile):
+        if xbmcvfs.exists(torrentFile) and xbmc.getCondVisibility("system.platform.windows") and not re.match("^file\:.+$", torrentFile):
             self.torrentFile = "file:///"+torrentFile.replace('\\','//').replace('////','//')
+        elif xbmcvfs.exists(torrentFile):
+            self.torrentFile = torrentFile
             return self.torrentFile
 
     def md5(self, string):
@@ -220,7 +222,10 @@ class AnteoLoader:
         from Libtorrent import Libtorrent
         torrent = Libtorrent(self.storageDirectory, self.magnetLink)
         torrent.magnetToTorrent(self.magnetLink)
-        self.torrentFile = "file:///"+torrent.torrentFile.replace('\\','//').replace('////','//')
+        if xbmc.getCondVisibility("system.platform.windows") and not re.match("^file\:.+$", torrent.torrentFile):
+            self.torrentFile = "file:///"+torrent.torrentFile.replace('\\','//').replace('////','//')
+        else:
+            self.torrentFile = torrent.torrentFile
 
 class AnteoPlayer(xbmc.Player):
     __plugin__ = sys.modules["__main__"].__plugin__
@@ -296,7 +301,7 @@ class AnteoPlayer(xbmc.Player):
         self.on_playback_resumed = []
         self.on_playback_paused = []
         self.on_playback_stopped = []
-        if xbmcvfs.exists(self.torrentUrl):
+        if xbmcvfs.exists(self.torrentUrl) and xbmc.getCondVisibility("system.platform.windows") and not re.match("^file\:.+$", self.torrentUrl):
             self.torrentUrl = "file:///"+str(self.torrentUrl).replace('\\','//').replace('////','//')
 
     def setup_engine(self):
