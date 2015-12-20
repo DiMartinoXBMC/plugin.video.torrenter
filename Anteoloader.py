@@ -217,10 +217,14 @@ class AnteoLoader:
         return hasher.hexdigest()
 
     def magnetToTorrent(self, magnet):
-        from Libtorrent import Libtorrent
-        torrent = Libtorrent(self.storageDirectory, self.magnetLink)
-        torrent.magnetToTorrent(self.magnetLink)
-        self.torrentFile = torrent.torrentFile
+        try:
+            from Libtorrent import Libtorrent
+            torrent = Libtorrent(self.storageDirectory, magnet)
+            torrent.magnetToTorrent(self.magnetLink)
+            self.torrentFile = torrent.torrentFile
+        except:
+            self.torrentFile = self.magnetLink
+        log('[AnteoLoader][magnetToTorrent]: self.torrentFile '+str(self.torrentFile))
 
 class AnteoPlayer(xbmc.Player):
     __plugin__ = sys.modules["__main__"].__plugin__
