@@ -220,10 +220,10 @@ class AnteoLoader:
         try:
             from Libtorrent import Libtorrent
             torrent = Libtorrent(self.storageDirectory, magnet)
-            torrent.magnetToTorrent(self.magnetLink)
+            torrent.magnetToTorrent(magnet)
             self.torrentFile = torrent.torrentFile
         except:
-            self.torrentFile = self.magnetLink
+            self.torrentFile = magnet
         log('[AnteoLoader][magnetToTorrent]: self.torrentFile '+str(self.torrentFile))
 
 class AnteoPlayer(xbmc.Player):
