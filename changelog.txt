@@ -1,5 +1,8 @@
 ﻿English changelog at http://bit.ly/1MfSVUP
 
+[B]Version 2.4.1[/B]
+[+] Плеер Torrent2HTTP от anteo теперь по-умолчанию для новых пользователей
+
 [B]Version 2.4.0[/B]
 [+] Удален плеер BTclient
 [+] Добавлен плеер Torrent2HTTP от anteo
