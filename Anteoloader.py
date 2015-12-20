@@ -155,10 +155,24 @@ class AnteoLoader:
             self.engine.start()
             #media_types=[MediaType.VIDEO, MediaType.AUDIO, MediaType.SUBTITLES, MediaType.UNKNOWN]
 
-            while not files and not xbmc.abortRequested:
+            iterator = 0
+            text = Localization.localize('Magnet-link is converting') if self.magnetLink\
+                else Localization.localize('Opening torrent file')
+            while not files and not xbmc.abortRequested and iterator < 100:
                 files = self.engine.list()
                 self.engine.check_torrent_error()
-                xbmc.sleep(200)
+                if iterator==4:
+                    progressBar = xbmcgui.DialogProgress()
+                    progressBar.create(Localization.localize('Please Wait'),
+                               Localization.localize('Magnet-link is converting'))
+                elif iterator>4:
+                    progressBar.update(iterator, Localization.localize('Please Wait'),text+'.' * (iterator % 4), ' ')
+                    if progressBar.iscanceled():
+                        progressBar.update(0)
+                        progressBar.close()
+                        return []
+                xbmc.sleep(500)
+                iterator += 1
 
             for fs in files:
                 stringdata = {"title": fs.name, "size": fs.size, "ind": fs.index,

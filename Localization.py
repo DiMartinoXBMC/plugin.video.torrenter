@@ -272,6 +272,7 @@ def localize(text):
             'Do it!':'Скажите "ДА"!',
             'Please, restart Kodi now!':'Теперь перезагрузите Коди, пожалуйста!',
             './ (Root folder)':'./ (Корневой каталог)',
+            'Opening torrent file':'Открытие torrent-файла',
         },
         'uk': {
             'Seeds searching.': 'Йде пошук сідів.',
