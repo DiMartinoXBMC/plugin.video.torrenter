@@ -46,7 +46,7 @@ ROOT = __settings__.getAddonInfo('path')  # .decode('utf-8').encode(sys.getfiles
 userStorageDirectory = __settings__.getSetting("storage")
 USERAGENT = "Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0"
 __addonpath__ = __settings__.getAddonInfo('path')
-icon = os.path.join(__addonpath__, '/icon.png')
+icon = os.path.join(__addonpath__, 'icon.png')
 __version__ = __settings__.getAddonInfo('version')
 __plugin__ = __settings__.getAddonInfo('name') + " v." + __version__
 

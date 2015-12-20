@@ -133,7 +133,7 @@ class AnteoLoader:
             keep_complete = True
             keep_incomplete = True
 
-        dht_routers = ["router.bittorrent.com:6881","router.utorrent.com:6881"]
+        dht_routers = ["router.bittorrent.com:6881", "router.utorrent.com:6881"]
         user_agent = 'uTorrent/2200(24683)'
         self.engine = Engine(uri=file_url(self.torrentFile), download_path=self.storageDirectory,
                              connections_limit=connections_limit,

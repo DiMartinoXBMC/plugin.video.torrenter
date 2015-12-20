@@ -1620,6 +1620,7 @@ class Core:
                     Download().setprio(id, ind)
 
     def downloadLibtorrent(self, params={}):
+        import Libtorrent
         get = params.get
         storage=get('storage')
         if not storage: self.userStorage(params)
@@ -1635,7 +1636,7 @@ class Core:
             if classMatch:
                 searcher = classMatch.group(1)
                 url = Searchers().downloadWithSearcher(classMatch.group(2), searcher)
-        torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
+        torrent = Libtorrent.Libtorrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
         torrent.initSession()
         encryption = self.__settings__.getSetting('encryption') == 'true'
         if encryption:
