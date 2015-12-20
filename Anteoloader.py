@@ -102,10 +102,10 @@ class AnteoLoader:
             sys.exit(1)
 
         #pre settings
-        if os.path.exists(torrentFile):
-            self.torrentFile = file_url(torrentFile)
-        elif re.match("^magnet\:.+$", torrentFile):
+        if re.match("^magnet\:.+$", torrentFile):
             self.magnetLink = torrentFile
+        else:
+            self.torrentFile = torrentFile
 
     def __exit__(self):
         log('on __exit__')
@@ -134,10 +134,12 @@ class AnteoLoader:
             keep_incomplete = True
 
         dht_routers = ["router.bittorrent.com:6881","router.utorrent.com:6881"]
-        self.engine = Engine(uri=self.torrentFile, download_path=self.storageDirectory,
+        user_agent = 'uTorrent/2200(24683)'
+        self.engine = Engine(uri=file_url(self.torrentFile), download_path=self.storageDirectory,
                              connections_limit=connections_limit,
                              encryption=encryption, keep_complete=keep_complete, keep_incomplete=keep_incomplete,
-                             dht_routers=dht_routers, use_random_port=use_random_port, listen_port=listen_port)
+                             dht_routers=dht_routers, use_random_port=use_random_port, listen_port=listen_port,
+                             user_agent=user_agent)
 
     def localize(self, string):
         try:
@@ -202,8 +204,8 @@ class AnteoLoader:
             if not xbmcvfs.exists(self.torrentFilesPath): xbmcvfs.mkdirs(self.torrentFilesPath)
             torrentFile = os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent')
             xbmcvfs.copy(torrentUrl, torrentFile)
-        if xbmcvfs.exists(torrentFile):
-            self.torrentFile = file_url(torrentFile)
+        if os.path.exists(torrentFile):
+            self.torrentFile = torrentFile
             return self.torrentFile
 
     def md5(self, string):
@@ -218,7 +220,7 @@ class AnteoLoader:
         from Libtorrent import Libtorrent
         torrent = Libtorrent(self.storageDirectory, self.magnetLink)
         torrent.magnetToTorrent(self.magnetLink)
-        self.torrentFile = file_url(torrent.torrentFile)
+        self.torrentFile = torrent.torrentFile
 
 class AnteoPlayer(xbmc.Player):
     __plugin__ = sys.modules["__main__"].__plugin__
@@ -294,8 +296,7 @@ class AnteoPlayer(xbmc.Player):
         self.on_playback_resumed = []
         self.on_playback_paused = []
         self.on_playback_stopped = []
-        if os.path.exists(self.torrentUrl):
-            self.torrentUrl = file_url(self.torrentUrl)
+        self.torrentUrl = self.torrentUrl
 
     def setup_engine(self):
         #uri=None, binaries_path=None, platform=None, download_path=".",
@@ -335,13 +336,14 @@ class AnteoPlayer(xbmc.Player):
             keep_files = True
 
         dht_routers = ["router.bittorrent.com:6881","router.utorrent.com:6881"]
+        user_agent = 'uTorrent/2200(24683)'
         self.pre_buffer_bytes = int(self.__settings__.getSetting("pre_buffer_bytes"))*1024*1024
 
-        self.engine = Engine(uri=self.torrentUrl, download_path=self.userStorageDirectory,
+        self.engine = Engine(uri=file_url(self.torrentUrl), download_path=self.userStorageDirectory,
                              connections_limit=connections_limit, download_kbps=download_limit, upload_kbps=upload_limit,
                              encryption=encryption, keep_complete=keep_complete, keep_incomplete=keep_incomplete,
                              dht_routers=dht_routers, use_random_port=use_random_port, listen_port=listen_port,
-                             keep_files=keep_files)
+                             keep_files=keep_files, user_agent=user_agent)
 
     def buffer(self):
         self.pre_buffer_bytes = 30*1024*1024 #30 MB

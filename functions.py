@@ -1851,7 +1851,7 @@ def ensure_str(string, encoding='utf-8'):
 
 def file_url(torrentFile):
     import urlparse
-    if not re.match("^file\:.+$", torrentFile):
+    if not re.match("^file\:.+$", torrentFile) and os.path.exists(torrentFile):
         torrentFile = urlparse.urljoin('file:', urllib.pathname2url(ensure_str(torrentFile)))
     return torrentFile
 

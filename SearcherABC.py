@@ -97,7 +97,7 @@ class SearcherABC:
         try:
             if os.path.exists(cookie): self.cookieJar.load(ignore_discard=True)
         except:
-            self.log('[load_cookie]: os.remove(cookie)')
+            self.log(self.__plugin__+' [load_cookie]: os.remove(cookie)')
             os.remove(cookie)
             self.cookieJar = cookielib.MozillaCookieJar(cookie)
 
@@ -105,11 +105,8 @@ class SearcherABC:
         cookie=os.path.join(self.tempdir(),self.__class__.__name__+'.txt')
         self.cookieJar = cookielib.MozillaCookieJar(cookie)
         if os.path.exists(cookie):
-            try:
-                self.cookieJar.clear('.'+domain)
-                self.log('[SearcherABC] '+self.__plugin__+': Cookie Deleted!')
-            except:
-                self.log('[SearcherABC] '+self.__plugin__+': Cookie clear failed!')
+            os.remove(cookie)
+            self.log(self.__plugin__+' [clear_cookie]: cookie cleared')
 
     def makeRequest(self, url, data={}, headers={}):
         self.load_cookie()
@@ -233,7 +230,7 @@ class SearcherABC:
             temp_dir = tempfile.gettempdir()
         except:
             temp_dir = self.tempdir()
-        localFileName = temp_dir + os.path.sep + self.md5(url)
+        localFileName = temp_dir + os.path.sep + self.md5(url) + ".torrent"
 
         localFile = open(localFileName, 'wb+')
         localFile.write(content)
