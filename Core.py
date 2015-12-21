@@ -92,7 +92,7 @@ class Core:
                       image=self.ROOT + '/icons/torrentPlayer.png')
         self.drawItem('< %s >' % self.localize('Search Control Window'), 'controlCenter',
                       image=self.ROOT + '/icons/settings.png', isFolder=False)
-        if self.torrent_player!='1':self.drawItem('< %s >' % self.localize('Magnet-link Player'), 'magentPlayer',
+        self.drawItem('< %s >' % self.localize('Magnet-link Player'), 'magentPlayer',#if self.torrent_player!='1':
                       image=self.ROOT + '/icons/magnet.png')
         if self.debug:
             self.drawItem('full_download', 'full_download', image=self.ROOT + '/icons/magnet.png')
