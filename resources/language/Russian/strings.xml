@@ -43,7 +43,7 @@
     <string id="30043">Удалять файлы</string>
     <string id="30044">Сохранять файлы</string>
     <string id="30045">Спросить о сохранении</string>
-    <string id="30046">Torrent2HTTP (python-libtorrent по http)</string>
+    <string id="30046">Torrent2HTTP (libtorrent по http)</string>
     <string id="30047">Антизапрет (прокси)</string>
     <string id="30048">Не использовать</string>
     <string id="30049">Anti-zapret</string>

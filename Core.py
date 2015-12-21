@@ -57,7 +57,7 @@ class Core:
             self.__settings__.setSetting('plugin_name', self.__plugin__)
             #check_network_advancedsettings()
             check_download_dir()
-            if self.__plugin__ == 'Torrenter v.2.4.1a':
+            if self.__plugin__ == 'Torrenter v.2.4.1b':
                 first_run_241()
                 pass
 
