@@ -57,8 +57,8 @@ class Core:
             self.__settings__.setSetting('plugin_name', self.__plugin__)
             #check_network_advancedsettings()
             check_download_dir()
-            if self.__plugin__ == 'Torrenter v.2.3.7':
-                #first_run_231()
+            if self.__plugin__ == 'Torrenter v.2.4.1a':
+                first_run_241()
                 pass
 
         ListString = 'XBMC.RunPlugin(%s)' % (sys.argv[0] + '?action=%s&action2=%s&%s=%s')

@@ -1640,6 +1640,11 @@ def first_run_231():
             xbmc.executebuiltin('Dialog.Close(all,true)')
             xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher'))
 
+def first_run_241():
+    ok = xbmcgui.Dialog().ok('< %s >' % Localization.localize('Torrenter Update ') + '2.4.1',
+                                    Localization.localize('New player to Torrenter v2 - Torrent2HTTP! It can be enabled in settings.'),
+                                    Localization.localize('It should be faster, stable and better with Android, also seeking works in it.'))
+
 def noActiveSerachers():
     yes=xbmcgui.Dialog().yesno('< %s >' % Localization.localize('Torrenter v2'),
                                         Localization.localize('You have no installed or active searchers! More info in Search Control Window!'),

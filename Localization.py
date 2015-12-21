@@ -273,6 +273,8 @@ def localize(text):
             'Please, restart Kodi now!':'Теперь перезагрузите Коди, пожалуйста!',
             './ (Root folder)':'./ (Корневой каталог)',
             'Opening torrent file':'Открытие torrent-файла',
+            'New player to Torrenter v2 - Torrent2HTTP! It can be enabled in settings.':'В Torrenter новый плеер - Torrent2HTTP! Включить его можно в настройках.',
+            'It should be faster, stable and better with Android, also seeking works in it.':'Он стабильнее, быстрее и отлично ладит с Android, в нем работает перемотка.',
         },
         'uk': {
             'Seeds searching.': 'Йде пошук сідів.',
