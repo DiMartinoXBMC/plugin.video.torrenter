@@ -28,7 +28,7 @@ from StringIO import StringIO
 import gzip
 
 from functions import file_decode, file_encode
-from functions import magnet_alert
+from functions import magnet_alert, log, debug
 import xbmcvfs
 
 
@@ -39,7 +39,7 @@ class AceStream:
         gf = open(pfile, 'r')
         aceport = int(gf.read())
         gf.close()
-        print aceport
+        log('[AceStream]: aceport - '+str(aceport))
     except:
         aceport = 62062
 
@@ -60,9 +60,9 @@ class AceStream:
         try:
             from ASCore import TSengine as tsengine
 
-            print 'Imported TSengine from ASCore'
+            log('Imported TSengine from ASCore')
         except Exception, e:
-            print 'Error importing TSengine from ASCore. Exception: ' + str(e)
+            log('Error importing TSengine from ASCore. Exception: ' + str(e))
             return
 
         self.TSplayer = tsengine()
@@ -70,15 +70,14 @@ class AceStream:
         self.torrentFilesDirectory = torrentFilesDirectory
         self.storageDirectory = storageDirectory
         _path = os.path.join(self.storageDirectory, self.torrentFilesDirectory) + os.sep
+        if re.match("^magnet\:.+$", torrentFile):
+            torrentFile = self.magnetToTorrent(torrentFile)
         if not xbmcvfs.exists(_path):
             xbmcvfs.mkdirs(_path)
         if xbmcvfs.exists(torrentFile):
             self.torrentFile = torrentFile
             content = xbmcvfs.File(torrentFile, "rb").read()
             self.torrentFileInfo = self.TSplayer.load_torrent(base64.b64encode(content), 'RAW')
-        elif re.match("^magnet\:.+$", torrentFile):
-            magnet_alert()
-            exit()
 
     def __exit__(self):
         self.TSplayer.end()
@@ -88,8 +87,8 @@ class AceStream:
 
     def saveTorrent(self, torrentUrl):
         if re.match("^magnet\:.+$", torrentUrl):
-            magnet_alert()
-            exit()
+            torrentFile = self.magnetToTorrent(torrentUrl)
+            content = xbmcvfs.File(file_decode(torrentFile), "rb").read()
         else:
             torrentFile = self.storageDirectory + os.sep + self.torrentFilesDirectory + os.sep + self.md5(
                 torrentUrl) + '.torrent'
@@ -112,21 +111,25 @@ class AceStream:
                 localFile.write(content)
                 localFile.close()
             except Exception, e:
-                print 'Unable to save torrent file from "' + torrentUrl + '" to "' + torrentFile + '" in Torrent::saveTorrent' + '. Exception: ' + str(
-                    e)
+                log('Unable to save torrent file from "' + torrentUrl + '" to "' + torrentFile +
+                    '" in Torrent::saveTorrent' + '. Exception: ' + str(e))
                 return
-            if xbmcvfs.exists(torrentFile):
-                self.torrentFile = torrentFile
-                self.torrentFileInfo = self.TSplayer.load_torrent(base64.b64encode(content), 'RAW')
-                return self.torrentFile
-
-    def getMagnetInfo(self):
-        magnet_alert()
-        exit()
+        if xbmcvfs.exists(torrentFile):
+            self.torrentFile = torrentFile
+            self.torrentFileInfo = self.TSplayer.load_torrent(base64.b64encode(content), 'RAW')
+            return self.torrentFile
 
     def magnetToTorrent(self, magnet):
-        magnet_alert()
-        exit()
+        try:
+            from Libtorrent import Libtorrent
+            torrent = Libtorrent(self.storageDirectory, magnet)
+            torrent.magnetToTorrent(magnet)
+            self.torrentFile = torrent.torrentFile
+            log('[AceStream][magnetToTorrent]: self.torrentFile '+str(self.torrentFile))
+            return self.torrentFile
+        except:
+            magnet_alert()
+            exit()
 
     def getFilePath(self, contentId=0):
         fileList = self.getContentList()
