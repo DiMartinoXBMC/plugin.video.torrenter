@@ -853,7 +853,7 @@ class Deluge:
         if port:
             self.url += ':' + str(port)
         self.url += url
-        print str(self.url)
+        log(str(self.url))
         self.http = HTTP()
 
     def get_info(self):

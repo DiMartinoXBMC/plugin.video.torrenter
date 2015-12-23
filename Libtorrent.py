@@ -116,15 +116,14 @@ class Libtorrent:
                 localFile.write(content)
                 localFile.close()
             except Exception, e:
-                print 'Unable to save torrent file from "' + torrentUrl + '" to "' + torrentFile + '" in Torrent::saveTorrent' + '. Exception: ' + str(
-                    e)
+                log('Unable to save torrent file from "' + torrentUrl + '" to "' + torrentFile + '" in Torrent::saveTorrent' + '. Exception: ' + str(e))
                 return
             if xbmcvfs.exists(torrentFile):
                 try:
                     e=self.lt.bdecode(xbmcvfs.File(torrentFile,'rb').read())
                     self.torrentFileInfo = self.lt.torrent_info(e)
                 except Exception, e:
-                    print 'Exception: ' + str(e)
+                    log('Exception: ' + str(e))
                     xbmcvfs.delete(torrentFile)
                     return
                 baseName = file_encode(os.path.basename(self.getFilePath()))
@@ -503,7 +502,7 @@ class Libtorrent:
             # print str(s.pieces)
         #except:
         else:
-            print 'debug error'
+            log('debug error')
             pass
 
     def get_debug_info(self, info):
@@ -534,6 +533,6 @@ class Libtorrent:
     def dump(self, obj):
         for attr in dir(obj):
             try:
-                print "'%s':'%s'," % (attr, getattr(obj, attr))
+                log("'%s':'%s'," % (attr, getattr(obj, attr)))
             except:
                 pass

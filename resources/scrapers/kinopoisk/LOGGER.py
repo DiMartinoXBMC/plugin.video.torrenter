@@ -2,6 +2,7 @@
 #
 try:
     import xbmcaddon
+    from functions import log, debug
 
     __settings__ = xbmcaddon.Addon("plugin.video.torrenter")
     debug = __settings__.getSetting("debug")
@@ -10,31 +11,19 @@ except:
 
 
 def Log(msg, force=False):
-    try:
-        print "[torrenter log] " + msg
-    except UnicodeEncodeError:
-        print "[torrenter log] " + msg.encode("utf-8", "ignore")
+    log(msg)
 
 
 def Debug(msg, force=False):
     if debug == 'true' or force:
-        try:
-            print "[torrenter] " + msg
-        except UnicodeEncodeError:
-            print "[torrenter] " + msg.encode("utf-8", "ignore")
+        debug(msg, True)
 
 
 def Info(msg, force=False):
     if debug == 'true' or force:
-        try:
-            print "[torrenter] " + msg
-        except UnicodeEncodeError:
-            print "[torrenter] " + msg.encode("utf-8", "ignore")
+        debug(msg, True)
 
 
 def Warn(msg, force=False):
     if debug == 'true' or force:
-        try:
-            print "[torrenter] " + msg
-        except UnicodeEncodeError:
-            print "[torrenter] " + msg.encode("utf-8", "ignore")
+        debug(msg, True)

@@ -10,6 +10,7 @@ import zipfile
 import xbmc
 from net import HTTP
 from cache import Cache
+from functions import log
 
 
 class TvDb:
@@ -82,7 +83,7 @@ class TvDb:
         # print url
         response = self.http.fetch(url, headers=self.headers, download=os.path.join(dirname, 'movie.zip'), timeout=20)
         if response.error:
-            print "ERRRRRROR! " + str(response.error)
+            log("ERRRRRROR! " + str(response.error))
             self._movie_clear(dirname)
             return False, None
 
@@ -411,7 +412,7 @@ def get_best(Data, search, year):
         shows.append({'rate': rate, 'id': id})
 
     shows = sorted(shows, key=lambda x: x['rate'], reverse=True)
-    print '********************** TheTVDB ******************************'
-    print str(shows) + str(mediaName.encode('utf-8'))
+    log('********************** TheTVDB ******************************')
+    log(str(shows) + str(mediaName.encode('utf-8')))
     if shows:
         return shows[0]

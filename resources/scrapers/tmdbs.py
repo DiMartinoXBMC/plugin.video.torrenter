@@ -4,6 +4,7 @@ import time
 import urllib
 
 from cache import Cache
+from functions import log
 import tmdb
 
 
@@ -154,9 +155,9 @@ class TmDb:
         movie_id = None
         for name in search:
             movies = tmdb.Movies(title=name, year=year, limit=True).get_ordered_matches()
-            print '********************************************************'
+            log('********************************************************')
             try:
-                print str(isAsciiString(movies[1]['title']))
+                log(str(isAsciiString(movies[1]['title'])))
             except:
                 pass
 
@@ -320,7 +321,7 @@ def scoreMediaTitleMatch(mediaName, mediaAltTitle, mediaYear, title, original_ti
 
 
 def get_best(Data, search, year):
-    print '****** Finding TMDB: ' + str(search) + '; year ' + str(year)
+    log('****** Finding TMDB: ' + str(search) + '; year ' + str(year))
     shows = []
     itemIndex = -1
     if len(search) == 2:
@@ -349,7 +350,7 @@ def get_best(Data, search, year):
             release_date=str(show.get('release_date').split('-')[0])
         else:
             release_date='0'
-        print (' ... %d: id="%s", name="%s", year="%s", score="%d".' %
+        log(' ... %d: id="%s", name="%s", year="%s", score="%d".' %
                (i, str(show['id']), show.get('title').encode('utf-8'), release_date,
                 s['rate']))
     if shows:

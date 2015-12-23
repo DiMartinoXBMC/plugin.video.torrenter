@@ -21,6 +21,7 @@
 import sys
 import gc
 import xbmcaddon
+from functions import log
 
 
 __settings__ = xbmcaddon.Addon(id='plugin.video.torrenter')
@@ -29,7 +30,7 @@ __plugin__ = __settings__.getAddonInfo('name') + " v." + __version__
 __root__ = __settings__.getAddonInfo('path')
 
 if (__name__ == "__main__" ):
-    print __plugin__
+    log(__plugin__)
     import Core
 
     core = Core.Core()
@@ -41,4 +42,4 @@ if (__name__ == "__main__" ):
     del core
 
 collected = gc.collect()
-print "Garbage collector: collected %d objects." % (collected)
+log("Garbage collector: collected %d objects." % (collected))

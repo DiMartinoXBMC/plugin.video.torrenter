@@ -23,7 +23,7 @@ import sys
 import xbmcaddon
 import xbmc
 import xbmcgui
-from functions import getParameters, HistoryDB, Searchers
+from functions import getParameters, HistoryDB, Searchers, log
 from resources.pyxbmct.addonwindow import *
 
 __settings__ = xbmcaddon.Addon(id='plugin.video.torrenter')
@@ -32,7 +32,7 @@ __version__ = __settings__.getAddonInfo('version')
 __plugin__ = __settings__.getAddonInfo('name') + " v." + __version__
 __root__ = __settings__.getAddonInfo('path')
 
-print 'SYS ARGV: ' + str(sys.argv)
+log('SYS ARGV: ' + str(sys.argv))
 
 if len(sys.argv) > 1:
     params = getParameters(sys.argv[1])

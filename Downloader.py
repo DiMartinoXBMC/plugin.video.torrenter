@@ -24,7 +24,7 @@ import sys
 import Libtorrent
 import AceStream
 import Anteoloader
-
+from functions import log
 
 class Torrent():
     __settings__ = sys.modules["__main__"].__settings__
@@ -136,6 +136,6 @@ class Torrent():
     def dump(self, obj):
         for attr in dir(obj):
             try:
-                print "'%s':'%s'," % (attr, getattr(obj, attr))
+                log("'%s':'%s'," % (attr, getattr(obj, attr)))
             except:
                 pass

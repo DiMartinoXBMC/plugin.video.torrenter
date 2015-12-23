@@ -39,11 +39,11 @@ class Content:
     cookieJar = None
     baseurl = ''
 
-    def __del__(self):
-        print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
+    #def __del__(self):
+    #    print '!!!!!!!!!!!!!!!!!! DIED !!! '+self.__class__.__name__
 
-    def __init__(self):
-        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
+    #def __init__(self):
+    #    print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
 
     def isTracker(self):
         return 'Never seen'
@@ -188,13 +188,13 @@ class Content:
             response = opener.open(url, encodedData)
         except urllib2.HTTPError as e:
             if e.code == 404:
-                print '[makeRequest]: Not Found! HTTP Error, e.code=' + str(e.code)
+                self.log('[makeRequest]: Not Found! HTTP Error, e.code=' + str(e.code))
                 return
             elif e.code in [503]:
-                print '[makeRequest]: Denied, HTTP Error, e.code=' + str(e.code)
+                self.log('[makeRequest]: Denied, HTTP Error, e.code=' + str(e.code))
                 return
             else:
-                print '[makeRequest]: HTTP Error, e.code=' + str(e.code)
+                self.log('[makeRequest]: HTTP Error, e.code=' + str(e.code))
                 return
         if response.info().get('Content-Encoding') == 'gzip':
             buf = StringIO(response.read())

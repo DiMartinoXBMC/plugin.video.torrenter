@@ -426,7 +426,6 @@ def cutFolder(contentList, tdir=None):
         common = True
         for fileTitle, contentId in contentList:
             if common_folder not in fileTitle:
-                print 'no common'
                 common = False
                 break
 
@@ -1065,28 +1064,26 @@ class Searchers():
         slist = self.list()
         if slist[searcher]['path'] not in sys.path:
             sys.path.insert(0, slist[searcher]['path'])
-            print 'Added %s in sys.path' % (slist[searcher]['path'])
+            log('Added %s in sys.path' % (slist[searcher]['path']))
         try:
             searcherObject = getattr(__import__(searcher), searcher)
             filesList = searcherObject().search(keyword)
             del searcherObject
         except Exception, e:
-            print 'Unable to use searcher: ' + searcher + ' at ' + __plugin__ + ' searchWithSearcher(). Exception: ' + str(
-                e)
-            print(traceback.format_exc())
+            log('Unable to use searcher: ' + searcher + ' at ' + __plugin__ + ' searchWithSearcher(). Exception: ' + str(e))
+            log(traceback.format_exc())
         return filesList
 
     def downloadWithSearcher(self, url, searcher):
         slist = Searchers().list()
         if slist[searcher]['path'] not in sys.path:
             sys.path.insert(0, slist[searcher]['path'])
-            print 'Added %s in sys.path' % (slist[searcher]['path'])
+            log('Added %s in sys.path' % (slist[searcher]['path']))
         try:
             searcherObject = getattr(__import__(searcher), searcher)()
             url = searcherObject.getTorrentFile(url)
         except Exception, e:
-            print 'Unable to use searcher: ' + searcher + ' at ' + __plugin__ + ' downloadWithSearcher(). Exception: ' + str(
-                e)
+            log('Unable to use searcher: ' + searcher + ' at ' + __plugin__ + ' downloadWithSearcher(). Exception: ' + str(e))
         return url
 
     def checkExist(self, searcher):
@@ -1144,7 +1141,7 @@ def search(url, searchersList, isApi=None):
                 if searcherFile == CleanExit:
                     return
                 searcher=searcherFile.replace('.py','')
-                print "Thread %s: Searching at %s" % (i, searcher)
+                log("Thread %s: Searching at %s" % (i, searcher))
                 result[searcherFile]=Searchers().searchWithSearcher(url, searcher)
                 left_searchers.remove(searcherFile)
                 q.task_done()
@@ -1161,16 +1158,16 @@ def search(url, searchersList, isApi=None):
     for searcherFile in searchersList:
         queue.put(searcherFile)
 
-    print "Main Thread Waiting"
+    log("Main Thread Waiting")
     queue.join()
     for i in range(num_threads):
         queue.put(CleanExit)
 
-    print "Main Thread Waiting for Threads"
+    log("Main Thread Waiting for Threads")
     for w in workers:
         w.join()
 
-    print "Done"
+    log("Done")
 
     if not isApi:
         progressBar.update(0)
@@ -1309,7 +1306,7 @@ def fetchData(url, referer=None):
         connection.close()
         return (result)
     except (urllib2.HTTPError, urllib2.URLError) as e:
-        print " fetchData(" + url + ") exception: " + str(e)
+        log(" fetchData(" + url + ") exception: " + str(e))
         return
 
 
@@ -1817,9 +1814,9 @@ def check_network_advancedsettings():
             f.close()
             dialog.ok(Localization.localize('Upgrade advancedsettings.xml'),
                       Localization.localize('Please, restart Kodi now!'))
-            print 'Restart Kodi'
+            log('Restart Kodi')
         else:
-            print 'UPDATE advancedsettings.xml disabled by user!'
+            log('UPDATE advancedsettings.xml disabled by user!')
 
 def get_download_dir():
     from platform_pulsar import get_platform

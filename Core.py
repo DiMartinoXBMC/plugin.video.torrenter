@@ -41,10 +41,10 @@ class Core:
     language = {0: 'en', 1: 'ru', 2: 'ru'}.get(int(__settings__.getSetting("language")))
     scrapperDB_ver = {'en':'1.1', 'ru':'1.3'}
 
-    print 'SYS ARGV: ' + str(sys.argv)
+    log('SYS ARGV: ' + str(sys.argv))
 
     def __init__(self):
-        print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
+        #print '!!!!!!!!!!!!!!!!!! BORN '+self.__class__.__name__
         if len(self.userStorageDirectory) == 0:
             download_dir = get_download_dir()
         else:
@@ -243,7 +243,7 @@ class Core:
             if 0 != len(torrentUrl):
                 self.Downloader = Downloader.Torrent(self.userStorageDirectory, torrentUrl)
             else:
-                print self.__plugin__ + " Unexpected access to method Anteoloader() without torrent content"
+                log(self.__plugin__ + " Unexpected access to method Anteoloader() without torrent content")
         #if self.Downloader:
         #    x=self.Downloader.getContentList()
         #    print str(x)
@@ -578,7 +578,7 @@ class Core:
             try:
                 self.contenterObject[contenter] = getattr(__import__(contenter), contenter)()
             except Exception, e:
-                print 'Unable to use contenter: ' + contenter + ' at ' + ' Content(). Exception: ' + str(e)
+                log('Unable to use contenter: ' + contenter + ' at ' + ' Content(). Exception: ' + str(e))
 
         if not subcategory:
             if not category and not provider:
@@ -678,7 +678,7 @@ class Core:
             try:
                 self.contenterObject[contenter] = getattr(__import__(contenter), contenter)()
             except Exception, e:
-                print 'Unable to use contenter: ' + contenter + ' at ' + ' Content(). Exception: ' + str(e)
+                log('Unable to use contenter: ' + contenter + ' at ' + ' Content(). Exception: ' + str(e))
 
         if provider:
             for cat in self.Contenters.get_activedic().keys():
@@ -904,7 +904,7 @@ class Core:
         try:
             self.Content = getattr(__import__(contenter), contenter)()
         except Exception, e:
-            print 'Unable to use contenter: ' + contenter + ' at ' + ' ActionInfo(). Exception: ' + str(e)
+            log('Unable to use contenter: ' + contenter + ' at ' + ' ActionInfo(). Exception: ' + str(e))
 
         movieInfo=self.Content.get_info(infolink)
         if movieInfo:
@@ -1293,13 +1293,13 @@ class Core:
             if 0 != len(torrentUrl):
                 self.Player = TorrentPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
             else:
-                print self.__plugin__ + " Unexpected access to method playTorrent() without torrent content"
+                log(self.__plugin__ + " Unexpected access to method playTorrent() without torrent content")
         elif self.torrent_player == '2':
             from Anteoloader import AnteoPlayer
             if 0 != len(torrentUrl):
                 self.Player = AnteoPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
             else:
-                print self.__plugin__ + " Unexpected access to method playTorrent() without torrent content"
+                log(self.__plugin__ + " Unexpected access to method playTorrent() without torrent content")
         elif self.torrent_player == '1':
             __ASsettings__ = xbmcaddon.Addon(id='script.module.torrent.ts')
             folder=__ASsettings__.getSetting("folder")
@@ -1336,7 +1336,7 @@ class Core:
             localFile.close()
             return torrentFile
         except:
-            print 'Unable to save torrent file from "' + url + '" to "' + torrentFile + '" in Torrent::saveTorrent'
+            log('Unable to save torrent file from "' + url + '" to "' + torrentFile + '" in Torrent::saveTorrent')
             return
 
     def playSTRM(self, params={}):
