@@ -54,12 +54,13 @@ class Core:
     def sectionMenu(self):
         if self.__settings__.getSetting('plugin_name') != self.__plugin__:
             #Every update run
+            first_run_242()
             self.__settings__.setSetting('plugin_name', self.__plugin__)
             #check_network_advancedsettings()
             check_download_dir()
-            if self.__plugin__ == 'Torrenter v.2.4.1b':
-                first_run_241()
-                pass
+            #if self.__plugin__ == 'Torrenter v.2.4.1b':
+            #    first_run_242()
+            #    pass
 
         ListString = 'XBMC.RunPlugin(%s)' % (sys.argv[0] + '?action=%s&action2=%s&%s=%s')
         contextMenu = [(self.localize('Search Control Window'),
@@ -88,6 +89,13 @@ class Core:
                       contextMenu=DLScontextMenu, replaceMenu=False)
         self.drawItem('< %s >' % self.localize('Torrent-client Browser'), 'uTorrentBrowser',
                       image=self.ROOT + '/icons/' + self.getTorrentClientIcon())
+        if self.history_bool:
+            WatchedHistorycontextMenu=[]
+            WatchedHistorycontextMenu.extend(contextMenu)
+            WatchedHistorycontextMenu.append(
+                (self.localize('Clear %s') % self.localize('Watched History'), ListString % ('WatchedHistory', 'clear', 'addtime', '')))
+            self.drawItem('< %s >' % self.localize('Watched History'), 'WatchedHistory',
+                      image=self.ROOT + '/icons/watched.png', contextMenu=WatchedHistorycontextMenu, replaceMenu=False)
         self.drawItem('< %s >' % self.localize('.torrent Player'), 'torrentPlayer',
                       image=self.ROOT + '/icons/torrentPlayer.png')
         self.drawItem('< %s >' % self.localize('Search Control Window'), 'controlCenter',
@@ -233,23 +241,27 @@ class Core:
         lockView('wide')
 
     def test(self, params={}):
-        from Anteoloader import AnteoPlayer
-        torrentUrl='D:\\test.torrent'
-        params['url']='0'
-        if not xbmcvfs.exists(torrentUrl):
-            action = xbmcgui.Dialog()
-            torrentUrl = action.browse(1, self.localize('Choose .torrent in video library'), 'video', '.torrent')
-        if torrentUrl and xbmcvfs.exists(torrentUrl):
-            if 0 != len(torrentUrl):
-                self.Downloader = Downloader.Torrent(self.userStorageDirectory, torrentUrl)
-            else:
-                log(self.__plugin__ + " Unexpected access to method Anteoloader() without torrent content")
+        #from Anteoloader import AnteoPlayer
+        #torrentUrl='D:\\test.torrent'
+        #params['url']='0'
+        #if not xbmcvfs.exists(torrentUrl):
+        #    action = xbmcgui.Dialog()
+        #    torrentUrl = action.browse(1, self.localize('Choose .torrent in video library'), 'video', '.torrent')
+        #if torrentUrl and xbmcvfs.exists(torrentUrl):
+        #    if 0 != len(torrentUrl):
+        #        self.Downloader = Downloader.Torrent(self.userStorageDirectory, torrentUrl)
+        #    else:
+        #        log(self.__plugin__ + " Unexpected access to method Anteoloader() without torrent content")
         #if self.Downloader:
         #    x=self.Downloader.getContentList()
         #    print str(x)
         #    xbmc.sleep(1000)
         #    self.Downloader.__exit__()
-        self.Player = AnteoPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
+        #self.Player = AnteoPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
+        yes=xbmcgui.Dialog().yesno('< %s >' % (Localization.localize('Torrenter Update ') + '2.4.2'),
+                                        Localization.localize('New player to Torrenter v2 - Torrent2HTTP! It should be faster, '
+                                                              'stable and better with Android, also seeking works in it.'),
+                                        Localization.localize('Would you like to try it?'),)
 
     def DownloadStatus(self, params={}):
         db = DownloadDB()
@@ -446,6 +458,65 @@ class Core:
 
                             link = {'url': title, 'addtime': str(addtime)}
                             self.drawItem(bbstring % title, 'search', link, image=img, contextMenu=contextMenu, replaceMenu=False)
+            view_style('History')
+            xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+
+    def WatchedHistory(self, params={}):
+        db = WatchedHistoryDB()
+        get = params.get
+        action2 = get('action2')
+        url = get('url')
+        addtime = get('addtime')
+
+        if action2 == 'add':
+            db.add(url)
+            xbmc.executebuiltin('Container.Refresh')
+            showMessage(self.localize('Watched History'), self.localize('Added!'))
+
+        if action2 == 'delete':
+            db.delete(addtime)
+            xbmc.executebuiltin('Container.Refresh')
+            showMessage(self.localize('Watched History'), self.localize('Deleted!'))
+
+        if action2 == 'play':
+            filename, path, url, seek, length, ind = db.get('filename, path, url, seek, length, ind', 'addtime', str(addtime))
+            seek = int(seek) if int(seek) > 3*60 else 0
+            if seek > 0:
+                seek = seeking_warning(seek)
+            if os.path.exists(path):
+                self.__settings__.setSetting("lastTorrent", path)
+            else:
+                torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
+                self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
+            xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url='+str(ind)+'&seek='+str(seek)+'")')
+
+        if action2 == 'clear':
+            db.clear()
+            showMessage(self.localize('Watched History'), self.localize('Clear!'))
+
+        if not action2:
+            items = db.get_all()
+            debug('[WatchedHistory]: items - '+str(items))
+            #favlist = [(1, '[B]%s[/B]'), (0, '%s')]
+            if items:
+                ListString = 'XBMC.RunPlugin(%s)' % (sys.argv[0] + '?action=%s&action2=%s&%s=%s')
+                #for favbool, bbstring in favlist:
+                for addtime, filename, path, url, seek, length, ind, size in items:
+                    watchedPercent = int((float(seek) / float(length)) * 100)
+                    duration = '%02d:%02d:%02d' % ((length / (60*60)), (length / 60) % 60, length % 60)
+                    title = '[%d%%][%s] %s [%d MB]' % (watchedPercent, duration, filename.encode('utf-8'), int(size))
+                    contextMenu = [(self.localize('Search Control Window'),
+                                    'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
+                    if watchedPercent >= 85:
+                        img = self.ROOT + '/icons/stop-icon.png'
+                    else:
+                        img = self.ROOT + '/icons/pause-icon.png'
+
+                    contextMenu.append((self.localize('Delete from %s') % self.localize('Watched History'),
+                                        ListString % ('WatchedHistory', 'delete', 'addtime', str(addtime))))
+
+                    link = {'url': str(ind), 'action2': 'play', 'addtime': str(addtime)}
+                    self.drawItem(title, 'WatchedHistory', link, image=img, contextMenu=contextMenu, replaceMenu=False)
             view_style('History')
             xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 

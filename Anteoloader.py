@@ -37,7 +37,7 @@ import sys
 from contextlib import contextmanager, closing, nested
 
 
-from functions import calculate, showMessage, clearStorage, DownloadDB, get_ids_video, log, debug
+from functions import calculate, showMessage, clearStorage, WatchedHistoryDB, get_ids_video, log, debug
 
 from torrent2http import State, Engine, MediaType
 
@@ -253,6 +253,10 @@ class AnteoPlayer(xbmc.Player):
     seeding_run = False
     ids_video = None
     episodeId = None
+    fullSize = 0
+    watchedTime = 0
+    totalTime = 1
+    seek = 0
     basename = ''
 
     def __init__(self, userStorageDirectory, torrentUrl, params={}):
@@ -263,6 +267,8 @@ class AnteoPlayer(xbmc.Player):
         self.params = params
         self.get = self.params.get
         self.contentId = int(self.get("url"))
+        if self.get("seek"):
+            self.seek = int(self.get("seek"))
         #self.torrent = AnteoLoader(self.userStorageDirectory, self.torrentUrl, self.torrentFilesDirectory)
         self.init()
         self.setup_engine()
@@ -275,6 +281,7 @@ class AnteoPlayer(xbmc.Player):
                     if self.setup_play():
                         self.setup_subs()
                         self.loop()
+                        WatchedHistoryDB().add(self.basename, self.watchedTime, self.totalTime, self.contentId, self.fullSize)
                     else:
                         log('[AnteoPlayer]: ************************************* break')
                         break
@@ -379,22 +386,25 @@ class AnteoPlayer(xbmc.Player):
             xbmc.sleep(500)
             status = self.engine.status()
             self.print_debug(status)
+            #self.print_fulldebug()
             self.engine.check_torrent_error(status)
             file_status = self.engine.file_status(self.contentId)
             if not file_status:
                 continue
-            fullSize = file_status.size / 1024 / 1024
+            self.fullSize = int(file_status.size / 1024 / 1024)
             downloadedSize = status.total_download / 1024 / 1024
             getDownloadRate = status.download_rate / 1024 * 8
             getUploadRate = status.upload_rate / 1024 * 8
             getSeeds, getPeers = status.num_seeds, status.num_peers
             iterator = int(round(float(file_status.download) / self.pre_buffer_bytes, 2) * 100)
             if iterator > 99: iterator = 99
-            if status.state == State.QUEUED_FOR_CHECKING:
+            if status.state == State.CHECKING_FILES:
+                iterator = int(status.progress*100)
+                if iterator > 99: iterator = 99
                 progressBar.update(iterator, self.localize('Checking preloaded files...'), ' ', ' ')
             elif status.state == State.DOWNLOADING:
                 dialogText = self.localize('Preloaded: ') + "%d MB / %d MB" % \
-                                                            (int(downloadedSize), int(fullSize))
+                                                            (int(downloadedSize), self.fullSize)
                 peersText = ' [%s: %s; %s: %s]' % (
                     self.localize('Seeds'), getSeeds, self.localize('Peers'), getPeers)
                 speedsText = '%s: %d Mbit/s; %s: %d Mbit/s' % (
@@ -443,6 +453,8 @@ class AnteoPlayer(xbmc.Player):
     def setup_play(self):
         file_status = self.engine.file_status(self.contentId)
         self.iterator = 0
+        self.watchedTime = 0
+        self.totalTime = 1
         url = file_status.url
         label = os.path.basename(file_status.name)
         self.basename = label
@@ -487,6 +499,12 @@ class AnteoPlayer(xbmc.Player):
         player.play(url, listitem)
 
         xbmc.sleep(2000)  # very important, do not edit this, podavan
+        if self.seek > 0:
+            while not self.isPlaying():
+                xbmc.sleep(200)
+                log('seekTime')
+            log('[AnteoPlayer]: seekTime - '+str(self.seek))
+            self.seekTime(self.seek)
         return True
 
     def setup_subs(self):
@@ -515,6 +533,8 @@ class AnteoPlayer(xbmc.Player):
                     #self.print_fulldebug()
                     status = self.engine.status()
                     file_status = self.engine.file_status(self.contentId)
+                    self.watchedTime = xbmc.Player().getTime()
+                    self.totalTime = xbmc.Player().getTotalTime()
                     if self.iterator == 100 and debug_counter < 100:
                         debug_counter += 1
                     else:

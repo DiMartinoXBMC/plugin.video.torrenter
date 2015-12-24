@@ -1000,6 +1000,102 @@ class HistoryDB:
         self.db.close()
 
 
+class WatchedHistoryDB:
+    def __init__(self, version=1.2):
+        self.name = 'watched_history.db3'
+        self.version = version
+        self.history_bool = __settings__.getSetting('history') == 'true'
+
+    def get_all(self):
+        self._connect()
+        self.cur.execute('select addtime,filename,path,url,seek,length,ind,size from history order by addtime DESC')
+        x = self.cur.fetchall()
+        self._close()
+        return x if x else None
+
+    def get(self, get, by, equal):
+        self._connect()
+        self.cur.execute('select '+get+' from history where '+by+'="' + equal + '"')
+        x = self.cur.fetchone()
+        self._close()
+        return x if x else None
+
+    def add(self, filename, seek = 0, length = 1, ind = 0, size = 0):
+        if self.history_bool:
+            self._connect()
+            url = __settings__.getSetting("lastTorrentUrl")
+            path = __settings__.getSetting("lastTorrent")
+            self.cur.execute('delete from history where filename="' + decode(filename) + '"')
+            self.cur.execute('insert into history(addtime,filename,path,url,seek,length,ind,size)'
+                                 ' values(?,?,?,?,?,?,?,?)', (int(time.time()), decode(filename), decode(path),
+                                                      decode(url), str(int(seek)), str(int(length)), str(ind), str(size)))
+            self.db.commit()
+            self._close()
+
+    def update(self, what, to, by, equal):
+        self._connect()
+        self.cur.execute('UPDATE history SET '+what+' = ' + to + ' where '+by+'=' + equal)
+        self.db.commit()
+        self._close()
+
+    def delete(self, addtime):
+        self._connect()
+        self.cur.execute('delete from history where addtime="' + addtime + '"')
+        self.db.commit()
+        self._close()
+
+    def clear(self):
+        self._connect()
+        self.cur.execute('delete from history')
+        self.db.commit()
+        self._close()
+
+    def _connect(self):
+        dirname = xbmc.translatePath('special://temp')
+        for subdir in ('xbmcup', 'plugin.video.torrenter'):
+            dirname = os.path.join(dirname, subdir)
+            if not xbmcvfs.exists(dirname):
+                xbmcvfs.mkdir(dirname)
+
+        self.filename = os.path.join(dirname, self.name)
+
+        first = False
+        if not xbmcvfs.exists(self.filename):
+            first = True
+
+        self.db = sqlite.connect(self.filename, check_same_thread=False)
+        if not first:
+            self.cur = self.db.cursor()
+            try:
+                self.cur.execute('select version from db_ver')
+                row = self.cur.fetchone()
+                if not row or float(row[0]) != self.version:
+                    self.cur.execute('drop table history')
+                    self.cur.execute('drop table if exists db_ver')
+                    first = True
+                    self.db.commit()
+                    self.cur.close()
+            except:
+                self.cur.execute('drop table history')
+                first = True
+                self.db.commit()
+                self.cur.close()
+
+        if first:
+            cur = self.db.cursor()
+            cur.execute('pragma auto_vacuum=1')
+            cur.execute('create table db_ver(version real)')
+            cur.execute(
+                'create table history(addtime integer PRIMARY KEY, filename varchar(32), path varchar(32), url varchar(32), seek integer, length integer, ind integer, size integer)')
+            cur.execute('insert into db_ver(version) values(?)', (self.version,))
+            self.db.commit()
+            cur.close()
+            self.cur = self.db.cursor()
+
+    def _close(self):
+        self.cur.close()
+        self.db.close()
+
 class Searchers():
     def __init__(self):
         pass
@@ -1637,10 +1733,43 @@ def first_run_231():
             xbmc.executebuiltin('Dialog.Close(all,true)')
             xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher'))
 
-def first_run_241():
-    ok = xbmcgui.Dialog().ok('< %s >' % Localization.localize('Torrenter Update ') + '2.4.1',
-                                    Localization.localize('New player to Torrenter v2 - Torrent2HTTP! It can be enabled in settings.'),
-                                    Localization.localize('It should be faster, stable and better with Android, also seeking works in it.'))
+def first_run_242():
+    if __settings__.getSetting('torrent_player')=='2':
+        __settings__.setSetting('first_run_242','True')
+
+    if not __settings__.getSetting('first_run_242')=='True':
+        __settings__.setSetting('first_run_242','True')
+        yes=xbmcgui.Dialog().yesno('< %s >' % (Localization.localize('Torrenter Update ') + '2.4.2'),
+                                        Localization.localize('New player to Torrenter v2 - Torrent2HTTP! It should be faster, '
+                                                              'stable and better with Android, also seeking works in it.'),
+                                        Localization.localize('Would you like to try it?'),)
+        if yes:
+            __settings__.setSetting('torrent_player','2')
+            ok = xbmcgui.Dialog().ok('< %s >' % (Localization.localize('Torrenter Update ') + '2.4.2'),
+                                    Localization.localize('Torrent2HTTP enabled! Can be changed in Settings.'))
+
+def seeking_warning(seek):
+    if __settings__.getSetting('torrent_player')=='2':
+        seek_point = '%02d:%02d:%02d' % ((seek / (60*60)), (seek / 60) % 60, seek % 60)
+        yes=xbmcgui.Dialog().yesno('< %s >' % (Localization.localize('Seeking')),
+            Localization.localize('Would you like to resume from %s?') % seek_point,)
+        if yes:
+            log('[seeking_warning]: yes, seek = '+str(seek))
+            return seek
+        else:
+            log('[seeking_warning]: no, seek = '+str(0))
+            return 0
+    else:
+        if not __settings__.getSetting('seeking_warning')=='True':
+            __settings__.setSetting('seeking_warning','True')
+            yes=xbmcgui.Dialog().yesno('< %s >' % (Localization.localize('Seeking')),
+                                        Localization.localize('Seeking is working only with player Torrent2HTTP.'),
+                                     Localization.localize('Would you like to try it?'))
+            if yes:
+                __settings__.setSetting('torrent_player','2')
+                ok = xbmcgui.Dialog().ok('< %s >' % (Localization.localize('Seeking')),
+                                        Localization.localize('Torrent2HTTP enabled! Can be changed in Settings.'))
+                return seek
 
 def noActiveSerachers():
     yes=xbmcgui.Dialog().yesno('< %s >' % Localization.localize('Torrenter v2'),
