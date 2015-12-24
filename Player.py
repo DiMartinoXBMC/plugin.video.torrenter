@@ -30,7 +30,7 @@ import Downloader
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import calculate, showMessage, clearStorage, DownloadDB, get_ids_video, log, debug
+from functions import calculate, showMessage, clearStorage, WatchedHistoryDB, DownloadDB, get_ids_video, log, debug
 
 ROOT = sys.modules["__main__"].__root__
 RESOURCES_PATH = os.path.join(ROOT, 'resources')
@@ -134,6 +134,10 @@ class TorrentPlayer(xbmc.Player):
     seeding_run = False
     ids_video = None
     episodeId = None
+    fullSize = 0
+    watchedTime = 0
+    totalTime = 1
+    seek = 0
     basename = ''
 
     def __init__(self, userStorageDirectory, torrentUrl, params={}):
@@ -161,6 +165,7 @@ class TorrentPlayer(xbmc.Player):
                     self.torrent.startSession()
                     self.torrent.continueSession(self.contentId)
                     self.loop()
+                    WatchedHistoryDB().add(self.basename, self.watchedTime, self.totalTime, self.contentId, self.fullSize / 1024 / 1024)
                 else:
                     break
                 debug('************************************* GO NEXT?')
@@ -278,6 +283,8 @@ class TorrentPlayer(xbmc.Player):
     def setup_play(self):
         self.next_dling = False
         self.iterator = 0
+        self.watchedTime = 0
+        self.totalTime = 1
         path = self.torrent.getFilePath(self.contentId)
         label = os.path.basename(path)
         self.basename = label
@@ -394,6 +401,8 @@ class TorrentPlayer(xbmc.Player):
                         self.attach(overlay.hide, self.on_playback_resumed, self.on_playback_stopped)):
                 while not xbmc.abortRequested and self.isPlaying() and not self.torrent.threadComplete:
                     self.torrent.checkThread()
+                    self.watchedTime = xbmc.Player().getTime()
+                    self.totalTime = xbmc.Player().getTotalTime()
                     if self.iterator == 100 and debug_counter < 100:
                         debug_counter += 1
                     else:

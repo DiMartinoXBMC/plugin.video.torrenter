@@ -1744,9 +1744,10 @@ def first_run_242():
                                                               'stable and better with Android, also seeking works in it.'),
                                         Localization.localize('Would you like to try it?'),)
         if yes:
-            __settings__.setSetting('torrent_player','2')
-            ok = xbmcgui.Dialog().ok('< %s >' % (Localization.localize('Torrenter Update ') + '2.4.2'),
-                                    Localization.localize('Torrent2HTTP enabled! Can be changed in Settings.'))
+            __settings__.openSettings()
+            #__settings__.setSetting('torrent_player','2')
+            #ok = xbmcgui.Dialog().ok('< %s >' % (Localization.localize('Torrenter Update ') + '2.4.2'),
+            #                        Localization.localize('Torrent2HTTP enabled! Can be changed in Settings.'))
 
 def seeking_warning(seek):
     if __settings__.getSetting('torrent_player')=='2':
@@ -1766,9 +1767,10 @@ def seeking_warning(seek):
                                         Localization.localize('Seeking is working only with player Torrent2HTTP.'),
                                      Localization.localize('Would you like to try it?'))
             if yes:
-                __settings__.setSetting('torrent_player','2')
-                ok = xbmcgui.Dialog().ok('< %s >' % (Localization.localize('Seeking')),
-                                        Localization.localize('Torrent2HTTP enabled! Can be changed in Settings.'))
+                __settings__.openSettings()
+                #__settings__.setSetting('torrent_player','2')
+                #ok = xbmcgui.Dialog().ok('< %s >' % (Localization.localize('Seeking')),
+                #                        Localization.localize('Torrent2HTTP enabled! Can be changed in Settings.'))
                 return seek
 
 def noActiveSerachers():
@@ -1955,7 +1957,7 @@ def get_download_dir():
     dialog=xbmcgui.Dialog()
     dialog.ok(Localization.localize('Torrenter'),
                 Localization.localize('Please specify storage folder in Settings!'))
-    __settings__.openSettings()
+    #
 
     try:
         if not platform['system']=='android':
