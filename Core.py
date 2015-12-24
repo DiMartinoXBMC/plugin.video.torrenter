@@ -505,7 +505,8 @@ class Core:
                     watchedPercent = int((float(seek) / float(length)) * 100)
                     duration = '%02d:%02d:%02d' % ((length / (60*60)), (length / 60) % 60, length % 60)
                     title = '[%d%%][%s] %s [%d MB]' % (watchedPercent, duration, filename.encode('utf-8'), int(size))
-                    contextMenu = [(self.localize('Search Control Window'),
+                    contextMenu = [(self.localize('Play'), ListString % ('WatchedHistory', 'play', 'addtime', str(addtime))),
+                                   (self.localize('Search Control Window'),
                                     'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
                     if watchedPercent >= 85:
                         img = self.ROOT + '/icons/stop-icon.png'
