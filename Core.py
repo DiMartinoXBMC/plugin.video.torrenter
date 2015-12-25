@@ -478,11 +478,26 @@ class Core:
             xbmc.executebuiltin('Container.Refresh')
             showMessage(self.localize('Watched History'), self.localize('Deleted!'))
 
-        if action2 == 'play':
+        if action2 == 'open':
             filename, path, url, seek, length, ind = db.get('filename, path, url, seek, length, ind', 'addtime', str(addtime))
-            seek = int(seek) if int(seek) > 3*60 else 0
-            if seek > 0:
-                seek = seeking_warning(seek)
+            if os.path.exists(path):
+                self.__settings__.setSetting("lastTorrent", path)
+            else:
+                torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
+                path = torrent.saveTorrent(url)
+                self.__settings__.setSetting("lastTorrent", path)
+            xbmc.executebuiltin(
+                            'XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.torrenter/?action=%s&url=%s'
+            % ('torrentPlayer', path))
+
+        if action2 == 'playnoseek' or action2 == 'playwithseek':
+            filename, path, url, seek, length, ind = db.get('filename, path, url, seek, length, ind', 'addtime', str(addtime))
+
+            if action2 == 'playwithseek':
+                #seek = seeking_warning(seek)
+                seek = int(seek)
+            else:
+                seek = 0
             if os.path.exists(path):
                 self.__settings__.setSetting("lastTorrent", path)
             else:
@@ -502,12 +517,17 @@ class Core:
                 ListString = 'XBMC.RunPlugin(%s)' % (sys.argv[0] + '?action=%s&action2=%s&%s=%s')
                 #for favbool, bbstring in favlist:
                 for addtime, filename, path, url, seek, length, ind, size in items:
+                    seek = int(seek) if int(seek) > 3*60 else 0
                     watchedPercent = int((float(seek) / float(length)) * 100)
                     duration = '%02d:%02d:%02d' % ((length / (60*60)), (length / 60) % 60, length % 60)
                     title = '[%d%%][%s] %s [%d MB]' % (watchedPercent, duration, filename.encode('utf-8'), int(size))
-                    contextMenu = [(self.localize('Play'), ListString % ('WatchedHistory', 'play', 'addtime', str(addtime))),
-                                   (self.localize('Search Control Window'),
-                                    'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
+                    if self.torrent_player == '2' and seek > 0:
+                        seek_text = '%02d:%02d:%02d' % ((seek / (60*60)), (seek / 60) % 60, seek % 60)
+                        contextMenu = [(self.localize('Play (from %s)') % seek_text, ListString % ('WatchedHistory', 'playwithseek', 'addtime', str(addtime))),
+                                       (self.localize('Play (from start)'), ListString % ('WatchedHistory', 'playnoseek', 'addtime', str(addtime))),]
+                    else:
+                        contextMenu = [(self.localize('Play'), ListString % ('WatchedHistory', 'playnoseek', 'addtime', str(addtime))),]
+                    contextMenu.append((self.localize('Open Torrent'), ListString % ('WatchedHistory', 'open', 'addtime', str(addtime))),)
                     if watchedPercent >= 85:
                         img = self.ROOT + '/icons/stop-icon.png'
                     else:
@@ -517,7 +537,7 @@ class Core:
                                         ListString % ('WatchedHistory', 'delete', 'addtime', str(addtime))))
 
                     link = {'url': str(ind), 'action2': 'play', 'addtime': str(addtime)}
-                    self.drawItem(title, 'WatchedHistory', link, image=img, contextMenu=contextMenu, replaceMenu=False)
+                    self.drawItem(title, 'context', link, image=img, contextMenu=contextMenu, replaceMenu=False)
             view_style('History')
             xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 

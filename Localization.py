@@ -281,7 +281,9 @@ def localize(text):
             'Torrent2HTTP enabled! Can be changed in Settings.':'Torrent2HTTP включен! Можно изменить в Настройках.',
             'Seeking':'Перемотка',
             'Would you like to resume from %s?':'Хотите начать проигрывать с %s?',
-            'Seeking is working only with player Torrent2HTTP.':'Перемотка работает только с плеером Torrent2HTTP.',
+            'Seeking is working only with player Torrent2HTTP.':'Перемотка работает только с плеером Torrent2HTTP.',\
+            'Play (from %s)':'Играть (c %s)',
+            'Play (from start)':'Играть (с начала)',
 
         },
         'uk': {
