@@ -1,6 +1,6 @@
 ﻿<settings>
     <category label="30101">
-        <setting id="language"          type="enum"     label="30001" default="1"   values="English|Russian|Ukrainian" />
+        <setting id="language"          type="enum"     label="30001" default="1"   values="English|Russian|Ukrainian|Hebrew" />
         <setting id="metadata"          type="bool"     label="30014" default="false"/>
         <setting id="history"           type="bool"     label="30020" default="true"/>
         <setting id="sort_search"       type="bool"     label="30039" default="true"/>
