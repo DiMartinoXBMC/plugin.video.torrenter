@@ -355,15 +355,16 @@ class AnteoPlayer(xbmc.Player):
             keep_complete = False
             keep_incomplete = False
             keep_files = False
+            resume_file = None
         else:
             keep_complete = True
             keep_incomplete = True
             keep_files = True
+            resume_file=os.path.join(self.userStorageDirectory, 'torrents', os.path.basename(self.torrentUrl)+'.resume_data')
 
         dht_routers = ["router.bittorrent.com:6881","router.utorrent.com:6881"]
         user_agent = 'uTorrent/2200(24683)'
         self.pre_buffer_bytes = int(self.__settings__.getSetting("pre_buffer_bytes"))*1024*1024
-        resume_file=os.path.join(self.userStorageDirectory, 'torrents', os.path.basename(self.torrentUrl)+'.resume_data')
 
         self.engine = Engine(uri=file_url(self.torrentUrl), download_path=self.userStorageDirectory,
                              connections_limit=connections_limit, download_kbps=download_limit, upload_kbps=upload_limit,
