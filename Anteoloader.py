@@ -292,7 +292,7 @@ class AnteoPlayer(xbmc.Player):
                     log('[AnteoPlayer]: ************************************* NO! break')
                 break
 
-            xbmc.Player().stop()
+        xbmc.Player().stop()
 
         if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
             xbmc.sleep(1000)
@@ -446,7 +446,7 @@ class AnteoPlayer(xbmc.Player):
         except:
             pass
 
-        if self.__settings__.getSetting('next_dl') == 'true' and self.ids_video:
+        if self.__settings__.getSetting('next_dl') == 'true' and self.ids_video and len(self.ids_video)>1:
             self.next_dl = True
         else:
             self.next_dl = False
