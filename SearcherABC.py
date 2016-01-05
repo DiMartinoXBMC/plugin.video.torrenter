@@ -97,7 +97,7 @@ class SearcherABC:
         try:
             if os.path.exists(cookie): self.cookieJar.load(ignore_discard=True)
         except:
-            self.log(self.__plugin__+' [load_cookie]: os.remove(cookie)')
+            self.log('[load_cookie]: os.remove(cookie)')
             os.remove(cookie)
             self.cookieJar = cookielib.MozillaCookieJar(cookie)
 
@@ -106,7 +106,7 @@ class SearcherABC:
         self.cookieJar = cookielib.MozillaCookieJar(cookie)
         if os.path.exists(cookie):
             os.remove(cookie)
-            self.log(self.__plugin__+' [clear_cookie]: cookie cleared')
+            self.log('[clear_cookie]: cookie cleared')
 
     def makeRequest(self, url, data={}, headers={}):
         self.load_cookie()
@@ -133,13 +133,13 @@ class SearcherABC:
             response = opener.open(url, encodedData)
         except urllib2.HTTPError as e:
             if e.code == 404:
-                self.log(self.__plugin__+' [makeRequest]: Not Found! HTTP Error, e.code=' + str(e.code))
+                self.log('[makeRequest]: Not Found! HTTP Error, e.code=' + str(e.code))
                 return
             elif e.code in [503]:
-                self.log(self.__plugin__+' [makeRequest]: Denied, HTTP Error, e.code=' + str(e.code))
+                self.log('[makeRequest]: Denied, HTTP Error, e.code=' + str(e.code))
                 return
             else:
-                self.log(self.__plugin__+' [makeRequest]: HTTP Error, e.code=' + str(e.code))
+                self.log('[makeRequest]: HTTP Error, e.code=' + str(e.code))
                 return
         #self.cookieJar.extract_cookies(response, urllib2)
         if response.info().get('Content-Encoding') == 'gzip':
@@ -242,10 +242,10 @@ class SearcherABC:
         pass
 
     def log(self, msg):
-        log(msg)
+        log('[%s] ' % self.__plugin__ +msg)
 
     def debug(self, msg):
-        debug(msg)
+        debug('[%s] ' % self.__plugin__ +msg)
 
     def open2(self, url=''):
         import httplib
