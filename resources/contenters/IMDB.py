@@ -29,6 +29,7 @@ class IMDB(Content.Content):
     category_dict = {
         'movies': ('Movies', '/search/title?languages=en|1&title_type=feature&sort=moviemeter,asc'),
         'rus_movies': ('Russian Movies', '/search/title?languages=ru|1&title_type=feature&sort=moviemeter,asc'),
+	'heb_movies': ('סרטים ישראלים', '/search/title?languages=he|1&title_type=feature&sort=moviemeter,asc'),
         'tvshows': ('TV Shows', '/search/title?count=100&title_type=tv_series,mini_series&ref_=gnr_tv_mp'),
         'cartoons': ('Cartoons', '/search/title?genres=animation&title_type=feature&sort=moviemeter,asc'),
         'anime': ('Anime',
@@ -73,7 +74,7 @@ class IMDB(Content.Content):
     headers = [('User-Agent',
                 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124' + \
                 ' YaBrowser/14.10.2062.12061 Safari/537.36'),
-               ('Referer', baseurl), ('Accept-Encoding', 'gzip'), ('Accept-Language', 'ru,en;q=0.8')]
+               ('Referer', baseurl), ('Accept-Encoding', 'gzip'), ('Accept-Language', 'he,en,ru;q=0.8')]
     '''
     Weight of source with this searcher provided.
     Will be multiplied on default weight.
