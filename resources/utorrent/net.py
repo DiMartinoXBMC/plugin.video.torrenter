@@ -13,6 +13,7 @@ import json
 import itertools
 from StringIO import StringIO
 import gzip
+from functions import log
 
 import xbmc
 import xbmcgui
@@ -455,9 +456,6 @@ class UTorrent:
         for hash, action, ind in menu:
             self.setprio_simple(hash, action, ind)
 
-    def delete(self, id):
-        pass
-
     def action(self, uri, upload=None):
         cookie, token = self.get_token()
         if not cookie:
@@ -705,9 +703,6 @@ class Transmission:
             return None
         return True
 
-    def delete(self, id):
-        pass
-
     def setprio(self, id, ind):
         obj = self.action({"method": "torrent-get", "arguments": {"fields": ["id", "fileStats", "files"],
                                                                   "ids": [int(id)]}})['arguments']['torrents'][0]
@@ -844,6 +839,238 @@ class Transmission:
         return mapping[code]
 
 
+class qBittorrent:
+    def config(self, login, password, host, port, url):
+        self.login = login
+        self.password = password
+
+        self.url = 'http://'+host
+        if port:
+            self.url += ':' + str(port)
+        self.url += url
+
+        self.http = HTTP()
+
+    def list(self):
+        obj = self.action('/query/torrents')
+        log('[list]:'+str(obj))
+        if obj is None:
+            return False
+
+        res = []
+        if len(obj) > 0:
+            for r in obj:
+                add = {
+                    'id': r['hash'],
+                    'status': self.get_status(r['state']),
+                    'name': r['name'],
+                    'size': r['size'],
+                    'progress': round(r['progress'], 4)*100,
+                    'upspeed': r['upspeed'],
+                    'downspeed': r['dlspeed'],
+                    'ratio': round(r['ratio'], 2),
+                    'eta': r['eta'],
+                    'seed': r['num_seeds'],
+                    'leech': r['num_leechs'],
+                    'dir': r['save_path']
+                }
+                #if len(r['files']) > 1: add['dir'] = os.path.join(r['save_path'], r['name'])
+                res.append(add)
+        return res
+
+    def listdirs(self):
+        obj = self.action('/query/preferences')
+        log('[listdirs]:'+str(obj))
+        if obj is None:
+            return False
+
+        try:
+            res = [obj['save_path']]
+        except:
+            res = [None]
+        return res, res
+
+    def listfiles(self, id):
+        obj = self.action('/query/propertiesFiles/'+id)
+        log('[listfiles]:'+str(obj))
+        i = -1
+        if obj is None:
+            return None
+
+        res = []
+
+        if len(obj) == 1:
+            strip_path = None
+        else:
+            tlist = self.list()
+            for t in tlist:
+                if t['id']==id:
+                    strip_path = t['name']
+                    break
+                strip_path = None
+
+        for x in obj:
+            if x['size'] >= 1024 * 1024 * 1024:
+                size = str(x['size'] / (1024 * 1024 * 1024)) + 'GB'
+            elif x['size'] >= 1024 * 1024:
+                size = str(x['size'] / (1024 * 1024)) + 'MB'
+            elif x['size'] >= 1024:
+                size = str(x['size'] / 1024) + 'KB'
+            else:
+                size = str(x['size']) + 'B'
+            if strip_path:
+                path = x['name'].lstrip(strip_path).lstrip('\\')
+            else:
+                path = x['name']
+
+            if x['priority'] == 0:
+                path = path.replace('.unwanted\\','')
+
+            if x.get('progress'):
+                percent = int(x['progress'] * 100)
+            else:
+                percent = 0
+
+            i += 1
+            res.append([path.replace('\\','/'), percent, i, size])
+
+        return res
+
+    def get_prio(self, id):
+        res = []
+        obj = self.action('/query/propertiesFiles/'+id)
+        log('[get_prio]:'+str(obj))
+        if obj is None:
+            return None
+        for f in obj:
+            res.append(f['priority'])
+        log('[get_prio]:'+str(res))
+        return res
+
+    def add(self, torrent, dirname):
+
+        upload={'name': 'torrent_file', 'filename': 'and_nothing_else_matters.torrent',
+                           'content-type': 'application/x-bittorrent', 'body': torrent}
+        res = self.action('/command/upload', upload=upload)
+
+        if res:
+            return True
+
+    def add_url(self, torrent, dirname):
+
+        upload={'name': 'urls', 'content-type': 'application/x-bittorrent', 'body': torrent}
+        res = self.action('/command/download', upload=upload)
+
+        if res:
+            return True
+
+    def setprio(self, id, ind):
+        obj = self.action('/query/propertiesFiles/'+id)
+
+        if not obj or ind == None:
+            return None
+
+        i = -1
+        for x in obj:
+            i += 1
+            print str(x)
+            if x['priority'] == 1: self.setprio_simple(id, '0', i)
+
+        res = self.setprio_simple(id, '7', ind)
+
+        return True if res else None
+
+    def setprio_simple(self, id, prio, ind):
+        log(str((id, prio, ind)))
+        if prio == '3': prio = '7'
+        params = {'hash':id, 'priority':prio, 'id': ind}
+        obj = self.action_post('/command/setFilePrio', params)
+        if not obj or ind == None:
+            return None
+
+        return True if obj else None
+
+    def setprio_simple_multi(self, menu):
+        for hash, action, ind in menu:
+            self.setprio_simple(hash, action, ind)
+
+    def action(self, uri, upload=None):
+        cookie = self.get_auth()
+        if not cookie:
+            return None
+
+        req = HTTPRequest(self.url + uri, headers={'Cookie': cookie})
+
+        if upload:
+            req.upload = upload
+
+        response = self.http.fetch(req)
+
+        if response.error:
+            return None
+
+        if response.code == 200 and upload:
+            return True
+
+        else:
+            try:
+                obj = json.loads(response.body)
+            except:
+                return None
+            else:
+                return obj
+
+    def action_post(self, uri, params=None):
+        cookie = self.get_auth()
+        if not cookie:
+            return None
+
+        response = self.http.fetch(self.url + uri, headers={'Cookie': cookie}, method='POST', params=params, gzip=True)
+
+        if response.error:
+            return None
+
+        if response.code == 200:
+            return True
+
+        return response
+
+    def action_simple(self, action, id):
+        actions = {'start': '/command/resume',
+                   'stop': '/command/pause',
+                   'remove': '/command/delete',
+                   'removedata': '/command/deletePerm'}
+        obj = self.action_post(actions[action], {'hash':id})
+        return True if obj else None
+
+    def get_auth(self):
+        params = {"username": self.login, "password": self.password}
+        response = self.http.fetch(self.url + '/login', method='POST', params=params, gzip=True)
+        if response.error:
+            return None
+
+        r = re.compile('SID=([^;]+);').search(response.headers.get('set-cookie', ''))
+        if r:
+            cookie = r.group(1).strip()
+            return 'SID=' + cookie
+
+    def get_status(self, code):
+        mapping = {
+            'error': 'stopped',
+            'pausedUP': 'seed_pending',
+            'checkingUP': 'checking',
+            'checkingDL': 'checking',
+            'pausedDL': 'stopped',
+            'queuedUP': 'seeding',
+            'queuedDL': 'stopped',
+            'downloading': 'downloading',
+            'stalledDL': 'downloading',
+            'uploading': 'seeding',
+            'stalledUP': 'seeding',
+        }
+        return mapping[code]
+
+
 class Deluge:
     def config(self, login, password, host, port, url):
         self.login = login
@@ -969,9 +1196,6 @@ class Deluge:
                             "id": 3}) is None:
                 return None
         return True
-
-    def delete(self, id):
-        pass
 
     def setprio(self, id, ind):
         i = -1
@@ -1170,9 +1394,6 @@ class Vuze:
         obj = self.interface.getDownloadManager().addDownload(torrent)
         return True if obj else None
 
-    def delete(self, id):
-        pass
-
     def setprio(self, id, ind):
         self.setprioobj = self.downloads[int(id)].getDiskManagerFileInfo()
         # -1 low, 0 normal, 1 high
@@ -1259,6 +1480,9 @@ class Download():
         elif self.client == 'deluge':
             self.client = Deluge()
 
+        elif self.client == 'qbittorrent':
+            self.client = qBittorrent()
+
         self.client.config(host=config['host'], port=config['port'], login=config['login'], password=config['password'],
                            url=config['url'])
         # print(self.client.list())
@@ -1304,7 +1528,15 @@ class Download():
                 'login': '',
                 'password': self.setting.getSetting("torrent_deluge_password")
             }
-
+        elif client == '4':
+            self.client = 'qbittorrent'
+            config = {
+                'host': self.setting.getSetting("torrent_qbittorrent_host"),
+                'port': self.setting.getSetting("torrent_qbittorrent_port"),
+                'url': '',
+                'login': self.setting.getSetting("torrent_qbittorrent_login"),
+                'password': self.setting.getSetting("torrent_qbittorrent_password")
+            }
         return config
 
     def add(self, torrent, dirname):
@@ -1321,9 +1553,6 @@ class Download():
 
     def listfiles(self, id):
         return self.client.listfiles(id)
-
-    def delete(self, id):
-        return self.client.delete(id)
 
     def setprio(self, id, ind):
         return self.client.setprio(id, ind)

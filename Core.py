@@ -1654,7 +1654,7 @@ class Core:
                         dirid = 0
                     if dirid == -1: return
                     dirname = clean[dirid]
-            if self.__settings__.getSetting("torrent") in ['1','2']:
+            if self.__settings__.getSetting("torrent") in ['1','2','4']:
                 default = self.__settings__.getSetting("torrent_dir")
                 keyboard = xbmc.Keyboard(default, self.localize('Save to path') + ':')
                 keyboard.doModal()

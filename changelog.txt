@@ -1,5 +1,8 @@
 ﻿English changelog at http://bit.ly/1MfSVUP
 
+[B]Version 2.4.3[/B]
+[+] Добавлена поддержка торрент-клиента qBittorent
+
 [B]Version 2.4.2[/B]
 [+] Добавлена функция История Просмотров
 
