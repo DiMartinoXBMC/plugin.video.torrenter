@@ -1258,7 +1258,7 @@ class Core:
             if not hash:
                 actions = [('start', self.localize('Start')), ('stop', self.localize('Stop')),
                            ('remove', self.localize('Remove')),
-                           ('3', self.localize('High Priority All Files')), ('0', self.localize('Skip All Files')),
+                           ('3', self.localize('High Priority Files')), ('0', self.localize('Skip All Files')),
                            ('removedata', self.localize('Remove with files'))]
 
                 folder = True

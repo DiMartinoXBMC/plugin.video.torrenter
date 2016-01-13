@@ -1988,3 +1988,9 @@ def file_url(torrentFile):
         torrentFile = urlparse.urljoin('file:', urllib.pathname2url(ensure_str(torrentFile)))
     return torrentFile
 
+def dump(obj):
+    for attr in dir(obj):
+        try:
+            log("'%s':'%s'," % (attr, getattr(obj, attr)))
+        except:
+            pass

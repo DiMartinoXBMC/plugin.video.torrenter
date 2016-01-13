@@ -13,7 +13,7 @@ import json
 import itertools
 from StringIO import StringIO
 import gzip
-from functions import log
+from functions import log, dump
 
 import xbmc
 import xbmcgui
@@ -850,6 +850,7 @@ class qBittorrent:
         self.url += url
 
         self.http = HTTP()
+        self.cookie = self.get_auth()
 
     def list(self):
         obj = self.action('/query/torrents')
@@ -874,7 +875,8 @@ class qBittorrent:
                     'leech': r['num_leechs'],
                     'dir': r['save_path']
                 }
-                #if len(r['files']) > 1: add['dir'] = os.path.join(r['save_path'], r['name'])
+                flist = self.action('/query/propertiesFiles/'+r['hash'])
+                if len(flist) > 1: add['dir'] = os.path.join(r['save_path'], r['name'])
                 res.append(add)
         return res
 
@@ -981,7 +983,7 @@ class qBittorrent:
         return True if res else None
 
     def setprio_simple(self, id, prio, ind):
-        log(str((id, prio, ind)))
+        #log(str((id, prio, ind)))
         if prio == '3': prio = '7'
         params = {'hash':id, 'priority':prio, 'id': ind}
         obj = self.action_post('/command/setFilePrio', params)
@@ -995,11 +997,7 @@ class qBittorrent:
             self.setprio_simple(hash, action, ind)
 
     def action(self, uri, upload=None):
-        cookie = self.get_auth()
-        if not cookie:
-            return None
-
-        req = HTTPRequest(self.url + uri, headers={'Cookie': cookie})
+        req = HTTPRequest(self.url + uri, headers={'Cookie': self.cookie})
 
         if upload:
             req.upload = upload
@@ -1021,12 +1019,10 @@ class qBittorrent:
                 return obj
 
     def action_post(self, uri, params=None):
-        cookie = self.get_auth()
-        if not cookie:
-            return None
+        response = self.http.fetch(self.url + uri, headers={'Cookie': self.cookie},
+                                   method='POST', params=params, gzip=True,)
 
-        response = self.http.fetch(self.url + uri, headers={'Cookie': cookie}, method='POST', params=params, gzip=True)
-
+        #dump(response)
         if response.error:
             return None
 
@@ -1036,11 +1032,11 @@ class qBittorrent:
         return response
 
     def action_simple(self, action, id):
-        actions = {'start': '/command/resume',
-                   'stop': '/command/pause',
-                   'remove': '/command/delete',
-                   'removedata': '/command/deletePerm'}
-        obj = self.action_post(actions[action], {'hash':id})
+        actions = {'start': ['/command/resume',{'hash':id,}],
+                   'stop': ['/command/pause',{'hash':id,}],
+                   'remove': ['/command/delete',{'hashes':id}],
+                   'removedata': ['/command/deletePerm',{'hashes':id}]}
+        obj = self.action_post(actions[action][0],actions[action][1])
         return True if obj else None
 
     def get_auth(self):
@@ -1080,7 +1076,7 @@ class Deluge:
         if port:
             self.url += ':' + str(port)
         self.url += url
-        log(str(self.url))
+        #log(str(self.url))
         self.http = HTTP()
 
     def get_info(self):
