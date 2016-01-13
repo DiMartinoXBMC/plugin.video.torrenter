@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.torrenter" name="Torrenter" version="2.4.3" provider-name="vadim.skorba, DiMartino">
+<addon id="plugin.video.torrenter" name="Torrenter" version="2.4.3a" provider-name="DiMartino">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
         <import addon="script.module.libtorrent"/>
@@ -22,5 +22,9 @@
         <description lang='ru'>Плагин позволяет просматривать видео из пиринговых торрент-сетей, не дожидаясь полного скачивания. Использует библиотеку python-libtorrent или Ace Stream. Так же плагин может добавлять, проигрывать и управлять скачками в торрент клиентах (uTorrent, Transmisson, Deluge и Vuse) или средставми python-libtorrent.
         </description>
         <disclaimer lang='ru'>GNU GPLv3 http://www.gnu.org/licenses/</disclaimer>
+		<forum>https://forums.tvaddons.ag/addon-releases/29224-torrenter-v2.html</forum>
+		<website>http://xbmc.ru/forum/showthread.php?t=6837/website>
+		<email>skype:kyonkodura</email>
+		<source>https://github.com/DiMartinoXBMC/plugin.video.torrenter</source>
     </extension>
 </addon>

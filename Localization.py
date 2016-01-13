@@ -25,7 +25,7 @@ try:
 
     language = ('en', 'ru', 'uk','he')[int(__settings__.getSetting("language"))]
 except:
-    language = 'he'
+    language = 'ru'
 
 
 
