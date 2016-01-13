@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="56e91349-2444-4553-bc78-90c2bab49e9c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Core.py" afterPath="$PROJECT_DIR$/Core.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/functions.py" afterPath="$PROJECT_DIR$/functions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/utorrent/net.py" afterPath="$PROJECT_DIR$/resources/utorrent/net.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addon.xml" afterPath="$PROJECT_DIR$/addon.xml" />
     </list>
     <ignored path="plugin.video.torrenter.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -179,11 +177,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="net.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="net.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/resources/utorrent/net.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-1.418919">
-                  <caret line="859" column="0" selection-start-line="859" selection-start-column="0" selection-end-line="859" selection-end-column="0" />
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="878" column="54" selection-start-line="878" selection-start-column="54" selection-end-line="878" selection-end-column="54" />
                   <folding>
                     <element signature="e#25#34#0" expanded="true" />
                     <element signature="e#1094#1431#0" expanded="false" />
@@ -283,11 +281,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="addon.xml" pinned="false" current-in-tab="false">
+          <file leaf-file-name="addon.xml" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/addon.xml">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-0.3090909">
-                  <caret line="1" column="67" selection-start-line="1" selection-start-column="67" selection-end-line="1" selection-end-column="67" />
+                <state vertical-scroll-proportion="0.7986577">
+                  <caret line="28" column="16" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
                   <folding />
                 </state>
               </provider>
@@ -312,7 +310,7 @@
           <file leaf-file-name="Player.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/Player.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0273752">
+                <state vertical-scroll-proportion="0.040192924">
                   <caret line="144" column="19" selection-start-line="144" selection-start-column="19" selection-end-line="144" selection-end-column="19" />
                   <folding>
                     <element signature="e#24#832#1" expanded="false" />
@@ -344,7 +342,7 @@
           <file leaf-file-name="Core.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Core.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-16.172413">
+                <state vertical-scroll-proportion="0.0">
                   <caret line="1262" column="0" selection-start-line="1262" selection-start-column="0" selection-end-line="1262" selection-end-column="0" />
                   <folding>
                     <element signature="e#24#837#1" expanded="false" />
@@ -396,8 +394,6 @@
                 <state vertical-scroll-proportion="0.0">
                   <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
                   <folding>
-                    <marker date="1452686999056" expanded="true" signature="24:781" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-                    <marker date="1452686999056" expanded="false" signature="783:866" placeholder="import ..." />
                     <marker date="1452686999056" expanded="true" signature="897:1134" placeholder="..." />
                   </folding>
                 </state>
@@ -481,12 +477,12 @@
         <option value="$PROJECT_DIR$/../torrenter.searcher.Nyaa/Nyaa.py" />
         <option value="$PROJECT_DIR$/resources/settings.xml" />
         <option value="$PROJECT_DIR$/changelog.txt" />
-        <option value="$PROJECT_DIR$/addon.xml" />
         <option value="$PROJECT_DIR$/Localization.py" />
         <option value="$PROJECT_DIR$/Core.py" />
         <option value="$PROJECT_DIR$/Libtorrent.py" />
         <option value="$PROJECT_DIR$/functions.py" />
         <option value="$PROJECT_DIR$/resources/utorrent/net.py" />
+        <option value="$PROJECT_DIR$/addon.xml" />
       </list>
     </option>
   </component>
@@ -575,118 +571,6 @@
       <recent name="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\contenters" />
       <recent name="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\searchers" />
     </key>
-  </component>
-  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
-    <UpdatedFiles>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Updated from server" />
-        <option name="myStatusName" value="Changed on server" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="CHANGED_ON_SERVER" />
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated" />
-          <option name="myStatusName" value="Changed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UPDATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Core.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Localization.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/resources/contenters/IMDB.py</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Created" />
-          <option name="myStatusName" value="Created" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CREATED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Deleted" />
-          <option name="myStatusName" value="Deleted" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="true" />
-          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Restored" />
-          <option name="myStatusName" value="Will be restored" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="RESTORED" />
-        </FILE-GROUP>
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Modified" />
-        <option name="myStatusName" value="Modified" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MODIFIED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Skipped" />
-        <option name="myStatusName" value="Skipped" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SKIPPED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with conflicts" />
-        <option name="myStatusName" value="Will be merged with conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_CONFLICTS" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with tree conflicts" />
-        <option name="myStatusName" value="Merged with tree conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with property conflicts" />
-        <option name="myStatusName" value="Will be merged with property conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged" />
-        <option name="myStatusName" value="Will be merged" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Not in repository" />
-        <option name="myStatusName" value="Not in repository" />
-        <option name="mySupportsDeletion" value="true" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="UNKNOWN" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally added" />
-        <option name="myStatusName" value="Locally added" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_ADDED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally removed" />
-        <option name="myStatusName" value="Locally removed" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_REMOVED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Switched" />
-        <option name="myStatusName" value="Switched" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SWITCHED" />
-      </FILE-GROUP>
-    </UpdatedFiles>
   </component>
   <component name="RunManager" selected="Python.cal">
     <configuration default="false" name="cal" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -849,12 +733,6 @@
       <created>1420801533300</created>
       <option name="number" value="Default" />
       <updated>1420801533300</updated>
-    </task>
-    <task id="LOCAL-00127" summary="antizapret">
-      <created>1440083223560</created>
-      <option name="number" value="00127" />
-      <option name="project" value="LOCAL" />
-      <updated>1440083223560</updated>
     </task>
     <task id="LOCAL-00128" summary="fix kickass ml">
       <created>1440611644150</created>
@@ -1144,24 +1022,30 @@
       <option name="project" value="LOCAL" />
       <updated>1452687437193</updated>
     </task>
-    <option name="localTasksCounter" value="176" />
+    <task id="LOCAL-00176" summary="qbit fixes">
+      <created>1452689379390</created>
+      <option name="number" value="00176" />
+      <option name="project" value="LOCAL" />
+      <updated>1452689379390</updated>
+    </task>
+    <option name="localTasksCounter" value="177" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13277134" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13277134" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32925472" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32739422" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27728286" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2769744" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32703003" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1319149" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25226244" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -1185,7 +1069,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="anteo beta3 + magnet" />
     <MESSAGE value="fix" />
     <MESSAGE value="subs and loop fix" />
     <MESSAGE value="settings update" />
@@ -1210,7 +1093,8 @@
     <MESSAGE value="fix errors" />
     <MESSAGE value="qbittorent" />
     <MESSAGE value="info update" />
-    <option name="LAST_COMMIT_MESSAGE" value="info update" />
+    <MESSAGE value="qbit fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="qbit fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1480,8 +1364,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
           <folding>
-            <marker date="1452686999056" expanded="true" signature="24:781" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1452686999056" expanded="false" signature="783:866" placeholder="import ..." />
             <marker date="1452686999056" expanded="true" signature="897:1134" placeholder="..." />
           </folding>
         </state>
@@ -1545,9 +1427,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7809984">
           <caret line="354" column="20" selection-start-line="354" selection-start-column="20" selection-end-line="354" selection-end-column="20" />
-          <folding>
-            <element signature="e#25#36#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1555,7 +1434,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="6" column="33" selection-start-line="6" selection-start-column="33" selection-end-line="6" selection-end-column="33" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1571,15 +1449,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.82857144">
           <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="34" selection-end-column="71" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addon.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.3090909">
-          <caret line="1" column="67" selection-start-line="1" selection-start-column="67" selection-end-line="1" selection-end-column="67" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1587,7 +1456,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.47635135">
           <caret line="540" column="0" selection-start-line="540" selection-start-column="0" selection-end-line="540" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1601,7 +1469,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Core.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-16.172413">
+        <state vertical-scroll-proportion="0.0">
           <caret line="1262" column="0" selection-start-line="1262" selection-start-column="0" selection-end-line="1262" selection-end-column="0" />
           <folding>
             <element signature="e#24#837#1" expanded="false" />
@@ -1663,36 +1531,6 @@
             <element signature="e#18114#19286#0" expanded="false" />
             <element signature="e#19323#19727#0" expanded="false" />
             <element signature="e#21730#22827#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Player.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0273752">
-          <caret line="144" column="19" selection-start-line="144" selection-start-column="19" selection-end-line="144" selection-end-column="19" />
-          <folding>
-            <element signature="e#24#832#1" expanded="false" />
-            <element signature="e#834#843#0" expanded="true" />
-            <element signature="e#1968#3684#0" expanded="false" />
-            <element signature="e#2019#2674#0" expanded="false" />
-            <element signature="e#2704#2882#0" expanded="false" />
-            <element signature="e#2912#3090#0" expanded="false" />
-            <element signature="e#3121#3132#0" expanded="false" />
-            <element signature="e#3176#3193#0" expanded="false" />
-            <element signature="e#3246#3338#0" expanded="false" />
-            <element signature="e#3413#3684#0" expanded="false" />
-            <element signature="e#6845#7296#0" expanded="false" />
-            <element signature="e#15316#15447#0" expanded="false" />
-            <element signature="e#15490#15573#0" expanded="false" />
-            <element signature="e#15615#15745#0" expanded="false" />
-            <element signature="e#15788#15919#0" expanded="false" />
-            <element signature="e#15990#16123#0" expanded="false" />
-            <element signature="e#19028#19571#0" expanded="false" />
-            <element signature="e#19606#19747#0" expanded="false" />
-            <element signature="e#19788#20124#0" expanded="false" />
-            <element signature="e#20157#20414#0" expanded="false" />
-            <element signature="e#20456#20551#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1829,10 +1667,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Player.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.040192924">
+          <caret line="144" column="19" selection-start-line="144" selection-start-column="19" selection-end-line="144" selection-end-column="19" />
+          <folding>
+            <element signature="e#24#832#1" expanded="false" />
+            <element signature="e#834#843#0" expanded="true" />
+            <element signature="e#1968#3684#0" expanded="false" />
+            <element signature="e#2019#2674#0" expanded="false" />
+            <element signature="e#2704#2882#0" expanded="false" />
+            <element signature="e#2912#3090#0" expanded="false" />
+            <element signature="e#3121#3132#0" expanded="false" />
+            <element signature="e#3176#3193#0" expanded="false" />
+            <element signature="e#3246#3338#0" expanded="false" />
+            <element signature="e#3413#3684#0" expanded="false" />
+            <element signature="e#6845#7296#0" expanded="false" />
+            <element signature="e#15316#15447#0" expanded="false" />
+            <element signature="e#15490#15573#0" expanded="false" />
+            <element signature="e#15615#15745#0" expanded="false" />
+            <element signature="e#15788#15919#0" expanded="false" />
+            <element signature="e#15990#16123#0" expanded="false" />
+            <element signature="e#19028#19571#0" expanded="false" />
+            <element signature="e#19606#19747#0" expanded="false" />
+            <element signature="e#19788#20124#0" expanded="false" />
+            <element signature="e#20157#20414#0" expanded="false" />
+            <element signature="e#20456#20551#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/resources/utorrent/net.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.418919">
-          <caret line="859" column="0" selection-start-line="859" selection-start-column="0" selection-end-line="859" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="878" column="54" selection-start-line="878" selection-start-column="54" selection-end-line="878" selection-end-column="54" />
           <folding>
             <element signature="e#25#34#0" expanded="true" />
             <element signature="e#1094#1431#0" expanded="false" />
@@ -1928,6 +1796,14 @@
             <element signature="e#52816#52866#0" expanded="false" />
             <element signature="e#52917#52961#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addon.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7986577">
+          <caret line="28" column="16" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
+          <folding />
         </state>
       </provider>
     </entry>
