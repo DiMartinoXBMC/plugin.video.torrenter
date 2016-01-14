@@ -1828,5 +1828,7 @@ class Core:
             return 'vuze.png'
         elif client == '3':
             return 'deluge.png'
+        elif client == '4':
+            return 'qbittorrent.png'
         else:
             return 'torrent-client.png'
