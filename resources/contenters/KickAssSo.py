@@ -36,13 +36,15 @@ class KickAssSo(Content.Content):
         'movies': ('Movies', '/movies/?field=seeders&sorder=desc',
                    {'page': '/movies/%d/?field=seeders&sorder=desc', 'increase': 1, 'second_page': 2,
                     ' ': [{'name': ' ', 'url_after': '?field=seeders&sorder=desc'}]}),
+	    'heb_movies': ('סרטים מדובבים', '/usearch/heb%20dub%20category%3Amovies/?field=seeders&sorder=desc'),
+			
     }
 
     baseurl = "http://kat.cr"
     headers = [('User-Agent',
                 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124' + \
                 ' YaBrowser/14.10.2062.12061 Safari/537.36'),
-               ('Referer', 'http://kickass.so/'), ('Accept-Encoding', 'gzip')]
+               ('Referer', 'http://kickass.so/'), ('Accept-Encoding', 'gzip'), ('Accept-Language', 'he;q=0.8')]
     '''
     Weight of source with this searcher provided.
     Will be multiplied on default weight.
