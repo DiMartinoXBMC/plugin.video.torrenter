@@ -24,7 +24,7 @@ import Content
 
 class ThePirateBaySe(Content.Content):
     category_dict = {
-        'tvshows': ('TV Shows', '/browse/205', {'page': '/browse/208/%d', 'increase': 1, 'second_page': 1,
+             'tvshows': ('TV Shows', '/browse/205', {'page': '/browse/208/%d', 'increase': 1, 'second_page': 1,
                                                 'sort': [{'name': 'by Seeders', 'url_after': '/0/7/0'},
                                                          {'name': 'by Date', 'url_after': '/0/3/0'}]}),
         'tvshowshd': ('TV Shows [HD]', '/browse/208', {'page': '/browse/208/%d', 'increase': 1, 'second_page': 1,
@@ -36,6 +36,13 @@ class ThePirateBaySe(Content.Content):
         'movieshd': ('Movies [HD]', '/browse/207', {'page': '/browse/208/%d', 'increase': 1, 'second_page': 1,
                                                     'sort': [{'name': 'by Seeders', 'url_after': '/0/7/0'},
                                                              {'name': 'by Date', 'url_after': '/0/3/0'}]}),
+	    'movies3D': ('Movies [3D]', '/browse/209', {'page': '/browse/209/%d', 'increase': 1, 'second_page': 1,
+                                                    'sort': [{'name': 'by Seeders', 'url_after': '/0/7/0'},
+                                                             {'name': 'by Date', 'url_after': '/0/3/0'}]}),
+	    'movies bluray': ('Movies [Bluray]', '/search/bluray', {'page': '/search/bluray/%d', 'increase': 1, 'second_page': 1,
+                                                    'sort': [{'name': 'by Seeders', 'url_after': '/0/7/207'},
+                                                             {'name': 'by Date', 'url_after': '/0/3/207'}]}),
+		'heb_movies': ('סרטים מדובבים', '/search/Hebrew-dubbed/0/7/0'),
     }
 
     baseurl = "thepiratebay.cr"
