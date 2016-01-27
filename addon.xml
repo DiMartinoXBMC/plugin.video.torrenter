@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.torrenter" name="Torrenter" version="2.4.3a" provider-name="DiMartino">
+<addon id="plugin.video.torrenter" name="Torrenter" version="2.4.4" provider-name="DiMartino">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
         <import addon="script.module.libtorrent"/>
@@ -14,12 +14,12 @@
         <platform>all</platform>
         <summary lang='en'>Plugin helps you to watch videos from p2p torrent-networks, without full predownload.
         </summary>
-        <description lang='en'>Plugin helps you to watch videos from p2p torrent-networks, without full predownload (uses python-libtorrent or Ace Stream). It also can add, control torrents and play downloaded files with external torrent-client (uTorrent, Transmisson, Vuse, Deluge) or python-libtorrent.
+        <description lang='en'>It also can add, control torrents and play downloaded files with external torrent-client (uTorrent, Transmisson, Vuse, Deluge, qBittorrent) or python-libtorrent.
         </description>
         <disclaimer lang='en'>GNU GPLv3 http://www.gnu.org/licenses/</disclaimer>
         <summary lang='ru'>Плагин позволяет просматривать видео из пиринговых торрент-сетей, не дожидаясь полного скачивания.
         </summary>
-        <description lang='ru'>Плагин позволяет просматривать видео из пиринговых торрент-сетей, не дожидаясь полного скачивания. Использует библиотеку python-libtorrent или Ace Stream. Так же плагин может добавлять, проигрывать и управлять скачками в торрент клиентах (uTorrent, Transmisson, Deluge и Vuse) или средставми python-libtorrent.
+        <description lang='ru'>Так же плагин может добавлять, проигрывать и управлять скачками в торрент клиентах (uTorrent, Transmisson, Deluge и Vuse, qBittorrent) или средставми python-libtorrent.
         </description>
         <disclaimer lang='ru'>GNU GPLv3 http://www.gnu.org/licenses/</disclaimer>
 		<forum>https://forums.tvaddons.ag/addon-releases/29224-torrenter-v2.html</forum>

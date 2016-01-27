@@ -286,7 +286,7 @@ class AnteoPlayer(xbmc.Player):
                         log('[AnteoPlayer]: ************************************* break')
                         break
                     log('[AnteoPlayer]: ************************************* GO NEXT?')
-                    if self.next_dl and isinstance(self.next_contentId, int) and self.iterator == 100:
+                    if self.next_dl and self.next_contentId != False and isinstance(self.next_contentId, int) and self.iterator == 100:
                         self.contentId = self.next_contentId
                         continue
                     log('[AnteoPlayer]: ************************************* NO! break')
@@ -438,10 +438,10 @@ class AnteoPlayer(xbmc.Player):
     def setup_nextep(self):
         try:
             if self.get("url2"):
-                debug("url2")
+                debug("[setup_nextep]: url2")
                 self.ids_video = urllib.unquote_plus(self.get("url2")).split(',')
             else:
-                debug("not url2")
+                debug("[setup_nextep]: not url2")
                 self.ids_video = self.get_ids()
         except:
             pass
@@ -461,7 +461,6 @@ class AnteoPlayer(xbmc.Player):
         label = os.path.basename(file_status.name)
         self.basename = label
         self.seeding_run = False
-        subtitles = None
         listitem = xbmcgui.ListItem(label, path=url)
 
         if self.next_dl:
