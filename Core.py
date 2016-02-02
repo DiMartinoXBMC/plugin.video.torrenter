@@ -258,10 +258,89 @@ class Core:
         #    xbmc.sleep(1000)
         #    self.Downloader.__exit__()
         #self.Player = AnteoPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
-        yes=xbmcgui.Dialog().yesno('< %s >' % (Localization.localize('Torrenter Update ') + '2.4.2'),
-                                        Localization.localize('New player to Torrenter v2 - Torrent2HTTP! It should be faster, '
-                                                              'stable and better with Android, also seeking works in it.'),
-                                        Localization.localize('Would you like to try it?'),)
+        log('userStorageDirectory - '+(self.userStorageDirectory))
+        log('is_writable - '+str(is_writable(self.userStorageDirectory)))
+        #log('getsize - '+str(os.path.getsize(self.userStorageDirectory)))
+        import stat
+
+        try:
+            log(os.popen("DIR").read())
+        except Exception, e:
+            log('lol didnt work')
+            log(str(e))
+
+        try:
+            log(os.popen("cd %s; ls -la" % os.path.dirname(self.userStorageDirectory)).read())
+        except Exception, e:
+            log('lol didnt work2')
+            log(str(e))
+
+        try:
+            log(os.popen("cd %s; ls -la" % self.userStorageDirectory).read())
+        except Exception, e:
+            log('lol didnt work3')
+            log(str(e))
+
+        try:
+            log(os.popen("id; chmod 777 %s" % self.userStorageDirectory).read())
+        except Exception, e:
+            log('lol didnt work3')
+            log(str(e))
+
+        #try:
+        #    log(os.popen("cd %s; df -h" % self.userStorageDirectory).read())
+        #except Exception, e:
+        #    log('lol didnt work2')
+        #    log(str(e))
+
+        try:
+            log(str(os.path.isdir(self.userStorageDirectory)))
+        except Exception, e:
+            log(str(e))
+        try:
+            log(str(os.path.exists(self.userStorageDirectory)))
+        except Exception, e:
+            log(str(e))
+        try:
+            log(str(os.listdir(self.userStorageDirectory)))
+        except Exception, e:
+            log(str(e))
+        try:
+            log(str(os.listdir(os.path.dirname(self.userStorageDirectory))))
+        except Exception, e:
+            log(str(e))
+        try:
+            os.makedirs(os.path.join(self.userStorageDirectory, 'xtorrents'))
+        except Exception, e:
+            log(str(e))
+        try:
+            os.chmod(os.path.dirname(self.userStorageDirectory), stat.S_IWOTH)
+        except Exception, e:
+            log(str(e))
+        try:
+            os.chmod(self.userStorageDirectory, stat.S_IWOTH)
+        except Exception, e:
+            log(str(e))
+        try:
+            log(str(os.path.isdir(self.userStorageDirectory)))
+        except Exception, e:
+            log(str(e))
+        try:
+            log(os.popen("cd %s; ls -la" % os.path.dirname(self.userStorageDirectory)).read())
+            torrentFile = os.path.join(self.userStorageDirectory, 'shiiiiit')
+            localFile = xbmcvfs.File(torrentFile, "w+b")
+            localFile.write('HELLO')
+            localFile.close()
+        except Exception, e:
+            log('lol didnt work2')
+            log(str(e))
+        try:
+            log(str(os.listdir(self.userStorageDirectory)))
+        except Exception, e:
+            log(str(e))
+
+
+        xbmcgui.Dialog().ok('Dam Son!','Now send this shit to DiMartino')
 
     def DownloadStatus(self, params={}):
         db = DownloadDB()
@@ -1435,11 +1514,12 @@ class Core:
         get = params.get
         xbmc.executebuiltin('xbmc.Playlist.Clear')
         url = unquote(get("url"), None)
+        fileIndex = unquote(get("index"), None)
         if url:
             self.__settings__.setSetting("lastTorrentUrl", url)
             torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
             self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
-            fileIndex = chooseFile(torrent.getContentList())
+            if fileIndex==None: fileIndex = chooseFile(torrent.getContentList())
             if fileIndex:
                 xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url='+fileIndex+'")')
 
