@@ -45,7 +45,7 @@ class ThePirateBaySe(Content.Content):
 		'heb_movies': ('סרטים מדובבים', '/search/Hebrew-dubbed/0/7/0'),
     }
 
-    baseurl = "thepiratebay.cr"
+    baseurl = "thepiratebay.rs"
     headers = [('User-Agent',
                 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124' + \
                 ' YaBrowser/14.10.2062.12061 Safari/537.36'),
