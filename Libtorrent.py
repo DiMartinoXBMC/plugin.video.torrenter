@@ -31,7 +31,7 @@ import xbmc
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import file_encode, isSubtitle, DownloadDB, log, debug, is_writable
+from functions import file_encode, isSubtitle, DownloadDB, log, debug, is_writable, vista_check, windows_check
 from platform_pulsar import get_platform
 
 class Libtorrent:
@@ -45,6 +45,7 @@ class Libtorrent:
     threadComplete = False
     lt = None
     save_resume_data = None
+    __settings__ = sys.modules["__main__"].__settings__
 
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
         self.platform = get_platform()
@@ -74,7 +75,7 @@ class Libtorrent:
 
         except Exception, e:
             log('Error importing from system. Exception: ' + str(e))
-            xbmcgui.Dialog().ok(Localization.localize('Python-Libtorrent Not Found'),
+            xbmcgui.Dialog().ok(Localization.localize('python-libtorrent Not Found'),
                                 Localization.localize(self.platform["message"][0]),
                                 Localization.localize(self.platform["message"][1]))
             return
@@ -352,14 +353,7 @@ class Libtorrent:
         except:
             log('listen_on(6881, 6891) error')
 
-        #tribler example never tested
-        #self.session.set_severity_level(self.lt.alert.severity_levels.info)
-        #self.session.add_extension("ut_pex")
-        #self.session.add_extension("lt_trackers")
-        #self.session.add_extension("metadata_transfer")
-        #self.session.add_extension("ut_metadata")
-        # Ban peers that sends bad data
-        #self.session.add_extension("smart_ban")
+        pc_config = int(self.__settings__.getSetting('pc_config'))
 
         # Session settings
         try:
@@ -367,12 +361,26 @@ class Libtorrent:
             #
             session_settings['announce_to_all_tiers'] = True
             session_settings['announce_to_all_trackers'] = True
-            session_settings['connection_speed'] = 100
             session_settings['peer_connect_timeout'] = 2
             session_settings['rate_limit_ip_overhead'] = True
             session_settings['request_timeout'] = 1
-            session_settings['torrent_connect_boost'] = 100
+            session_settings['torrent_connect_boost'] = 50
             session_settings['user_agent'] = 'uTorrent/2200(24683)'
+            if pc_config == 0:
+                #good pc
+                session_settings['connections_limit'] = 200
+                session_settings['unchoke_slots_limit'] = 10
+                session_settings['connection_speed'] = 200
+                session_settings['file_pool_size'] = 40
+            elif pc_config == 1:
+                #bad pc/router
+                session_settings['connections_limit'] = 100
+                session_settings['half_open_limit'] = (lambda: windows_check() and
+                                  (lambda: vista_check() and 4 or 8)() or 50)()
+                session_settings['unchoke_slots_limit'] = 4
+                session_settings['connection_speed'] = 100
+                session_settings['file_pool_size'] = 40
+
             #session_settings['cache_size'] = 0
             #session_settings['use_read_cache'] = False
 

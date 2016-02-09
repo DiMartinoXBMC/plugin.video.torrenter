@@ -18,7 +18,7 @@
     <string id="30018">Confluence (від DiMartino)</string>
     <string id="30019">Confluence (від RussakHH)</string>
     <string id="30020">Увімкнути Історію Пошуку</string>
-    <string id="30021">Python-Libtorrent (рекомендовано)</string>
+    <string id="30021">python-libtorrent (рекомендовано)</string>
     <string id="30022">Ace Stream (без магнет-посилань)</string>
     <string id="30023">P2P Програвач</string>
     <string id="30024">Решта налаштувань в "Програми - AceStream Client"</string>
@@ -35,7 +35,7 @@
     <string id="30035">Відкрити торрент-файл</string>
     <string id="30036">Відкрити контекстне меню</string>
     <string id="30037">Завантажити торрент-клієнтом</string>
-    <string id="30038">Завантажити за допомогою Python-Libtorrent</string>
+    <string id="30038">Завантажити за допомогою python-libtorrent</string>
     <string id="30039">Сортувати результати пошуку по кількості роздач</string>
     <string id="30040">Додаткова пошукова фраза в варіантах пошуку</string>
     <string id="30041">Шифрування</string>

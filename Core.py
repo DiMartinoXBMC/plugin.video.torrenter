@@ -489,6 +489,12 @@ class Core:
             xbmc.executebuiltin('Container.Refresh')
             showMessage(self.localize('Search History'), self.localize('Added!'))
 
+        if action2 == 'edit':
+            db.delete(addtime)
+            title = get('title')
+            showMessage(self.localize('Search History'), self.localize('Deleted!'))
+            xbmc.executebuiltin('XBMC.ActivateWindow(Videos,%s)' % (sys.argv[0] + '?action=%s&action2=%s&%s=%s') % ('search', '&showKey=true', 'url', title))
+
         if action2 == 'delete':
             db.delete(addtime)
             xbmc.executebuiltin('Container.Refresh')
@@ -532,6 +538,8 @@ class Core:
                                 contextMenu.append((self.localize('Add to %s') % self.localize('Favourites SH'),
                                                     ListString % ('History', 'fav', 'addtime', str(addtime)),))
                                 img = self.ROOT + '/icons/unfav.png'
+                            contextMenu.append((self.localize('Edit'),
+                                                ListString % ('History', 'edit', 'addtime='+str(addtime)+'&title', urllib.quote_plus(title))))
                             contextMenu.append((self.localize('Delete from %s') % self.localize('Search History'),
                                                 ListString % ('History', 'delete', 'addtime', str(addtime))))
 

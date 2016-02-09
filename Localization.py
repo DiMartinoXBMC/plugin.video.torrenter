@@ -244,7 +244,7 @@ def localize(text):
             'Rating:':'דירוג:',
             'Information not found!':'המידע לא נמצא',
             'Choose searcher':'בחר טראקר',
-            'Python-Libtorrent Not Found':'לא נמצא',
+            'python-libtorrent Not Found':'לא נמצא',
             'Windows has static compiled python-libtorrent included.':'לליבטורנט יש קובץ התקנה עבור ווינדוס',
             'You should install "script.module.libtorrent" from "MyShows.me Kodi Repo"':'נא להתקין את הקובץ script.module.libtorrent. מתוך הריפו',
             'Linux x64 has not static compiled python-libtorrent included.':'Linux x64 has not static compiled python-libtorrent included.',
@@ -503,7 +503,7 @@ def localize(text):
             'Rating:':'Рейтинг:',
             'Information not found!':'Информация не найдена!',
             'Choose searcher':'Выберите трекер',
-            'Python-Libtorrent Not Found':'Python-Libtorrent не найден',
+            'python-libtorrent Not Found':'python-libtorrent не найден',
             'Windows has static compiled python-libtorrent included.':'На Windows при установке из репозитория к плагину идет python-libtorrent.',
             'You should install "script.module.libtorrent" from "MyShows.me Kodi Repo"':'Установите "script.module.libtorrent" из "MyShows.me Kodi Repo"',
             'Linux x64 has not static compiled python-libtorrent included.':'На Linux x64 не смогли собрать статическую python-libtorrent',
@@ -548,6 +548,8 @@ def localize(text):
             'Seeking is working only with player Torrent2HTTP.':'Перемотка работает только с плеером Torrent2HTTP.',\
             'Play (from %s)':'Играть (c %s)',
             'Play (from start)':'Играть (с начала)',
+            'Edit':'Редактировать',
+            'Would you like to play next episode?':'Проиграть следующий эпизод?',
 
         },
         'uk': {
@@ -760,7 +762,7 @@ def localize(text):
             'Rating:':'Рейтинг:',
             'Information not found!':'Інформація не знайдена!',
             'Choose searcher':'Оберіть трекер',
-            'Python-Libtorrent Not Found':'Python-Libtorrent не знайдено',
+            'python-libtorrent Not Found':'python-libtorrent не знайдено',
             'Windows has static compiled python-libtorrent included.':'На Windows при встановленні з репозиторію разом з плагіном йде python-libtorrent.',
             'You should install "script.module.libtorrent" from "MyShows.me Kodi Repo"':'Встановіть "script.module.libtorrent" з "MyShows.me Kodi Repo"',
             'Linux x64 has not static compiled python-libtorrent included.':'На Linux x64 не змогли зібрати статичну версію python-libtorrent',

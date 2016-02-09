@@ -170,6 +170,13 @@ class TorrentPlayer(xbmc.Player):
                     break
                 debug('************************************* GO NEXT?')
                 if self.next_dl and self.next_dling and isinstance(self.next_contentId, int) and self.iterator == 100:
+                    if not self.next_play:
+                        xbmc.sleep(3000)
+                        if not xbmcgui.Dialog().yesno(
+                                self.localize('python-libtorrent'),
+                                self.localize('Would you like to play next episode?'),
+                                self.display_name):
+                            break
                     self.contentId = self.next_contentId
                     continue
                 debug('************************************* NO! break')
@@ -192,7 +199,8 @@ class TorrentPlayer(xbmc.Player):
 
     def init(self):
         self.next_dl = True if self.__settings__.getSetting('next_dl') == 'true' and self.ids_video else False
-        log('[TorrentPlayer]: init - ' + str(self.next_dl))
+        self.next_play = self.__settings__.getSetting('next_play') == 'true'
+        log('[TorrentPlayer]: init - ' + str(self.next_dl)+ str(self.next_play))
         self.next_contentId = False
         self.display_name = ''
         self.downloadedSize = 0

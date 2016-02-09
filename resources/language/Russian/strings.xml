@@ -18,7 +18,7 @@
     <string id="30018">Confluence (от DiMartino)</string>
     <string id="30019">Confluence (от RussakHH)</string>
     <string id="30020">Включить Историю Поиска</string>
-    <string id="30021">Python-Libtorrent</string>
+    <string id="30021">python-libtorrent</string>
     <string id="30022">Ace Stream</string>
     <string id="30023">P2P Проигрыватель</string>
     <string id="30024">Остальные настройки в "Программы - AceStream Client"</string>
@@ -35,7 +35,7 @@
     <string id="30035">Открыть Торрент Файл</string>
     <string id="30036">Открыть Контекстное меню</string>
     <string id="30037">Скачать Торрент-клиентом</string>
-    <string id="30038">Скачать Python-Libtorrent</string>
+    <string id="30038">Скачать python-libtorrent</string>
     <string id="30039">Сортировать поиск по количеству раздающих</string>
     <string id="30040">Дополнительная фраза в вариантах поиска</string>
     <string id="30041">Шифрование</string>
@@ -52,6 +52,10 @@
     <string id="30052">Использовать случайные порты</string>
     <string id="30053">Порт для входящих соединений</string>
     <string id="30054">Загружаемый объем файла до начала просмотра, Мб</string>
+    <string id="30055">Автоматически проиграть следующий эпизод (или предложить)</string>
+    <string id="30056">Конфигурация устройства</string>
+    <string id="30057">Нормальный ПК</string>
+    <string id="30058">Плохой ПК/роутер</string>
     <string id="30101">Интерфейс</string>
     <string id="30102">P2P Сеть</string>
     <string id="30103">Дополнительные</string>

@@ -287,8 +287,15 @@ class AnteoPlayer(xbmc.Player):
                         break
                     log('[AnteoPlayer]: ************************************* GO NEXT?')
                     if self.next_dl and self.next_contentId != False and isinstance(self.next_contentId, int) and self.iterator == 100:
+                        if not self.next_play:
+                            xbmc.sleep(3000)
+                            if not xbmcgui.Dialog().yesno(
+                                self.localize('Torrent2HTTP'),
+                                self.localize('Would you like to play next episode?')):
+                                break
                         self.contentId = self.next_contentId
                         continue
+
                     log('[AnteoPlayer]: ************************************* NO! break')
                 break
 
@@ -336,9 +343,9 @@ class AnteoPlayer(xbmc.Player):
         #dht_routers=None, trackers=None)
 
         encryption = Encryption.ENABLED if self.__settings__.getSetting('encryption') == 'true' else Encryption.DISABLED
-        upload_limit = int(self.__settings__.getSetting("upload_limit"))*1024 if self.__settings__.getSetting(
+        upload_limit = int(self.__settings__.getSetting("upload_limit"))*1024/8 if self.__settings__.getSetting(
             "upload_limit") != "" else 0
-        download_limit = int(self.__settings__.getSetting("download_limit"))*1024 if self.__settings__.getSetting(
+        download_limit = int(self.__settings__.getSetting("download_limit"))*1024/8 if self.__settings__.getSetting(
             "download_limit") != "" else 0
 
         if self.__settings__.getSetting("connections_limit") not in ["",0,"0"]:
@@ -373,7 +380,7 @@ class AnteoPlayer(xbmc.Player):
                              keep_files=keep_files, user_agent=user_agent, resume_file=resume_file)
 
     def buffer(self):
-        self.pre_buffer_bytes = 30*1024*1024 #30 MB
+        #self.pre_buffer_bytes = 30*1024*1024 #30 MB
         ready = False
         progressBar = xbmcgui.DialogProgress()
         progressBar.create(self.localize('Please Wait'),
@@ -412,9 +419,6 @@ class AnteoPlayer(xbmc.Player):
                 speedsText = '%s: %d Mbit/s; %s: %d Mbit/s' % (
                     self.localize('Downloading'), int(getDownloadRate),
                     self.localize('Uploading'), int(getUploadRate))
-                #if self.debug:
-                #    peersText=peersText + ' ' + self.torrent.get_debug_info('dht_state')
-                #    dialogText=dialogText.replace(self.localize('Preloaded: '),'') + ' ' + self.torrent.get_debug_info('trackers_sum')
                 progressBar.update(iterator, self.localize('Seeds searching.') + peersText, dialogText,
                                    speedsText)
 
@@ -450,7 +454,8 @@ class AnteoPlayer(xbmc.Player):
             self.next_dl = True
         else:
             self.next_dl = False
-        log('[AnteoPlayer]: nextdl - %s, ids_video - %s' % (str(self.next_dl), str(self.ids_video)))
+        self.next_play = self.__settings__.getSetting('next_play') == 'true'
+        log('[AnteoPlayer]: next_dl - %s, next_play - %s, ids_video - %s' % (str(self.next_dl), str(self.next_play), str(self.ids_video)))
 
     def setup_play(self):
         file_status = self.engine.file_status(self.contentId)
