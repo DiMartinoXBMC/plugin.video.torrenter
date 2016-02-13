@@ -2,6 +2,7 @@
 '''
     Torrenter v2 plugin for XBMC/Kodi
     Copyright (C) 2012-2015 Vadim Skorba v1 - DiMartino v2
+    https://forums.tvaddons.ag/addon-releases/29224-torrenter-v2.html
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -37,7 +38,7 @@ import sys
 from contextlib import contextmanager, closing, nested
 
 
-from functions import calculate, showMessage, clearStorage, WatchedHistoryDB, get_ids_video, log, debug
+from functions import calculate, showMessage, clearStorage, WatchedHistoryDB, get_ids_video, log, debug, ensure_str
 
 from torrent2http import State, Engine, MediaType
 
@@ -175,7 +176,7 @@ class AnteoLoader:
                 iterator += 1
 
             for fs in files:
-                stringdata = {"title": fs.name, "size": fs.size, "ind": fs.index,
+                stringdata = {"title": ensure_str(fs.name), "size": fs.size, "ind": fs.index,
                               'offset': fs.offset}
                 filelist.append(stringdata)
         return filelist
@@ -511,6 +512,7 @@ class AnteoPlayer(xbmc.Player):
                 log('seekTime')
             log('[AnteoPlayer]: seekTime - '+str(self.seek))
             self.seekTime(self.seek)
+
         return True
 
     def setup_subs(self):
@@ -528,9 +530,8 @@ class AnteoPlayer(xbmc.Player):
                     xbmc.Player().setSubtitles(sub.url)
 
     def loop(self):
-        debug_counter=0
-        xbmc.sleep(1000)
-
+        debug_counter = 0
+        pause = True
         with closing(
                 OverlayText(w=OVERLAY_WIDTH, h=OVERLAY_HEIGHT, alignment=XBFONT_CENTER_X | XBFONT_CENTER_Y)) as overlay:
             with nested(self.attach(overlay.show, self.on_playback_paused),
@@ -550,6 +551,10 @@ class AnteoPlayer(xbmc.Player):
                     overlay.text = "\n".join(self._get_status_lines(status, file_status))
 
                     self.iterator = int(file_status.progress * 100)
+
+                    if pause and self.__settings__.getSetting("pause_onplay") == 'true':
+                        pause = False
+                        xbmc.Player().pause()
                     xbmc.sleep(1000)
 
                     #if not self.seeding_run and self.iterator == 100 and self.seeding:

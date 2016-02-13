@@ -2,7 +2,7 @@
 '''
     Torrenter v2 plugin for XBMC/Kodi
     Copyright (C) 2012-2015 Vadim Skorba v1 - DiMartino v2
-    http://forum.kodi.tv/showthread.php?tid=214366
+    https://forums.tvaddons.ag/addon-releases/29224-torrenter-v2.html
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -349,9 +349,13 @@ class Libtorrent:
         self.session.start_upnp()
         self.session.start_natpmp()
         try:
-            self.session.listen_on(6881, 6891)
+            port = int(self.__settings__.getSetting('listen_port'))
+            self.session.listen_on(port, port+10)
         except:
-            log('listen_on(6881, 6891) error')
+            try:
+                log('listen_on(%d, %d) error' %(port, port+10))
+            except:
+                log('listen_port %s error' %(self.__settings__.getSetting('listen_port')))
 
         pc_config = int(self.__settings__.getSetting('pc_config'))
 

@@ -2,7 +2,7 @@
 '''
     Torrenter v2 plugin for XBMC/Kodi
     Copyright (C) 2012-2015 Vadim Skorba v1 - DiMartino v2
-    http://forum.kodi.tv/showthread.php?tid=214366
+    https://forums.tvaddons.ag/addon-releases/29224-torrenter-v2.html
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -260,7 +260,13 @@ class Core:
         #self.Player = AnteoPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
         log('userStorageDirectory - '+(self.userStorageDirectory))
         log('is_writable - '+str(is_writable(self.userStorageDirectory)))
-        #log('getsize - '+str(os.path.getsize(self.userStorageDirectory)))
+
+
+        log('getsize - '+str(os.path.getsize(self.userStorageDirectory)))
+
+        log('getDirectorySizeInBytes - '+str(getDirectorySizeInBytes(self.userStorageDirectory)))
+        log('getDirectorySizeInGB - '+str(getDirectorySizeInGB(self.userStorageDirectory)))
+
         import stat
 
         try:
@@ -1366,7 +1372,7 @@ class Core:
         return
 
     def clearStorage(self, params={}):
-        clearStorage(self.userStorageDirectory)
+        clearStorage(self.userStorageDirectory, force=True)
 
     def magentPlayer(self, params={}):
         defaultKeyword = params.get('url')

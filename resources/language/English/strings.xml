@@ -51,14 +51,18 @@
     <string id="30051">Max. connections (0 - unlimited)</string>
     <string id="30052">Use random ports</string>
     <string id="30053">Port for incoming connections</string>
-    <string id="30054">Pre-buffer amount before start playing, Mb</string>
+    <string id="30054">Pre-buffer amount before start playing (MB)</string>
     <string id="30055">Autoplay next episode (or ask)</string>
     <string id="30056">Device configuration</string>
     <string id="30057">Average/Good PC</string>
     <string id="30058">Below average PC/router</string>
+    <string id="30059">Storage minimum size for auto clear (GB)</string>
+    <string id="30060">Pause video after start</string>
     <string id="30101">Interface</string>
     <string id="30102">P2P Network</string>
     <string id="30103">Advanced</string>
+    <string id="30104">Torrent-client</string>
+    <string id="30105">Hentai (fine-tuning)</string>
     <string id="50301">Save path</string>
     <string id="50302">Call dialog</string>
     <string id="50303">Default</string>
@@ -80,7 +84,4 @@
     <string id="30417">Clear Storage</string>
     <string id="30418">Choose searcher</string>
     <string id="30419">You don't have external searcher. Please install it first.</string>
-
-
-
 </strings>

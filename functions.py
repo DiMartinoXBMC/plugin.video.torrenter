@@ -2,7 +2,7 @@
 '''
     Torrenter v2 plugin for XBMC/Kodi
     Copyright (C) 2012-2015 Vadim Skorba v1 - DiMartino v2
-    http://forum.kodi.tv/showthread.php?tid=214366
+    https://forums.tvaddons.ag/addon-releases/29224-torrenter-v2.html
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -51,55 +51,58 @@ __version__ = __settings__.getAddonInfo('version')
 __plugin__ = __settings__.getAddonInfo('name') + " v." + __version__
 
 
-def clearStorage(userStorageDirectory):
+def clearStorage(userStorageDirectory, force = False):
     userStorageDirectory = decode(userStorageDirectory)
     #log('[clearStorage]: storage '+str(userStorageDirectory) + os.sep)
-    if xbmcvfs.exists(userStorageDirectory + os.sep) or os.path.exists(userStorageDirectory):
-        log('[clearStorage]: storage exists')
-        import shutil
+    min_storage_size = __settings__.getSetting("min_storage_size")
+    storage_size = getDirectorySizeInGB(userStorageDirectory)
+    if storage_size >= min_storage_size or force:
+        if xbmcvfs.exists(userStorageDirectory + os.sep) or os.path.exists(userStorageDirectory):
+            log('[clearStorage]: storage exists')
+            import shutil
 
-        temp = userStorageDirectory.rstrip('Torrenter').rstrip('/\\')
-        torrents_temp, saved_temp, i = None, None, ''
-        while not torrents_temp or os.path.exists(torrents_temp) or os.path.exists(saved_temp):
-            torrents_temp = os.path.join(temp, 'torrents' + str(i)) + os.sep
-            saved_temp = os.path.join(temp, 'Saved Files' + str(i)) + os.sep
-            if i=='':
-                i=0
-            else:
-                i += 1
+            temp = userStorageDirectory.rstrip('Torrenter').rstrip('/\\')
+            torrents_temp, saved_temp, i = None, None, ''
+            while not torrents_temp or os.path.exists(torrents_temp) or os.path.exists(saved_temp):
+                torrents_temp = os.path.join(temp, 'torrents' + str(i)) + os.sep
+                saved_temp = os.path.join(temp, 'Saved Files' + str(i)) + os.sep
+                if i=='':
+                    i=0
+                else:
+                    i += 1
 
-        torrents = os.path.join(userStorageDirectory, 'torrents')
-        saved = os.path.join(userStorageDirectory, 'Saved Files')
-        torrents_bool, saved_bool = False, False
+            torrents = os.path.join(userStorageDirectory, 'torrents')
+            saved = os.path.join(userStorageDirectory, 'Saved Files')
+            torrents_bool, saved_bool = False, False
 
-        if os.path.exists(torrents):
-            shutil.move(torrents, torrents_temp)
-            torrents_bool = True
+            if os.path.exists(torrents):
+                shutil.move(torrents, torrents_temp)
+                torrents_bool = True
 
-        if os.path.exists(saved):
-            shutil.move(saved, saved_temp)
-            saved_bool = True
+            if os.path.exists(saved):
+                shutil.move(saved, saved_temp)
+                saved_bool = True
 
-        shutil.rmtree(userStorageDirectory.encode('utf-8'), ignore_errors=True)
-        xbmcvfs.mkdir(userStorageDirectory)
+            shutil.rmtree(userStorageDirectory.encode('utf-8'), ignore_errors=True)
+            xbmcvfs.mkdir(userStorageDirectory)
 
-        if torrents_bool:
-            shutil.move(torrents_temp, torrents)
-        if saved_bool:
-            shutil.move(saved_temp, saved)
+            if torrents_bool:
+                shutil.move(torrents_temp, torrents)
+            if saved_bool:
+                shutil.move(saved_temp, saved)
 
-        showMessage(Localization.localize('Storage'), Localization.localize('Storage has been cleared'), forced=True)
+            showMessage(Localization.localize('Storage'), Localization.localize('Storage has been cleared'), forced=True)
 
-    else:
-        showMessage(Localization.localize('Storage'), Localization.localize('Does not exists'), forced=True)
-        log('[clearStorage]: fail storage '+userStorageDirectory + os.sep)
+        else:
+            showMessage(Localization.localize('Storage'), Localization.localize('Does not exists'), forced=True)
+            log('[clearStorage]: fail storage '+userStorageDirectory + os.sep)
 
-    try:
-        DownloadDB().clear()
-    except Exception, e:
-        log('[clearStorage]: DownloadDB().clear() failed. '+str(e))
+        try:
+            DownloadDB().clear()
+        except Exception, e:
+            log('[clearStorage]: DownloadDB().clear() failed. '+str(e))
 
-    showMessage(Localization.localize('Storage'), Localization.localize('Storage was cleared'), forced=True)
+        showMessage(Localization.localize('Storage'), Localization.localize('Storage was cleared'), forced=True)
 
 
 def sortcomma(dict, json):
@@ -136,9 +139,10 @@ def log(msg):
 
 
 def debug(msg, forced=False):
-    level=xbmc.LOGDEBUG
     if getSettingAsBool('debug') and forced:
         level=xbmc.LOGNOTICE
+    else:
+        level=xbmc.LOGDEBUG
     try:
         xbmc.log("### [%s]: %s" % (__plugin__,msg,), level=level )
     except UnicodeEncodeError:
@@ -1994,3 +1998,18 @@ def dump(obj):
             log("'%s':'%s'," % (attr, getattr(obj, attr)))
         except:
             pass
+
+def getDirectorySizeInBytes(directory):
+    dir_size = 0
+    for (path, dirs, files) in os.walk(directory):
+        for file in files:
+            filename = os.path.join(path, file)
+            try:
+                dir_size += os.path.getsize(filename)
+            except:
+                pass
+    return dir_size
+
+def getDirectorySizeInGB(directory):
+    dir_size = int(getDirectorySizeInBytes(directory)/1024/1024/1024)
+    return dir_size

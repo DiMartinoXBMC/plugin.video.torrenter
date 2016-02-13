@@ -2,7 +2,7 @@
 '''
     Torrenter v2 plugin for XBMC/Kodi
     Copyright (C) 2012-2015 Vadim Skorba v1 - DiMartino v2
-    http://forum.kodi.tv/showthread.php?tid=214366
+    https://forums.tvaddons.ag/addon-releases/29224-torrenter-v2.html
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -336,11 +336,11 @@ class TorrentPlayer(xbmc.Player):
         xbmc.sleep(1000)
 
         if response:
-            # xbmc.Player().play(path, listitem)
-            playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-            playlist.clear()
-            playlist.add(path, listitem)
-            xbmc.Player().play(playlist)
+            xbmc.Player().play(path, listitem)
+            #playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+            #playlist.clear()
+            #playlist.add(path, listitem)
+            #xbmc.Player().play(playlist)
 
             xbmc.sleep(2000)  # very important, do not edit this, podavan
             return True
@@ -401,7 +401,7 @@ class TorrentPlayer(xbmc.Player):
 
     def loop(self):
         debug_counter=0
-        xbmc.sleep(1000)
+        pause = True
         self.torrent.torrentHandle.force_dht_announce()
         with closing(
                 OverlayText(w=OVERLAY_WIDTH, h=OVERLAY_HEIGHT, alignment=XBFONT_CENTER_X | XBFONT_CENTER_Y)) as overlay:
@@ -420,6 +420,9 @@ class TorrentPlayer(xbmc.Player):
                     overlay.text = "\n".join(self._get_status_lines(status))
                     # downloadedSize = torrent.torrentHandle.file_progress()[contentId]
                     self.iterator = int(status.progress * 100)
+                    if pause and self.__settings__.getSetting("pause_onplay") == 'true':
+                        pause = False
+                        xbmc.Player().pause()
                     xbmc.sleep(1000)
                     if self.iterator == 100 and self.next_dl:
                         next_contentId_index = self.ids_video.index(str(self.contentId)) + 1

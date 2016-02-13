@@ -18,22 +18,18 @@
         <setting id="torrent_player"    type="enum"     label="30023" default="2"       lvalues="30021|30022|30046" />
         <setting id="storage"           type="folder"   label="30004" default=""/>
         <setting id="keep_files"        type="enum"     label="30008" default="1"       lvalues="30043|30044|30045"/>
-        <setting id="ask_dir"           type="bool"     label="30031" default="false"   enable= "!eq(-1,0)" />
-        <setting id="next_dl"           type="bool"     label="30013" default="true"    visible="!eq(-4,1)"/>
-        <setting id="next_play"         type="bool"     label="30055" default="true"    visible="!eq(-5,1)+eq(-1,true)"/>
-        <setting id="upload_limit"      type="number"   label="30010" default="0"       visible="!eq(-6,1)"/>
-        <setting id="download_limit"    type="number"   label="30011" default="0"       visible="!eq(-7,1)"/>
-        <setting id="blank"             type="text"     label="30024" default=""        visible=" eq(-8,1)"/>
-        <setting id="subs_dl"           type="bool"     label="30029" default="true"    visible="!eq(-9,1)"/>
-        <setting id="keep_seeding"      type="bool"     label="30030" default="false"   visible=" eq(-10,0)" enable="eq(-7,1)"/>
-        <setting id="encryption"        type="bool"     label="30041" default="true"    visible="!eq(-11,1)"/>
-        <setting id="connections_limit" type="number"   label="30051" default="200"     visible=" eq(-12,2)"/>
-        <setting id="listen_port"       type="number"   label="30053" default="6881"    visible=" eq(-13,2)"/>
-        <setting id="use_random_port"   type="bool"     label="30052" default="false"   visible=" eq(-14,2)"/>
-        <setting id="pre_buffer_bytes"  type="slider"   label="30054" default="25"      visible=" eq(-15,2)"  range="5,5,50" option="int"/>
-        <setting id="pc_config"         type="enum"     label="30056" default="0"       visible=" eq(-16,0)" lvalues="30057|30058"/>
+        <setting id="next_dl"           type="bool"     label="30013" default="true"    visible="!eq(-3,1)"/>
+        <setting id="next_play"         type="bool"     label="30055" default="true"    visible="!eq(-4,1)+eq(-1,true)"/>
+        <setting id="upload_limit"      type="number"   label="30010" default="0"       visible="!eq(-5,1)"/>
+        <setting id="download_limit"    type="number"   label="30011" default="0"       visible="!eq(-6,1)"/>
+        <setting id="blank"             type="text"     label="30024" default=""        visible=" eq(-7,1)"/>
+        <setting id="subs_dl"           type="bool"     label="30029" default="true"    visible="!eq(-8,1)"/>
+        <setting id="keep_seeding"      type="bool"     label="30030" default="false"   visible=" eq(-9,0)" enable="eq(-7,1)"/>
+        <setting id="encryption"        type="bool"     label="30041" default="true"    visible="!eq(-10,1)"/>
+        <setting id="pre_buffer_bytes"  type="slider"   label="30054" default="25"      visible=" eq(-11,2)"  range="5,5,50" option="int"/>
+        <setting id="pc_config"         type="enum"     label="30056" default="0"       visible=" eq(-12,0)" lvalues="30057|30058"/>
     </category>
-    <category label="Torrent-client">
+    <category label="30104">
         <setting id="torrent_save"                  type="enum"         label="50301" lvalues="50302|50303" default="0"/>
         <setting id="torrent_dir"                   type="text"         label="50304"/>
         <setting id="torrent_replacement"           type="folder"       label="30426"/>
@@ -63,5 +59,14 @@
         <setting id="torrent_qbittorrent_port"      type="number"       label="50313" visible="eq(-19,4)" default="8080"/>
         <setting id="torrent_qbittorrent_login"     type="text"         label="50315" visible="eq(-20,4)" default="admin"/>
         <setting id="torrent_qbittorrent_password"  type="text"         label="50316" visible="eq(-21,4)" default="admin" option="hidden"/>
+    </category>
+    <category label="30105">
+        <setting id="torrent_player"    type="enum"     label="30023" default="2"       lvalues="30021|30022|30046" />
+        <setting id="ask_dir"           type="bool"     label="30031" default="false"/>
+        <setting id="connections_limit" type="number"   label="30051" default="200"     visible=" eq(-2,2)"/>
+        <setting id="use_random_port"   type="bool"     label="30052" default="false"   visible=" eq(-3,2)"/>
+        <setting id="listen_port"       type="number"   label="30053" default="6881"    visible="!eq(-4,1)"/>
+        <setting id="min_storage_size"  type="slider"   label="30059" default="0"       visible="!eq(-5,1)"  range="0,2,100" option="int"/>
+        <setting id="pause_onplay"      type="bool"     label="30060" default="false"   visible="!eq(-6,1)"/>
     </category>
 </settings>
