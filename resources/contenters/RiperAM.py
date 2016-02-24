@@ -28,11 +28,11 @@ class RiperAM(Content.Content):
         'hot': ('Most Recent', '/', {'page': '/portal.php?tp=%d', 'increase': 30, 'second_page': 30}),
     }
 
-    baseurl = "http://www.riper.am"
+    baseurl = "http://riperam.org"
     headers = [('User-Agent',
                 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124' + \
                 ' YaBrowser/14.10.2062.12061 Safari/537.36'),
-               ('Referer', 'http://www.riper.am/'), ('Accept-Encoding', 'gzip,deflate,sdch'),
+               ('Referer', baseurl+'/'), ('Accept-Encoding', 'gzip,deflate,sdch'),
                ('Accept-Language', 'ru,en;q=0.8')]
     '''
     Weight of source with this searcher provided.

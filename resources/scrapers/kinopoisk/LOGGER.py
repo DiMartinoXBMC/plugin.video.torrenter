@@ -5,9 +5,9 @@ try:
     from functions import log, debug
 
     __settings__ = xbmcaddon.Addon("plugin.video.torrenter")
-    debug = __settings__.getSetting("debug")
+    force_debug = __settings__.getSetting("debug")
 except:
-    debug = 'true'
+    force_debug = 'true'
 
 
 def Log(msg, force=False):
@@ -15,15 +15,15 @@ def Log(msg, force=False):
 
 
 def Debug(msg, force=False):
-    if debug == 'true' or force:
+    if force_debug == 'true' or force:
         debug(msg, True)
 
 
 def Info(msg, force=False):
-    if debug == 'true' or force:
+    if force_debug == 'true' or force:
         debug(msg, True)
 
 
 def Warn(msg, force=False):
-    if debug == 'true' or force:
+    if force_debug == 'true' or force:
         debug(msg, True)

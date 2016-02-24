@@ -1631,7 +1631,11 @@ class Core:
 
         filesList=search(url, searchersList, get('isApi'))
         if self.__settings__.getSetting('sort_search')=='true':
+            self.__settings__.setSetting('sort_search','1')
+        if int(self.__settings__.getSetting('sort_search'))==0:
             filesList = sorted(filesList, key=lambda x: x[0], reverse=True)
+        elif int(self.__settings__.getSetting('sort_search'))==2:
+            filesList = sorted(filesList, key=lambda x: x[4], reverse=False)
         self.showFilesList(filesList, params)
 
     def controlCenter(self, params={}):

@@ -58,6 +58,10 @@
     <string id="30058">Below average PC/router</string>
     <string id="30059">Storage minimum size for auto clear (GB)</string>
     <string id="30060">Pause video after start</string>
+    <string id="30061">Sort search results</string>
+    <string id="30062">by Seeds</string>
+    <string id="30063">Do not sort</string>
+    <string id="30064">by Name</string>
     <string id="30101">Interface</string>
     <string id="30102">P2P Network</string>
     <string id="30103">Advanced</string>
