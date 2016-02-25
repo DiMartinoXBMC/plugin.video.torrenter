@@ -38,7 +38,7 @@ import sys
 from contextlib import contextmanager, closing, nested
 
 
-from functions import calculate, showMessage, clearStorage, WatchedHistoryDB, get_ids_video, log, debug, ensure_str
+from functions import foldername, showMessage, clearStorage, WatchedHistoryDB, get_ids_video, log, debug, ensure_str
 
 from torrent2http import State, Engine, MediaType
 
@@ -282,7 +282,7 @@ class AnteoPlayer(xbmc.Player):
                     if self.setup_play():
                         self.setup_subs()
                         self.loop()
-                        WatchedHistoryDB().add(self.basename, self.watchedTime, self.totalTime, self.contentId, self.fullSize)
+                        WatchedHistoryDB().add(self.basename, foldername(self.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize)
                     else:
                         log('[AnteoPlayer]: ************************************* break')
                         break
@@ -634,6 +634,14 @@ class AnteoPlayer(xbmc.Player):
             contentList.append((fs.name, str(fs.index)))
         contentList = sorted(contentList, key=lambda x: x[0])
         return get_ids_video(contentList)
+
+    def getContentList(self):
+        filelist = []
+        for fs in self.engine.list():
+            stringdata = {"title": ensure_str(fs.name), "size": fs.size, "ind": fs.index,
+                          'offset': fs.offset}
+            filelist.append(stringdata)
+        return filelist
 
 class OverlayText(object):
     def __init__(self, w, h, *args, **kwargs):

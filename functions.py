@@ -1005,14 +1005,14 @@ class HistoryDB:
 
 
 class WatchedHistoryDB:
-    def __init__(self, version=1.2):
+    def __init__(self, version=1.3):
         self.name = 'watched_history.db3'
         self.version = version
         self.history_bool = __settings__.getSetting('history') == 'true'
 
     def get_all(self):
         self._connect()
-        self.cur.execute('select addtime,filename,path,url,seek,length,ind,size from history order by addtime DESC')
+        self.cur.execute('select addtime,filename,foldername,path,url,seek,length,ind,size from history order by addtime DESC')
         x = self.cur.fetchall()
         self._close()
         return x if x else None
@@ -1024,14 +1024,18 @@ class WatchedHistoryDB:
         self._close()
         return x if x else None
 
-    def add(self, filename, seek = 0, length = 1, ind = 0, size = 0):
-        if self.history_bool:
+    def add(self, filename, foldername = None, seek = 0, length = 1, ind = 0, size = 0):
+        watchedPercent = int((float(seek) / float(length)) * 100)
+        max_history_add = int(__settings__.getSetting('max_history_add'))
+        if self.history_bool and watchedPercent <= max_history_add:
             self._connect()
             url = __settings__.getSetting("lastTorrentUrl")
             path = __settings__.getSetting("lastTorrent")
+            if not foldername:
+                foldername = ''
             self.cur.execute('delete from history where filename="' + decode(filename) + '"')
-            self.cur.execute('insert into history(addtime,filename,path,url,seek,length,ind,size)'
-                                 ' values(?,?,?,?,?,?,?,?)', (int(time.time()), decode(filename), decode(path),
+            self.cur.execute('insert into history(addtime,filename,foldername,path,url,seek,length,ind,size)'
+                                 ' values(?,?,?,?,?,?,?,?,?)', (int(time.time()), decode(filename), decode(foldername), decode(path),
                                                       decode(url), str(int(seek)), str(int(length)), str(ind), str(size)))
             self.db.commit()
             self._close()
@@ -1090,7 +1094,7 @@ class WatchedHistoryDB:
             cur.execute('pragma auto_vacuum=1')
             cur.execute('create table db_ver(version real)')
             cur.execute(
-                'create table history(addtime integer PRIMARY KEY, filename varchar(32), path varchar(32), url varchar(32), seek integer, length integer, ind integer, size integer)')
+                'create table history(addtime integer PRIMARY KEY, filename varchar(32), foldername varchar(32), path varchar(32), url varchar(32), seek integer, length integer, ind integer, size integer)')
             cur.execute('insert into db_ver(version) values(?)', (self.version,))
             self.db.commit()
             cur.close()
@@ -2013,3 +2017,10 @@ def getDirectorySizeInBytes(directory):
 def getDirectorySizeInGB(directory):
     dir_size = int(getDirectorySizeInBytes(directory)/1024/1024/1024)
     return dir_size
+
+def foldername(path):
+    if '\\' in path:
+        foldername = path.split('\\')[0]
+    else:
+        foldername = ''
+    return foldername

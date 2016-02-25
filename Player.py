@@ -30,7 +30,7 @@ import Downloader
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import calculate, showMessage, clearStorage, WatchedHistoryDB, DownloadDB, get_ids_video, log, debug
+from functions import calculate, showMessage, clearStorage, WatchedHistoryDB, DownloadDB, get_ids_video, log, debug, foldername
 
 ROOT = sys.modules["__main__"].__root__
 RESOURCES_PATH = os.path.join(ROOT, 'resources')
@@ -165,7 +165,7 @@ class TorrentPlayer(xbmc.Player):
                     self.torrent.startSession()
                     self.torrent.continueSession(self.contentId)
                     self.loop()
-                    WatchedHistoryDB().add(self.basename, self.watchedTime, self.totalTime, self.contentId, self.fullSize / 1024 / 1024)
+                    WatchedHistoryDB().add(self.basename, foldername(self.torrent.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize / 1024 / 1024)
                 else:
                     break
                 debug('************************************* GO NEXT?')
@@ -226,11 +226,12 @@ class TorrentPlayer(xbmc.Player):
                 int(download_limit) * 1024 * 1024 / 8)  # MBits/second
         self.torrent.status = False
         self.fullSize = self.torrent.getFileSize(self.contentId)
+        self.path = self.torrent.getFilePath(self.contentId)
         Offset = calculate(self.fullSize)
         debug('Offset: '+str(Offset))
 
         # mp4 fix
-        label = os.path.basename(self.torrent.getFilePath(self.contentId))
+        label = os.path.basename(self.path)
         isMP4 = False
         if '.' in label and str(label.split('.')[-1]).lower() == 'mp4':
             isMP4 = True
@@ -243,7 +244,7 @@ class TorrentPlayer(xbmc.Player):
         progressBar.create(self.localize('Please Wait') + str(' [%s]' % str(self.torrent.lt.version)),
                            self.localize('Seeds searching.'))
         if self.subs_dl:
-            subs = self.torrent.getSubsIds(os.path.basename(self.torrent.getFilePath(self.contentId)))
+            subs = self.torrent.getSubsIds(os.path.basename(self.path))
             if len(subs) > 0:
                 for ind, title in subs:
                     self.torrent.continueSession(ind)
@@ -284,6 +285,8 @@ class TorrentPlayer(xbmc.Player):
             xbmc.sleep(1000)
         #self.torrent.torrentHandle.flush_cache()
         #self.torrent.session.remove_torrent(self.torrent.torrentHandle)
+        self.torrent.resume_data()
+        self.torrent.session.remove_torrent(self.torrent.torrentHandle)
         progressBar.update(0)
         progressBar.close()
         return True

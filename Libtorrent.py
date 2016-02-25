@@ -430,6 +430,9 @@ class Libtorrent:
                        #'auto_managed': False,
                        #'duplicate_is_error': True
                       }
+        if self.save_resume_data:
+            log('loading resume data')
+            torrent_info['resume_data']=self.save_resume_data
         self.torrentHandle = self.session.add_torrent(torrent_info)
 
         self.torrentHandle.set_sequential_download(True)
@@ -474,6 +477,19 @@ class Libtorrent:
             self.session.stop_upnp()
             self.session.stop_lsd()
             self.session.stop_dht()
+
+    def resume_data(self):
+        self.torrentHandle.save_resume_data()
+        received=False
+        while not received:   
+            self.session.wait_for_alert(1000)
+            a = self.session.pop_alert()
+            log('[save_resume_data]: ['+str(type(a))+'] the alert '+str(a)+' is received')
+            if type(a) == self.lt.save_resume_data_alert:
+                received = True
+                debug('[save_resume_data]: '+str(dir(a)))
+                self.save_resume_data=self.lt.bencode(a.resume_data)
+        log('[save_resume_data]: the torrent resume data are saved')
 
     def debug(self):
         #try:

@@ -572,7 +572,7 @@ class Core:
             showMessage(self.localize('Watched History'), self.localize('Deleted!'))
 
         if action2 == 'open':
-            filename, path, url, seek, length, ind = db.get('filename, path, url, seek, length, ind', 'addtime', str(addtime))
+            filename, foldername, path, url, seek, length, ind = db.get('filename, foldername, path, url, seek, length, ind', 'addtime', str(addtime))
             if os.path.exists(path):
                 self.__settings__.setSetting("lastTorrent", path)
             else:
@@ -609,11 +609,15 @@ class Core:
             if items:
                 ListString = 'XBMC.RunPlugin(%s)' % (sys.argv[0] + '?action=%s&action2=%s&%s=%s')
                 #for favbool, bbstring in favlist:
-                for addtime, filename, path, url, seek, length, ind, size in items:
+                for addtime, filename, foldername, path, url, seek, length, ind, size in items:
                     seek = int(seek) if int(seek) > 3*60 else 0
                     watchedPercent = int((float(seek) / float(length)) * 100)
                     duration = '%02d:%02d:%02d' % ((length / (60*60)), (length / 60) % 60, length % 60)
-                    title = '[%d%%][%s] %s [%d MB]' % (watchedPercent, duration, filename.encode('utf-8'), int(size))
+                    title = '[%d%%][%s] %s [%d MB]' %\
+                            (watchedPercent, duration, filename.encode('utf-8'), int(size))
+                    clDimgray = '[COLOR FF696969]%s[/COLOR]'
+
+                    title = title + chr(10) + clDimgray % '(%s)' % foldername.encode('utf-8')
                     if self.torrent_player == '2' and seek > 0:
                         seek_text = '%02d:%02d:%02d' % ((seek / (60*60)), (seek / 60) % 60, seek % 60)
                         contextMenu = [(self.localize('Play (from %s)') % seek_text, ListString % ('WatchedHistory', 'playwithseek', 'addtime', str(addtime))),
