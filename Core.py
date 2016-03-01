@@ -1652,25 +1652,29 @@ class Core:
         silent = get("silent")
         thumbnail = unquote(get("thumbnail"),'')
         save_folder = unquote(get("save_folder"),'')
+        back_url = unquote(get("back_url"),'')
+        return_url = unquote(get("return_url"),'')
+        return_name = unquote(get("return_name"),'')
+        sdata = unquote(get("sdata"),'{}')
+        log(str(filesList))
         if external and not get('from_searcher'):
             try:
             #if 1==1:
-                sdata = json.loads(json.loads(urllib.unquote_plus(get("sdata"))))
+                sdata = json.loads(sdata)
                 if len(filesList) < 1:
                     xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
                     if not silent:
                         xbmc.executebuiltin(
-                            'XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.myshows/?mode=3013')
+                            'XBMC.ActivateWindow(%s)' % 'Videos,%s' % return_url)
                     else:
                         showMessage(self.localize('Information'), self.localize('Torrent list is empty.'))
                     return
                 if silent:
                     order, seeds, leechers, size, title, link, image = filesList[0]
+                    sdata['filename'] = link
                     xbmc.executebuiltin('XBMC.RunPlugin(%s)' % (
-                    'plugin://plugin.video.myshows/?mode=3010&sort=activate&action=silent&stringdata=' + urllib.quote_plus(
-                        '{"filename":"%s", "stype":%s, "showId":%s, "seasonId":%s, "id":%s, "episodeId":%s}' % (
-                        link, jstr(sdata['stype']), jstr(sdata['showId']), jstr(sdata['seasonId']), jstr(sdata['id']),
-                        jstr(sdata['episodeId'])))))
+                    back_url+'silent&stringdata=' + urllib.quote_plus(
+                        json.dumps(sdata))))
                     return
                 else:
                     for (order, seeds, leechers, size, title, link, image) in filesList:
@@ -1679,18 +1683,23 @@ class Core:
                         for key in link_dict.keys():
                             if link_dict.get(key):
                                 link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(link_dict.get(key)))
+                        sdata['filename'] = link
                         contextMenu = [
-                            (self.localize('Add to MyShows.ru'),
+                            #(self.localize('Add to MyShows.ru'),
+                            # 'XBMC.RunPlugin(%s)' % (
+                            # 'plugin://plugin.video.myshows/?mode=3010&sort=activate&stringdata=' + urllib.quote_plus(
+                            #     '{"filename":"%s", "stype":%s, "showId":%s, "seasonId":%s, "id":%s, "episodeId":%s}' % (
+                            #     link, jstr(sdata['stype']), jstr(sdata['showId']), jstr(sdata['seasonId']), jstr(sdata['id']),
+                            #     jstr(sdata['episodeId']))))),
+                            (self.localize('Add to %s') % return_name,
                              'XBMC.RunPlugin(%s)' % (
-                             'plugin://plugin.video.myshows/?mode=3010&sort=activate&stringdata=' + urllib.quote_plus(
-                                 '{"filename":"%s", "stype":%s, "showId":%s, "seasonId":%s, "id":%s, "episodeId":%s}' % (
-                                 link, jstr(sdata['stype']), jstr(sdata['showId']), jstr(sdata['seasonId']), jstr(sdata['id']),
-                                 jstr(sdata['episodeId']))))),
+                             back_url+'&stringdata=' + urllib.quote_plus(
+                                 json.dumps(sdata)))),
                             (self.localize('Open (no return)'),
                              'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
                              sys.argv[0], 'openTorrent', link_url)),
-                            (self.localize('Return to MyShows.ru'),
-                             'XBMC.ActivateWindow(%s)' % ('Videos,plugin://plugin.video.myshows/?mode=3013')),
+                            (self.localize('Return to %s') % return_name,
+                             'XBMC.ActivateWindow(%s)' % ('Videos,%s' % return_url)),
                         ]
                         title = self.titleMake(seeds, leechers, size, title)
                         self.drawItem(title, 'context', link, image, contextMenu=contextMenu)
@@ -1934,3 +1943,42 @@ class Core:
             return 'qbittorrent.png'
         else:
             return 'torrent-client.png'
+
+    def callback(self, params={}):
+        get = params.get
+
+        external = unquote(get("external"), None)
+        subaction = unquote(get("subaction"), None)
+        url = unquote(get("url"),'')
+        sdata = json.loads(urllib.unquote_plus(get("sdata")))
+        back_url = unquote(get("back_url"),'')
+
+        self.__settings__.setSetting("lastTorrentUrl", url)
+
+        classMatch = re.search('(\w+)::(.+)', url)
+        if classMatch:
+            searcher = classMatch.group(1)
+            url = Searchers().downloadWithSearcher(classMatch.group(2), searcher)
+
+
+        torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
+        if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
+                                                     torrentFilesDirectory=self.torrentFilesDirectory)
+        torrentFile =  torrent.saveTorrent(url)
+        if torrentFile: url = torrentFile
+        self.__settings__.setSetting("lastTorrent", url)
+
+        if subaction == 'download':
+            if re.match("^http.+$", url):
+                torrentFile = self.saveUrlTorrent(url)
+                if torrentFile: url = torrentFile
+                self.__settings__.setSetting("lastTorrent", url)
+
+        elif subaction == 'play':
+            fileIndex = chooseFile(torrent.getContentList())
+            if fileIndex:
+                xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url=' + fileIndex + '")')
+                return
+
+        sdata['filename'] = url
+        xbmc.executebuiltin('xbmc.RunPlugin("' + back_url + '&stringdata=' + json.dumps(sdata) + '")')

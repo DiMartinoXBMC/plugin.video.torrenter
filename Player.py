@@ -346,6 +346,14 @@ class TorrentPlayer(xbmc.Player):
             #xbmc.Player().play(playlist)
 
             xbmc.sleep(2000)  # very important, do not edit this, podavan
+            i = 0
+            while not xbmc.abortRequested or not self.isPlaying() or i < 50:
+                xbmc.sleep(200)
+                i += 1
+
+            log('[TorrentPlayer]: self.isPlaying() = %s, i = %d, xbmc.abortRequested - %s' % (str(self.isPlaying()), i, str(xbmc.abortRequested)))
+            if not self.isPlaying() or xbmc.abortRequested:
+                return False
             return True
 
     def setup_subs(self, label, path):
