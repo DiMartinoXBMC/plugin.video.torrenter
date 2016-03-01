@@ -1640,7 +1640,11 @@ class Core:
             filesList = sorted(filesList, key=lambda x: x[0], reverse=True)
         elif int(self.__settings__.getSetting('sort_search'))==2:
             filesList = sorted(filesList, key=lambda x: x[4], reverse=False)
-        self.showFilesList(filesList, params)
+
+        if not external or get('from_searcher'):
+            self.showFilesList(filesList, params)
+        else:
+            self.showFilesListExternal(filesList, params)
 
     def controlCenter(self, params={}):
         xbmc.executebuiltin(
@@ -1648,7 +1652,41 @@ class Core:
 
     def showFilesList(self, filesList, params={}):
         get = params.get
-        external = unquote(get("external"), None)
+        thumbnail = unquote(get("thumbnail"),'')
+        save_folder = unquote(get("save_folder"),'')
+        for (order, seeds, leechers, size, title, link, image) in filesList:
+            link_dict = {'url': link, 'thumbnail': thumbnail, 'save_folder':save_folder}
+            link_url=''
+            for key in link_dict.keys():
+                if link_dict.get(key):
+                    link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(link_dict.get(key)))
+            contextMenu = [
+                (self.localize('Download via T-client'),
+                 'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
+                 sys.argv[0], 'downloadFilesList', urllib.quote_plus(link))),
+                (self.localize('Download via Libtorrent'),
+                 'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
+                 sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(link))),
+                (self.localize('Open (no return)'),
+                 'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
+                 sys.argv[0], 'openTorrent', link_url)),
+            ]
+            title = self.titleMake(seeds, leechers, size, title)
+
+            if self.open_option==0:
+                self.drawItem(title, 'openTorrent', link_dict, image, contextMenu=contextMenu, replaceMenu=False)
+            elif self.open_option==1:
+                self.drawItem(title, 'context', link, image, contextMenu=contextMenu, replaceMenu=False)
+            elif self.open_option==2:
+                self.drawItem(title, 'downloadFilesList', link_dict, image, contextMenu=contextMenu, replaceMenu=False)
+            elif self.open_option==3:
+                self.drawItem(title, 'downloadLibtorrent', link_dict, image, contextMenu=contextMenu, replaceMenu=False)
+
+        view_style('showFilesList')
+        xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+
+    def showFilesListExternal(self, filesList, params={}):
+        get = params.get
         silent = get("silent")
         thumbnail = unquote(get("thumbnail"),'')
         save_folder = unquote(get("save_folder"),'')
@@ -1656,88 +1694,49 @@ class Core:
         return_url = unquote(get("return_url"),'')
         return_name = unquote(get("return_name"),'')
         sdata = unquote(get("sdata"),'{}')
-        log(str(filesList))
-        if external and not get('from_searcher'):
-            try:
-            #if 1==1:
-                sdata = json.loads(sdata)
-                if len(filesList) < 1:
-                    xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
-                    if not silent:
-                        xbmc.executebuiltin(
-                            'XBMC.ActivateWindow(%s)' % 'Videos,%s' % return_url)
-                    else:
-                        showMessage(self.localize('Information'), self.localize('Torrent list is empty.'))
-                    return
-                if silent:
-                    order, seeds, leechers, size, title, link, image = filesList[0]
-                    sdata['filename'] = link
-                    xbmc.executebuiltin('XBMC.RunPlugin(%s)' % (
-                    back_url+'silent&stringdata=' + urllib.quote_plus(
-                        json.dumps(sdata))))
-                    return
+
+        try:
+        #if 1==1:
+            sdata = json.loads(sdata)
+            if len(filesList) < 1:
+                xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+                if not silent:
+                    xbmc.executebuiltin(
+                        'XBMC.ActivateWindow(%s)' % 'Videos,%s' % return_url)
                 else:
-                    for (order, seeds, leechers, size, title, link, image) in filesList:
-                        link_dict = {'url': link, 'thumbnail': thumbnail, 'save_folder':save_folder}
-                        link_url=''
-                        for key in link_dict.keys():
-                            if link_dict.get(key):
-                                link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(link_dict.get(key)))
-                        sdata['filename'] = link
-                        contextMenu = [
-                            #(self.localize('Add to MyShows.ru'),
-                            # 'XBMC.RunPlugin(%s)' % (
-                            # 'plugin://plugin.video.myshows/?mode=3010&sort=activate&stringdata=' + urllib.quote_plus(
-                            #     '{"filename":"%s", "stype":%s, "showId":%s, "seasonId":%s, "id":%s, "episodeId":%s}' % (
-                            #     link, jstr(sdata['stype']), jstr(sdata['showId']), jstr(sdata['seasonId']), jstr(sdata['id']),
-                            #     jstr(sdata['episodeId']))))),
-                            (self.localize('Add to %s') % return_name,
-                             'XBMC.RunPlugin(%s)' % (
-                             back_url+'&stringdata=' + urllib.quote_plus(
-                                 json.dumps(sdata)))),
-                            (self.localize('Open (no return)'),
-                             'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
-                             sys.argv[0], 'openTorrent', link_url)),
-                            (self.localize('Return to %s') % return_name,
-                             'XBMC.ActivateWindow(%s)' % ('Videos,%s' % return_url)),
-                        ]
-                        title = self.titleMake(seeds, leechers, size, title)
-                        self.drawItem(title, 'context', link, image, contextMenu=contextMenu)
-            except:
-            #else:
-                showMessage(self.localize('Information'), self.localize('Torrent list is empty.'))
-                if get("sdata"): xbmc.executebuiltin('XBMC.RunPlugin(%s)' % 'plugin://plugin.video.myshows/?mode=3013')
+                    showMessage(self.localize('Information'), self.localize('Torrent list is empty.'))
                 return
-        else:
-            for (order, seeds, leechers, size, title, link, image) in filesList:
-                link_dict = {'url': link, 'thumbnail': thumbnail, 'save_folder':save_folder}
-                link_url=''
-                for key in link_dict.keys():
-                    if link_dict.get(key):
-                        link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(link_dict.get(key)))
-                contextMenu = [
-                    (self.localize('Download via T-client'),
-                     'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
-                     sys.argv[0], 'downloadFilesList', urllib.quote_plus(link))),
-                    (self.localize('Download via Libtorrent'),
-                     'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
-                     sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(link))),
-                    (self.localize('Open (no return)'),
-                     'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
-                     sys.argv[0], 'openTorrent', link_url)),
-                ]
-                title = self.titleMake(seeds, leechers, size, title)
-
-                #print image
-
-                if self.open_option==0:
-                    self.drawItem(title, 'openTorrent', link_dict, image, contextMenu=contextMenu, replaceMenu=False)
-                elif self.open_option==1:
-                    self.drawItem(title, 'context', link, image, contextMenu=contextMenu, replaceMenu=False)
-                elif self.open_option==2:
-                    self.drawItem(title, 'downloadFilesList', link_dict, image, contextMenu=contextMenu, replaceMenu=False)
-                elif self.open_option==3:
-                    self.drawItem(title, 'downloadLibtorrent', link_dict, image, contextMenu=contextMenu, replaceMenu=False)
+            if silent:
+                order, seeds, leechers, size, title, link, image = filesList[0]
+                sdata['filename'] = link
+                xbmc.executebuiltin('XBMC.RunPlugin(%s)' % (
+                back_url+'silent&stringdata=' + urllib.quote_plus(
+                    json.dumps(sdata))))
+                return
+            else:
+                for order, seeds, leechers, size, title, link, image in filesList:
+                    link_dict = {'url': link, 'thumbnail': thumbnail, 'save_folder':save_folder}
+                    link_url=''
+                    for key in link_dict.keys():
+                        if link_dict.get(key):
+                            link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(link_dict.get(key)))
+                    sdata['filename'] = link
+                    contextMenu = [
+                        (self.localize('Add to %s') % return_name,
+                         'XBMC.RunPlugin(%s)' % (back_url+'&stringdata=' + urllib.quote_plus(
+                             json.dumps(sdata)))),
+                        (self.localize('Open (no return)'),
+                         'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
+                         sys.argv[0], 'openTorrent', link_url)),
+                        (self.localize('Return to %s') % return_name,
+                         'XBMC.ActivateWindow(%s)' % ('Videos,%s' % return_url)),
+                    ]
+                    title = self.titleMake(seeds, leechers, size, title)
+                    self.drawItem(title, 'context', link, image, contextMenu=contextMenu)
+        except:
+            showMessage(self.localize('Information'), self.localize('Torrent list is empty.'))
+            if not silent: xbmc.executebuiltin('XBMC.RunPlugin(%s)' % return_url)
+            return
 
         view_style('showFilesList')
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
