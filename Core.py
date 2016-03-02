@@ -242,7 +242,24 @@ class Core:
 
     def test(self, params={}):
         #from Anteoloader import AnteoPlayer
-        #torrentUrl='D:\\test.torrent'
+        #from python_libtorrent import get_libtorrent
+        #self.lt=get_libtorrent()
+        #self.torrentFile='D:\\test.torrent'
+        #self.session = self.lt.session()
+        #e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())
+        #self.torrentFileInfo = self.lt.torrent_info(e)
+        #torrent_info={'ti': self.torrentFileInfo,
+        #      'save_path': self.userStorageDirectory,
+        #      'flags': 0x300,
+        #       #'storage_mode': self.lt.storage_mode_t(1),
+        #       'paused': False,
+        #       #'auto_managed': False,
+        #       #'duplicate_is_error': True
+        #      }
+        #self.torrentHandle = self.session.add_torrent(torrent_info)
+        #log(self.torrentHandle.torrent_file())
+        #self.session.remove_torrent(self.torrentHandle)
+
         #params['url']='0'
         #if not xbmcvfs.exists(torrentUrl):
         #    action = xbmcgui.Dialog()
@@ -258,93 +275,6 @@ class Core:
         #    xbmc.sleep(1000)
         #    self.Downloader.__exit__()
         #self.Player = AnteoPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
-        log('userStorageDirectory - '+(self.userStorageDirectory))
-        log('is_writable - '+str(is_writable(self.userStorageDirectory)))
-
-
-        log('getsize - '+str(os.path.getsize(self.userStorageDirectory)))
-
-        log('getDirectorySizeInBytes - '+str(getDirectorySizeInBytes(self.userStorageDirectory)))
-        log('getDirectorySizeInGB - '+str(getDirectorySizeInGB(self.userStorageDirectory)))
-
-        import stat
-
-        try:
-            log(os.popen("DIR").read())
-        except Exception, e:
-            log('lol didnt work')
-            log(str(e))
-
-        try:
-            log(os.popen("cd %s; ls -la" % os.path.dirname(self.userStorageDirectory)).read())
-        except Exception, e:
-            log('lol didnt work2')
-            log(str(e))
-
-        try:
-            log(os.popen("cd %s; ls -la" % self.userStorageDirectory).read())
-        except Exception, e:
-            log('lol didnt work3')
-            log(str(e))
-
-        try:
-            log(os.popen("id; chmod 777 %s" % self.userStorageDirectory).read())
-        except Exception, e:
-            log('lol didnt work3')
-            log(str(e))
-
-        #try:
-        #    log(os.popen("cd %s; df -h" % self.userStorageDirectory).read())
-        #except Exception, e:
-        #    log('lol didnt work2')
-        #    log(str(e))
-
-        try:
-            log(str(os.path.isdir(self.userStorageDirectory)))
-        except Exception, e:
-            log(str(e))
-        try:
-            log(str(os.path.exists(self.userStorageDirectory)))
-        except Exception, e:
-            log(str(e))
-        try:
-            log(str(os.listdir(self.userStorageDirectory)))
-        except Exception, e:
-            log(str(e))
-        try:
-            log(str(os.listdir(os.path.dirname(self.userStorageDirectory))))
-        except Exception, e:
-            log(str(e))
-        try:
-            os.makedirs(os.path.join(self.userStorageDirectory, 'xtorrents'))
-        except Exception, e:
-            log(str(e))
-        try:
-            os.chmod(os.path.dirname(self.userStorageDirectory), stat.S_IWOTH)
-        except Exception, e:
-            log(str(e))
-        try:
-            os.chmod(self.userStorageDirectory, stat.S_IWOTH)
-        except Exception, e:
-            log(str(e))
-        try:
-            log(str(os.path.isdir(self.userStorageDirectory)))
-        except Exception, e:
-            log(str(e))
-        try:
-            log(os.popen("cd %s; ls -la" % os.path.dirname(self.userStorageDirectory)).read())
-            torrentFile = os.path.join(self.userStorageDirectory, 'shiiiiit')
-            localFile = xbmcvfs.File(torrentFile, "w+b")
-            localFile.write('HELLO')
-            localFile.close()
-        except Exception, e:
-            log('lol didnt work2')
-            log(str(e))
-        try:
-            log(str(os.listdir(self.userStorageDirectory)))
-        except Exception, e:
-            log(str(e))
-
 
         xbmcgui.Dialog().ok('Dam Son!','Now send this shit to DiMartino')
 

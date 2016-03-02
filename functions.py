@@ -572,7 +572,7 @@ def view_style(func):
         styles['sectionMenu'] = styles['Seasons'] = 'list'
         styles['uTorrentBrowser'] = styles['torrentPlayer'] = styles['openTorrent'] = 'wide'
         styles['showFilesList'] = styles['DownloadStatus'] = 'wide'
-    elif view_style in [1, 4]:
+    elif view_style in [1, 4, 5]:
         styles['searchOption'] = 'info'
         styles['drawContent'] = styles['torrentPlayer'] = styles['openTorrent'] = styles['drawtrackerList'] = 'info'
         styles['uTorrentBrowser'] = styles['History'] = styles['DownloadStatus'] = 'wide'
@@ -583,8 +583,13 @@ def view_style(func):
         styles['uTorrentBrowser'] = styles['torrentPlayer'] = 'wide'
         styles['openTorrent'] = styles['History'] = styles['DownloadStatus'] = 'wide'
         styles['sectionMenu'] = 'icons'
+    elif view_style == 5:
+        styles['uTorrentBrowser'] = styles['torrentPlayer'] = 'wide'
+        styles['openTorrent'] = styles['History'] = styles['DownloadStatus'] = 'wide'
+        styles['drawtrackerList'] = styles['drawContent'] = styles['List'] = styles['sectionMenu'] = 'icons'
+        styles['searchOption'] = 'info'
 
-    if view_style in [1, 3, 4]:
+    if view_style in [1, 3, 4, 5]:
         num_skin = 0
     elif view_style == 2:
         num_skin = 1
