@@ -564,7 +564,7 @@ def jstr(s):
 
 def view_style(func):
     styles = {}
-    num_skin, style = 0, 'info'
+    num_skin = 0
     view_style = int(__settings__.getSetting("skin_optimization"))
     if view_style in [3, 2]:
         styles['searchOption'] = styles['History'] = styles['List'] = 'info'
@@ -593,6 +593,8 @@ def view_style(func):
         num_skin = 0
     elif view_style == 2:
         num_skin = 1
+    elif view_style == 6:
+        num_skin = 2
 
     style = styles.get(func)
     # debug('[view_style]: lock '+str(style))
@@ -603,7 +605,8 @@ def lockView(viewId='info', num_skin=0):
     xbmcplugin.setContent(int(sys.argv[1]), 'movies')
     skinOptimizations = (
         {'list': 50, 'info': 50, 'wide': 51, 'icons': 500, 'info3': 515, },  # Confluence
-        {'list': 50, 'info': 51, 'wide': 52, 'icons': 53, }  # Transperency!
+        {'list': 50, 'info': 51, 'wide': 52, 'icons': 53, },  # Transperency!
+        {'list': 55, 'info': 55, 'wide': 55, 'icons': 55, 'info3': 55, },  # Aeon Nox
     )
     try:
         xbmc.executebuiltin("Container.SetViewMode(%s)" % str(skinOptimizations[num_skin][viewId]))
