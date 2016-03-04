@@ -2,13 +2,12 @@
 '''
     Torrenter v2 plugin for XBMC/Kodi
     Copyright (C) 2012-2015 Vadim Skorba v1 - DiMartino v2
-    https://forums.tvaddons.ag/addon-releases/29224-torrenter-v2.html
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -297,7 +296,6 @@ class AnteoPlayer(xbmc.Player):
                                 break
                         self.contentId = self.next_contentId
                         continue
-
                     log('[AnteoPlayer]: ************************************* NO! break')
                 break
 
@@ -508,7 +506,7 @@ class AnteoPlayer(xbmc.Player):
 
         xbmc.sleep(2000)  # very important, do not edit this, podavan
         i = 0
-        while not xbmc.abortRequested or not self.isPlaying() or i < 50:
+        while not xbmc.abortRequested and not self.isPlaying() and i < 50:
             xbmc.sleep(200)
             i += 1
 
@@ -519,7 +517,6 @@ class AnteoPlayer(xbmc.Player):
         if self.seek > 0:
             log('[AnteoPlayer]: seekTime - '+str(self.seek))
             self.seekTime(self.seek)
-
         return True
 
     def setup_subs(self):

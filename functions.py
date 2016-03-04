@@ -566,7 +566,7 @@ def view_style(func):
     styles = {}
     num_skin = 0
     view_style = int(__settings__.getSetting("skin_optimization"))
-    if view_style in [3, 2]:
+    if view_style in [3, 2, 6]:
         styles['searchOption'] = styles['History'] = styles['List'] = 'info'
         styles['drawContent'] = styles['drawtrackerList'] = styles['drawcontentList'] = 'info'
         styles['sectionMenu'] = styles['Seasons'] = 'list'
