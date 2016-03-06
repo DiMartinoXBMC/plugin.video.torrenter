@@ -433,8 +433,19 @@ class Libtorrent:
         if self.save_resume_data:
             log('loading resume data')
             torrent_info['resume_data']=self.save_resume_data
+        else:
+            resume_file=self.resume_data_path()
+            if xbmcvfs.exists(resume_file):
+                log('loading resume data from file'+resume_file)
+                try:
+                    resumDataFile=xbmcvfs.File(resume_file,'rb')
+                    self.save_resume_data=resumDataFile.read()
+                    resumDataFile.close()
+                    torrent_info['resume_data']=self.save_resume_data
+    
+                except:
+                    log(' Failed to load resume data from file'+ resume_file)
         self.torrentHandle = self.session.add_torrent(torrent_info)
-
         self.torrentHandle.set_sequential_download(True)
         self.torrentHandle.set_max_connections(60)
         self.torrentHandle.set_max_uploads(-1)
@@ -443,6 +454,7 @@ class Libtorrent:
     def stopSession(self):
         for i in range(self.torrentFileInfo.num_pieces()):
             self.torrentHandle.piece_priority(i, 0)
+        self.resume_data()
 
     def continueSession(self, contentId=0, Offset=0, seeding=False, isMP4=False):
         self.piece_length = self.torrentFileInfo.piece_length()
@@ -479,17 +491,44 @@ class Libtorrent:
             self.session.stop_dht()
 
     def resume_data(self):
-        self.torrentHandle.save_resume_data()
-        received=False
-        while not received:   
-            self.session.wait_for_alert(1000)
-            a = self.session.pop_alert()
-            log('[save_resume_data]: ['+str(type(a))+'] the alert '+str(a)+' is received')
-            if type(a) == self.lt.save_resume_data_alert:
-                received = True
-                debug('[save_resume_data]: '+str(dir(a)))
-                self.save_resume_data=self.lt.bencode(a.resume_data)
-        log('[save_resume_data]: the torrent resume data are saved')
+        self.session.pause()
+        self.save_resume_data=None
+
+        try:
+            if not self.torrentHandle.is_valid():
+                return
+            status = self.torrentHandle.status()
+            if not status.has_metadata:
+                return
+            if not status.need_save_resume:
+                return
+    
+            log('[save_resume_data]: waiting for alert...')
+            self.torrentHandle.save_resume_data()
+            received=False
+            while not received:   
+                self.session.wait_for_alert(1000)
+                a = self.session.pop_alert()
+                log('[save_resume_data]: ['+str(type(a))+'] the alert '+str(a)+' is received')
+                if type(a) == self.lt.save_resume_data_alert:
+                    received = True
+                    debug('[save_resume_data]: '+str(dir(a)))
+                    self.save_resume_data=self.lt.bencode(a.resume_data)
+                    log('[save_resume_data]: the torrent resume data are received')
+                    try:
+                        resumeFileHandler = xbmcvfs.File(self.resume_data_path(), "w+b")
+                        resumeFileHandler.write(self.save_resume_data)
+                        resumeFileHandler.close()
+                        log('[save_resume_data]: the torrent resume data to file' + self.resume_data_path()) 
+                    except:
+                       log('[save_resume_data]: failed to save the torrent resume data to file') 
+                elif type(a) == self.lt.save_resume_data_failed_alert:
+                    received = True
+                    log('[save_resume_data]: save_resume_data() failed')
+            log('[save_resume_data]: done.')
+    
+        finally:
+            self.session.resume()
 
     def debug(self):
         #try:
@@ -564,3 +603,7 @@ class Libtorrent:
                 log("'%s':'%s'," % (attr, getattr(obj, attr)))
             except:
                 pass
+
+    def resume_data_path(self):
+        path=self.torrentFile + ".resume_data"
+        return path

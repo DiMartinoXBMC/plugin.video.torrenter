@@ -148,6 +148,9 @@ class TorrentPlayer(xbmc.Player):
         self.params = params
         self.get = self.params.get
         self.contentId = int(self.get("url"))
+        if self.get("seek"):
+            self.seek = int(self.get("seek"))
+            log('[TorrentPlayer] Seek='+str(self.seek))   
         self.torrent = Downloader.Torrent(self.userStorageDirectory, self.torrentUrl, self.torrentFilesDirectory).player
         try:
             if self.get("url2"):
@@ -347,13 +350,17 @@ class TorrentPlayer(xbmc.Player):
 
             xbmc.sleep(2000)  # very important, do not edit this, podavan
             i = 0
-            while not xbmc.abortRequested or not self.isPlaying() or i < 50:
+            while not xbmc.abortRequested and not self.isPlaying() and i < 50:
                 xbmc.sleep(200)
                 i += 1
 
             log('[TorrentPlayer]: self.isPlaying() = %s, i = %d, xbmc.abortRequested - %s' % (str(self.isPlaying()), i, str(xbmc.abortRequested)))
             if not self.isPlaying() or xbmc.abortRequested:
                 return False
+            if self.seek > 0:
+                log('[TorrentPlayer]: seekTime - '+str(self.seek))
+                self.seekTime(self.seek)
+
             return True
 
     def setup_subs(self, label, path):

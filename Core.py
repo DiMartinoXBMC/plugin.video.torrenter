@@ -548,7 +548,7 @@ class Core:
                     clDimgray = '[COLOR FF696969]%s[/COLOR]'
 
                     title = title + chr(10) + clDimgray % '(%s)' % foldername.encode('utf-8')
-                    if self.torrent_player == '2' and seek > 0:
+                    if self.torrent_player != '1' and seek > 0:
                         seek_text = '%02d:%02d:%02d' % ((seek / (60*60)), (seek / 60) % 60, seek % 60)
                         contextMenu = [(self.localize('Play (from %s)') % seek_text, ListString % ('WatchedHistory', 'playwithseek', 'addtime', str(addtime))),
                                        (self.localize('Play (from start)'), ListString % ('WatchedHistory', 'playnoseek', 'addtime', str(addtime))),]

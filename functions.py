@@ -1766,7 +1766,7 @@ def first_run_242():
             #                        Localization.localize('Torrent2HTTP enabled! Can be changed in Settings.'))
 
 def seeking_warning(seek):
-    if __settings__.getSetting('torrent_player')=='2':
+    if __settings__.getSetting('torrent_player')!='1':
         seek_point = '%02d:%02d:%02d' % ((seek / (60*60)), (seek / 60) % 60, seek % 60)
         yes=xbmcgui.Dialog().yesno('< %s >' % (Localization.localize('Seeking')),
             Localization.localize('Would you like to resume from %s?') % seek_point,)
