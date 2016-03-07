@@ -138,8 +138,8 @@ class Libtorrent:
                     try:
                         xbmcvfs.rename(torrentFile, newFile)
                     except Exception, e:
-                        print 'Unable to rename torrent file from "' + torrentFile + '" to "' + newFile + '" in Torrent::renameTorrent' + '. Exception: ' + str(
-                            e)
+                        log('Unable to rename torrent file from %s to %s in Torrent::renameTorrent. Exception: %s' %
+                            (torrentFile, newFile, str(e)))
                         return
                 self.torrentFile = newFile
                 if not self.torrentFileInfo:
@@ -436,7 +436,7 @@ class Libtorrent:
         else:
             resume_file=self.resume_data_path()
             if xbmcvfs.exists(resume_file):
-                log('loading resume data from file'+resume_file)
+                log('loading resume data from file '+resume_file)
                 try:
                     resumDataFile=xbmcvfs.File(resume_file,'rb')
                     self.save_resume_data=resumDataFile.read()
@@ -444,7 +444,7 @@ class Libtorrent:
                     torrent_info['resume_data']=self.save_resume_data
     
                 except:
-                    log(' Failed to load resume data from file'+ resume_file)
+                    log('Failed to load resume data from file '+ resume_file)
         self.torrentHandle = self.session.add_torrent(torrent_info)
         self.torrentHandle.set_sequential_download(True)
         self.torrentHandle.set_max_connections(60)
@@ -454,7 +454,6 @@ class Libtorrent:
     def stopSession(self):
         for i in range(self.torrentFileInfo.num_pieces()):
             self.torrentHandle.piece_priority(i, 0)
-        self.resume_data()
 
     def continueSession(self, contentId=0, Offset=0, seeding=False, isMP4=False):
         self.piece_length = self.torrentFileInfo.piece_length()
@@ -462,10 +461,8 @@ class Libtorrent:
         if not Offset:
             Offset = selectedFileInfo['size'] / (1024 * 1024)
         self.partOffset = (Offset * 1024 * 1024 / self.piece_length) + 1
-        # print 'partOffset ' + str(self.partOffset)+str(' ')
         self.startPart = selectedFileInfo['offset'] / self.piece_length
         self.endPart = int((selectedFileInfo['offset'] + selectedFileInfo['size']) / self.piece_length)
-        # print 'part ' + str(self.startPart)+ str(' ')+ str(self.endPart)
         multiplier = self.partOffset / 5
         log('continueSession: multiplier ' + str(multiplier))
         for i in range(self.startPart, self.startPart + self.partOffset):
@@ -473,13 +470,12 @@ class Libtorrent:
                 self.torrentHandle.piece_priority(i, 7)
                 if isMP4 and i % multiplier == 0:
                     self.torrentHandle.piece_priority(self.endPart - i / multiplier, 7)
-                    # print str(i)
                 if multiplier >= i:
                     self.torrentHandle.piece_priority(self.endPart - i, 7)
-                    # print str(i)
 
     def checkThread(self):
         if self.threadComplete == True:
+            self.resume_data()
             log('checkThread KIIIIIIIIIIILLLLLLLLLLLLLLL')
             try:
                 self.session.remove_torrent(self.torrentHandle)
@@ -491,6 +487,7 @@ class Libtorrent:
             self.session.stop_dht()
 
     def resume_data(self):
+        wasPaused=self.session.is_paused()
         self.session.pause()
         self.save_resume_data=None
 
@@ -504,7 +501,7 @@ class Libtorrent:
                 return
     
             log('[save_resume_data]: waiting for alert...')
-            self.torrentHandle.save_resume_data()
+            self.torrentHandle.save_resume_data(self.lt.save_resume_flags_t.flush_disk_cache)
             received=False
             while not received:   
                 self.session.wait_for_alert(1000)
@@ -528,19 +525,20 @@ class Libtorrent:
             log('[save_resume_data]: done.')
     
         finally:
-            self.session.resume()
+            if not wasPaused:
+                self.session.resume()
 
     def debug(self):
         #try:
         if 1==1:
-            # print str(self.getFilePath(0))
+            # log(str(self.getFilePath(0)))
             s = self.torrentHandle.status()
             #get_cache_status=self.session.get_cache_status()
             #log('get_cache_status - %s/%s' % (str(get_cache_status.blocks_written), str(get_cache_status.blocks_read)))
             # get_settings=self.torrentHandle.status
-            # print s.num_pieces
+            # log(s.num_pieces)
             #priorities = self.torrentHandle.piece_priorities()
-            #print str(priorities)
+            #log(str(priorities))
 
             state_str = ['queued', 'checking', 'downloading metadata',
                          'downloading', 'finished', 'seeding', 'allocating', 'checking fastresume']
@@ -562,11 +560,11 @@ class Libtorrent:
             #i = 0
             # for t in s.pieces:
             #    if t: i=i+1
-            #print str(self.session.pop_alert())
-            # print str(s.pieces[self.startPart:self.endPart])
-            # print 'True pieces: %d' % i
-            # print s.current_tracker
-            # print str(s.pieces)
+            #log(str(self.session.pop_alert())
+            # log(str(s.pieces[self.startPart:self.endPart]))
+            # log('True pieces: %d' % i)
+            # log(s.current_tracker)
+            # log(str(s.pieces))
         #except:
         else:
             log('debug error')

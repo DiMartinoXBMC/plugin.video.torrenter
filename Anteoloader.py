@@ -39,8 +39,12 @@ from contextlib import contextmanager, closing, nested
 
 from functions import foldername, showMessage, clearStorage, WatchedHistoryDB, get_ids_video, log, debug, ensure_str
 
-from torrent2http import State, Engine, MediaType
-#from pyrrent2http import State, Engine, MediaType
+if sys.modules["__main__"].__settings__.getSetting("torrent_player") == '2':
+    from torrent2http import State, Engine, MediaType
+    author = 'Anteo'
+elif sys.modules["__main__"].__settings__.getSetting("torrent_player") == '3':
+    from pyrrent2http import State, Engine, MediaType
+    author = 'Inpos'
 
 ROOT = sys.modules["__main__"].__root__
 RESOURCES_PATH = os.path.join(ROOT, 'resources')
@@ -210,8 +214,8 @@ class AnteoLoader:
                     localFile.write(content)
                     localFile.close()
                 except Exception, e:
-                    print 'Unable to save torrent file from "' + torrentUrl + '" to "' + torrentFile + '" in Torrent::saveTorrent' + '. Exception: ' + str(
-                        e)
+                    log('Unable to rename torrent file from %s to %s in AnteoLoader::saveTorrent. Exception: %s' %
+                            (torrentUrl, torrentFile, str(e)))
                     return
         else:
             torrentFile = torrentUrl
@@ -239,7 +243,7 @@ class AnteoLoader:
             self.torrentFile = torrent.torrentFile
         except:
             self.torrentFile = magnet
-        log('[AnteoLoader][magnetToTorrent]: self.torrentFile '+str(self.torrentFile))
+        log('['+author+'Loader][magnetToTorrent]: self.torrentFile '+str(self.torrentFile))
 
 class AnteoPlayer(xbmc.Player):
     __plugin__ = sys.modules["__main__"].__plugin__
@@ -278,15 +282,15 @@ class AnteoPlayer(xbmc.Player):
             self.setup_nextep()
             while True:
                 if self.buffer():
-                    log('[AnteoPlayer]: ************************************* GOING LOOP')
+                    log('['+author+'Player]: ************************************* GOING LOOP')
                     if self.setup_play():
                         self.setup_subs()
                         self.loop()
                         WatchedHistoryDB().add(self.basename, foldername(self.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize)
                     else:
-                        log('[AnteoPlayer]: ************************************* break')
+                        log('['+author+'Player]: ************************************* break')
                         break
-                    log('[AnteoPlayer]: ************************************* GO NEXT?')
+                    log('['+author+'Player]: ************************************* GO NEXT?')
                     if self.next_dl and self.next_contentId != False and isinstance(self.next_contentId, int) and self.iterator == 100:
                         if not self.next_play:
                             xbmc.sleep(3000)
@@ -296,7 +300,7 @@ class AnteoPlayer(xbmc.Player):
                                 break
                         self.contentId = self.next_contentId
                         continue
-                    log('[AnteoPlayer]: ************************************* NO! break')
+                    log('['+author+'Player]: ************************************* NO! break')
                 break
 
         xbmc.Player().stop()
@@ -455,7 +459,7 @@ class AnteoPlayer(xbmc.Player):
         else:
             self.next_dl = False
         self.next_play = self.__settings__.getSetting('next_play') == 'true'
-        log('[AnteoPlayer]: next_dl - %s, next_play - %s, ids_video - %s' % (str(self.next_dl), str(self.next_play), str(self.ids_video)))
+        log('['+author+'Player]: next_dl - %s, next_play - %s, ids_video - %s' % (str(self.next_dl), str(self.next_play), str(self.ids_video)))
 
     def setup_play(self):
         file_status = self.engine.file_status(self.contentId)
@@ -474,7 +478,7 @@ class AnteoPlayer(xbmc.Player):
                 self.next_contentId = int(self.ids_video[next_contentId_index])
             else:
                 self.next_contentId = False
-            log('[AnteoPlayer][setup_play]: next_contentId: '+str(self.next_contentId))
+            log('['+author+'Player][setup_play]: next_contentId: '+str(self.next_contentId))
         try:
             seasonId = self.get("seasonId")
             self.episodeId = self.get("episodeId") if not self.episodeId else int(self.episodeId) + 1
@@ -494,7 +498,7 @@ class AnteoPlayer(xbmc.Player):
                                                            'season': int(seasonId),
                                                            'tvshowtitle': title})
         except:
-            log('[AnteoPlayer]: Operation INFO failed!')
+            log('['+author+'Player]: Operation INFO failed!')
 
         thumbnail = self.get("thumbnail")
         if thumbnail:
@@ -510,12 +514,12 @@ class AnteoPlayer(xbmc.Player):
             xbmc.sleep(200)
             i += 1
 
-        log('[AnteoPlayer]: self.isPlaying() = %s, i = %d, xbmc.abortRequested - %s' % (str(self.isPlaying()), i, str(xbmc.abortRequested)))
+        log('['+author+'Player]: self.isPlaying() = %s, i = %d, xbmc.abortRequested - %s' % (str(self.isPlaying()), i, str(xbmc.abortRequested)))
         if not self.isPlaying() or xbmc.abortRequested:
             return False
 
         if self.seek > 0:
-            log('[AnteoPlayer]: seekTime - '+str(self.seek))
+            log('['+author+'Player]: seekTime - '+str(self.seek))
             self.seekTime(self.seek)
         return True
 
@@ -622,7 +626,7 @@ class AnteoPlayer(xbmc.Player):
         if not status:
             status = self.engine.status()
         self.engine.check_torrent_error(status)
-        log('[AnteoPlayer]: %.2f%% complete (down: %.1f kb/s up: %.1f kb/s peers: %d) %s' % \
+        log('['+author+'Player]: %.2f%% complete (down: %.1f kb/s up: %.1f kb/s peers: %d) %s' % \
               (status.progress * 100, status.download_rate,
                status.upload_rate, status.num_peers, status.state_str))
 

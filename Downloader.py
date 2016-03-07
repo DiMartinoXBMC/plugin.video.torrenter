@@ -49,7 +49,7 @@ class Torrent():
             self.player = 'libtorrent'
         elif player == '1':
             self.player = 'acestream'
-        elif player == '2':
+        elif player == '2' or player == '3':
             self.player = 'anteo'
 
     def play_url_ind(self, ind, label, icon):
