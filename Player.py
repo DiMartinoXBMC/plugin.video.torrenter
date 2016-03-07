@@ -289,7 +289,7 @@ class TorrentPlayer(xbmc.Player):
         #self.torrent.torrentHandle.flush_cache()
         #self.torrent.session.remove_torrent(self.torrent.torrentHandle)
         self.torrent.resume_data()
-        self.torrent.session.remove_torrent(self.torrent.torrentHandle)
+        #self.torrent.session.remove_torrent(self.torrent.torrentHandle)
         progressBar.update(0)
         progressBar.close()
         return True

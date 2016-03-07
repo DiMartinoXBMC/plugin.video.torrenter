@@ -491,6 +491,7 @@ class Libtorrent:
             self.session.stop_dht()
 
     def resume_data(self):
+        wasPaused=self.session.is_paused()
         self.session.pause()
         self.save_resume_data=None
 
@@ -504,7 +505,7 @@ class Libtorrent:
                 return
     
             log('[save_resume_data]: waiting for alert...')
-            self.torrentHandle.save_resume_data()
+            self.torrentHandle.save_resume_data(self.lt.save_resume_flags_t.flush_disk_cache)
             received=False
             while not received:   
                 self.session.wait_for_alert(1000)
@@ -528,7 +529,8 @@ class Libtorrent:
             log('[save_resume_data]: done.')
     
         finally:
-            self.session.resume()
+            if not wasPaused:
+                self.session.resume()
 
     def debug(self):
         #try:
