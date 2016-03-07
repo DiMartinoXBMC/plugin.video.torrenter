@@ -186,39 +186,39 @@ class AnteoLoader:
         return filelist
 
     def saveTorrent(self, torrentUrl):
-        if not xbmcvfs.exists(torrentUrl) or re.match("^http.+$", torrentUrl):
-            if re.match("^magnet\:.+$", torrentUrl):
-                self.magnetLink = torrentUrl
-                self.magnetToTorrent(torrentUrl)
-                self.magnetLink = None
-                return self.torrentFile
-            else:
-                if not xbmcvfs.exists(self.torrentFilesPath): xbmcvfs.mkdirs(self.torrentFilesPath)
-                torrentFile = os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent')
-                try:
-                    if not re.match("^http\:.+$", torrentUrl):
-                        content = xbmcvfs.File(torrentUrl, "rb").read()
-                    else:
-                        request = urllib2.Request(torrentUrl)
-                        request.add_header('Referer', torrentUrl)
-                        request.add_header('Accept-encoding', 'gzip')
-                        result = urllib2.urlopen(request)
-                        if result.info().get('Content-Encoding') == 'gzip':
-                            buf = StringIO(result.read())
-                            f = gzip.GzipFile(fileobj=buf)
-                            content = f.read()
-                        else:
-                            content = result.read()
-
-                    localFile = xbmcvfs.File(torrentFile, "w+b")
-                    localFile.write(content)
-                    localFile.close()
-                except Exception, e:
-                    log('Unable to rename torrent file from %s to %s in AnteoLoader::saveTorrent. Exception: %s' %
-                            (torrentUrl, torrentFile, str(e)))
-                    return
+        #if not xbmcvfs.exists(torrentUrl) or re.match("^http.+$", torrentUrl):
+        if re.match("^magnet\:.+$", torrentUrl):
+            self.magnetLink = torrentUrl
+            self.magnetToTorrent(torrentUrl)
+            self.magnetLink = None
+            return self.torrentFile
         else:
-            torrentFile = torrentUrl
+            if not xbmcvfs.exists(self.torrentFilesPath): xbmcvfs.mkdirs(self.torrentFilesPath)
+            torrentFile = os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent')
+            try:
+                if not re.match("^http\:.+$", torrentUrl):
+                    content = xbmcvfs.File(torrentUrl, "rb").read()
+                else:
+                    request = urllib2.Request(torrentUrl)
+                    request.add_header('Referer', torrentUrl)
+                    request.add_header('Accept-encoding', 'gzip')
+                    result = urllib2.urlopen(request)
+                    if result.info().get('Content-Encoding') == 'gzip':
+                        buf = StringIO(result.read())
+                        f = gzip.GzipFile(fileobj=buf)
+                        content = f.read()
+                    else:
+                        content = result.read()
+
+                localFile = xbmcvfs.File(torrentFile, "w+b")
+                localFile.write(content)
+                localFile.close()
+            except Exception, e:
+                log('Unable to rename torrent file from %s to %s in AnteoLoader::saveTorrent. Exception: %s' %
+                        (torrentUrl, torrentFile, str(e)))
+                return
+        #else:
+            #torrentFile = torrentUrl
         if xbmcvfs.exists(torrentFile) and not os.path.exists(torrentFile):
             if not xbmcvfs.exists(self.torrentFilesPath): xbmcvfs.mkdirs(self.torrentFilesPath)
             torrentFile = os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent')
