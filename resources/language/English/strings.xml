@@ -65,6 +65,7 @@
     <string id="30065">Do not add to Watched History if played more (%)</string>
     <string id="30066">Confluence (by safonov_ivan)</string>
     <string id="30067">Aeon Nox (by joyrider)</string>
+    <string id="30068">pyrrent2http (python-libtorrent via http)</string>
     <string id="30101">Interface</string>
     <string id="30102">P2P Network</string>
     <string id="30103">Advanced</string>

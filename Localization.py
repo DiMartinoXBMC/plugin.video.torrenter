@@ -539,7 +539,7 @@ def localize(text):
             'Please, restart Kodi now!':'Теперь перезагрузите Коди, пожалуйста!',
             './ (Root folder)':'./ (Корневой каталог)',
             'Opening torrent file':'Открытие torrent-файла',
-            'New player to Torrenter v2 - Torrent2HTTP! It should be faster, stable and better with Android, also seeking works in it.':'В Torrenter новый плеер - Torrent2HTTP! Он стабильнее, быстрее и отлично ладит с Android, в нем работает перемотка.',
+            'New player to Torrenter v2 - pyrrent2http! Advantages of Torrent2HTTP but with python-libtorrent library instead of libtorrent-go!':'В Torrenter новый плеер - pyrrent2http! Преимущества Torrent2HTTP, но на библиотеке python-libtorrent вместо libtorrent-go!',
             'Would you like to try it?':'Хотите его попробовать?',
             'Torrent2HTTP enabled! Can be changed in Settings.':'Torrent2HTTP включен! Можно изменить в Настройках.',
             'Seeking':'Перемотка',

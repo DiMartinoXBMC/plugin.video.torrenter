@@ -39,8 +39,12 @@ from contextlib import contextmanager, closing, nested
 
 from functions import foldername, showMessage, clearStorage, WatchedHistoryDB, get_ids_video, log, debug, ensure_str
 
-from torrent2http import State, Engine, MediaType
-#from pyrrent2http import State, Engine, MediaType
+if sys.modules["__main__"].__settings__.getSetting("torrent_player") == '2':
+    from torrent2http import State, Engine, MediaType
+    author = 'Anteo'
+elif sys.modules["__main__"].__settings__.getSetting("torrent_player") == '3':
+    from pyrrent2http import State, Engine, MediaType
+    author = 'Inpos'
 
 ROOT = sys.modules["__main__"].__root__
 RESOURCES_PATH = os.path.join(ROOT, 'resources')

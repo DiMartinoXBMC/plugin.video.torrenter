@@ -35,7 +35,7 @@ class Core:
     userStorageDirectory = file_encode(__settings__.getSetting("storage"))
     torrentFilesDirectory = 'torrents'
     debug = __settings__.getSetting('debug') == 'true'
-    torrent_player=__settings__.getSetting("torrent_player")
+    torrent_player = __settings__.getSetting("torrent_player")
     history_bool = __settings__.getSetting('history') == 'true'
     open_option = int(__settings__.getSetting('open_option'))
     language = {0: 'en', 1: 'ru', 2: 'uk', 3: 'he'}.get(int(__settings__.getSetting("language")))
@@ -54,7 +54,7 @@ class Core:
     def sectionMenu(self):
         if self.__settings__.getSetting('plugin_name') != self.__plugin__:
             #Every update run
-            first_run_242()
+            first_run_250()
             self.__settings__.setSetting('plugin_name', self.__plugin__)
             #check_network_advancedsettings()
             check_download_dir()
@@ -100,7 +100,7 @@ class Core:
                       image=self.ROOT + '/icons/torrentPlayer.png')
         self.drawItem('< %s >' % self.localize('Search Control Window'), 'controlCenter',
                       image=self.ROOT + '/icons/settings.png', isFolder=False)
-        self.drawItem('< %s >' % self.localize('Magnet-link Player'), 'magentPlayer',#if self.torrent_player!='1':
+        self.drawItem('< %s >' % self.localize('Magnet-link Player'), 'magentPlayer',
                       image=self.ROOT + '/icons/magnet.png')
         if self.debug:
             self.drawItem('full_download', 'full_download', image=self.ROOT + '/icons/magnet.png')
@@ -1413,7 +1413,7 @@ class Core:
                 self.Player = TorrentPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
             else:
                 log(self.__plugin__ + " Unexpected access to method playTorrent() without torrent content")
-        elif self.torrent_player == '2':
+        elif self.torrent_player == '2' or self.torrent_player == '3':
             from Anteoloader import AnteoPlayer
             if 0 != len(torrentUrl):
                 self.Player = AnteoPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)

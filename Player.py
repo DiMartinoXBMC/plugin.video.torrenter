@@ -259,7 +259,7 @@ class TorrentPlayer(xbmc.Player):
             downloadedSize = self.torrent.torrentHandle.file_progress()[self.contentId]
             status = self.torrent.torrentHandle.status()
             iterator = int(status.progress * 100)
-            if status.state == 0 or (status.progress == 0 and status.num_pieces > 0):
+            if status.state in [0, 1] or (status.progress == 0 and status.num_pieces > 0):
                 iterator = int(status.num_pieces * 100 / num_pieces)
                 if iterator > 99: iterator = 99
                 progressBar.update(iterator, self.localize('Checking preloaded files...'), ' ', ' ')
@@ -286,8 +286,6 @@ class TorrentPlayer(xbmc.Player):
                 self.torrent.checkThread()
                 return
             xbmc.sleep(1000)
-        #self.torrent.torrentHandle.flush_cache()
-        #self.torrent.session.remove_torrent(self.torrent.torrentHandle)
         self.torrent.resume_data()
         #self.torrent.session.remove_torrent(self.torrent.torrentHandle)
         progressBar.update(0)

@@ -1749,15 +1749,15 @@ def first_run_231():
             xbmc.executebuiltin('Dialog.Close(all,true)')
             xbmc.executebuiltin('XBMC.ActivateWindow(Addonbrowser,addons://search/%s)' % ('Torrenter Searcher'))
 
-def first_run_242():
-    if __settings__.getSetting('torrent_player')=='2':
-        __settings__.setSetting('first_run_242','True')
+def first_run_250():
+    if __settings__.getSetting('torrent_player')=='3':
+        __settings__.setSetting('first_run_250','True')
 
-    if not __settings__.getSetting('first_run_242')=='True':
-        __settings__.setSetting('first_run_242','True')
-        yes=xbmcgui.Dialog().yesno('< %s >' % (Localization.localize('Torrenter Update ') + '2.4.2'),
-                                        Localization.localize('New player to Torrenter v2 - Torrent2HTTP! It should be faster, '
-                                                              'stable and better with Android, also seeking works in it.'),
+    if not __settings__.getSetting('first_run_250')=='True':
+        __settings__.setSetting('first_run_250','True')
+        yes=xbmcgui.Dialog().yesno('< %s >' % (Localization.localize('Torrenter Update ') + '2.5.0'),
+                                        Localization.localize('New player to Torrenter v2 - pyrrent2http! Advantages of Torrent2HTTP '
+                                                              'but with python-libtorrent library instead of libtorrent-go!'),
                                         Localization.localize('Would you like to try it?'),)
         if yes:
             __settings__.openSettings()
