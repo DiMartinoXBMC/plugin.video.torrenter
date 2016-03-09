@@ -1627,7 +1627,10 @@ class Core:
 
         try:
         #if 1==1:
-            sdata = json.loads(sdata)
+            try:
+                sdata = json.loads(sdata)
+            except:
+                sdata = json.loads(urllib.unquote_plus(sdata))
             if len(filesList) < 1:
                 xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
                 if not silent:
@@ -1879,8 +1882,13 @@ class Core:
         external = unquote(get("external"), None)
         subaction = unquote(get("subaction"), None)
         url = unquote(get("url"),'')
-        sdata = json.loads(urllib.unquote_plus(get("sdata")))
+        sdata = unquote(get("sdata"),'{}')
         back_url = unquote(get("back_url"),'')
+
+        try:
+            sdata = json.loads(sdata)
+        except:
+            sdata = json.loads(urllib.unquote_plus(sdata))
 
         self.__settings__.setSetting("lastTorrentUrl", url)
 
