@@ -428,7 +428,7 @@ class Libtorrent:
                        #'storage_mode': self.lt.storage_mode_t(1),
                        'paused': False,
                        #'auto_managed': False,
-                       #'duplicate_is_error': True
+                       'duplicate_is_error': False
                       }
         if self.save_resume_data:
             log('loading resume data')
