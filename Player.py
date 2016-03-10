@@ -287,7 +287,7 @@ class TorrentPlayer(xbmc.Player):
                 return
             xbmc.sleep(1000)
         self.torrent.resume_data()
-        #self.torrent.session.remove_torrent(self.torrent.torrentHandle)
+        self.torrent.session.remove_torrent(self.torrent.torrentHandle)
         progressBar.update(0)
         progressBar.close()
         return True
@@ -366,6 +366,7 @@ class TorrentPlayer(xbmc.Player):
         subs = self.torrent.getSubsIds(label)
         debug('[setup_subs] subs: '+str(subs))
         if len(subs) > 0:
+            self.torrent.startSession()
             showMessage(self.localize('Information'),
                         self.localize('Downloading and copy subtitles. Please wait.'), forced=True)
             for ind, title in subs:
