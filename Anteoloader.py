@@ -22,7 +22,7 @@ import urllib2
 import hashlib
 import re
 from StringIO import StringIO
-import gzip
+import zlib
 
 import xbmc
 import xbmcgui
@@ -205,8 +205,8 @@ class AnteoLoader:
                     result = urllib2.urlopen(request)
                     if result.info().get('Content-Encoding') == 'gzip':
                         buf = StringIO(result.read())
-                        f = gzip.GzipFile(fileobj=buf)
-                        content = f.read()
+                        decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
+                        content = decomp.decompress(buf.getvalue())
                     else:
                         content = result.read()
 
