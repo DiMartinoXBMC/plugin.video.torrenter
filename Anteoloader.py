@@ -165,7 +165,8 @@ class AnteoLoader:
                 else Localization.localize('Opening torrent file')
             while not files and not xbmc.abortRequested and iterator < 100:
                 files = self.engine.list()
-                self.engine.check_torrent_error()
+                #self.engine.check_torrent_error()
+                if len(files) == 0: break
                 if iterator==4:
                     progressBar = xbmcgui.DialogProgress()
                     progressBar.create(Localization.localize('Please Wait'),
