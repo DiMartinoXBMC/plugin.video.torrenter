@@ -20,15 +20,20 @@ def shelf(filename, ttl=0):
     filename = os.path.join(CACHE_DIR, filename)
     with LOCKS.get(filename, threading.RLock()):
 #        with closing(shelve.open(filename, writeback=True)) as d:
-        import time
-        if not dict(d):
-            d.update({
-                "created_at": time.time(),
-                "data": {},
-            })
-        elif ttl > 0 and (time.time() - d["created_at"]) > ttl:
-            d["data"] = {}
-        return d
+        d = shelve.open(filename, writeback=True)
+        try:
+            import time
+            if not dict(d):
+                d.update({
+                    "created_at": time.time(),
+                    "data": {},
+                })
+            elif ttl > 0 and (time.time() - d["created_at"]) > ttl:
+                d["data"] = {}
+            return d
+        except:
+            d.close()
+            raise
 
 _config = {}
 
