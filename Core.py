@@ -276,7 +276,19 @@ class Core:
         #    self.Downloader.__exit__()
         #self.Player = AnteoPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
 
-        xbmcgui.Dialog().ok('Dam Son!','Now send this shit to DiMartino')
+        #xbmcgui.Dialog().ok('Dam Son!','Now send this shit to DiMartino')
+        from resources.proxy import antizapret
+        filename = os.path.join(tempdir(),"antizapret.pac_config")
+        import shelve
+        from contextlib import contextmanager, closing
+        with closing(shelve.open(filename, writeback=True)) as d:
+            import time
+            log(str(d))
+            log(str(time.time()))
+            log(str((time.time() - d["created_at"])))
+            ttl = 24*3600
+            if ttl > 0 and (time.time() - d["created_at"]) > ttl:
+                log('xxx')
 
     def DownloadStatus(self, params={}):
         db = DownloadDB()
