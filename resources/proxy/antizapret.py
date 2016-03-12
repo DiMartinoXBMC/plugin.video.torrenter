@@ -21,7 +21,7 @@ def shelf(filename, ttl=0):
     with LOCKS.get(filename, threading.RLock()):
         with closing(shelve.open(filename, writeback=True)) as d:
             import time
-            if not d:
+            if not dict(d):
                 d.update({
                     "created_at": time.time(),
                     "data": {},
