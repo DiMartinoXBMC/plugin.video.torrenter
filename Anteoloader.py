@@ -22,7 +22,7 @@ import urllib2
 import hashlib
 import re
 from StringIO import StringIO
-import gzip
+import zlib
 
 import xbmc
 import xbmcgui
@@ -153,6 +153,14 @@ class AnteoLoader:
             return string
 
     def getContentList(self):
+        try:
+            from Libtorrent import Libtorrent
+            torrent = Libtorrent(self.storageDirectory, self.torrentFile)
+            return torrent.getContentList()
+        except:
+            return self.getContentList_engine()
+
+    def getContentList_engine(self):
         self.setup_engine()
         files = []
         filelist = []
@@ -207,8 +215,8 @@ class AnteoLoader:
                     result = urllib2.urlopen(request)
                     if result.info().get('Content-Encoding') == 'gzip':
                         buf = StringIO(result.read())
-                        f = gzip.GzipFile(fileobj=buf)
-                        content = f.read()
+                        decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
+                        content = decomp.decompress(buf.getvalue())
                     else:
                         content = result.read()
 

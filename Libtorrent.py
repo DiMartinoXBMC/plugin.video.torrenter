@@ -24,7 +24,7 @@ import urllib2
 import hashlib
 import re
 from StringIO import StringIO
-import gzip
+import zlib
 import sys
 
 import xbmc
@@ -108,8 +108,8 @@ class Libtorrent:
                     result = urllib2.urlopen(request)
                     if result.info().get('Content-Encoding') == 'gzip':
                         buf = StringIO(result.read())
-                        f = gzip.GzipFile(fileobj=buf)
-                        content = f.read()
+                        decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
+                        content = decomp.decompress(buf.getvalue())
                     else:
                         content = result.read()
 
@@ -154,7 +154,7 @@ class Libtorrent:
             'storage_mode': self.lt.storage_mode_t(0),
             'paused': True,
             #'auto_managed': True,
-            #'duplicate_is_error': True
+            'duplicate_is_error': False
         }
         progressBar = xbmcgui.DialogProgress()
         progressBar.create(Localization.localize('Please Wait'), Localization.localize('Magnet-link is converting'))
@@ -428,7 +428,7 @@ class Libtorrent:
                        #'storage_mode': self.lt.storage_mode_t(1),
                        'paused': False,
                        #'auto_managed': False,
-                       'duplicate_is_error': False
+                       #'duplicate_is_error': True
                       }
         if self.save_resume_data:
             log('loading resume data')
