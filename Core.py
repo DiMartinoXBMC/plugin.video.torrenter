@@ -1473,70 +1473,57 @@ class Core:
 
     def openTorrent(self, params={}):
         get = params.get
-        external = unquote(get("external"),None)
-        silent = get("silent")
-        not_download_only = get("not_download_only") == 'False'
         tdir = unquote(get("url2"),None)
         thumbnail = unquote(get("thumbnail"),'')
         save_folder = unquote(get("save_folder"),'')
         url = urllib.unquote_plus(get("url"))
+
         self.__settings__.setSetting("lastTorrentUrl", url)
         classMatch = re.search('(\w+)::(.+)', url)
         if classMatch:
             searcher = classMatch.group(1)
             url = Searchers().downloadWithSearcher(classMatch.group(2), searcher)
-        self.__settings__.setSetting("lastTorrentUrl", url)
-        if not_download_only:
-            if re.match("^http.+$", url):
-                torrentFile = self.saveUrlTorrent(url)
-                if torrentFile: url = torrentFile
             self.__settings__.setSetting("lastTorrent", url)
-            return
+
         torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
         if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
                                                      torrentFilesDirectory=self.torrentFilesDirectory)
         self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
-        self.__settings__.setSetting("lastTime", str(int(time.time())))
-        if silent != 'true':
-            if external:
-                fileIndex = chooseFile(torrent.getContentList())
-                if fileIndex:
-                    xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url=' + fileIndex + '")')
-            else:
-                contentList = []
-                for filedict in torrent.getContentList():
-                    fileTitle = filedict.get('title')
-                    if filedict.get('size'):
-                        fileTitle += ' [%d MB]' % (filedict.get('size') / 1024 / 1024)
-                    contentList.append((unescape(fileTitle), str(filedict.get('ind'))))
-                contentList = sorted(contentList, key=lambda x: x[0])
 
-                dirList, contentListNew = cutFolder(contentList, tdir)
+        contentList = []
+        for filedict in torrent.getContentList():
+            fileTitle = filedict.get('title')
+            if filedict.get('size'):
+                fileTitle += ' [%d MB]' % (filedict.get('size') / 1024 / 1024)
+            contentList.append((unescape(fileTitle), str(filedict.get('ind'))))
+        contentList = sorted(contentList, key=lambda x: x[0])
 
-                for title in dirList:
-                    self.drawItem(title, 'openTorrent', url, image=thumbnail, isFolder=True, action2=title)
+        dirList, contentListNew = cutFolder(contentList, tdir)
 
-                ids_video_result = get_ids_video(contentListNew)
-                ids_video=''
+        for title in dirList:
+            self.drawItem(title, 'openTorrent', url, image=thumbnail, isFolder=True, action2=title)
 
-                if len(ids_video_result)>0:
-                    for identifier in ids_video_result:
-                        ids_video = ids_video + str(identifier) + ','
+        ids_video_result = get_ids_video(contentListNew)
+        ids_video=''
 
-                for title, identifier in contentListNew:
-                    contextMenu = [
-                        (self.localize('Download via T-client'),
-                         'XBMC.RunPlugin(%s)' % ('%s?action=%s&ind=%s') % (
-                         sys.argv[0], 'downloadFilesList', str(identifier))),
-                        (self.localize('Download via Libtorrent'),
-                         'XBMC.RunPlugin(%s)' % ('%s?action=%s&ind=%s') % (
-                         sys.argv[0], 'downloadLibtorrent', str(identifier))),
-                    ]
-                    link = {'url': identifier, 'thumbnail': thumbnail, 'save_folder':save_folder}
-                    self.drawItem(title, 'playTorrent', link, image=thumbnail, isFolder=False,
-                                  action2=ids_video.rstrip(','), contextMenu=contextMenu, replaceMenu=False)
-                view_style('openTorrent')
-                xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+        if len(ids_video_result)>0:
+            for identifier in ids_video_result:
+                ids_video = ids_video + str(identifier) + ','
+
+        for title, identifier in contentListNew:
+            contextMenu = [
+                (self.localize('Download via T-client'),
+                 'XBMC.RunPlugin(%s)' % ('%s?action=%s&ind=%s') % (
+                 sys.argv[0], 'downloadFilesList', str(identifier))),
+                (self.localize('Download via Libtorrent'),
+                 'XBMC.RunPlugin(%s)' % ('%s?action=%s&ind=%s') % (
+                 sys.argv[0], 'downloadLibtorrent', str(identifier))),
+            ]
+            link = {'url': identifier, 'thumbnail': thumbnail, 'save_folder':save_folder}
+            self.drawItem(title, 'playTorrent', link, image=thumbnail, isFolder=False,
+                          action2=ids_video.rstrip(','), contextMenu=contextMenu, replaceMenu=False)
+        view_style('openTorrent')
+        xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
     def openSection(self, params={}):
         get = params.get

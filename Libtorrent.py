@@ -154,7 +154,7 @@ class Libtorrent:
             'storage_mode': self.lt.storage_mode_t(0),
             'paused': True,
             #'auto_managed': True,
-            #'duplicate_is_error': True
+            'duplicate_is_error': False
         }
         progressBar = xbmcgui.DialogProgress()
         progressBar.create(Localization.localize('Please Wait'), Localization.localize('Magnet-link is converting'))
