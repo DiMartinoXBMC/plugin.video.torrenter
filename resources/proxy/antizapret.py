@@ -29,6 +29,7 @@ def shelf(filename, ttl=0):
                     "data": {},
                 })
             elif ttl > 0 and (time.time() - d["created_at"]) > ttl:
+                d["created_at"] = time.time()
                 d["data"] = {}
             return d
         except:
