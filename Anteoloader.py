@@ -153,6 +153,14 @@ class AnteoLoader:
             return string
 
     def getContentList(self):
+        try:
+            from Libtorrent import Libtorrent
+            torrent = Libtorrent(self.storageDirectory, self.torrentFile)
+            return torrent.getContentList()
+        except:
+            return self.getContentList_engine()
+
+    def getContentList_engine(self):
         self.setup_engine()
         files = []
         filelist = []
