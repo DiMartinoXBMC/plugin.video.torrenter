@@ -42,7 +42,7 @@ def config():
                     pac_data = urllib2.urlopen(PAC_URL).read()
                 except:
                     pac_data = ""
-
+                log("[antizapret]: +++++++++++ pac_data %s" % (repr(pac_data),))
                 r = re.search(r"\"PROXY (.*); DIRECT", pac_data)
                 if r:
                     pac_config["server"] = r.group(1)
