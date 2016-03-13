@@ -42,7 +42,7 @@ def config():
     global _config
     if not _config:
 #        with shelf("antizapret.pac_config", ttl=CACHE) as pac_config:
-        d = shelf("antizapret.pac_config", ttl=CACHE)
+        d = shelf("antizapret.pac_config2", ttl=CACHE)
         pac_config = d['data']
         if not pac_config:
             log("[antizapret]: Fetching Antizapret PAC file on %s" %PAC_URL)

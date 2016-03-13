@@ -244,7 +244,7 @@ class TorrentPlayer(xbmc.Player):
     def buffer(self):
         iterator = 0
         progressBar = xbmcgui.DialogProgress()
-        progressBar.create(self.localize('Please Wait') + str(' [%s]' % str(self.torrent.lt.version)),
+        progressBar.create('[python-libtorrent %s] - ' % str(self.torrent.lt.version) + self.localize('Please Wait'),
                            self.localize('Seeds searching.'))
         if self.subs_dl:
             subs = self.torrent.getSubsIds(os.path.basename(self.path))
