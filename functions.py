@@ -1966,7 +1966,6 @@ def check_network_advancedsettings():
             log('UPDATE advancedsettings.xml disabled by user!')
 
 def get_download_dir():
-    from platform_pulsar import get_platform
     import tempfile
     platform = get_platform()
 
@@ -2060,3 +2059,36 @@ def localize_path(path):
     if not sys.platform.startswith('win'):
         path = path.encode(True and sys.getfilesystemencoding() or 'utf-8')
     return path
+
+def get_platform():
+    ret = {
+        "arch": sys.maxsize > 2 ** 32 and "x64" or "x86",
+    }
+    if xbmc.getCondVisibility("system.platform.android"):
+        ret["os"] = "android"
+        if "arm" in os.uname()[4] or "aarch64" in os.uname()[4]:
+            ret["arch"] = "arm"
+    elif xbmc.getCondVisibility("system.platform.linux"):
+        ret["os"] = "linux"
+        uname=os.uname()[4]
+        if "arm" in uname:
+            if "armv7" in uname:
+                ret["arch"] = "armv7"
+            elif "armv6" in uname:
+                ret["arch"] = "armv6"
+            else:
+                ret["arch"] = "arm"
+        elif "mips" in uname:
+            if sys.maxunicode > 65536:
+                ret["arch"] = 'mipsel_ucs4'
+            else:
+                ret["arch"] = 'mipsel_ucs2'
+    elif xbmc.getCondVisibility("system.platform.windows"):
+        ret["os"] = "windows"
+    elif xbmc.getCondVisibility("system.platform.osx"):
+        ret["os"] = "darwin"
+    elif xbmc.getCondVisibility("system.platform.ios"):
+        ret["os"] = "ios"
+        ret["arch"] = "arm"
+
+    return ret

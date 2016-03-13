@@ -32,8 +32,7 @@ import xbmcgui
 import xbmcvfs
 import Localization
 from functions import isSubtitle, DownloadDB, log, debug, is_writable,\
-    vista_check, windows_check, localize_path
-from platform_pulsar import get_platform
+    vista_check, windows_check, localize_path, get_platform
 
 class Libtorrent:
     magnetLink = None
@@ -76,9 +75,6 @@ class Libtorrent:
 
         except Exception, e:
             log('Error importing from system. Exception: ' + str(e))
-            xbmcgui.Dialog().ok(Localization.localize('python-libtorrent Not Found'),
-                                Localization.localize(self.platform["message"][0]),
-                                Localization.localize(self.platform["message"][1]))
             return
 
         if xbmcvfs.exists(torrentFile):
