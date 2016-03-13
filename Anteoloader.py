@@ -290,7 +290,8 @@ class AnteoPlayer(xbmc.Player):
         #self.torrent = AnteoLoader(self.userStorageDirectory, self.torrentUrl, self.torrentFilesDirectory)
         self.init()
         self.setup_engine()
-        with closing(self.engine):
+        #with closing(self.engine):
+        try:
             self.engine.start(self.contentId)
             self.setup_nextep()
             while True:
@@ -315,6 +316,12 @@ class AnteoPlayer(xbmc.Player):
                         continue
                     log('['+author+'Player]: ************************************* NO! break')
                 break
+        except Exception, e:
+            import traceback
+            log('['+author+'Player]: ' + str(e))
+            log(traceback.format_exc())
+        finally:
+            self.engine.close()
 
         xbmc.Player().stop()
 
