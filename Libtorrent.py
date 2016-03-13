@@ -31,7 +31,8 @@ import xbmc
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import file_encode, isSubtitle, DownloadDB, log, debug, is_writable, vista_check, windows_check
+from functions import isSubtitle, DownloadDB, log, debug, is_writable,\
+    vista_check, windows_check, localize_path
 from platform_pulsar import get_platform
 
 class Libtorrent:
@@ -127,7 +128,7 @@ class Libtorrent:
                     log('Exception: ' + str(e))
                     xbmcvfs.delete(torrentFile)
                     return
-                baseName = file_encode(os.path.basename(self.getFilePath()))
+                baseName = localize_path(os.path.basename(self.getFilePath()))
                 if not xbmcvfs.exists(self.torrentFilesPath):
                     xbmcvfs.mkdirs(self.torrentFilesPath)
                 newFile = self.torrentFilesPath + self.md5(baseName) + '.' + self.md5(
@@ -240,7 +241,7 @@ class Libtorrent:
     def getContentList(self):
         filelist = []
         for contentId, contentFile in enumerate(self.torrentFileInfo.files()):
-            stringdata = {"title": contentFile.path, "size": contentFile.size, "ind": int(contentId),
+            stringdata = {"title": localize_path(contentFile.path), "size": contentFile.size, "ind": int(contentId),
                           'offset': contentFile.offset}
             filelist.append(stringdata)
         return filelist

@@ -2000,8 +2000,8 @@ def ensure_str(string, encoding='utf-8'):
 
 def file_url(torrentFile):
     import urlparse
-    if not re.match("^file\:.+$", torrentFile) and os.path.exists(torrentFile):
-        torrentFile = urlparse.urljoin('file:', urllib.pathname2url(ensure_str(torrentFile)))
+    if not re.match("^file\:.+$", torrentFile) and xbmcvfs.exists(torrentFile):
+        torrentFile = urlparse.urljoin('file:', urllib.pathname2url(torrentFile))
     return torrentFile
 
 def dump(obj):
@@ -2032,3 +2032,31 @@ def foldername(path):
     else:
         foldername = ''
     return foldername
+
+def uri2path(uri):
+    import urlparse
+    if uri[1] == ':' and sys.platform.startswith('win'):
+        uri = 'file:///' + uri
+    fileUri = urlparse.urlparse(uri)
+    if fileUri.scheme == 'file':
+        uriPath = fileUri.path
+        if uriPath != '' and sys.platform.startswith('win') and (os.path.sep == uriPath[0] or uriPath[0] == '/'):
+            uriPath = uriPath[1:]
+    absPath = os.path.abspath(urllib.unquote(uriPath))
+    return localize_path(absPath)
+
+def normalize_msg(tmpl, *args):
+    import chardet
+    msg = isinstance(tmpl, unicode) and tmpl or tmpl.decode(chardet.detect(tmpl)['encoding'])
+    arg_ = []
+    for a in args:
+        if not isinstance(a, unicode): arg_.append(a.decode(chardet.detect(a)['encoding']))
+    return msg % tuple(arg_)
+
+
+def localize_path(path):
+    import chardet
+    if not isinstance(path, unicode): path = path.decode(chardet.detect(path)['encoding'])
+    if not sys.platform.startswith('win'):
+        path = path.encode(True and sys.getfilesystemencoding() or 'utf-8')
+    return path

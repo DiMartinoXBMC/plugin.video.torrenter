@@ -31,8 +31,8 @@ from functions import *
 class Core:
     __plugin__ = sys.modules["__main__"].__plugin__
     __settings__ = sys.modules["__main__"].__settings__
-    ROOT = sys.modules["__main__"].__root__  #.decode('utf-8').encode(sys.getfilesystemencoding())
-    userStorageDirectory = file_encode(__settings__.getSetting("storage"))
+    ROOT = sys.modules["__main__"].__root__
+    userStorageDirectory = localize_path(__settings__.getSetting("storage"))#file_encode(__settings__.getSetting("storage"))
     torrentFilesDirectory = 'torrents'
     debug = __settings__.getSetting('debug') == 'true'
     torrent_player = __settings__.getSetting("torrent_player")
