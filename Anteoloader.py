@@ -27,6 +27,7 @@ import zlib
 import xbmc
 import xbmcgui
 import xbmcvfs
+import xbmcaddon
 import Localization
 from functions import file_encode, isSubtitle, DownloadDB, log, debug, is_writable, unquote, file_url
 
@@ -42,9 +43,13 @@ from functions import foldername, showMessage, clearStorage, WatchedHistoryDB, g
 if sys.modules["__main__"].__settings__.getSetting("torrent_player") == '2':
     from torrent2http import State, Engine, MediaType
     author = 'Anteo'
+    __settings__ = xbmcaddon.Addon(id='script.module.torrent2http')
+    __version__ = __settings__.getAddonInfo('version')
 elif sys.modules["__main__"].__settings__.getSetting("torrent_player") == '3':
     from pyrrent2http import State, Engine, MediaType
     author = 'Inpos'
+    __settings__ = xbmcaddon.Addon(id='script.module.pyrrent2http')
+    __version__ = __settings__.getAddonInfo('version')
 
 ROOT = sys.modules["__main__"].__root__
 RESOURCES_PATH = os.path.join(ROOT, 'resources')
@@ -278,7 +283,7 @@ class AnteoPlayer(xbmc.Player):
         self.userStorageDirectory = userStorageDirectory
         self.torrentUrl = torrentUrl
         xbmc.Player.__init__(self)
-        log("[AnteoPlayer] Initalized")
+        log("["+author+"Player] Initalized v"+__version__)
         self.params = params
         self.get = self.params.get
         self.contentId = int(self.get("url"))
@@ -397,7 +402,7 @@ class AnteoPlayer(xbmc.Player):
         #self.pre_buffer_bytes = 30*1024*1024 #30 MB
         ready = False
         progressBar = xbmcgui.DialogProgress()
-        progressBar.create(self.localize('Please Wait'),
+        progressBar.create('[%sPlayer v%s] ' % (author, __version__) + self.localize('Please Wait'),
                            self.localize('Seeds searching.'))
         #if self.subs_dl:
         #    subs = self.torrent.getSubsIds(os.path.basename(self.torrent.getFilePath(self.contentId)))
@@ -543,7 +548,7 @@ class AnteoPlayer(xbmc.Player):
                 if isSubtitle(filename, i.name):
                     subs.append(i)
             if subs:
-                log("[AnteoPlayer][setup_subs]: Detected subtitles: %s" % str(subs))
+                log("["+author+"Player][setup_subs]: Detected subtitles: %s" % str(subs))
                 for sub in subs:
                     xbmc.Player().setSubtitles(sub.url)
 
