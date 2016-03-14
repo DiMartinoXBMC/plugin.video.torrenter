@@ -32,7 +32,7 @@ import xbmcgui
 import xbmcvfs
 import Localization
 from functions import isSubtitle, DownloadDB, log, debug, is_writable,\
-    vista_check, windows_check, localize_path, get_platform
+    vista_check, windows_check, localize_path
 
 class Libtorrent:
     magnetLink = None
@@ -48,7 +48,6 @@ class Libtorrent:
     __settings__ = sys.modules["__main__"].__settings__
 
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
-        self.platform = get_platform()
         self.storageDirectory = storageDirectory
         self.torrentFilesPath = os.path.join(self.storageDirectory, torrentFilesDirectory) + os.sep
         if not is_writable(self.storageDirectory):
@@ -61,11 +60,11 @@ class Libtorrent:
         try:
             from python_libtorrent import get_libtorrent
             libtorrent=get_libtorrent()
-            log('Imported libtorrent v%s from python_libtorrent/%s' %(libtorrent.version, self.platform['system']))
+            log('Imported libtorrent v%s from python_libtorrent' %(libtorrent.version))
             module=True
         except Exception, e:
             module=False
-            log('Error importing python_libtorrent.%s. Exception: %s' %(self.platform['system'], str(e)))
+            log('Error importing python_libtorrent Exception: %s' %( str(e)))
             import libtorrent
 
         try:
@@ -124,11 +123,11 @@ class Libtorrent:
                     log('Exception: ' + str(e))
                     xbmcvfs.delete(torrentFile)
                     return
-                baseName = localize_path(os.path.basename(self.getFilePath()))
+                #baseName = localize_path(os.path.basename(self.getFilePath()))
                 if not xbmcvfs.exists(self.torrentFilesPath):
                     xbmcvfs.mkdirs(self.torrentFilesPath)
-                newFile = self.torrentFilesPath + self.md5(baseName) + '.' + self.md5(
-                    torrentUrl) + '.torrent'  # + '.'+ baseName
+                newFile = self.torrentFilesPath + self.md5(
+                    torrentUrl) + '.torrent' #self.md5(baseName) + '.' +
                 if xbmcvfs.exists(newFile):
                     xbmcvfs.delete(newFile)
                 if not xbmcvfs.exists(newFile):

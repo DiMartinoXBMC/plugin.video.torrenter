@@ -117,12 +117,6 @@ class AnteoLoader:
         else:
             self.torrentFile = torrentFile
 
-    def __exit__(self):
-        log('on __exit__')
-        if self.engine:
-            self.engine.close()
-            log('__exit__ worked!')
-
     def setup_engine(self):
         encryption = Encryption.ENABLED if self.__settings__.getSetting('encryption') == 'true' else Encryption.DISABLED
 
@@ -163,13 +157,15 @@ class AnteoLoader:
             torrent = Libtorrent(self.storageDirectory, self.torrentFile)
             return torrent.getContentList()
         except:
+            import traceback
+            log(traceback.format_exc())
             return self.getContentList_engine()
 
     def getContentList_engine(self):
         self.setup_engine()
         files = []
         filelist = []
-        with closing(self.engine):
+        try:
             self.engine.start()
             #media_types=[MediaType.VIDEO, MediaType.AUDIO, MediaType.SUBTITLES, MediaType.UNKNOWN]
 
@@ -196,6 +192,11 @@ class AnteoLoader:
                 stringdata = {"title": ensure_str(fs.name), "size": fs.size, "ind": fs.index,
                               'offset': fs.offset}
                 filelist.append(stringdata)
+        except:
+            import traceback
+            log(traceback.format_exc())
+        finally:
+            self.engine.close()
         return filelist
 
     def saveTorrent(self, torrentUrl):
@@ -230,8 +231,6 @@ class AnteoLoader:
                 log('Unable to rename torrent file from %s to %s in AnteoLoader::saveTorrent. Exception: %s' %
                         (torrentUrl, torrentFile, str(e)))
                 return
-        #else:
-            #torrentFile = torrentUrl
         if xbmcvfs.exists(torrentFile) and not os.path.exists(torrentFile):
             if not xbmcvfs.exists(self.torrentFilesPath): xbmcvfs.mkdirs(self.torrentFilesPath)
             torrentFile = os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent')
@@ -287,10 +286,8 @@ class AnteoPlayer(xbmc.Player):
         self.contentId = int(self.get("url"))
         if self.get("seek"):
             self.seek = int(self.get("seek"))
-        #self.torrent = AnteoLoader(self.userStorageDirectory, self.torrentUrl, self.torrentFilesDirectory)
         self.init()
         self.setup_engine()
-        #with closing(self.engine):
         try:
             self.engine.start(self.contentId)
             self.setup_nextep()
@@ -316,7 +313,7 @@ class AnteoPlayer(xbmc.Player):
                         continue
                     log('['+author+'Player]: ************************************* NO! break')
                 break
-        except Exception, e:
+        except:
             import traceback
             log(traceback.format_exc())
         finally:
@@ -335,12 +332,6 @@ class AnteoPlayer(xbmc.Player):
             #if self.seeding: self.db_delete()
             showMessage(self.localize('Information'),
                         self.localize('Torrent downloading is stopped.'), forced=True)
-
-    def __exit__(self):
-        log('on __exit__')
-        if self.engine:
-            self.engine.close()
-            log('__exit__ worked!')
 
     def init(self):
         self.next_contentId = False

@@ -1999,7 +1999,8 @@ def ensure_str(string, encoding='utf-8'):
 
 def file_url(torrentFile):
     import urlparse
-    if not re.match("^file\:.+$", torrentFile) and xbmcvfs.exists(torrentFile):
+    torrentFile = ensure_str(torrentFile)
+    if not re.match("^file\:.+$", torrentFile):
         torrentFile = urlparse.urljoin('file:', urllib.pathname2url(torrentFile))
     return torrentFile
 
@@ -2044,20 +2045,17 @@ def uri2path(uri):
     absPath = os.path.abspath(urllib.unquote(uriPath))
     return localize_path(absPath)
 
-def normalize_msg(tmpl, *args):
-    import chardet
-    msg = isinstance(tmpl, unicode) and tmpl or tmpl.decode(chardet.detect(tmpl)['encoding'])
-    arg_ = []
-    for a in args:
-        if not isinstance(a, unicode): arg_.append(a.decode(chardet.detect(a)['encoding']))
-    return msg % tuple(arg_)
-
-
 def localize_path(path):
     import chardet
     if not isinstance(path, unicode): path = path.decode(chardet.detect(path)['encoding'])
     if not sys.platform.startswith('win'):
         path = path.encode(True and sys.getfilesystemencoding() or 'utf-8')
+    return path
+
+def delocalize_path(path):
+    import chardet
+    if not isinstance(path, unicode): path = path.decode(chardet.detect(path)['encoding'])
+    path = path.encode('utf-8')
     return path
 
 def get_platform():
