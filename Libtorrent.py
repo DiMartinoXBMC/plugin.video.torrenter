@@ -126,17 +126,17 @@ class Libtorrent:
                 #baseName = localize_path(os.path.basename(self.getFilePath()))
                 if not xbmcvfs.exists(self.torrentFilesPath):
                     xbmcvfs.mkdirs(self.torrentFilesPath)
-                newFile = self.torrentFilesPath + self.md5(
-                    torrentUrl) + '.torrent' #self.md5(baseName) + '.' +
-                if xbmcvfs.exists(newFile):
-                    xbmcvfs.delete(newFile)
-                if not xbmcvfs.exists(newFile):
-                    try:
-                        xbmcvfs.rename(torrentFile, newFile)
-                    except Exception, e:
-                        log('Unable to rename torrent file from %s to %s in Torrent::renameTorrent. Exception: %s' %
-                            (torrentFile, newFile, str(e)))
-                        return
+                newFile = self.torrentFilesPath + self.md5(torrentUrl) + '.torrent'
+                if newFile != torrentFile:
+                    if xbmcvfs.exists(newFile):
+                        xbmcvfs.delete(newFile)
+                    if not xbmcvfs.exists(newFile):
+                        try:
+                            xbmcvfs.rename(torrentFile, newFile)
+                        except Exception, e:
+                            log('Unable to rename torrent file from %s to %s in Torrent::renameTorrent. Exception: %s' %
+                                (torrentFile, newFile, str(e)))
+                            return
                 self.torrentFile = newFile
                 if not self.torrentFileInfo:
                     e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())

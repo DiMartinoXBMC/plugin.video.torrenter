@@ -2049,14 +2049,17 @@ def localize_path(path):
     import chardet
     if not isinstance(path, unicode): path = path.decode(chardet.detect(path)['encoding'])
     if not sys.platform.startswith('win'):
-        path = path.encode(True and sys.getfilesystemencoding() or 'utf-8')
+        path = encode_msg(path)
     return path
 
-def delocalize_path(path):
-    import chardet
-    if not isinstance(path, unicode): path = path.decode(chardet.detect(path)['encoding'])
-    path = path.encode('utf-8')
-    return path
+def encode_msg(msg):
+    try:
+        msg = isinstance(msg, unicode) and msg.encode(True and sys.getfilesystemencoding() or 'utf-8') or msg
+    except:
+        import traceback
+        log(traceback.format_exc())
+        msg = msg.encode('utf-8')
+    return msg
 
 def get_platform():
     ret = {
