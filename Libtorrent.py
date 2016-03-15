@@ -123,25 +123,32 @@ class Libtorrent:
                     log('Exception: ' + str(e))
                     xbmcvfs.delete(torrentFile)
                     return
-                #baseName = localize_path(os.path.basename(self.getFilePath()))
-                if not xbmcvfs.exists(self.torrentFilesPath):
-                    xbmcvfs.mkdirs(self.torrentFilesPath)
-                newFile = self.torrentFilesPath + self.md5(torrentUrl) + '.torrent'
-                if newFile != torrentFile:
-                    if xbmcvfs.exists(newFile):
-                        xbmcvfs.delete(newFile)
-                    if not xbmcvfs.exists(newFile):
-                        try:
-                            xbmcvfs.rename(torrentFile, newFile)
-                        except Exception, e:
-                            log('Unable to rename torrent file from %s to %s in Torrent::renameTorrent. Exception: %s' %
-                                (torrentFile, newFile, str(e)))
-                            return
-                self.torrentFile = newFile
-                if not self.torrentFileInfo:
-                    e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())
-                    self.torrentFileInfo = self.lt.torrent_info(e)
+
+                self.torrentFile = torrentFile
                 return self.torrentFile
+                #baseName = localize_path(os.path.basename(self.getFilePath()))
+                #if not xbmcvfs.exists(self.torrentFilesPath):
+                #    xbmcvfs.mkdirs(self.torrentFilesPath)
+                #newFile = self.torrentFilesPath + self.md5(
+                #    torrentUrl) + '.torrent' #self.md5(baseName) + '.' +
+                #if xbmcvfs.exists(newFile):
+                #    log('saveTorrent: delete file ' + newFile)
+                #    xbmcvfs.delete(newFile)
+                #if not xbmcvfs.exists(newFile):
+                #    try:
+                #        renamed = xbmcvfs.rename(torrentFile, newFile)
+                #        log('saveTorrent: xbmcvfs.rename %s %s to %s' %(torrentFile, newFile, str(renamed)))
+                #    except Exception, e:
+                #        log('Unable to rename torrent file from %s to %s in Torrent::renameTorrent. Exception: %s' %
+                #            (torrentFile, newFile, str(e)))
+                #        return
+                #self.torrentFile = newFile
+                #if not self.torrentFileInfo:
+                #    e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())
+                #    self.torrentFileInfo = self.lt.torrent_info(e)
+                #    log('torrentFileInfo (saveTorrent2)=' + str(self.torrentFileInfo))
+
+                #return self.torrentFile
 
     def getMagnetInfo(self):
         magnetSettings = {
@@ -424,7 +431,7 @@ class Libtorrent:
                        #'storage_mode': self.lt.storage_mode_t(1),
                        'paused': False,
                        #'auto_managed': False,
-                       #'duplicate_is_error': True
+                       'duplicate_is_error': True
                       }
         if self.save_resume_data:
             log('loading resume data')
