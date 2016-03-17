@@ -386,6 +386,7 @@ class AnteoPlayer(xbmc.Player):
         dht_routers = ["router.bittorrent.com:6881","router.utorrent.com:6881"]
         user_agent = 'uTorrent/2200(24683)'
         self.pre_buffer_bytes = int(self.__settings__.getSetting("pre_buffer_bytes"))*1024*1024
+        showMessage('[%sPlayer v%s] ' % (author, __version__), self.localize('Please Wait'))
 
         self.engine = Engine(uri=file_url(self.torrentUrl), download_path=self.userStorageDirectory,
                              connections_limit=connections_limit, download_kbps=download_limit, upload_kbps=upload_limit,
@@ -520,7 +521,7 @@ class AnteoPlayer(xbmc.Player):
 
         xbmc.sleep(2000)  # very important, do not edit this, podavan
         i = 0
-        while not xbmc.abortRequested and not self.isPlaying() and i < 50:
+        while not xbmc.abortRequested and not self.isPlaying() and i < 150:
             xbmc.sleep(200)
             i += 1
 
