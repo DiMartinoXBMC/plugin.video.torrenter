@@ -610,6 +610,7 @@ class AnteoPlayer(xbmc.Player):
             event.remove(callback)
 
     def _get_status_lines(self, s, f):
+        log('++++++++++++++ %s , %s' % (s,f))
         return [
             localize_path(self.display_name),
             "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state]).decode('utf-8')),
