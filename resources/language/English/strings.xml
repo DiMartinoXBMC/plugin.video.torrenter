@@ -3,7 +3,7 @@
     <string id="30001">Interface Language</string>
     <string id="30002">Lock Folders View Style</string>
     <string id="30003">Off</string>
-    <string id="30004">Save Files To Folder</string>
+    <string id="30004">Save Files To Folder (not FAT32)</string>
     <string id="30007">Use magnet-links</string>
     <string id="30008">Keep downloaded files</string>
     <string id="30009">Keep seeding of downloaded files</string>
