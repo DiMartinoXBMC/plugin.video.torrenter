@@ -1127,6 +1127,7 @@ class Core:
             listitem.setInfo(type='Video', infoLabels=info)
         else:
             listitem.setInfo(type='Video', infoLabels=info)
+            listitem.setArt({'thumb': image})
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=url, listitem=listitem, isFolder=isFolder)
 
     def getParameters(self, parameterString):
@@ -1353,44 +1354,7 @@ class Core:
                 % ('torrentPlayer', url))
                 return
         if url:
-            self.__settings__.setSetting("lastTorrentUrl", url)
-            torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
-            self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
-            contentList = []
-            for filedict in torrent.getContentList():
-                fileTitle = filedict.get('title')
-                if filedict.get('size'):
-                    fileTitle += ' [%d MB]' % (filedict.get('size') / 1024 / 1024)
-                contentList.append((unescape(fileTitle), str(filedict.get('ind'))))
-            contentList = sorted(contentList, key=lambda x: x[0])
-
-            #print str(contentList)
-
-            dirList, contentListNew = cutFolder(contentList, tdir)
-
-            for title in dirList:
-                self.drawItem(title, 'openTorrent', url, isFolder=True, action2=title)
-
-            ids_video_result = get_ids_video(contentListNew)
-            ids_video=''
-
-            if len(ids_video_result)>0:
-                for identifier in ids_video_result:
-                    ids_video = ids_video + str(identifier) + ','
-
-            for title, identifier in contentListNew:
-                contextMenu = [
-                    (self.localize('Download via T-client'),
-                    'XBMC.RunPlugin(%s)' % ('%s?action=%s&ind=%s') % (
-                    sys.argv[0], 'downloadFilesList', str(identifier))),
-                    (self.localize('Download via Libtorrent'),
-                    'XBMC.RunPlugin(%s)' % ('%s?action=%s&ind=%s') % (
-                    sys.argv[0], 'downloadLibtorrent', str(identifier))),
-                ]
-                self.drawItem(title, 'playTorrent', identifier, isFolder=False, action2=ids_video.rstrip(','),
-                              contextMenu=contextMenu, replaceMenu=False)
-            view_style('torrentPlayer')
-            xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+            self.openTorrent(params)
 
     def userStorage(self, params):
         save=False
@@ -1486,7 +1450,7 @@ class Core:
     def openTorrent(self, params={}):
         get = params.get
         tdir = unquote(get("url2"),None)
-        thumbnail = unquote(get("thumbnail"),'')
+        thumbnail = unquote(get("thumbnail"), False) and True or 'DefaultVideo.png'
         save_folder = unquote(get("save_folder"),'')
         url = urllib.unquote_plus(get("url"))
 
@@ -1513,7 +1477,7 @@ class Core:
         dirList, contentListNew = cutFolder(contentList, tdir)
 
         for title in dirList:
-            self.drawItem(title, 'openTorrent', url, image=thumbnail, isFolder=True, action2=title)
+            self.drawItem(title, 'openTorrent', url, isFolder=True, action2=title)
 
         ids_video_result = get_ids_video(contentListNew)
         ids_video=''
