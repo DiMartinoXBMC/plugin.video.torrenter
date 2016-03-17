@@ -124,7 +124,6 @@ class OverlayText(object):
 class TorrentPlayer(xbmc.Player):
     __plugin__ = sys.modules["__main__"].__plugin__
     __settings__ = sys.modules["__main__"].__settings__
-    ROOT = sys.modules["__main__"].__root__  # .decode('utf-8').encode(sys.getfilesystemencoding())
     USERAGENT = "Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0"
     torrentFilesDirectory = 'torrents'
     debug = __settings__.getSetting('debug') == 'true'
@@ -466,7 +465,7 @@ class TorrentPlayer(xbmc.Player):
 
     def _get_status_lines(self, s):
         return [
-            self.display_name.decode('utf-8')+'; '+self.torrent.get_debug_info('dht_state'),
+            self.display_name+'; '+self.torrent.get_debug_info('dht_state'),
             "%.2f%% %s; %s" % (s.progress * 100, self.localize(STATE_STRS[s.state]).decode('utf-8'), self.torrent.get_debug_info('trackers_sum')),
             "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate / 1024, self.localize('kb/s').decode('utf-8'),
                                              s.upload_rate / 1024, self.localize('kb/s').decode('utf-8'),

@@ -1966,7 +1966,6 @@ def check_network_advancedsettings():
             log('UPDATE advancedsettings.xml disabled by user!')
 
 def get_download_dir():
-    from platform_pulsar import get_platform
     import tempfile
     platform = get_platform()
 
@@ -2000,8 +1999,9 @@ def ensure_str(string, encoding='utf-8'):
 
 def file_url(torrentFile):
     import urlparse
-    if not re.match("^file\:.+$", torrentFile) and os.path.exists(torrentFile):
-        torrentFile = urlparse.urljoin('file:', urllib.pathname2url(ensure_str(torrentFile)))
+    torrentFile = ensure_str(torrentFile)
+    if not re.match("^file\:.+$", torrentFile):
+        torrentFile = urlparse.urljoin('file:', urllib.pathname2url(torrentFile))
     return torrentFile
 
 def dump(obj):
@@ -2032,3 +2032,64 @@ def foldername(path):
     else:
         foldername = ''
     return foldername
+
+def uri2path(uri):
+    import urlparse
+    if uri[1] == ':' and sys.platform.startswith('win'):
+        uri = 'file:///' + uri
+    fileUri = urlparse.urlparse(uri)
+    if fileUri.scheme == 'file':
+        uriPath = fileUri.path
+        if uriPath != '' and sys.platform.startswith('win') and (os.path.sep == uriPath[0] or uriPath[0] == '/'):
+            uriPath = uriPath[1:]
+    absPath = os.path.abspath(urllib.unquote(uriPath))
+    return localize_path(absPath)
+
+def localize_path(path):
+    import chardet
+    if not isinstance(path, unicode): path = path.decode(chardet.detect(path)['encoding'])
+    if not sys.platform.startswith('win'):
+        path = encode_msg(path)
+    return path
+
+def encode_msg(msg):
+    try:
+        msg = isinstance(msg, unicode) and msg.encode(True and sys.getfilesystemencoding() or 'utf-8') or msg
+    except:
+        import traceback
+        log(traceback.format_exc())
+        msg = msg.encode('utf-8')
+    return msg
+
+def get_platform():
+    ret = {
+        "arch": sys.maxsize > 2 ** 32 and "x64" or "x86",
+    }
+    if xbmc.getCondVisibility("system.platform.android"):
+        ret["os"] = "android"
+        if "arm" in os.uname()[4] or "aarch64" in os.uname()[4]:
+            ret["arch"] = "arm"
+    elif xbmc.getCondVisibility("system.platform.linux"):
+        ret["os"] = "linux"
+        uname=os.uname()[4]
+        if "arm" in uname:
+            if "armv7" in uname:
+                ret["arch"] = "armv7"
+            elif "armv6" in uname:
+                ret["arch"] = "armv6"
+            else:
+                ret["arch"] = "arm"
+        elif "mips" in uname:
+            if sys.maxunicode > 65536:
+                ret["arch"] = 'mipsel_ucs4'
+            else:
+                ret["arch"] = 'mipsel_ucs2'
+    elif xbmc.getCondVisibility("system.platform.windows"):
+        ret["os"] = "windows"
+    elif xbmc.getCondVisibility("system.platform.osx"):
+        ret["os"] = "darwin"
+    elif xbmc.getCondVisibility("system.platform.ios"):
+        ret["os"] = "ios"
+        ret["arch"] = "arm"
+
+    return ret

@@ -31,8 +31,8 @@ import xbmc
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import file_encode, isSubtitle, DownloadDB, log, debug, is_writable, vista_check, windows_check
-from platform_pulsar import get_platform
+from functions import isSubtitle, DownloadDB, log, debug, is_writable,\
+    vista_check, windows_check, localize_path
 
 class Libtorrent:
     magnetLink = None
@@ -48,7 +48,6 @@ class Libtorrent:
     __settings__ = sys.modules["__main__"].__settings__
 
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
-        self.platform = get_platform()
         self.storageDirectory = storageDirectory
         self.torrentFilesPath = os.path.join(self.storageDirectory, torrentFilesDirectory) + os.sep
         if not is_writable(self.storageDirectory):
@@ -61,11 +60,11 @@ class Libtorrent:
         try:
             from python_libtorrent import get_libtorrent
             libtorrent=get_libtorrent()
-            log('Imported libtorrent v%s from python_libtorrent/%s' %(libtorrent.version, self.platform['system']))
+            log('Imported libtorrent v%s from python_libtorrent' %(libtorrent.version))
             module=True
         except Exception, e:
             module=False
-            log('Error importing python_libtorrent.%s. Exception: %s' %(self.platform['system'], str(e)))
+            log('Error importing python_libtorrent Exception: %s' %( str(e)))
             import libtorrent
 
         try:
@@ -75,9 +74,6 @@ class Libtorrent:
 
         except Exception, e:
             log('Error importing from system. Exception: ' + str(e))
-            xbmcgui.Dialog().ok(Localization.localize('python-libtorrent Not Found'),
-                                Localization.localize(self.platform["message"][0]),
-                                Localization.localize(self.platform["message"][1]))
             return
 
         if xbmcvfs.exists(torrentFile):
@@ -127,25 +123,32 @@ class Libtorrent:
                     log('Exception: ' + str(e))
                     xbmcvfs.delete(torrentFile)
                     return
-                baseName = file_encode(os.path.basename(self.getFilePath()))
-                if not xbmcvfs.exists(self.torrentFilesPath):
-                    xbmcvfs.mkdirs(self.torrentFilesPath)
-                newFile = self.torrentFilesPath + self.md5(baseName) + '.' + self.md5(
-                    torrentUrl) + '.torrent'  # + '.'+ baseName
-                if xbmcvfs.exists(newFile):
-                    xbmcvfs.delete(newFile)
-                if not xbmcvfs.exists(newFile):
-                    try:
-                        xbmcvfs.rename(torrentFile, newFile)
-                    except Exception, e:
-                        log('Unable to rename torrent file from %s to %s in Torrent::renameTorrent. Exception: %s' %
-                            (torrentFile, newFile, str(e)))
-                        return
-                self.torrentFile = newFile
-                if not self.torrentFileInfo:
-                    e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())
-                    self.torrentFileInfo = self.lt.torrent_info(e)
+
+                self.torrentFile = torrentFile
                 return self.torrentFile
+                #baseName = localize_path(os.path.basename(self.getFilePath()))
+                #if not xbmcvfs.exists(self.torrentFilesPath):
+                #    xbmcvfs.mkdirs(self.torrentFilesPath)
+                #newFile = self.torrentFilesPath + self.md5(
+                #    torrentUrl) + '.torrent' #self.md5(baseName) + '.' +
+                #if xbmcvfs.exists(newFile):
+                #    log('saveTorrent: delete file ' + newFile)
+                #    xbmcvfs.delete(newFile)
+                #if not xbmcvfs.exists(newFile):
+                #    try:
+                #        renamed = xbmcvfs.rename(torrentFile, newFile)
+                #        log('saveTorrent: xbmcvfs.rename %s %s to %s' %(torrentFile, newFile, str(renamed)))
+                #    except Exception, e:
+                #        log('Unable to rename torrent file from %s to %s in Torrent::renameTorrent. Exception: %s' %
+                #            (torrentFile, newFile, str(e)))
+                #        return
+                #self.torrentFile = newFile
+                #if not self.torrentFileInfo:
+                #    e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())
+                #    self.torrentFileInfo = self.lt.torrent_info(e)
+                #    log('torrentFileInfo (saveTorrent2)=' + str(self.torrentFileInfo))
+
+                #return self.torrentFile
 
     def getMagnetInfo(self):
         magnetSettings = {
@@ -240,7 +243,7 @@ class Libtorrent:
     def getContentList(self):
         filelist = []
         for contentId, contentFile in enumerate(self.torrentFileInfo.files()):
-            stringdata = {"title": contentFile.path, "size": contentFile.size, "ind": int(contentId),
+            stringdata = {"title": localize_path(contentFile.path), "size": contentFile.size, "ind": int(contentId),
                           'offset': contentFile.offset}
             filelist.append(stringdata)
         return filelist
@@ -428,7 +431,7 @@ class Libtorrent:
                        #'storage_mode': self.lt.storage_mode_t(1),
                        'paused': False,
                        #'auto_managed': False,
-                       #'duplicate_is_error': True
+                       'duplicate_is_error': True
                       }
         if self.save_resume_data:
             log('loading resume data')

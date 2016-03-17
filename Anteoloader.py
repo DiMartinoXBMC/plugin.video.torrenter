@@ -29,7 +29,7 @@ import xbmcgui
 import xbmcvfs
 import xbmcaddon
 import Localization
-from functions import file_encode, isSubtitle, DownloadDB, log, debug, is_writable, unquote, file_url
+from functions import localize_path, isSubtitle, is_writable, file_url
 
 
 import os
@@ -117,12 +117,6 @@ class AnteoLoader:
         else:
             self.torrentFile = torrentFile
 
-    def __exit__(self):
-        log('on __exit__')
-        if self.engine:
-            self.engine.close()
-            log('__exit__ worked!')
-
     def setup_engine(self):
         encryption = Encryption.ENABLED if self.__settings__.getSetting('encryption') == 'true' else Encryption.DISABLED
 
@@ -163,14 +157,21 @@ class AnteoLoader:
             torrent = Libtorrent(self.storageDirectory, self.torrentFile)
             return torrent.getContentList()
         except:
+            import traceback
+            log(traceback.format_exc())
             return self.getContentList_engine()
 
     def getContentList_engine(self):
         self.setup_engine()
         files = []
         filelist = []
+<<<<<<< HEAD
         with closing(self.engine):
             #self.engine.start()
+=======
+        try:
+            self.engine.start()
+>>>>>>> 1974c5a41ad9cbfa5eb82d5848e79387701b9c92
             #media_types=[MediaType.VIDEO, MediaType.AUDIO, MediaType.SUBTITLES, MediaType.UNKNOWN]
 
             iterator = 0
@@ -198,6 +199,11 @@ class AnteoLoader:
                 stringdata = {"title": ensure_str(fs.name), "size": fs.size, "ind": fs.index,
                               'offset': fs.offset}
                 filelist.append(stringdata)
+        except:
+            import traceback
+            log(traceback.format_exc())
+        finally:
+            self.engine.close()
         return filelist
 
     def saveTorrent(self, torrentUrl):
@@ -232,8 +238,6 @@ class AnteoLoader:
                 log('Unable to rename torrent file from %s to %s in AnteoLoader::saveTorrent. Exception: %s' %
                         (torrentUrl, torrentFile, str(e)))
                 return
-        #else:
-            #torrentFile = torrentUrl
         if xbmcvfs.exists(torrentFile) and not os.path.exists(torrentFile):
             if not xbmcvfs.exists(self.torrentFilesPath): xbmcvfs.mkdirs(self.torrentFilesPath)
             torrentFile = os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent')
@@ -263,7 +267,7 @@ class AnteoLoader:
 class AnteoPlayer(xbmc.Player):
     __plugin__ = sys.modules["__main__"].__plugin__
     __settings__ = sys.modules["__main__"].__settings__
-    ROOT = sys.modules["__main__"].__root__  # .decode('utf-8').encode(sys.getfilesystemencoding())
+    ROOT = sys.modules["__main__"].__root__
     USERAGENT = "Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0"
     torrentFilesDirectory = 'torrents'
     debug = __settings__.getSetting('debug') == 'true'
@@ -289,10 +293,9 @@ class AnteoPlayer(xbmc.Player):
         self.contentId = int(self.get("url"))
         if self.get("seek"):
             self.seek = int(self.get("seek"))
-        #self.torrent = AnteoLoader(self.userStorageDirectory, self.torrentUrl, self.torrentFilesDirectory)
         self.init()
         self.setup_engine()
-        with closing(self.engine):
+        try:
             self.engine.start(self.contentId)
             self.setup_nextep()
             while True:
@@ -317,6 +320,11 @@ class AnteoPlayer(xbmc.Player):
                         continue
                     log('['+author+'Player]: ************************************* NO! break')
                 break
+        except:
+            import traceback
+            log(traceback.format_exc())
+        finally:
+            self.engine.close()
 
         xbmc.Player().stop()
 
@@ -331,12 +339,6 @@ class AnteoPlayer(xbmc.Player):
             #if self.seeding: self.db_delete()
             showMessage(self.localize('Information'),
                         self.localize('Torrent downloading is stopped.'), forced=True)
-
-    def __exit__(self):
-        log('on __exit__')
-        if self.engine:
-            self.engine.close()
-            log('__exit__ worked!')
 
     def init(self):
         self.next_contentId = False
@@ -616,7 +618,7 @@ class AnteoPlayer(xbmc.Player):
 
     def _get_status_lines(self, s, f):
         return [
-            self.display_name,
+            localize_path(self.display_name),
             "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state]).decode('utf-8')),
             "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate, self.localize('kb/s').decode('utf-8'),
                                              s.upload_rate, self.localize('kb/s').decode('utf-8'),
