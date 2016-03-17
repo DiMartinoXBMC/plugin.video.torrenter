@@ -566,7 +566,7 @@ class AnteoPlayer(xbmc.Player):
                         self.print_debug(status)
                         debug_counter=0
                     t = self._get_status_lines(status, file_status)
-                    log('++++++++++++++ t: %t' % (repr(t),))
+                    log('++++++++++++++ t: %s' % (repr(t),))
                     overlay.text = '\n'.join(t)
 
                     self.iterator = int(file_status.progress * 100)
