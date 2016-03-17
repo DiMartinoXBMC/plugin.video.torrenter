@@ -1467,9 +1467,7 @@ class Core:
         if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
                                                      torrentFilesDirectory=self.torrentFilesDirectory)
         self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
-        self.drawFolder(torrent, tdir, url, 'openTorrent', thumbnail, save_folder)
 
-    def drawFolder(self, torrent, tdir, url, vstyle, thumbnail='', save_folder=''):
         hasSize = False
         contentList = []
         for filedict in torrent.getContentList():
@@ -1505,7 +1503,7 @@ class Core:
             link = {'url': identifier, 'thumbnail': thumbnail, 'save_folder':save_folder}
             self.drawItem(title, 'playTorrent', link, image=thumbnail, isFolder=False,
                           action2=ids_video.rstrip(','), contextMenu=contextMenu, replaceMenu=False, fileSize=filesize)
-        view_style(vstyle)
+        view_style('openTorrent')
         p_handle = int(sys.argv[1])
         try:
             xbmcplugin.addSortMethod(p_handle, xbmcplugin.SORT_METHOD_LABEL)
