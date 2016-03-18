@@ -125,7 +125,23 @@ class Libtorrent:
                     log('Exception: ' + str(e))
                     xbmcvfs.delete(torrentFile)
                     return
-
+                if not xbmcvfs.exists(self.torrentFilesPath):
+                    xbmcvfs.mkdirs(self.torrentFilesPath)
+                newFile = self.torrentFilesPath + self.md5(torrentUrl) + '.torrent'
+                if newFile != torrentFile:
+                    if xbmcvfs.exists(newFile):
+                        xbmcvfs.delete(newFile)
+                    if not xbmcvfs.exists(newFile):
+                        try:
+                            xbmcvfs.rename(torrentFile, newFile)
+                        except Exception, e:
+                            log('Unable to rename torrent file from %s to %s in Torrent::renameTorrent. Exception: %s' %
+                                (torrentFile, newFile, str(e)))
+                            return
+                self.torrentFile = newFile
+                if not self.torrentFileInfo:
+                    e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())
+                    self.torrentFileInfo = self.lt.torrent_info(e)
                 self.torrentFile = torrentFile
                 return self.torrentFile
  
