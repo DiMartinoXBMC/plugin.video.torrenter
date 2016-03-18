@@ -1467,14 +1467,16 @@ class Core:
         if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
                                                      torrentFilesDirectory=self.torrentFilesDirectory)
         self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
-
+    
+        append_filesize = self.__settings__.getSetting("append_filesize") == 'true'
         hasSize = False
         contentList = []
         for filedict in torrent.getContentList():
             fileTitle = filedict.get('title')
             size = filedict.get('size')
             if size:
-                fileTitle += ' [%d MB]' % (size / 1024 / 1024)
+                if append_filesize:
+                    fileTitle += ' [%d MB]' % (size / 1024 / 1024)
                 hasSize = True
             contentList.append((unescape(fileTitle), str(filedict.get('ind')), size))
         #contentList = sorted(contentList, key=lambda x: x[0])
