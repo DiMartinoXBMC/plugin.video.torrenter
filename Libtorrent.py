@@ -96,7 +96,9 @@ class Libtorrent:
                 torrentUrl) + '.torrent'
             try:
                 if not re.match("^http\:.+$", torrentUrl):
-                    content = xbmcvfs.File(torrentUrl, "rb").read()
+                    contentFile = xbmcvfs.File(torrentUrl, "rb")
+                    content = contentFile.read()
+                    contentFile.close()
                 else:
                     request = urllib2.Request(torrentUrl)
                     request.add_header('Referer', torrentUrl)
@@ -126,30 +128,7 @@ class Libtorrent:
 
                 self.torrentFile = torrentFile
                 return self.torrentFile
-                #baseName = localize_path(os.path.basename(self.getFilePath()))
-                #if not xbmcvfs.exists(self.torrentFilesPath):
-                #    xbmcvfs.mkdirs(self.torrentFilesPath)
-                #newFile = self.torrentFilesPath + self.md5(
-                #    torrentUrl) + '.torrent' #self.md5(baseName) + '.' +
-                #if xbmcvfs.exists(newFile):
-                #    log('saveTorrent: delete file ' + newFile)
-                #    xbmcvfs.delete(newFile)
-                #if not xbmcvfs.exists(newFile):
-                #    try:
-                #        renamed = xbmcvfs.rename(torrentFile, newFile)
-                #        log('saveTorrent: xbmcvfs.rename %s %s to %s' %(torrentFile, newFile, str(renamed)))
-                #    except Exception, e:
-                #        log('Unable to rename torrent file from %s to %s in Torrent::renameTorrent. Exception: %s' %
-                #            (torrentFile, newFile, str(e)))
-                #        return
-                #self.torrentFile = newFile
-                #if not self.torrentFileInfo:
-                #    e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())
-                #    self.torrentFileInfo = self.lt.torrent_info(e)
-                #    log('torrentFileInfo (saveTorrent2)=' + str(self.torrentFileInfo))
-
-                #return self.torrentFile
-
+ 
     def getMagnetInfo(self):
         magnetSettings = {
             'url': self.magnetLink,

@@ -428,13 +428,16 @@ def cutFolder(contentList, tdir=None):
             common_folder = common_folder.split('/')[0]
 
         common = True
-        for fileTitle, contentId in contentList:
+        for item in contentList:
+            fileTitle = item[0]
             if common_folder not in fileTitle:
                 common = False
                 break
 
         # print common_folder
-        for fileTitle, contentId in contentList:
+        for item in contentList:
+            fileTitle = item[0]
+            contentId = item[1]
             dir = None
             if common:
                 fileTitle = fileTitle[len(common_folder) + 1:]
@@ -446,10 +449,12 @@ def cutFolder(contentList, tdir=None):
             elif '/' in fileTitle:
                 dir = fileTitle.split('/')[0]
             elif not tdir:
-                contentListNew.append((fileTitle, contentId))
+                contentListNew.append(item)
 
             if tdir and dir == tdir:
-                contentListNew.append((fileTitle[len(dir) + 1:], contentId))
+                tupleContent = list(item)
+                tupleContent[0] = fileTitle[len(dir) + 1:]
+                contentListNew.append(tuple(tupleContent))
 
             if not tdir and dir and dir not in dirList:
                 dirList.append(dir)
@@ -1711,7 +1716,9 @@ def get_ids_video(contentList):
                          'fli', 'flc', 'm4v', 'iso']
     allowed_music_ext = ['mp3', 'flac', 'wma', 'ogg', 'm4a', 'aac', 'm4p', 'rm', 'ra']
     for extlist in [allowed_video_ext, allowed_music_ext]:
-        for title, identifier in contentList:
+        for item in contentList:
+            title = item[0]
+            identifier = item[1]
             try:
                 ext = title.split('.')[-1]
                 if ext.lower() in extlist:
