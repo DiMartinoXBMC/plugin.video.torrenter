@@ -422,45 +422,44 @@ def cutFolder(contentList, tdir=None):
 
     if len(contentList) > 1:
         common_folder = contentList[0][0]
-        if '\\' in common_folder:
-            common_folder = common_folder.split('\\')[0]
-        elif '/' in common_folder:
-            common_folder = common_folder.split('/')[0]
+        debug('[cutFolder]: common_folder '+common_folder)
+        if u'\\' in common_folder:
+            common_folder = common_folder.split(u'\\')[0]
+        elif u'/' in common_folder:
+            common_folder = common_folder.split(u'/')[0]
 
         common = True
         for item in contentList:
-            fileTitle = item[0]
-            if common_folder not in fileTitle:
+            if common_folder not in item[0]:
                 common = False
                 break
 
-        # print common_folder
         for item in contentList:
-            fileTitle = item[0]
-            contentId = item[1]
             dir = None
             if common:
-                fileTitle = fileTitle[len(common_folder) + 1:]
+                item[0] = item[0][len(common_folder) + 1:]
 
-            # print fileTitle
+            #debug('[cutFolder]: item[0] '+item[0])
 
-            if '\\' in fileTitle:
-                dir = fileTitle.split('\\')[0]
-            elif '/' in fileTitle:
-                dir = fileTitle.split('/')[0]
+            if u'\\' in item[0]:
+                dir = item[0].split(u'\\')[0]
+            elif u'/' in item[0]:
+                dir = item[0].split(u'/')[0]
             elif not tdir:
                 contentListNew.append(item)
 
             if tdir and dir == tdir:
                 tupleContent = list(item)
-                tupleContent[0] = fileTitle[len(dir) + 1:]
-                contentListNew.append(tuple(tupleContent))
+                tupleContent[0] = item[0][len(dir) + 1:]
+                contentListNew.append(list(tupleContent))
 
             if not tdir and dir and dir not in dirList:
                 dirList.append(dir)
 
+        debug('[cutFolder]: dirList, contentListNew '+str(dirList)+str(contentListNew))
         return dirList, contentListNew
     else:
+        debug('[cutFolder]: dirList, contentList '+str(dirList)+str(contentList))
         return dirList, contentList
 
 
