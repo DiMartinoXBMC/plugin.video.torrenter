@@ -306,7 +306,7 @@ class AnteoPlayer(xbmc.Player):
                         if not self.next_play:
                             xbmc.sleep(3000)
                             if not xbmcgui.Dialog().yesno(
-                                self.localize('Torrent2HTTP'),
+                                self.localize('[%sPlayer v%s] ' % (author, __version__)),
                                 self.localize('Would you like to play next episode?')):
                                 break
                         self.contentId = self.next_contentId
@@ -386,7 +386,7 @@ class AnteoPlayer(xbmc.Player):
         dht_routers = ["router.bittorrent.com:6881","router.utorrent.com:6881"]
         user_agent = 'uTorrent/2200(24683)'
         self.pre_buffer_bytes = int(self.__settings__.getSetting("pre_buffer_bytes"))*1024*1024
-        showMessage('[%sPlayer v%s] ' % (author, __version__), self.localize('Please Wait'))
+        #showMessage('[%sPlayer v%s] ' % (author, __version__), self.localize('Please Wait'))
 
         self.engine = Engine(uri=file_url(self.torrentUrl), download_path=self.userStorageDirectory,
                              connections_limit=connections_limit, download_kbps=download_limit, upload_kbps=upload_limit,

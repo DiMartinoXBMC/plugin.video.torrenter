@@ -156,44 +156,6 @@ class InposLoader:
         torrent = Libtorrent(self.storageDirectory, self.torrentFile)
         return torrent.getContentList()
 
-    '''def getContentList_engine(self):
-        self.setup_engine()
-        files = []
-        filelist = []
-        try:
-            self.engine.start()
-            #media_types=[MediaType.VIDEO, MediaType.AUDIO, MediaType.SUBTITLES, MediaType.UNKNOWN]
-
-            iterator = 0
-            text = Localization.localize('Magnet-link is converting') if self.magnetLink\
-                else Localization.localize('Opening torrent file')
-            while not files and not xbmc.abortRequested and iterator < 100:
-                files = self.engine.list()
-                self.engine.check_torrent_error()
-                if iterator==4:
-                    progressBar = xbmcgui.DialogProgress()
-                    progressBar.create(Localization.localize('Please Wait'),
-                               Localization.localize('Magnet-link is converting'))
-                elif iterator>4:
-                    progressBar.update(iterator, Localization.localize('Please Wait'),text+'.' * (iterator % 4), ' ')
-                    if progressBar.iscanceled():
-                        progressBar.update(0)
-                        progressBar.close()
-                        return []
-                xbmc.sleep(500)
-                iterator += 1
-
-            for fs in files:
-                stringdata = {"title": ensure_str(fs.name), "size": fs.size, "ind": fs.index,
-                              'offset': fs.offset}
-                filelist.append(stringdata)
-        except:
-            import traceback
-            log(traceback.format_exc())
-        finally:
-            self.engine.close()
-        return filelist'''
-
     def saveTorrent(self, torrentUrl):
         #if not xbmcvfs.exists(torrentUrl) or re.match("^http.+$", torrentUrl):
         if re.match("^magnet\:.+$", torrentUrl):
@@ -284,10 +246,11 @@ class InposPlayer(xbmc.Player):
         self.init()
         self.setup_engine()
         try:
-            self.engine.start(self.contentId)
+            self.engine.start()
             self.setup_nextep()
-            while True:
-                if self.buffer():
+            self.engine.activate_file(self.contentId)
+            if self.buffer():
+                while True:
                     log('['+author+'Player]: ************************************* GOING LOOP')
                     if self.setup_play():
                         self.setup_subs()
@@ -301,13 +264,13 @@ class InposPlayer(xbmc.Player):
                         if not self.next_play:
                             xbmc.sleep(3000)
                             if not xbmcgui.Dialog().yesno(
-                                self.localize('Torrent2HTTP'),
+                                self.localize('[%sPlayer v%s] ' % (author, __version__)),
                                 self.localize('Would you like to play next episode?')):
                                 break
                         self.contentId = self.next_contentId
                         continue
                     log('['+author+'Player]: ************************************* NO! break')
-                break
+                    break
         except:
             import traceback
             log(traceback.format_exc())
@@ -381,7 +344,8 @@ class InposPlayer(xbmc.Player):
         dht_routers = ["router.bittorrent.com:6881","router.utorrent.com:6881"]
         user_agent = 'uTorrent/2200(24683)'
         self.pre_buffer_bytes = int(self.__settings__.getSetting("pre_buffer_bytes"))*1024*1024
-        showMessage('[%sPlayer v%s] ' % (author, __version__), self.localize('Please Wait'))
+        if self.__settings__.getSetting('debug') == 'true':
+            showMessage('[%sPlayer v%s] ' % (author, __version__), self.localize('Please Wait'))
 
         self.engine = Engine(uri=file_url(self.torrentUrl), download_path=self.userStorageDirectory,
                              connections_limit=connections_limit, download_kbps=download_limit, upload_kbps=upload_limit,
@@ -476,6 +440,7 @@ class InposPlayer(xbmc.Player):
         label = os.path.basename(file_status.name)
         self.basename = label
         self.seeding_run = False
+        self.next_dling = False
         listitem = xbmcgui.ListItem(label, path=url)
 
         if self.next_dl:
@@ -510,6 +475,7 @@ class InposPlayer(xbmc.Player):
         if thumbnail:
             listitem.setThumbnailImage(urllib.unquote_plus(thumbnail))
         self.display_name = label
+        log(self.display_name)
 
         player = xbmc.Player()
         player.play(url, listitem)
@@ -551,7 +517,7 @@ class InposPlayer(xbmc.Player):
             with nested(self.attach(overlay.show, self.on_playback_paused),
                         self.attach(overlay.hide, self.on_playback_resumed, self.on_playback_stopped)):
                 while not xbmc.abortRequested and self.isPlaying():
-                    #self.print_fulldebug()
+                    self.print_fulldebug()
                     status = self.engine.status()
                     file_status = self.engine.file_status(self.contentId)
                     self.watchedTime = xbmc.Player().getTime()
@@ -571,11 +537,16 @@ class InposPlayer(xbmc.Player):
                         xbmc.Player().pause()
                     xbmc.sleep(1000)
 
-                    #if not self.seeding_run and self.iterator == 100 and self.seeding:
-                        #self.seeding_run = True
-                        #self.seed(self.contentId)
-                        #self.seeding_status = True
-                        # xbmc.sleep(7000)
+                    if self.iterator == 100 and self.next_dl and not self.next_dling and isinstance(self.next_contentId,
+                                                                                                    int) and self.next_contentId != False:
+                        self.engine.activate_file(self.next_contentId)
+                        showMessage(self.localize('Torrent Downloading'),
+                                    self.localize('Starting download next episode!'), forced=True)
+                        log('[loop]: next_contentId '+str(self.next_contentId)+str(isinstance(self.next_contentId, int)))
+                        file_status = self.engine.file_status(self.next_contentId)
+                        self.basename = self.display_name = os.path.basename(file_status.name)
+
+                        self.next_dling = True
 
     def onPlayBackStarted(self):
         for f in self.on_playback_started:
@@ -607,7 +578,7 @@ class InposPlayer(xbmc.Player):
 
     def _get_status_lines(self, s, f):
         return [
-            encode_msg(self.display_name),
+            self.display_name.encode('utf-8'),
             "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state])),
             "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate, self.localize('kb/s'),
                                              s.upload_rate, self.localize('kb/s'),
