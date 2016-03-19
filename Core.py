@@ -1482,7 +1482,7 @@ class Core:
                 if append_filesize:
                     fileTitle += ' [%d MB]' % (size / 1024 / 1024)
                 hasSize = True
-            contentList.append((unescape(fileTitle), str(filedict.get('ind')), size))
+            contentList.append([unescape(fileTitle), str(filedict.get('ind')), size])
         #contentList = sorted(contentList, key=lambda x: x[0])
 
         dirList, contentListNew = cutFolder(contentList, tdir)
