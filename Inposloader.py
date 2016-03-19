@@ -29,7 +29,7 @@ import xbmcgui
 import xbmcvfs
 import xbmcaddon
 import Localization
-from functions import localize_path, isSubtitle, is_writable, file_url
+from functions import encode_msg, localize_path, isSubtitle, is_writable, file_url
 
 
 import os
@@ -607,7 +607,7 @@ class InposPlayer(xbmc.Player):
 
     def _get_status_lines(self, s, f):
         return [
-            localize_path(self.display_name),
+            encode_msg(self.display_name),
             "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state])),
             "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate, self.localize('kb/s'),
                                              s.upload_rate, self.localize('kb/s'),
