@@ -255,3 +255,8 @@ class SearcherABC:
         content = r1.read()
         self.debug('[open2] status:'+str(status))
         return content
+
+    def showMessage(self, heading, message, times=10000):
+        xbmc.executebuiltin('XBMC.Notification("%s", "%s", %s, "%s")' % (
+            heading.replace('"', "'"), message.replace('"', "'"), times, self.searchIcon))
+        self.log(str((heading.replace('"', "'"), message.replace('"', "'"), times, self.searchIcon)))

@@ -3,7 +3,7 @@
     <string id="30001">Interface Language</string>
     <string id="30002">Lock Folders View Style</string>
     <string id="30003">Off</string>
-    <string id="30004">Save Files To Folder</string>
+    <string id="30004">Save Files To Folder (not FAT32)</string>
     <string id="30007">Use magnet-links</string>
     <string id="30008">Keep downloaded files</string>
     <string id="30009">Keep seeding of downloaded files</string>
@@ -66,6 +66,7 @@
     <string id="30066">Confluence (by safonov_ivan)</string>
     <string id="30067">Aeon Nox (by joyrider)</string>
     <string id="30068">pyrrent2http (python-libtorrent via http)</string>
+    <string id="30069">Append size to file name</string>
     <string id="30101">Interface</string>
     <string id="30102">P2P Network</string>
     <string id="30103">Advanced</string>
