@@ -40,16 +40,16 @@ from contextlib import contextmanager, closing, nested
 
 from functions import foldername, showMessage, clearStorage, WatchedHistoryDB, get_ids_video, log, debug, ensure_str
 
-if sys.modules["__main__"].__settings__.getSetting("torrent_player") == '2':
-    from torrent2http import State, Engine, MediaType
-    author = 'Anteo'
-    __settings__ = xbmcaddon.Addon(id='script.module.torrent2http')
-    __version__ = __settings__.getAddonInfo('version')
-elif sys.modules["__main__"].__settings__.getSetting("torrent_player") == '3':
-    from pyrrent2http import State, Engine, MediaType
-    author = 'Inpos'
-    __settings__ = xbmcaddon.Addon(id='script.module.pyrrent2http')
-    __version__ = __settings__.getAddonInfo('version')
+#if sys.modules["__main__"].__settings__.getSetting("torrent_player") == '2':
+from torrent2http import State, Engine, MediaType
+author = 'Anteo'
+__settings__ = xbmcaddon.Addon(id='script.module.torrent2http')
+__version__ = __settings__.getAddonInfo('version')
+#elif sys.modules["__main__"].__settings__.getSetting("torrent_player") == '3':
+#    from pyrrent2http import State, Engine, MediaType
+#    author = 'Inpos'
+#    __settings__ = xbmcaddon.Addon(id='script.module.pyrrent2http')
+#    __version__ = __settings__.getAddonInfo('version')
 
 ROOT = sys.modules["__main__"].__root__
 RESOURCES_PATH = os.path.join(ROOT, 'resources')
@@ -613,9 +613,9 @@ class AnteoPlayer(xbmc.Player):
     def _get_status_lines(self, s, f):
         return [
             localize_path(self.display_name),
-            "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state])),
-            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate, self.localize('kb/s'),
-                                             s.upload_rate, self.localize('kb/s'),
+            "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state]).decode('utf-8')),
+            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate, self.localize('kb/s').decode('utf-8'),
+                                             s.upload_rate, self.localize('kb/s').decode('utf-8'),
                                              s.num_seeds, s.num_peers)
         ]
 

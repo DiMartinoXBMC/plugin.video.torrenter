@@ -1391,10 +1391,16 @@ class Core:
                 self.Player = TorrentPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
             else:
                 log(self.__plugin__ + " Unexpected access to method playTorrent() without torrent content")
-        elif self.torrent_player == '2' or self.torrent_player == '3':
+        elif self.torrent_player == '2':
             from Anteoloader import AnteoPlayer
             if 0 != len(torrentUrl):
                 self.Player = AnteoPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
+            else:
+                log(self.__plugin__ + " Unexpected access to method playTorrent() without torrent content")
+        elif self.torrent_player == '3':
+            from Inposloader import InposPlayer
+            if 0 != len(torrentUrl):
+                self.Player = InposPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
             else:
                 log(self.__plugin__ + " Unexpected access to method playTorrent() without torrent content")
         elif self.torrent_player == '1':

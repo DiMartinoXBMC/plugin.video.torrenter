@@ -24,6 +24,7 @@ import sys
 import Libtorrent
 import AceStream
 import Anteoloader
+import Inposloader
 from functions import log
 
 class Torrent():
@@ -39,6 +40,9 @@ class Torrent():
 
         elif self.player == 'anteo':
             self.player = Anteoloader.AnteoLoader(storageDirectory, torrentFile, torrentFilesDirectory)
+        
+        elif self.player == 'inpos':
+            self.player = Inposloader.InposLoader(storageDirectory, torrentFile, torrentFilesDirectory)
 
     def __exit__(self):
         self.player.__exit__()
@@ -49,8 +53,10 @@ class Torrent():
             self.player = 'libtorrent'
         elif player == '1':
             self.player = 'acestream'
-        elif player == '2' or player == '3':
+        elif player == '2':
             self.player = 'anteo'
+        elif player == '3':
+            self.player = 'inpos'
 
     def play_url_ind(self, ind, label, icon):
         return self.player.play_url_ind(int(ind), label, str(icon))
