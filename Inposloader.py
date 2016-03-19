@@ -41,15 +41,15 @@ from contextlib import contextmanager, closing, nested
 from functions import foldername, showMessage, clearStorage, WatchedHistoryDB, get_ids_video, log, debug, ensure_str
 
 #if sys.modules["__main__"].__settings__.getSetting("torrent_player") == '2':
-from torrent2http import State, Engine, MediaType
-author = 'Anteo'
-__settings__ = xbmcaddon.Addon(id='script.module.torrent2http')
-__version__ = __settings__.getAddonInfo('version')
-#elif sys.modules["__main__"].__settings__.getSetting("torrent_player") == '3':
-#    from pyrrent2http import State, Engine, MediaType
-#    author = 'Inpos'
-#    __settings__ = xbmcaddon.Addon(id='script.module.pyrrent2http')
+#    from torrent2http import State, Engine, MediaType
+#    author = 'Anteo'
+#    __settings__ = xbmcaddon.Addon(id='script.module.torrent2http')
 #    __version__ = __settings__.getAddonInfo('version')
+#elif sys.modules["__main__"].__settings__.getSetting("torrent_player") == '3':
+from pyrrent2http import State, Engine, MediaType
+author = 'Inpos'
+__settings__ = xbmcaddon.Addon(id='script.module.pyrrent2http')
+__version__ = __settings__.getAddonInfo('version')
 
 ROOT = sys.modules["__main__"].__root__
 RESOURCES_PATH = os.path.join(ROOT, 'resources')
@@ -94,7 +94,7 @@ class Encryption:
     ENABLED = 1
     DISABLED = 2
 
-class AnteoLoader:
+class InposLoader:
     magnetLink = None
     engine = None
     torrentFile = None
@@ -152,16 +152,11 @@ class AnteoLoader:
             return string
 
     def getContentList(self):
-        try:
-            from Libtorrent import Libtorrent
-            torrent = Libtorrent(self.storageDirectory, self.torrentFile)
-            return torrent.getContentList()
-        except:
-            import traceback
-            log(traceback.format_exc())
-            return self.getContentList_engine()
+        from Libtorrent import Libtorrent
+        torrent = Libtorrent(self.storageDirectory, self.torrentFile)
+        return torrent.getContentList()
 
-    def getContentList_engine(self):
+    '''def getContentList_engine(self):
         self.setup_engine()
         files = []
         filelist = []
@@ -197,7 +192,7 @@ class AnteoLoader:
             log(traceback.format_exc())
         finally:
             self.engine.close()
-        return filelist
+        return filelist'''
 
     def saveTorrent(self, torrentUrl):
         #if not xbmcvfs.exists(torrentUrl) or re.match("^http.+$", torrentUrl):
@@ -228,7 +223,7 @@ class AnteoLoader:
                 localFile.write(content)
                 localFile.close()
             except Exception, e:
-                log('Unable to rename torrent file from %s to %s in AnteoLoader::saveTorrent. Exception: %s' %
+                log('Unable to rename torrent file from %s to %s in InposLoader::saveTorrent. Exception: %s' %
                         (torrentUrl, torrentFile, str(e)))
                 return
         if xbmcvfs.exists(torrentFile) and not os.path.exists(torrentFile):
@@ -257,7 +252,7 @@ class AnteoLoader:
             self.torrentFile = magnet
         log('['+author+'Loader][magnetToTorrent]: self.torrentFile '+str(self.torrentFile))
 
-class AnteoPlayer(xbmc.Player):
+class InposPlayer(xbmc.Player):
     __plugin__ = sys.modules["__main__"].__plugin__
     __settings__ = sys.modules["__main__"].__settings__
     ROOT = sys.modules["__main__"].__root__
@@ -539,7 +534,7 @@ class AnteoPlayer(xbmc.Player):
             file_status = self.engine.file_status(self.contentId)
             subs = []
             filename = os.path.basename(file_status.name)
-            sub_files = self.engine.list(media_types=[MediaType.SUBTITLES])
+            sub_files = self.engine.list_from_info(media_types=[MediaType.SUBTITLES])
             for i in sub_files:
                 if isSubtitle(filename, i.name):
                     subs.append(i)
@@ -613,9 +608,9 @@ class AnteoPlayer(xbmc.Player):
     def _get_status_lines(self, s, f):
         return [
             localize_path(self.display_name),
-            "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state]).decode('utf-8')),
-            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate, self.localize('kb/s').decode('utf-8'),
-                                             s.upload_rate, self.localize('kb/s').decode('utf-8'),
+            "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state])),
+            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate, self.localize('kb/s'),
+                                             s.upload_rate, self.localize('kb/s'),
                                              s.num_seeds, s.num_peers)
         ]
 
@@ -649,14 +644,14 @@ class AnteoPlayer(xbmc.Player):
 
     def get_ids(self):
         contentList = []
-        for fs in self.engine.list():
+        for fs in self.engine.list_from_info():
             contentList.append((fs.name, str(fs.index)))
         contentList = sorted(contentList, key=lambda x: x[0])
         return get_ids_video(contentList)
 
     def getContentList(self):
         filelist = []
-        for fs in self.engine.list():
+        for fs in self.engine.list_from_info():
             stringdata = {"title": ensure_str(fs.name), "size": fs.size, "ind": fs.index,
                           'offset': fs.offset}
             filelist.append(stringdata)

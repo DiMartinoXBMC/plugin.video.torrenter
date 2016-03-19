@@ -66,9 +66,9 @@ class AntizapretProxyHandler(urllib2.ProxyHandler, object):
     def __init__(self):
         self.config = config()
         urllib2.ProxyHandler.__init__(self, {
-            "http" : "<empty>",
-            "https": "<empty>",
-            "ftp"  : "<empty>",
+            "http" : "<empty>", 
+            "https": "<empty>", 
+            "ftp"  : "<empty>", 
         })
     def proxy_open(self, req, proxy, type):
         import socket
@@ -105,3 +105,4 @@ def url_get(url, params={}, headers={}, post = None):
     except urllib2.HTTPError as e:
         log("[antizapret]: HTTP Error(%s): %s" % (e.errno, e.strerror))
         return None
+
