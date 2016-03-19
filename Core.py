@@ -18,8 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import tempfile
-
 import Downloader
 import xbmc
 import xbmcaddon

@@ -21,10 +21,6 @@
 import hashlib
 import sys
 
-import Libtorrent
-import AceStream
-import Anteoloader
-import Inposloader
 from functions import log
 
 class Torrent():
@@ -33,15 +29,19 @@ class Torrent():
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
         self.get_torrent_client()
         if self.player == 'libtorrent':
+            import Libtorrent
             self.player = Libtorrent.Libtorrent(storageDirectory, torrentFile, torrentFilesDirectory)
 
         elif self.player == 'acestream':
+            import AceStream
             self.player = AceStream.AceStream(storageDirectory, torrentFile, torrentFilesDirectory)
 
         elif self.player == 'anteo':
+            import Anteoloader
             self.player = Anteoloader.AnteoLoader(storageDirectory, torrentFile, torrentFilesDirectory)
         
         elif self.player == 'inpos':
+            import Inposloader
             self.player = Inposloader.InposLoader(storageDirectory, torrentFile, torrentFilesDirectory)
 
     def __exit__(self):
