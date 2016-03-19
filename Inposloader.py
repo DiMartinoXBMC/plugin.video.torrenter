@@ -29,7 +29,7 @@ import xbmcgui
 import xbmcvfs
 import xbmcaddon
 import Localization
-from functions import encode_msg, localize_path, isSubtitle, is_writable, file_url
+from functions import encode_msg, isSubtitle, is_writable, file_url
 
 
 import os
