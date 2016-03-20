@@ -268,6 +268,7 @@ class InposPlayer(xbmc.Player):
                                 self.localize('Would you like to play next episode?')):
                                 break
                         self.contentId = self.next_contentId
+                        self.engine.activate_file(self.contentId)
                         continue
                     log('['+author+'Player]: ************************************* NO! break')
                     break
