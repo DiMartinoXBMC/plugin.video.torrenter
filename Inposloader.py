@@ -248,15 +248,9 @@ class InposPlayer(xbmc.Player):
         try:
             self.engine.start()
             self.setup_nextep()
-<<<<<<< HEAD
-            while True:
-                self.engine.activate_file(self.contentId)
-                if self.buffer():
-=======
             self.engine.activate_file(self.contentId)
             if self.buffer():
                 while True:
->>>>>>> 337de1c95f0872a9223a8008698caf9099137ff7
                     log('['+author+'Player]: ************************************* GOING LOOP')
                     if self.setup_play():
                         self.setup_subs()
