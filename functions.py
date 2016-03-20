@@ -2053,7 +2053,11 @@ def uri2path(uri):
 
 def localize_path(path):
     import chardet
-    if not isinstance(path, unicode): path = path.decode(chardet.detect(path)['encoding'])
+    if not isinstance(path, unicode):
+        try:
+            path = path.decode(chardet.detect(path).get('encoding') or 'utf-8')
+        except:
+            pass
     if not sys.platform.startswith('win'):
         path = encode_msg(path)
     return path
