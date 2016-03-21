@@ -2064,11 +2064,11 @@ def localize_path(path):
 
 def encode_msg(msg):
     try:
-        msg = isinstance(msg, unicode) and msg.encode(True and sys.getfilesystemencoding() or 'utf-8') or msg
+        msg = isinstance(msg, unicode) and msg.encode('utf-8') or msg
     except:
         import traceback
         log(traceback.format_exc())
-        msg = msg.encode('utf-8')
+        msg = ensure_str(msg)
     return msg
 
 def get_platform():

@@ -121,8 +121,8 @@ class AceStream:
 
     def magnetToTorrent(self, magnet):
         try:
-            from Libtorrent import Libtorrent
-            torrent = Libtorrent(self.storageDirectory, magnet)
+            from SkorbaLoader import SkorbaLoader
+            torrent = SkorbaLoader(self.storageDirectory, magnet)
             torrent.magnetToTorrent(magnet)
             self.torrentFile = torrent.torrentFile
             log('[AceStream][magnetToTorrent]: self.torrentFile '+str(self.torrentFile))

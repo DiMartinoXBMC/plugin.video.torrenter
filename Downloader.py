@@ -29,8 +29,8 @@ class Torrent():
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
         self.get_torrent_client()
         if self.player == 'libtorrent':
-            import Libtorrent
-            self.player = Libtorrent.Libtorrent(storageDirectory, torrentFile, torrentFilesDirectory)
+            import SkorbaLoader
+            self.player = SkorbaLoader.SkorbaLoader(storageDirectory, torrentFile, torrentFilesDirectory)
 
         elif self.player == 'acestream':
             import AceStream
@@ -49,7 +49,7 @@ class Torrent():
 
     def get_torrent_client(self):
         player = self.__settings__.getSetting("torrent_player")
-        if player == '0':
+        if player == '0' or '4':
             self.player = 'libtorrent'
         elif player == '1':
             self.player = 'acestream'

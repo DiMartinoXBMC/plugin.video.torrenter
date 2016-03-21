@@ -153,8 +153,8 @@ class AnteoLoader:
 
     def getContentList(self):
         try:
-            from Libtorrent import Libtorrent
-            torrent = Libtorrent(self.storageDirectory, self.torrentFile)
+            from SkorbaLoader import SkorbaLoader
+            torrent = SkorbaLoader(self.storageDirectory, self.torrentFile)
             return torrent.getContentList()
         except:
             import traceback
@@ -249,8 +249,8 @@ class AnteoLoader:
 
     def magnetToTorrent(self, magnet):
         try:
-            from Libtorrent import Libtorrent
-            torrent = Libtorrent(self.storageDirectory, magnet)
+            from SkorbaLoader import SkorbaLoader
+            torrent = SkorbaLoader(self.storageDirectory, magnet)
             torrent.magnetToTorrent(magnet)
             self.torrentFile = torrent.torrentFile
         except:
@@ -612,7 +612,7 @@ class AnteoPlayer(xbmc.Player):
 
     def _get_status_lines(self, s, f):
         return [
-            localize_path(self.display_name),
+            ensure_str(self.display_name),
             "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state]).decode('utf-8')),
             "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate, self.localize('kb/s').decode('utf-8'),
                                              s.upload_rate, self.localize('kb/s').decode('utf-8'),

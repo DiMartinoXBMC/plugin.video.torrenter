@@ -1401,6 +1401,9 @@ class Core:
                 self.Player = InposPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
             else:
                 log(self.__plugin__ + " Unexpected access to method playTorrent() without torrent content")
+        elif self.torrent_player == '4':
+            xbmc.executebuiltin('XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.yatp/?action=play&torrent=%s&file_index=%s' % (urllib.quote_plus(torrentUrl), params['url']))
+            #xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.yatp/?action=play&torrent=%s&file_index=%s")' % (urllib.quote_plus(torrentUrl), params['url']))
         elif self.torrent_player == '1':
             __ASsettings__ = xbmcaddon.Addon(id='script.module.torrent.ts')
             folder=__ASsettings__.getSetting("folder")
@@ -1740,7 +1743,7 @@ class Core:
                     Download().setprio(id, ind)
 
     def downloadLibtorrent(self, params={}):
-        import Libtorrent
+        import SkorbaLoader
         get = params.get
         storage=get('storage')
         if not storage: self.userStorage(params)
@@ -1756,7 +1759,7 @@ class Core:
             if classMatch:
                 searcher = classMatch.group(1)
                 url = Searchers().downloadWithSearcher(classMatch.group(2), searcher)
-        torrent = Libtorrent.Libtorrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
+        torrent = SkorbaLoader.SkorbaLoader(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
         torrent.initSession()
         encryption = self.__settings__.getSetting('encryption') == 'true'
         if encryption:
