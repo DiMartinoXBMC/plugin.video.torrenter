@@ -245,6 +245,7 @@ class InposPlayer(xbmc.Player):
             self.seek = int(self.get("seek"))
         self.init()
         self.setup_engine()
+        showMessage('[%sPlayer v%s] ' % (author, __version__), self.localize('Please Wait'))
         try:
             self.engine.start()
             self.setup_nextep()
@@ -269,6 +270,7 @@ class InposPlayer(xbmc.Player):
                                 break
                         self.contentId = self.next_contentId
                         self.engine.activate_file(self.contentId)
+                        showMessage('[%sPlayer v%s] ' % (author, __version__), self.localize('Please Wait'))
                         continue
                     log('['+author+'Player]: ************************************* NO! break')
                     break
