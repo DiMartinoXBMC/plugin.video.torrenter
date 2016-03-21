@@ -152,8 +152,8 @@ class InposLoader:
             return string
 
     def getContentList(self):
-        from Libtorrent import Libtorrent
-        torrent = Libtorrent(self.storageDirectory, self.torrentFile)
+        from SkorbaLoader import SkorbaLoader
+        torrent = SkorbaLoader(self.storageDirectory, self.torrentFile)
         return torrent.getContentList()
 
     def saveTorrent(self, torrentUrl):
@@ -206,8 +206,8 @@ class InposLoader:
 
     def magnetToTorrent(self, magnet):
         try:
-            from Libtorrent import Libtorrent
-            torrent = Libtorrent(self.storageDirectory, magnet)
+            from SkorbaLoader import SkorbaLoader
+            torrent = SkorbaLoader(self.storageDirectory, magnet)
             torrent.magnetToTorrent(magnet)
             self.torrentFile = torrent.torrentFile
         except:

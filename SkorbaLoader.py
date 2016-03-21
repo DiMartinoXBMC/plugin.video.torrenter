@@ -34,7 +34,7 @@ import Localization
 from functions import isSubtitle, DownloadDB, log, debug, is_writable,\
     vista_check, windows_check, localize_path
 
-class Libtorrent:
+class SkorbaLoader:
     magnetLink = None
     startPart = 0
     endPart = 0
