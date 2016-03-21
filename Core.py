@@ -1101,8 +1101,8 @@ class Core:
 
     def drawItem(self, title, action, link='', image='', isFolder=True, contextMenu=None, replaceMenu=True, action2='', fileSize=0L,
                  info={}):
-        listitem = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
         #log('[drawItem]:'+str((title, action, image, isFolder, contextMenu, replaceMenu, action2, info)))
+        listitem = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
         if not info: info = {"Title": title, "plot": title}
         if not isFolder and fileSize:
             info['size'] = fileSize
@@ -1430,9 +1430,11 @@ class Core:
             request.add_header('Accept-encoding', 'gzip')
             result = urllib2.urlopen(request)
             if result.info().get('Content-Encoding') == 'gzip':
+                from StringIO import StringIO
+                import zlib
                 buf = StringIO(result.read())
-                f = gzip.GzipFile(fileobj=buf)
-                content = f.read()
+                decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
+                content = decomp.decompress(buf.getvalue())
             else:
                 content = result.read()
             localFile = xbmcvfs.File(torrentFile, "wb+")
@@ -1459,7 +1461,7 @@ class Core:
     def openTorrent(self, params={}):
         get = params.get
         tdir = unquote(get("url2"),None)
-        thumbnail = unquote(get("thumbnail"), False) and True or 'DefaultVideo.png'
+        thumbnail = unquote(get("thumbnail"), False) or 'DefaultVideo.png'
         save_folder = unquote(get("save_folder"),'')
         url = urllib.unquote_plus(get("url"))
 
