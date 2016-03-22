@@ -55,7 +55,7 @@ def clearStorage(userStorageDirectory, force = False):
     userStorageDirectory = decode(userStorageDirectory)
     #log('[clearStorage]: storage '+str(userStorageDirectory) + os.sep)
     min_storage_size = __settings__.getSetting("min_storage_size")
-    storage_size = getDirectorySizeInGB(userStorageDirectory)
+    storage_size = getDirectorySizeInGB(userStorageDirectory.encode('utf-8'))
     if storage_size >= min_storage_size or force:
         if xbmcvfs.exists(userStorageDirectory + os.sep) or os.path.exists(userStorageDirectory):
             log('[clearStorage]: storage exists')
@@ -83,7 +83,8 @@ def clearStorage(userStorageDirectory, force = False):
                 shutil.move(saved, saved_temp)
                 saved_bool = True
 
-            shutil.rmtree(userStorageDirectory.encode('utf-8'), ignore_errors=True)
+            shutil.rmtree(userStorageDirectory, ignore_errors=True)
+            #log(str(xbmcvfs.listdir(userStorageDirectory)))
             xbmcvfs.mkdir(userStorageDirectory)
 
             if torrents_bool:
@@ -101,8 +102,6 @@ def clearStorage(userStorageDirectory, force = False):
             DownloadDB().clear()
         except Exception, e:
             log('[clearStorage]: DownloadDB().clear() failed. '+str(e))
-
-        showMessage(Localization.localize('Storage'), Localization.localize('Storage was cleared'), forced=True)
 
 
 def sortcomma(dict, json):
