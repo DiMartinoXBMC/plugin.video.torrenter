@@ -2,6 +2,7 @@
 '''
     Torrenter v2 plugin for XBMC/Kodi
     Copyright (C) 2012-2015 Vadim Skorba v1 - DiMartino v2
+    https://forums.tvaddons.ag/addon-releases/29224-torrenter-v2.html
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,7 +30,7 @@ import xbmcgui
 import xbmcvfs
 import xbmcaddon
 import Localization
-from functions import localize_path, isSubtitle, is_writable, file_url
+from functions import file_encode, isSubtitle, DownloadDB, log, debug, is_writable, unquote, file_url
 
 
 import os
@@ -40,16 +41,10 @@ from contextlib import contextmanager, closing, nested
 
 from functions import foldername, showMessage, clearStorage, WatchedHistoryDB, get_ids_video, log, debug, ensure_str
 
-#if sys.modules["__main__"].__settings__.getSetting("torrent_player") == '2':
 from torrent2http import State, Engine, MediaType
 author = 'Anteo'
 __settings__ = xbmcaddon.Addon(id='script.module.torrent2http')
 __version__ = __settings__.getAddonInfo('version')
-#elif sys.modules["__main__"].__settings__.getSetting("torrent_player") == '3':
-#    from pyrrent2http import State, Engine, MediaType
-#    author = 'Inpos'
-#    __settings__ = xbmcaddon.Addon(id='script.module.pyrrent2http')
-#    __version__ = __settings__.getAddonInfo('version')
 
 ROOT = sys.modules["__main__"].__root__
 RESOURCES_PATH = os.path.join(ROOT, 'resources')
@@ -165,7 +160,7 @@ class AnteoLoader:
         self.setup_engine()
         files = []
         filelist = []
-        try:
+        with closing(self.engine):
             self.engine.start()
             #media_types=[MediaType.VIDEO, MediaType.AUDIO, MediaType.SUBTITLES, MediaType.UNKNOWN]
 
@@ -192,11 +187,6 @@ class AnteoLoader:
                 stringdata = {"title": ensure_str(fs.name), "size": fs.size, "ind": fs.index,
                               'offset': fs.offset}
                 filelist.append(stringdata)
-        except:
-            import traceback
-            log(traceback.format_exc())
-        finally:
-            self.engine.close()
         return filelist
 
     def saveTorrent(self, torrentUrl):
@@ -255,7 +245,7 @@ class AnteoLoader:
             self.torrentFile = torrent.torrentFile
         except:
             self.torrentFile = magnet
-        log('['+author+'Loader][magnetToTorrent]: self.torrentFile '+str(self.torrentFile))
+        log('[AnteoLoader][magnetToTorrent]: self.torrentFile '+str(self.torrentFile))
 
 class AnteoPlayer(xbmc.Player):
     __plugin__ = sys.modules["__main__"].__plugin__
@@ -286,22 +276,23 @@ class AnteoPlayer(xbmc.Player):
         self.contentId = int(self.get("url"))
         if self.get("seek"):
             self.seek = int(self.get("seek"))
+        #self.torrent = AnteoLoader(self.userStorageDirectory, self.torrentUrl, self.torrentFilesDirectory)
         self.init()
         self.setup_engine()
-        try:
+        with closing(self.engine):
             self.engine.start(self.contentId)
             self.setup_nextep()
             while True:
                 if self.buffer():
-                    log('['+author+'Player]: ************************************* GOING LOOP')
+                    log('[AnteoPlayer]: ************************************* GOING LOOP')
                     if self.setup_play():
                         self.setup_subs()
                         self.loop()
                         WatchedHistoryDB().add(self.basename, foldername(self.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize)
                     else:
-                        log('['+author+'Player]: ************************************* break')
+                        log('[AnteoPlayer]: ************************************* break')
                         break
-                    log('['+author+'Player]: ************************************* GO NEXT?')
+                    log('[AnteoPlayer]: ************************************* GO NEXT?')
                     if self.next_dl and self.next_contentId != False and isinstance(self.next_contentId, int) and self.iterator == 100:
                         if not self.next_play:
                             xbmc.sleep(3000)
@@ -311,13 +302,9 @@ class AnteoPlayer(xbmc.Player):
                                 break
                         self.contentId = self.next_contentId
                         continue
-                    log('['+author+'Player]: ************************************* NO! break')
+
+                    log('[AnteoPlayer]: ************************************* NO! break')
                 break
-        except:
-            import traceback
-            log(traceback.format_exc())
-        finally:
-            self.engine.close()
 
         xbmc.Player().stop()
 
@@ -386,7 +373,6 @@ class AnteoPlayer(xbmc.Player):
         dht_routers = ["router.bittorrent.com:6881","router.utorrent.com:6881"]
         user_agent = 'uTorrent/2200(24683)'
         self.pre_buffer_bytes = int(self.__settings__.getSetting("pre_buffer_bytes"))*1024*1024
-        #showMessage('[%sPlayer v%s] ' % (author, __version__), self.localize('Please Wait'))
 
         self.engine = Engine(uri=file_url(self.torrentUrl), download_path=self.userStorageDirectory,
                              connections_limit=connections_limit, download_kbps=download_limit, upload_kbps=upload_limit,
@@ -470,7 +456,7 @@ class AnteoPlayer(xbmc.Player):
         else:
             self.next_dl = False
         self.next_play = self.__settings__.getSetting('next_play') == 'true'
-        log('['+author+'Player]: next_dl - %s, next_play - %s, ids_video - %s' % (str(self.next_dl), str(self.next_play), str(self.ids_video)))
+        log('[AnteoPlayer]: next_dl - %s, next_play - %s, ids_video - %s' % (str(self.next_dl), str(self.next_play), str(self.ids_video)))
 
     def setup_play(self):
         file_status = self.engine.file_status(self.contentId)
@@ -489,7 +475,7 @@ class AnteoPlayer(xbmc.Player):
                 self.next_contentId = int(self.ids_video[next_contentId_index])
             else:
                 self.next_contentId = False
-            log('['+author+'Player][setup_play]: next_contentId: '+str(self.next_contentId))
+            log('[AnteoPlayer][setup_play]: next_contentId: '+str(self.next_contentId))
         try:
             seasonId = self.get("seasonId")
             self.episodeId = self.get("episodeId") if not self.episodeId else int(self.episodeId) + 1
@@ -509,7 +495,7 @@ class AnteoPlayer(xbmc.Player):
                                                            'season': int(seasonId),
                                                            'tvshowtitle': title})
         except:
-            log('['+author+'Player]: Operation INFO failed!')
+            log('[AnteoPlayer]: Operation INFO failed!')
 
         thumbnail = self.get("thumbnail")
         if thumbnail:
@@ -525,12 +511,12 @@ class AnteoPlayer(xbmc.Player):
             xbmc.sleep(200)
             i += 1
 
-        log('['+author+'Player]: self.isPlaying() = %s, i = %d, xbmc.abortRequested - %s' % (str(self.isPlaying()), i, str(xbmc.abortRequested)))
+        log('[AnteoPlayer]: self.isPlaying() = %s, i = %d, xbmc.abortRequested - %s' % (str(self.isPlaying()), i, str(xbmc.abortRequested)))
         if not self.isPlaying() or xbmc.abortRequested:
             return False
 
         if self.seek > 0:
-            log('['+author+'Player]: seekTime - '+str(self.seek))
+            log('[AnteoPlayer]: seekTime - '+str(self.seek))
             self.seekTime(self.seek)
         return True
 
@@ -544,7 +530,7 @@ class AnteoPlayer(xbmc.Player):
                 if isSubtitle(filename, i.name):
                     subs.append(i)
             if subs:
-                log("["+author+"Player][setup_subs]: Detected subtitles: %s" % str(subs))
+                log("[AnteoPlayer][setup_subs]: Detected subtitles: %s" % str(subs))
                 for sub in subs:
                     xbmc.Player().setSubtitles(sub.url)
 
@@ -612,7 +598,7 @@ class AnteoPlayer(xbmc.Player):
 
     def _get_status_lines(self, s, f):
         return [
-            ensure_str(self.display_name),
+            self.display_name,
             "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state]).decode('utf-8')),
             "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate, self.localize('kb/s').decode('utf-8'),
                                              s.upload_rate, self.localize('kb/s').decode('utf-8'),
@@ -637,7 +623,7 @@ class AnteoPlayer(xbmc.Player):
         if not status:
             status = self.engine.status()
         self.engine.check_torrent_error(status)
-        log('['+author+'Player]: %.2f%% complete (down: %.1f kb/s up: %.1f kb/s peers: %d) %s' % \
+        log('[AnteoPlayer]: %.2f%% complete (down: %.1f kb/s up: %.1f kb/s peers: %d) %s' % \
               (status.progress * 100, status.download_rate,
                status.upload_rate, status.num_peers, status.state_str))
 

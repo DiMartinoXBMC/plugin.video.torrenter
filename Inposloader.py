@@ -522,7 +522,10 @@ class InposPlayer(xbmc.Player):
                 while not xbmc.abortRequested and self.isPlaying():
                     self.print_fulldebug()
                     status = self.engine.status()
-                    file_status = self.engine.file_status(self.contentId)
+                    if not self.next_dling:
+                        file_status = self.engine.file_status(self.contentId)
+                    else:
+                        file_status = self.engine.file_status(self.next_contentId)
                     self.watchedTime = xbmc.Player().getTime()
                     self.totalTime = xbmc.Player().getTotalTime()
                     if self.iterator == 100 and debug_counter < 100:
