@@ -49,7 +49,7 @@ class Torrent():
 
     def get_torrent_client(self):
         player = self.__settings__.getSetting("torrent_player")
-        if player == '0' or '4':
+        if player == '0' or player == '4':
             self.player = 'libtorrent'
         elif player == '1':
             self.player = 'acestream'

@@ -560,6 +560,7 @@ class AnteoPlayer(xbmc.Player):
                     if pause and self.__settings__.getSetting("pause_onplay") == 'true':
                         pause = False
                         xbmc.Player().pause()
+                        log('[loop]: xbmc.Player().pause()')
                     xbmc.sleep(1000)
 
                     #if not self.seeding_run and self.iterator == 100 and self.seeding:

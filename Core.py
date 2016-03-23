@@ -1869,7 +1869,6 @@ class Core:
     def callback(self, params={}):
         get = params.get
 
-        external = unquote(get("external"), None)
         subaction = unquote(get("subaction"), None)
         url = unquote(get("url"),'')
         sdata = unquote(get("sdata"),'{}')
@@ -1907,5 +1906,6 @@ class Core:
                 xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url=' + fileIndex + '")')
                 return
 
-        sdata['filename'] = url
-        xbmc.executebuiltin('xbmc.RunPlugin("' + back_url + '&stringdata=' + json.dumps(sdata) + '")')
+        sdata['filename'] = ensure_str(url)
+        #log('[call]: '+sdata['filename']+json.loads(json.dumps(sdata))['filename'])
+        xbmc.executebuiltin('xbmc.RunPlugin(%s&stringdata=%s)' % (back_url, urllib.quote_plus(json.dumps(sdata))))
