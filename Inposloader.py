@@ -520,7 +520,7 @@ class InposPlayer(xbmc.Player):
             with nested(self.attach(overlay.show, self.on_playback_paused),
                         self.attach(overlay.hide, self.on_playback_resumed, self.on_playback_stopped)):
                 while not xbmc.abortRequested and self.isPlaying():
-                    self.print_fulldebug()
+                    #self.print_fulldebug()
                     status = self.engine.status()
                     if not self.next_dling:
                         file_status = self.engine.file_status(self.contentId)
