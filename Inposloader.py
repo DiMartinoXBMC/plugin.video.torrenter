@@ -212,7 +212,7 @@ class InposLoader:
             self.torrentFile = torrent.torrentFile
         except:
             self.torrentFile = magnet
-        log('['+author+'Loader][magnetToTorrent]: self.torrentFile '+str(self.torrentFile))
+        log('['+author+'Loader][magnetToTorrent]: self.torrentFile '+ensure_str((self.torrentFile)))
 
 class InposPlayer(xbmc.Player):
     __plugin__ = sys.modules["__main__"].__plugin__

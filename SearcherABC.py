@@ -26,7 +26,7 @@ import tempfile
 import hashlib
 import os
 from StringIO import StringIO
-import gzip
+import zlib
 import socket
 import sys
 
@@ -114,12 +114,6 @@ class SearcherABC:
             except:
                 showMessage('AntiZapret', Localization.localize('Error'))
                 self.debug('[antizapret]: OFF!')
-        #elif self.proxy == 2:
-        #    from resources.proxy import immunicity
-        #    opener = urllib2.build_opener(immunicity.ImmunicityProxyHandler(), urllib2.HTTPCookieProcessor(self.cookieJar))
-        #    config = immunicity.config()
-        #    self.debug('[immunicity]: '+str(config["domains"]))
-        #    self.debug('[immunicity]: '+str(config["server"]))
         if not opener:
             opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookieJar))
         opener.addheaders = headers
@@ -142,8 +136,8 @@ class SearcherABC:
         #self.cookieJar.extract_cookies(response, urllib2)
         if response.info().get('Content-Encoding') == 'gzip':
             buf = StringIO(response.read())
-            f = gzip.GzipFile(fileobj=buf)
-            response = f.read()
+            decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
+            response = decomp.decompress(buf.getvalue())
         else:
             response = response.read()
         return response
