@@ -245,7 +245,7 @@ class AnteoLoader:
             self.torrentFile = torrent.torrentFile
         except:
             self.torrentFile = magnet
-        log('[AnteoLoader][magnetToTorrent]: self.torrentFile '+str(self.torrentFile))
+        log('[AnteoLoader][magnetToTorrent]: self.torrentFile '+ensure_str(self.torrentFile))
 
 class AnteoPlayer(xbmc.Player):
     __plugin__ = sys.modules["__main__"].__plugin__
