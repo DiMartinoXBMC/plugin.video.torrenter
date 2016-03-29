@@ -245,6 +245,8 @@ class InposPlayer(xbmc.Player):
             self.seek = int(self.get("seek"))
         self.init()
         self.setup_engine()
+        self.on_playback_resumed.append(self.engine.resume)
+        self.on_playback_paused.append(self.engine.pause)
         showMessage('[%sPlayer v%s] ' % (author, __version__), self.localize('Please Wait'))
         try:
             self.engine.start()
