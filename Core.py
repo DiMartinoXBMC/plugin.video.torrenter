@@ -1115,7 +1115,7 @@ class Core:
         else:
             url = '%s?action=%s&url=%s' % (sys.argv[0], action, urllib.quote_plus(link))
         if action2:
-            url = url + '&url2=%s' % urllib.quote_plus(action2)
+            url = url + '&url2=%s' % urllib.quote_plus(ensure_str(action2))
         if not contextMenu:
             contextMenu = [(self.localize('Search Control Window'),
                             'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
