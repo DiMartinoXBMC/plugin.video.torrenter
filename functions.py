@@ -447,7 +447,7 @@ def cutFolder(contentList, tdir=None):
             elif not tdir:
                 contentListNew.append(item)
 
-            if tdir and dir == tdir:
+            if tdir and ensure_str(dir) == ensure_str(tdir):
                 tupleContent = list(item)
                 tupleContent[0] = item[0][len(dir) + 1:]
                 contentListNew.append(list(tupleContent))
