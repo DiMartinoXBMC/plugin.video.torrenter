@@ -1064,7 +1064,10 @@ class qBittorrent:
             'uploading': 'seeding',
             'stalledUP': 'seeding',
         }
-        return mapping[code]
+        if code in mapping:
+            return mapping[code]
+        else:
+            return 'unknown'
 
 
 class Deluge:
