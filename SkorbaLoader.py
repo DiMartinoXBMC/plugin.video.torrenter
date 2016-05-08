@@ -188,10 +188,9 @@ class SkorbaLoader:
         if torrentInfo:
             try:
                 torrentFile = self.lt.create_torrent(torrentInfo)
-                baseName = os.path.basename(self.storageDirectory + os.sep + torrentInfo.files()[0].path)
                 if not xbmcvfs.exists(self.torrentFilesPath):
                     xbmcvfs.mkdirs(self.torrentFilesPath)
-                self.torrentFile = self.torrentFilesPath + self.md5(baseName) + '.torrent'
+                self.torrentFile = self.torrentFilesPath + self.md5(magnet) + '.torrent'
                 torentFileHandler = xbmcvfs.File(self.torrentFile, "w+b")
                 torentFileHandler.write(self.lt.bencode(torrentFile.generate()))
                 torentFileHandler.close()
