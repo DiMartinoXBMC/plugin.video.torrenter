@@ -20,6 +20,7 @@
 
 import re
 import socket
+from datetime import date
 
 import Content
 from BeautifulSoup import BeautifulSoup
@@ -70,7 +71,7 @@ class KinoPoisk(Content.Content):
                 x[0], x[1] + 'perpage/25/', {'page': x[1] + 'perpage/25/page/%d/', 'increase': 1, 'second_page': 2})
 
     category_dict['year'] = {'year': 'by Year', }
-    for y in range(2015, 1970, -1):
+    for y in range(date.today().year, 1970, -1):
         category_dict['year'][str(y)] = (str(y), '/s/type/film/list/1/m_act[year]/%s/' % str(y) + 'perpage/25/',
                                          {'page': '/s/type/film/list/1/m_act[year]/%s/' % str(y) + 'perpage/25/page/%d/',
                                           'increase': 1, 'second_page': 2})

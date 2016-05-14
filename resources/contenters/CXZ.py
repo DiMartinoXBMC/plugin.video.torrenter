@@ -22,7 +22,7 @@ import re
 
 import Content
 from BeautifulSoup import BeautifulSoup
-
+from datetime import date
 
 def make_category_dict():
     category_dict = {
@@ -72,7 +72,7 @@ def make_category_dict():
             x[0], x[1] + 'view=list', {'page': x[1] + 'view=list&page=%d', 'increase': 1, 'second_page': 1})
 
     category_dict['year'] = {'year': 'by Year', }
-    for y in range(2015, 1970, -1):
+    for y in range(date.today().year, 1970, -1):
         category_dict['year'][str(y)] = (str(y), '/films/year/%s/' % str(y),
                                          {'page': '/films/year/%s/' % str(y) + '?view=list&page=%d', 'increase': 1,
                                           'second_page': 1})

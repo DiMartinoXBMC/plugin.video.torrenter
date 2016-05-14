@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="56e91349-2444-4553-bc78-90c2bab49e9c" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/utorrent/net.py" afterPath="$PROJECT_DIR$/resources/utorrent/net.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Content.py" afterPath="$PROJECT_DIR$/Content.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/contenters/CXZ.py" afterPath="$PROJECT_DIR$/resources/contenters/CXZ.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/contenters/IMDB.py" afterPath="$PROJECT_DIR$/resources/contenters/IMDB.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/contenters/KinoPoisk.py" afterPath="$PROJECT_DIR$/resources/contenters/KinoPoisk.py" />
     </list>
     <ignored path="plugin.video.torrenter.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -34,11 +36,11 @@
     <splitter split-orientation="horizontal" split-proportion="0.51215065">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="functions.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="functions.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/functions.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="361">
-                  <caret line="1197" column="70" selection-start-line="1198" selection-start-column="33" selection-end-line="1198" selection-end-column="47" />
+                <state relative-caret-position="89">
+                  <caret line="1181" column="67" selection-start-line="1181" selection-start-column="67" selection-end-line="1181" selection-end-column="67" />
                   <folding>
                     <element signature="e#853#867#0" expanded="true" />
                     <element signature="e#4062#4301#0" expanded="false" />
@@ -129,12 +131,58 @@
           <file leaf-file-name="Inposloader.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Inposloader.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="3655">
+                <state relative-caret-position="837">
                   <caret line="235" column="68" selection-start-line="235" selection-start-column="68" selection-end-line="235" selection-end-column="68" />
                   <folding>
                     <element signature="e#28187#29903#0" expanded="false" />
                     <element signature="e#29632#29903#0" expanded="false" />
                   </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="KinoPoisk.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/resources/contenters/KinoPoisk.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="272">
+                  <caret line="73" column="19" selection-start-line="73" selection-start-column="19" selection-end-line="73" selection-end-column="36" />
+                  <folding>
+                    <element signature="e#783#792#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="CXZ.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/resources/contenters/CXZ.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="289">
+                  <caret line="74" column="36" selection-start-line="74" selection-start-column="36" selection-end-line="74" selection-end-column="36" />
+                  <folding>
+                    <element signature="e#783#792#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="IMDB.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/resources/contenters/IMDB.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="170">
+                  <caret line="58" column="45" selection-start-line="58" selection-start-column="45" selection-end-line="58" selection-end-column="45" />
+                  <folding>
+                    <element signature="e#783#792#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Content.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Content.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="323">
+                  <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="25" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -190,7 +238,7 @@
           <file leaf-file-name="Core.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Core.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="96">
+                <state relative-caret-position="1836">
                   <caret line="1100" column="0" selection-start-line="1100" selection-start-column="0" selection-end-line="1100" selection-end-column="0" />
                   <folding>
                     <element signature="e#24#856#1" expanded="false" />
@@ -600,8 +648,8 @@
           <file leaf-file-name="SkorbaLoader.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/SkorbaLoader.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="697">
-                  <caret line="55" column="47" selection-start-line="55" selection-start-column="47" selection-end-line="55" selection-end-column="47" />
+                <state relative-caret-position="680">
+                  <caret line="54" column="47" selection-start-line="54" selection-start-column="47" selection-end-line="54" selection-end-column="47" />
                   <folding />
                 </state>
               </provider>
@@ -712,10 +760,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/controlcenter.py" />
-        <option value="$PROJECT_DIR$/default.py" />
-        <option value="$PROJECT_DIR$/resources/scrapers/tmdbs.py" />
-        <option value="$PROJECT_DIR$/../torrenter.searcher.RiperAM/changelog.txt" />
         <option value="$PROJECT_DIR$/../torrenter.searcher.RiperAM/resources/settings.xml" />
         <option value="$PROJECT_DIR$/resources/scrapers/kinopoisk/LOGGER.py" />
         <option value="$PROJECT_DIR$/resources/contenters/RiperAM.py" />
@@ -763,6 +807,10 @@
         <option value="$PROJECT_DIR$/Core.py" />
         <option value="$PROJECT_DIR$/functions.py" />
         <option value="$PROJECT_DIR$/resources/utorrent/net.py" />
+        <option value="$PROJECT_DIR$/Content.py" />
+        <option value="$PROJECT_DIR$/resources/contenters/KinoPoisk.py" />
+        <option value="$PROJECT_DIR$/resources/contenters/CXZ.py" />
+        <option value="$PROJECT_DIR$/resources/contenters/IMDB.py" />
       </list>
     </option>
   </component>
@@ -797,8 +845,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -849,8 +895,28 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="plugin.video.torrenter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="plugin.video.torrenter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="contenters" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1046,13 +1112,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1420801533300</updated>
-    </task>
-    <task id="LOCAL-00173" summary="fix errors">
-      <created>1452026375245</created>
-      <option name="number" value="00173" />
-      <option name="presentableId" value="LOCAL-00173" />
-      <option name="project" value="LOCAL" />
-      <updated>1452026375245</updated>
     </task>
     <task id="LOCAL-00174" summary="qbittorent">
       <created>1452632992196</created>
@@ -1390,7 +1449,14 @@
       <option name="project" value="LOCAL" />
       <updated>1459948765761</updated>
     </task>
-    <option name="localTasksCounter" value="222" />
+    <task id="LOCAL-00222" summary="qbit fix">
+      <created>1462112732358</created>
+      <option name="number" value="00222" />
+      <option name="presentableId" value="LOCAL-00222" />
+      <option name="project" value="LOCAL" />
+      <updated>1462112732359</updated>
+    </task>
+    <option name="localTasksCounter" value="223" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1410,7 +1476,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32850778" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27505568" sideWeight="0.5021075" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32739422" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27505568" sideWeight="0.49789253" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27474973" sideWeight="0.49789253" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32703003" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1319149" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -1440,7 +1506,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="tmdb fix" />
     <MESSAGE value="history update" />
     <MESSAGE value="API update" />
     <MESSAGE value="API update and skin" />
@@ -1465,7 +1530,8 @@
     <MESSAGE value="slowfix" />
     <MESSAGE value="fixes" />
     <MESSAGE value="# fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="# fix" />
+    <MESSAGE value="qbit fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="qbit fix" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1474,34 +1540,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://D:/Python27/Lib/shelve.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="213" column="6" selection-start-line="213" selection-start-column="6" selection-end-line="213" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../script.module.libtorrent/python_libtorrent/platform_pulsar.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="57" column="18" selection-start-line="57" selection-start-column="18" selection-end-line="57" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../torrenter.searcher.RuTorOrg/addon.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="8" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../torrenter.searcher.KinoZalTV/addon.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="1" column="55" selection-start-line="1" selection-start-column="55" selection-end-line="1" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../torrenter.searcher.KinoZalTV/changelog.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1667,6 +1705,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="7" column="68" selection-start-line="7" selection-start-column="63" selection-end-line="7" selection-end-column="68" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1767,17 +1806,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Inposloader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3655">
-          <caret line="235" column="68" selection-start-line="235" selection-start-column="68" selection-end-line="235" selection-end-column="68" />
-          <folding>
-            <element signature="e#28187#29903#0" expanded="false" />
-            <element signature="e#29632#29903#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/changelog.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
@@ -1820,8 +1848,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/SkorbaLoader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="55" column="47" selection-start-line="55" selection-start-column="47" selection-end-line="55" selection-end-column="47" />
+        <state relative-caret-position="680">
+          <caret line="54" column="47" selection-start-line="54" selection-start-column="47" selection-end-line="54" selection-end-column="47" />
           <folding />
         </state>
       </provider>
@@ -1897,54 +1925,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="1197" column="70" selection-start-line="1198" selection-start-column="33" selection-end-line="1198" selection-end-column="47" />
-          <folding>
-            <element signature="e#853#867#0" expanded="true" />
-            <element signature="e#4062#4301#0" expanded="false" />
-            <element signature="e#4325#4577#0" expanded="false" />
-            <element signature="e#4944#5340#0" expanded="false" />
-            <element signature="e#5661#5743#0" expanded="false" />
-            <element signature="e#5780#6299#0" expanded="false" />
-            <element signature="e#6323#6589#0" expanded="false" />
-            <element signature="e#6614#7160#0" expanded="false" />
-            <element signature="e#7536#7632#0" expanded="false" />
-            <element signature="e#7679#7810#0" expanded="false" />
-            <element signature="e#8094#8133#0" expanded="false" />
-            <element signature="e#8166#9130#0" expanded="false" />
-            <element signature="e#9175#9405#0" expanded="false" />
-            <element signature="e#9438#10023#0" expanded="false" />
-            <element signature="e#10052#10129#0" expanded="false" />
-            <element signature="e#10167#10224#0" expanded="false" />
-            <element signature="e#10252#10614#0" expanded="false" />
-            <element signature="e#10654#11204#0" expanded="false" />
-            <element signature="e#11232#12674#0" expanded="false" />
-            <element signature="e#12696#12792#0" expanded="false" />
-            <element signature="e#12822#13366#0" expanded="false" />
-            <element signature="e#61961#62706#0" expanded="false" />
-            <element signature="e#62748#63442#0" expanded="false" />
-            <element signature="e#63469#64496#0" expanded="false" />
-            <element signature="e#65570#66860#0" expanded="false" />
-            <element signature="e#66891#67437#0" expanded="false" />
-            <element signature="e#67464#67643#0" expanded="false" />
-            <element signature="e#67668#67837#0" expanded="false" />
-            <element signature="e#67866#68123#0" expanded="false" />
-            <element signature="e#68151#68390#0" expanded="false" />
-            <element signature="e#68419#68748#0" expanded="false" />
-            <element signature="e#68780#70311#0" expanded="false" />
-            <element signature="e#70355#73390#0" expanded="false" />
-            <element signature="e#73420#73860#0" expanded="false" />
-            <element signature="e#73892#74149#0" expanded="false" />
-            <element signature="e#74616#74742#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Core.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
+        <state relative-caret-position="1836">
           <caret line="1100" column="0" selection-start-line="1100" selection-start-column="0" selection-end-line="1100" selection-end-column="0" />
           <folding>
             <element signature="e#24#856#1" expanded="false" />
@@ -2345,6 +2328,100 @@
         <state relative-caret-position="433">
           <caret line="1069" column="27" selection-start-line="1069" selection-start-column="27" selection-end-line="1069" selection-end-column="27" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="89">
+          <caret line="1181" column="67" selection-start-line="1181" selection-start-column="67" selection-end-line="1181" selection-end-column="67" />
+          <folding>
+            <element signature="e#853#867#0" expanded="true" />
+            <element signature="e#4062#4301#0" expanded="false" />
+            <element signature="e#4325#4577#0" expanded="false" />
+            <element signature="e#4944#5340#0" expanded="false" />
+            <element signature="e#5661#5743#0" expanded="false" />
+            <element signature="e#5780#6299#0" expanded="false" />
+            <element signature="e#6323#6589#0" expanded="false" />
+            <element signature="e#6614#7160#0" expanded="false" />
+            <element signature="e#7536#7632#0" expanded="false" />
+            <element signature="e#7679#7810#0" expanded="false" />
+            <element signature="e#8094#8133#0" expanded="false" />
+            <element signature="e#8166#9130#0" expanded="false" />
+            <element signature="e#9175#9405#0" expanded="false" />
+            <element signature="e#9438#10023#0" expanded="false" />
+            <element signature="e#10052#10129#0" expanded="false" />
+            <element signature="e#10167#10224#0" expanded="false" />
+            <element signature="e#10252#10614#0" expanded="false" />
+            <element signature="e#10654#11204#0" expanded="false" />
+            <element signature="e#11232#12674#0" expanded="false" />
+            <element signature="e#12696#12792#0" expanded="false" />
+            <element signature="e#12822#13366#0" expanded="false" />
+            <element signature="e#61961#62706#0" expanded="false" />
+            <element signature="e#62748#63442#0" expanded="false" />
+            <element signature="e#63469#64496#0" expanded="false" />
+            <element signature="e#65570#66860#0" expanded="false" />
+            <element signature="e#66891#67437#0" expanded="false" />
+            <element signature="e#67464#67643#0" expanded="false" />
+            <element signature="e#67668#67837#0" expanded="false" />
+            <element signature="e#67866#68123#0" expanded="false" />
+            <element signature="e#68151#68390#0" expanded="false" />
+            <element signature="e#68419#68748#0" expanded="false" />
+            <element signature="e#68780#70311#0" expanded="false" />
+            <element signature="e#70355#73390#0" expanded="false" />
+            <element signature="e#73420#73860#0" expanded="false" />
+            <element signature="e#73892#74149#0" expanded="false" />
+            <element signature="e#74616#74742#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Inposloader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="837">
+          <caret line="235" column="68" selection-start-line="235" selection-start-column="68" selection-end-line="235" selection-end-column="68" />
+          <folding>
+            <element signature="e#28187#29903#0" expanded="false" />
+            <element signature="e#29632#29903#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Content.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/contenters/KinoPoisk.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="73" column="19" selection-start-line="73" selection-start-column="19" selection-end-line="73" selection-end-column="36" />
+          <folding>
+            <element signature="e#783#792#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/contenters/CXZ.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="74" column="36" selection-start-line="74" selection-start-column="36" selection-end-line="74" selection-end-column="36" />
+          <folding>
+            <element signature="e#783#792#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/contenters/IMDB.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="58" column="45" selection-start-line="58" selection-start-column="45" selection-end-line="58" selection-end-column="45" />
+          <folding>
+            <element signature="e#783#792#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

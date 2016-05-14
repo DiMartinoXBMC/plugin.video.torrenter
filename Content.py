@@ -26,6 +26,7 @@ import re
 from StringIO import StringIO
 import gzip
 import HTMLParser
+from datetime import date
 
 import Localization
 from functions import log, debug
@@ -89,7 +90,7 @@ class Content:
         }
     }
 
-    for y in range(2015, 1970, -1):
+    for y in range(date.today().year, 1970, -1):
         category_dict['year'][str(y)] = (str(y), '/top/y/%s/' % str(y))
 
     def get_contentList(self, category, subcategory=None, apps_property=None):
