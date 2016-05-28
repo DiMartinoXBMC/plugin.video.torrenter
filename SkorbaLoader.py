@@ -46,6 +46,7 @@ class SkorbaLoader:
     lt = None
     save_resume_data = None
     __settings__ = sys.modules["__main__"].__settings__
+    enable_dht = __settings__.getSetting("enable_dht") == 'true'
 
     def __init__(self, storageDirectory='', torrentFile='', torrentFilesDirectory='torrents'):
         self.storageDirectory = storageDirectory
@@ -163,7 +164,7 @@ class SkorbaLoader:
         iterator = 0
         while iterator < 100:
             xbmc.sleep(500)
-            self.torrentHandle.force_dht_announce()
+            if self.enable_dht: self.torrentHandle.force_dht_announce()
             progressBar.update(iterator, Localization.localize('Please Wait'), Localization.localize('Magnet-link is converting')+'.' * (iterator % 4), ' ')
             iterator += 1
             if progressBar.iscanceled():
@@ -339,9 +340,10 @@ class SkorbaLoader:
         self.session = self.lt.session()
         self.session.set_alert_mask(self.lt.alert.category_t.error_notification | self.lt.alert.category_t.status_notification | self.lt.alert.category_t.storage_notification)
         #self.session.set_alert_mask(self.lt.alert.category_t.all_categories)
-        self.session.add_dht_router("router.bittorrent.com", 6881)
-        self.session.add_dht_router("router.utorrent.com", 6881)
-        self.session.start_dht()
+        if self.enable_dht:
+            self.session.add_dht_router("router.bittorrent.com", 6881)
+            self.session.add_dht_router("router.utorrent.com", 6881)
+            self.session.start_dht()
         self.session.start_lsd()
         self.session.start_upnp()
         self.session.start_natpmp()
@@ -481,7 +483,7 @@ class SkorbaLoader:
             self.session.stop_natpmp()
             self.session.stop_upnp()
             self.session.stop_lsd()
-            self.session.stop_dht()
+            if self.enable_dht: self.session.stop_dht()
 
     def resume_data(self):
         wasPaused=self.session.is_paused()

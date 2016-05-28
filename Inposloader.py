@@ -137,13 +137,14 @@ class InposLoader:
             keep_complete = True
             keep_incomplete = True
 
+        enable_dht = self.__settings__.getSetting("enable_dht") == 'true'
         dht_routers = ["router.bittorrent.com:6881", "router.utorrent.com:6881"]
         user_agent = 'uTorrent/2200(24683)'
         self.engine = Engine(uri=file_url(self.torrentFile), download_path=self.storageDirectory,
                              connections_limit=connections_limit,
                              encryption=encryption, keep_complete=keep_complete, keep_incomplete=keep_incomplete,
                              dht_routers=dht_routers, use_random_port=use_random_port, listen_port=listen_port,
-                             user_agent=user_agent)
+                             user_agent=user_agent, enable_dht=enable_dht)
 
     def localize(self, string):
         try:
