@@ -23,6 +23,7 @@ import HTMLParser
 
 import Content
 from BeautifulSoup import BeautifulSoup
+from datetime import date
 
 
 class IMDB(Content.Content):
@@ -65,7 +66,7 @@ class IMDB(Content.Content):
         }
     }
 
-    for y in range(2015, 1970, -1):
+    for y in range(date.today().year, 1970, -1):
         category_dict['year'][str(y)] = (str(y), '/year/%s/' % str(y))
 
     regex_list = []

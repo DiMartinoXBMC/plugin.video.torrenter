@@ -370,6 +370,7 @@ class AnteoPlayer(xbmc.Player):
             keep_files = True
             resume_file=os.path.join(self.userStorageDirectory, 'torrents', os.path.basename(self.torrentUrl)+'.resume_data')
 
+        enable_dht = self.__settings__.getSetting("enable_dht") == 'true'
         dht_routers = ["router.bittorrent.com:6881","router.utorrent.com:6881"]
         user_agent = 'uTorrent/2200(24683)'
         self.pre_buffer_bytes = int(self.__settings__.getSetting("pre_buffer_bytes"))*1024*1024
@@ -378,7 +379,7 @@ class AnteoPlayer(xbmc.Player):
                              connections_limit=connections_limit, download_kbps=download_limit, upload_kbps=upload_limit,
                              encryption=encryption, keep_complete=keep_complete, keep_incomplete=keep_incomplete,
                              dht_routers=dht_routers, use_random_port=use_random_port, listen_port=listen_port,
-                             keep_files=keep_files, user_agent=user_agent, resume_file=resume_file)
+                             keep_files=keep_files, user_agent=user_agent, resume_file=resume_file, enable_dht=enable_dht)
 
     def buffer(self):
         #self.pre_buffer_bytes = 30*1024*1024 #30 MB

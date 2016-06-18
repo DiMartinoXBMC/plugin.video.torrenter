@@ -69,6 +69,7 @@
         <setting id="min_storage_size"  type="slider"   label="30059" default="0"       visible="!eq(-5,1)"  range="0,2,100" option="int"/>
         <setting id="pause_onplay"      type="bool"     label="30060" default="false"   visible="!eq(-6,1)"/>
         <setting id="max_history_add"   type="slider"   label="30065" default="100"     visible="!eq(-7,1)"  range="0,2,100" option="int"/>
+        <setting id="enable_dht"        type="bool"     label="30070" default="true"    visible="!eq(-8,1)"/>
         <setting id="append_filesize"   type="bool"     label="30069" default="true"/>
     </category>
 </settings>

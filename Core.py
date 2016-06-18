@@ -909,7 +909,7 @@ class Core:
                         kinometa = self.Scraper.scraper(scraper, {'label': title, 'search': search,
                                                                   'year': year}, self.language)
 
-                        #print 'kinometa:'+str(kinometa)
+                        log('kinometa:'+str(kinometa))
 
                         for section in kinometa.keys():
                             if isinstance(kinometa[section], dict):
@@ -935,7 +935,13 @@ class Core:
                     else:
                         title = meta.get('info').get('title')
 
-            listitem = xbmcgui.ListItem(title, iconImage=img, thumbnailImage=img)
+            listitem = xbmcgui.ListItem(title)
+            images = {'thumb': img, #'icon': img,
+                      'poster': img,# 'banner': img,
+                      #'fanart': img, 'landscape': img,
+                      # 'clearart': image, 'clearlogo': image,
+                      }
+            listitem.setArt(images)
             listitem.setInfo(type='Video', infoLabels=info)
             if meta:
                 listitem=itemScrap(listitem, meta)
@@ -1102,7 +1108,29 @@ class Core:
     def drawItem(self, title, action, link='', image='', isFolder=True, contextMenu=None, replaceMenu=True, action2='', fileSize=0L,
                  info={}):
         #log('[drawItem]:'+str((title, action, image, isFolder, contextMenu, replaceMenu, action2, info)))
-        listitem = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
+        listitem = xbmcgui.ListItem(title)
+        images = {'icon':image, 'thumb':image}
+        images = {'icon': image, 'thumb': image,
+                  'poster': image, 'banner': image,
+                  'fanart': image, 'landscape': image,
+                  #'clearart': image, 'clearlogo': image,
+                  }
+        listitem.setArt(images)
+        """
+        setArt(values) -- Sets the listitem's art
+         values : dictionary - pairs of { label: value }.
+            - Some default art values (any string possible):
+                - thumb : string - image filename
+                - poster : string - image filename
+                - banner : string - image filename
+                - fanart : string - image filename
+                - clearart : string - image filename
+                - clearlogo : string - image filename
+                - landscape : string - image filename
+                - icon : string - image filename
+        example:
+                - self.list.getSelectedItem().setArt({ 'poster': 'poster.png', 'banner' : 'banner.png' })
+        """
         if not info: info = {"Title": title, "plot": title}
         if not isFolder and fileSize:
             info['size'] = fileSize
