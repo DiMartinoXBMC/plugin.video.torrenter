@@ -214,7 +214,7 @@ def localize(text):
             'Download via T-client':'Descargar via Cliente-T',
             'Download via Libtorrent':'Descargar via Libtorrent',
             'Download Status':'Estado de Descarga',
-            'Download has not finished yet':'La descarga aun no ha finalizado,
+            'Download has not finished yet':'La descarga aun no ha finalizado',
             'Stopped and Deleted!':'Detenido y Eliminado',
             'Unpaused!':'De-pausado',
             'Paused!':'Pausado',
