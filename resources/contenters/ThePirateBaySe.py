@@ -23,6 +23,7 @@ import Content
 
 
 class ThePirateBaySe(Content.Content):
+    # debug = log
     category_dict = {
              'tvshows': ('TV Shows', '/browse/205', {'page': '/browse/208/%d', 'increase': 1, 'second_page': 1,
                                                 'sort': [{'name': 'by Seeders', 'url_after': '/0/7/0'},
@@ -45,11 +46,11 @@ class ThePirateBaySe(Content.Content):
 		'heb_movies': ('סרטים מדובבים', '/search/Hebrew-dubbed/0/7/0'),
     }
 
-    baseurl = "thepiratebay.ae"
+    baseurl = "http://thepiratebay.ae"
     headers = [('User-Agent',
                 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124' + \
                 ' YaBrowser/14.10.2062.12061 Safari/537.36'),
-               ('Referer', 'http://kickass.so/'), ('Accept-Encoding', 'gzip')]
+               ('Referer', 'http://thepiratebay.ae/'), ('Accept-Encoding', 'gzip')]
     '''
     Weight of source with this searcher provided.
     Will be multiplied on default weight.
@@ -82,7 +83,8 @@ class ThePirateBaySe(Content.Content):
         contentList = []
         url = self.get_url(category, subcategory, apps_property)
 
-        response = self.open2(url)
+        import requests
+        response = requests.get(url).text
 
         if None != response and 0 < len(response):
             # print response
@@ -91,40 +93,35 @@ class ThePirateBaySe(Content.Content):
         # print str(contentList)
         return contentList
 
-    def open2(self, url=''):
-        import httplib
-        conn = httplib.HTTPConnection(self.baseurl)
-        conn.request("GET", url.replace(self.baseurl,''))
-        r1 = conn.getresponse()
-        status = str(r1.status) + " " + r1.reason
-        content = r1.read()
-        #print str(status)
-        #print str(content)
-        return content
-
     def mode(self, response):
         contentList = []
-        # print str(result)
+        self.debug = self.log
         num = 31
-        result = re.compile(
-            r'''<div class="detName">.+?">(.+?)</a>.+?<a href="(.+?)".+?<font class="detDesc">Uploaded (.+?), Size (.+?), .+?</font>.+?<td align="right">(\d+?)</td>.+?<td align="right">(\d+?)</td>''',
-            re.DOTALL).findall(response)
-        for title, link, date, size, seeds, leechers in result:
-            info = {}
-            num = num - 1
-            original_title = None
-            year = 0
-            img = ''
-            size = size.replace('&nbsp;', ' ')
-            date = self.stripHtml(date.replace('&nbsp;', ' '))
+        self.debug(response)
+        regex = '''<tr>.+?</tr>'''
+        regex_tr = r'<div class="detName">.+?">(.+?)</a>.+?<a href="(.+?)".+?<font class="detDesc">Uploaded (.+?), Size (.+?), .+?</font>.+?<td align="right">(\d+?)</td>.+?<td align="right">(\d+?)</td>'
+        for tr in re.compile(regex, re.DOTALL).findall(response):
+            result = re.compile(regex_tr, re.DOTALL).findall(tr)
+            self.debug(tr + ' -> ' + str(result))
+            if result:
+                (title, link, date, size, seeds, leechers) = result[0]
 
-            # info
+                info = {}
+                num = num - 1
+                original_title = None
+                year = 0
+                img = ''
+                size = size.replace('&nbsp;', ' ')
+                date = self.stripHtml(date.replace('&nbsp;', ' '))
 
-            info['label'] = info['title'] = self.unescape(title)
-            info['link'] = link
-            info['plot'] = info['title'] + '\r\n[I](%s) [S/L: %s/%s] [/I]\r\n%s' % (size, seeds, leechers, date)
-            contentList.append((
-                int(int(self.sourceWeight) * (int(num))),
-                original_title, title, int(year), img, info,
-            ))
+                # info
+
+                info['label'] = info['title'] = self.unescape(title)
+                info['link'] = link
+                self.log(info['link'])
+                info['plot'] = info['title'] + '\r\n[I](%s) [S/L: %s/%s] [/I]\r\n%s' % (size, seeds, leechers, date)
+                contentList.append((
+                    int(int(self.sourceWeight) * (int(num))),
+                    original_title, title, int(year), img, info,
+                ))
         return contentList

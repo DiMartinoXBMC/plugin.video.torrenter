@@ -48,7 +48,7 @@ class KickAssSo(Content.Content):
 
     }
 
-    baseurl = "http://kat.cr"
+    baseurl = "http://kat.am"
     headers = [('User-Agent',
                 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124' + \
                 ' YaBrowser/14.10.2062.12061 Safari/537.36'),
