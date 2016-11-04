@@ -4,7 +4,7 @@
         <setting id="metadata"          type="bool"     label="30014" default="false"/>
         <setting id="history"           type="bool"     label="30020" default="true"/>
         <setting id="sort_search"       type="enum"     label="30061" default="0"   lvalues="30062|30063|30064"/>
-        <setting id="skin_optimization" type="enum"     label="30002" default="1"   lvalues="30003|30018|30017|30016|30019|30066|30067"/>
+        <setting id="skin_optimization" type="enum"     label="30002" default="1"   lvalues="30003|30018|30017|30016|30019|30066|30067|30071"/>
         <setting id="open_option"       type="enum"     label="30034" default="0"   lvalues="30035|30036|30037|30038"/>
     </category>
     <category label="30103">

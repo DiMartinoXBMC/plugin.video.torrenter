@@ -575,14 +575,14 @@ def view_style(func):
         styles['sectionMenu'] = styles['Seasons'] = 'list'
         styles['uTorrentBrowser'] = styles['torrentPlayer'] = styles['openTorrent'] = 'wide'
         styles['showFilesList'] = styles['DownloadStatus'] = 'wide'
-    elif view_style in [1, 4, 5]:
+    elif view_style in [1, 4, 5, 7]:
         styles['searchOption'] = 'info'
         styles['drawContent'] = styles['torrentPlayer'] = styles['openTorrent'] = styles['drawtrackerList'] = 'info'
         styles['uTorrentBrowser'] = styles['History'] = styles['DownloadStatus'] = 'wide'
         styles['showFilesList'] = styles['sectionMenu'] = 'wide'
         styles['List'] = styles['drawcontentList'] = 'info3'
 
-    if view_style == 1:
+    if view_style in [1, 7]:
         styles['uTorrentBrowser'] = styles['torrentPlayer'] = 'wide'
         styles['openTorrent'] = styles['History'] = styles['DownloadStatus'] = 'wide'
         styles['sectionMenu'] = 'icons'
@@ -598,9 +598,11 @@ def view_style(func):
         num_skin = 1
     elif view_style == 6:
         num_skin = 2
+    elif view_style == 7:
+        num_skin = 3
 
     style = styles.get(func)
-    # debug('[view_style]: lock '+str(style))
+    log('[view_style]: lock '+str(style)+' for '+str(func))
     lockView(style, num_skin)
 
 
@@ -610,11 +612,27 @@ def lockView(viewId='info', num_skin=0):
         {'list': 50, 'info': 50, 'wide': 51, 'icons': 500, 'info3': 515, },  # Confluence
         {'list': 50, 'info': 51, 'wide': 52, 'icons': 53, },  # Transperency!
         {'list': 55, 'info': 55, 'wide': 55, 'icons': 55, 'info3': 55, },  # Aeon Nox
+        {'list': 50, 'info': 54, 'wide': 55, 'icons': 54, 'info3': 500, },  # Estuary
     )
     try:
+        if viewId == 'wide' and num_skin == 3:
+            xbmcplugin.setContent(int(sys.argv[1]), 'files')
         xbmc.executebuiltin("Container.SetViewMode(%s)" % str(skinOptimizations[num_skin][viewId]))
     except:
         return
+
+    ''' Estuary
+                <include>View_50_List</include>
+                <include>View_51_Poster</include>
+                <include>View_52_IconWall</include>
+                <include>View_53_Shift</include>
+                <include>View_54_InfoWall</include>
+                <include>View_55_WideList</include>
+                <include>View_500_SmallThumb</include>
+                <include>View_501_Banner</include>
+                <include>View_502_FanArt</include>
+    '''
+
 
     '''
 			<include>PosterWrapView2_Fanart</include> <!-- view id = 508 -->
@@ -1360,7 +1378,7 @@ class Contenters():
         searchersList = []
         dirList = os.listdir(ROOT + os.sep + 'resources' + os.sep + 'contenters')
         for searcherFile in dirList:
-            if re.match('^(\w+)\.py$', searcherFile):
+            if re.match('^(\w+)\.py$', searcherFile) and searcherFile != '__init__.py':
                 searchersList.append(searcherFile.replace('.py', ''))
         return searchersList
 
