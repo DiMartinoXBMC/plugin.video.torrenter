@@ -991,7 +991,7 @@ class Core:
                 title = title.encode('utf-8', 'ignore')
             except:
                 continue
-            label = info.get('label').encode('utf-8', 'ignore')
+            log(str(info))
 
             if info.get('link'):
                 if isinstance(info.get('link'), tuple):
@@ -1112,7 +1112,7 @@ class Core:
         images = {'icon':image, 'thumb':image}
         images = {'icon': image, 'thumb': image,
                   'poster': image, 'banner': image,
-                  'fanart': image, 'landscape': image,
+                  #'fanart': image, 'landscape': image,
                   #'clearart': image, 'clearlogo': image,
                   }
         listitem.setArt(images)

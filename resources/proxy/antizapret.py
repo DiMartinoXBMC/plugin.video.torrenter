@@ -21,20 +21,23 @@ def shelf(filename, ttl=0):
     with LOCKS.get(filename, threading.RLock()):
 #        with closing(shelve.open(filename, writeback=True)) as d:
         d = shelve.open(filename, writeback=True)
-        try:
+        #try:
+        if True:
             import time
             if not dict(d):
+                log('xxx')
                 d.update({
                     "created_at": time.time(),
                     "data": {},
                 })
             elif ttl > 0 and (time.time() - d["created_at"]) > ttl:
+                log('xxx')
                 d["created_at"] = time.time()
                 d["data"] = {}
             return d
-        except:
-            d.close()
-            raise
+        #except:
+        #    d.close()
+        #    raise
 
 _config = {}
 
