@@ -1306,6 +1306,8 @@ class Contenters():
 
     def first_time(self, scrapperDB_ver, language='ru'):
         from resources.scrapers.scrapers import Scrapers
+        if language not in ['en','ru','he']:
+            language = 'ru'
         searcher = 'metadata'
         redl = False
         scrapperDB_ver = scrapperDB_ver[language]

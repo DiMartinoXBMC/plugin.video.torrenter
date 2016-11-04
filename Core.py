@@ -36,7 +36,7 @@ class Core:
     torrent_player = __settings__.getSetting("torrent_player")
     history_bool = __settings__.getSetting('history') == 'true'
     open_option = int(__settings__.getSetting('open_option'))
-    language = {0: 'en', 1: 'ru', 2: 'uk', 3: 'he'}.get(int(__settings__.getSetting("language")))
+    language = {0: 'en', 1: 'ru', 2: 'uk', 3: 'he', 4: 'hu'}.get(int(__settings__.getSetting("language")))
     scrapperDB_ver = {'en':'1.1', 'ru':'1.3', 'he':'1.3'}
 
     log('SYS ARGV: ' + str(sys.argv))

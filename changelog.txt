@@ -1,13 +1,17 @@
 ﻿English changelog at http://bit.ly/1MfSVUP
 
+[B]Version 2.5.3[/B]
+[+] Венгерский язык
+
+
 [B]Version 2.5.2[/B]
-[+] Упорядочивание по разверу файла.
+[+] Упорядочивание по разверу файла
 
 [B]Version 2.5.1[/B]
-[+] Исправлена работа с кодировками.
+[+] Исправлена работа с кодировками
 
 [B]Version 2.5.0[/B]
-[+] НОВЫЙ проигрыватель pyrrent2http от inpos!  Аналог torrent2http написаный на python, а не на GO.
+[+] НОВЫЙ проигрыватель pyrrent2http от inpos!  Аналог torrent2http написаный на python, а не на GO
 [+] Проигрыватель: Ускорена повторная работа с торрентом - resume data (спасибо srg70 и RussakHH)
 
 [B]Version 2.4.6[/B]
