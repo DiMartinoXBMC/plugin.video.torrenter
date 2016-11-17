@@ -2083,7 +2083,8 @@ def localize_path(path):
 
 def encode_msg(msg):
     try:
-        msg = isinstance(msg, unicode) and msg.encode('utf-8') or msg
+        msg = isinstance(msg, unicode) and msg.encode(
+            (sys.getfilesystemencoding() not in ('ascii', 'ANSI_X3.4-1968')) and sys.getfilesystemencoding() or 'utf-8') or msg
     except:
         import traceback
         log(traceback.format_exc())
