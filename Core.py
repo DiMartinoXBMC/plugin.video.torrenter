@@ -1148,14 +1148,14 @@ class Core:
             contextMenu = [(self.localize('Search Control Window'),
                             'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
             replaceMenu = False
-        if contextMenu:
-            listitem.addContextMenuItems(contextMenu, replaceItems=replaceMenu)
         if isFolder:
             listitem.setProperty("Folder", "true")
             listitem.setInfo(type='Video', infoLabels=info)
         else:
             listitem.setInfo(type='Video', infoLabels=info)
             listitem.setArt({'thumb': image})
+        if contextMenu:
+            listitem.addContextMenuItems(contextMenu, replaceItems=replaceMenu)
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=url, listitem=listitem, isFolder=isFolder)
 
     def getParameters(self, parameterString):
@@ -1694,7 +1694,7 @@ class Core:
 
     def context(self, params={}):
         xbmc.executebuiltin("Action(ContextMenu)")
-        return
+        sys.exit()
 
     def downloadFilesList(self, params={}):
         from resources.utorrent.net import Download
