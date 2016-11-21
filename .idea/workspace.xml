@@ -3,12 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="56e91349-2444-4553-bc78-90c2bab49e9c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addon.xml" afterPath="$PROJECT_DIR$/addon.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/changelog.txt" afterPath="$PROJECT_DIR$/changelog.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/functions.py" afterPath="$PROJECT_DIR$/functions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/contenters/KickAssSo.py" afterPath="$PROJECT_DIR$/resources/contenters/KickAssSo.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/language/English/strings.xml" afterPath="$PROJECT_DIR$/resources/language/English/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/language/Russian/strings.xml" afterPath="$PROJECT_DIR$/resources/language/Russian/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/settings.xml" afterPath="$PROJECT_DIR$/resources/settings.xml" />
     </list>
     <ignored path="plugin.video.torrenter.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,14 +37,14 @@
           <file leaf-file-name="functions.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/functions.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="322">
+                <state relative-caret-position="23273">
                   <caret line="1384" column="18" selection-start-line="1384" selection-start-column="18" selection-end-line="1384" selection-end-column="18" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="KickAssSo.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="KickAssSo.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/resources/contenters/KickAssSo.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="136">
@@ -61,7 +57,7 @@
           <file leaf-file-name="default.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/default.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="328">
+                <state relative-caret-position="357">
                   <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
                   <folding />
                 </state>
@@ -243,11 +239,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="changelog.txt" pinned="false" current-in-tab="false">
+          <file leaf-file-name="changelog.txt" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/changelog.txt">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="68">
-                  <caret line="4" column="25" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
+                <state relative-caret-position="34">
+                  <caret line="2" column="16" selection-start-line="2" selection-start-column="16" selection-end-line="2" selection-end-column="16" />
                   <folding />
                 </state>
               </provider>
@@ -262,9 +258,7 @@
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="339">
                   <caret line="732" column="54" selection-start-line="732" selection-start-column="54" selection-end-line="732" selection-end-column="54" />
-                  <folding>
-                    <marker date="1478266721220" expanded="true" signature="85737:85754" ph="..." />
-                  </folding>
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -272,7 +266,7 @@
           <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/resources/language/English/strings.xml">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="276">
+                <state relative-caret-position="1207">
                   <caret line="71" column="41" selection-start-line="71" selection-start-column="41" selection-end-line="71" selection-end-column="41" />
                   <folding />
                 </state>
@@ -282,7 +276,7 @@
           <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/resources/language/Russian/strings.xml">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="272">
+                <state relative-caret-position="1190">
                   <caret line="70" column="30" selection-start-line="70" selection-start-column="30" selection-end-line="70" selection-end-column="30" />
                   <folding />
                 </state>
@@ -364,14 +358,14 @@
         <option value="$PROJECT_DIR$/resources/contenters/ThePirateBaySe.py" />
         <option value="$PROJECT_DIR$/resources/contenters/EZTV.py" />
         <option value="$PROJECT_DIR$/resources/contenters/IMDB.py" />
-        <option value="$PROJECT_DIR$/addon.xml" />
         <option value="$PROJECT_DIR$/Core.py" />
-        <option value="$PROJECT_DIR$/changelog.txt" />
         <option value="$PROJECT_DIR$/resources/language/English/strings.xml" />
         <option value="$PROJECT_DIR$/resources/settings.xml" />
         <option value="$PROJECT_DIR$/resources/language/Russian/strings.xml" />
         <option value="$PROJECT_DIR$/functions.py" />
         <option value="$PROJECT_DIR$/resources/contenters/KickAssSo.py" />
+        <option value="$PROJECT_DIR$/addon.xml" />
+        <option value="$PROJECT_DIR$/changelog.txt" />
       </list>
     </option>
   </component>
@@ -538,8 +532,8 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -559,117 +553,6 @@
       <recent name="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\contenters" />
       <recent name="C:\Users\Admin\AppData\Roaming\Kodi\addons\plugin.video.torrenter\resources\searchers" />
     </key>
-  </component>
-  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
-    <UpdatedFiles>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Updated from server" />
-        <option name="myStatusName" value="Changed on server" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="CHANGED_ON_SERVER" />
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated" />
-          <option name="myStatusName" value="Changed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UPDATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Localization.py</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Created" />
-          <option name="myStatusName" value="Created" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CREATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/resources/language/Hungarian/strings.xml</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Deleted" />
-          <option name="myStatusName" value="Deleted" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="true" />
-          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Restored" />
-          <option name="myStatusName" value="Will be restored" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="RESTORED" />
-        </FILE-GROUP>
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Modified" />
-        <option name="myStatusName" value="Modified" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MODIFIED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Skipped" />
-        <option name="myStatusName" value="Skipped" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SKIPPED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with conflicts" />
-        <option name="myStatusName" value="Will be merged with conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_CONFLICTS" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with tree conflicts" />
-        <option name="myStatusName" value="Merged with tree conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with property conflicts" />
-        <option name="myStatusName" value="Will be merged with property conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged" />
-        <option name="myStatusName" value="Will be merged" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Not in repository" />
-        <option name="myStatusName" value="Not in repository" />
-        <option name="mySupportsDeletion" value="true" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="UNKNOWN" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally added" />
-        <option name="myStatusName" value="Locally added" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_ADDED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally removed" />
-        <option name="myStatusName" value="Locally removed" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_REMOVED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Switched" />
-        <option name="myStatusName" value="Switched" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SWITCHED" />
-      </FILE-GROUP>
-    </UpdatedFiles>
   </component>
   <component name="RunManager" selected="Python.cal">
     <configuration default="false" name="cal" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -1205,13 +1088,12 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13382508" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32850778" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27505568" sideWeight="0.5021075" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31514478" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2594655" sideWeight="0.49789253" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2594655" sideWeight="0.49789253" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32739422" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32703003" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1225,6 +1107,7 @@
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32850778" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24946696" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31514478" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3986637" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
@@ -1411,13 +1294,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cal.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="14" selection-start-line="2" selection-start-column="14" selection-end-line="2" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/cal.py" />
     <entry file="file://$PROJECT_DIR$/../torrenter.searcher.RuTrackerOrg/RuTrackerOrg.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1581">
@@ -1482,7 +1359,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1190">
           <caret line="74" column="36" selection-start-line="74" selection-start-column="36" selection-end-line="74" selection-end-column="36" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1490,28 +1366,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1071">
           <caret line="110" column="40" selection-start-line="110" selection-start-column="40" selection-end-line="110" selection-end-column="40" />
-          <folding>
-            <element signature="e#24#855#1" expanded="false" />
-            <element signature="e#857#870#0" expanded="false" />
-            <element signature="e#1522#1779#0" expanded="false" />
-            <element signature="e#1522#1764#1" expanded="false" />
-            <element signature="e#1823#1853#0" expanded="false" />
-            <element signature="e#1898#1908#0" expanded="false" />
-            <element signature="e#1956#2342#0" expanded="false" />
-            <element signature="e#2394#2405#0" expanded="false" />
-            <element signature="e#2436#2447#0" expanded="false" />
-            <element signature="e#2917#3163#0" expanded="false" />
-            <element signature="e#4990#5736#0" expanded="false" />
-            <element signature="e#6238#6347#0" expanded="false" />
-            <element signature="e#6390#6510#0" expanded="false" />
-            <element signature="e#6547#6633#0" expanded="false" />
-            <element signature="e#6666#6925#0" expanded="false" />
-            <element signature="e#6973#7076#0" expanded="false" />
-            <element signature="e#7115#7441#0" expanded="false" />
-            <element signature="e#7844#7848#0" expanded="false" />
-            <element signature="e#7882#7917#0" expanded="false" />
-            <element signature="e#7953#7990#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1526,84 +1380,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3723">
           <caret line="479" column="31" selection-start-line="479" selection-start-column="31" selection-end-line="479" selection-end-column="31" />
-          <folding>
-            <marker date="1478266554195" expanded="true" signature="11448:11518" ph="'...'" />
-            <marker date="1478266554195" expanded="true" signature="11519:11566" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="11567:11602" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="11603:11636" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="11637:11671" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="11672:11713" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="11714:11759" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="11760:11793" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="11794:11824" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="11825:11867" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="11868:11956" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="11957:12067" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12068:12110" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12111:12162" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12163:12210" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12211:12249" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12250:12293" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12294:12366" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12367:12429" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12430:12487" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12488:12542" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12543:12593" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12594:12630" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12631:12662" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12663:12691" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12692:12722" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12723:12755" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12756:12807" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12808:12866" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12867:12926" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="12927:13031" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="13032:13198" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="13199:13344" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="13345:13505" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="13506:13669" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="13670:13846" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="13847:13993" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="13994:14138" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="14139:14303" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="14304:14457" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="14458:14598" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="14599:14737" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="14738:14854" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="14855:14964" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="14965:15113" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="15114:15305" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="15306:15421" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="15422:15484" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="15485:15550" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="15551:15650" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="15651:15814" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="15815:16008" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="16009:16234" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="16235:16433" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="16434:16584" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="16585:16723" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="16724:16803" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="16804:16867" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="16868:16939" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="16940:17062" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="17063:17215" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="17216:17317" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="17318:17397" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="17398:17447" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="17448:17512" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="17513:17571" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="17572:17735" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="17736:17923" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="17924:18006" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="18007:18097" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="18098:18157" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="18158:18266" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="18267:18357" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="18358:18414" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="18466:50677" ph="..." />
-            <marker date="1478266554195" expanded="true" signature="50679:67442" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1749,7 +1525,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1445">
           <caret line="87" column="0" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1765,6 +1540,75 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2465">
           <caret line="150" column="8" selection-start-line="150" selection-start-column="8" selection-end-line="150" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/proxy/antizapret.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="36" column="20" selection-start-line="36" selection-start-column="20" selection-end-line="36" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SkorbaLoader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="603">
+          <caret line="58" column="23" selection-start-line="58" selection-start-column="23" selection-end-line="58" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/settings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="140" selection-start-line="6" selection-start-column="140" selection-end-line="6" selection-end-column="140" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/language/English/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1207">
+          <caret line="71" column="41" selection-start-line="71" selection-start-column="41" selection-end-line="71" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/language/Russian/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1190">
+          <caret line="70" column="30" selection-start-line="70" selection-start-column="30" selection-end-line="70" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/default.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Core.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="339">
+          <caret line="732" column="54" selection-start-line="732" selection-start-column="54" selection-end-line="732" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="23273">
+          <caret line="1384" column="18" selection-start-line="1384" selection-start-column="18" selection-end-line="1384" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/contenters/KickAssSo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="102" column="328" selection-start-line="102" selection-start-column="328" selection-end-line="102" selection-end-column="328" />
           <folding />
         </state>
       </provider>
@@ -1777,84 +1621,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/proxy/antizapret.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="578">
-          <caret line="36" column="20" selection-start-line="36" selection-start-column="20" selection-end-line="36" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SkorbaLoader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="603">
-          <caret line="58" column="23" selection-start-line="58" selection-start-column="23" selection-end-line="58" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/settings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="140" selection-start-line="6" selection-start-column="140" selection-end-line="6" selection-end-column="140" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/changelog.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="25" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/language/English/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="71" column="41" selection-start-line="71" selection-start-column="41" selection-end-line="71" selection-end-column="41" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/language/Russian/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="70" column="30" selection-start-line="70" selection-start-column="30" selection-end-line="70" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/default.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="328">
-          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Core.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="339">
-          <caret line="732" column="54" selection-start-line="732" selection-start-column="54" selection-end-line="732" selection-end-column="54" />
-          <folding>
-            <marker date="1478266721220" expanded="true" signature="85737:85754" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="1384" column="18" selection-start-line="1384" selection-start-column="18" selection-end-line="1384" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/contenters/KickAssSo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="102" column="328" selection-start-line="102" selection-start-column="328" selection-end-line="102" selection-end-column="328" />
+        <state relative-caret-position="34">
+          <caret line="2" column="16" selection-start-line="2" selection-start-column="16" selection-end-line="2" selection-end-column="16" />
           <folding />
         </state>
       </provider>

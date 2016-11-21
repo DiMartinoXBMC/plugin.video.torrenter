@@ -1,5 +1,8 @@
 ﻿English changelog at http://bit.ly/1MfSVUP
 
+[B]Version 2.5.4[/B]
+Исправлено "открыть без возврата". Спасибо viorel-m.
+
 [B]Version 2.5.3[/B]
 [+] Венгерский язык
 [+] Совместимость с Коди 17
