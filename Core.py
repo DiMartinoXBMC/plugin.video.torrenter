@@ -1615,7 +1615,7 @@ class Core:
                 (self.localize('Download via Libtorrent'),
                  'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
                  sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(link))),
-                (self.localize('Open (no return)'),
+                (self.localize('Open'),
                  'XBMC.Container.Update(%s)' % ('%s?action=%s%s') % (
                  sys.argv[0], 'openTorrent', link_url)),
             ]
@@ -1815,13 +1815,10 @@ class Core:
         clAliceblue = '[COLOR FFF0F8FF]%s[/COLOR]'
         clRed = '[COLOR FFFF0000]%s[/COLOR]'
 
-        title = title.replace('720p', '[B]720p[/B]')
-        title = clWhite % title + chr(10)
-        second = '[I](%s) [S/L: %d/%d] [/I]' % (size, seeds, leechers) + chr(10)
-        space = ''
-        for i in range(0, 180 - len(second)):
-            space += ' '
-        title += space + second
+        title = title.replace('720p', '[B]720p[/B]').replace('1080p', '[B]1080p[/B]')
+        title = clWhite % title
+        second = '[I](%s) [S/L: %d/%d] [/I]' % (size, seeds, leechers)
+        title += '  ' + second
         return title
 
     def search(self, params={}):
