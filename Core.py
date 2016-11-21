@@ -1616,7 +1616,7 @@ class Core:
                  'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
                  sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(link))),
                 (self.localize('Open (no return)'),
-                 'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
+                 'XBMC.Container.Update(%s)' % ('%s?action=%s%s') % (
                  sys.argv[0], 'openTorrent', link_url)),
             ]
             title = self.titleMake(seeds, leechers, size, title)
