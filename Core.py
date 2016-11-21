@@ -1148,14 +1148,14 @@ class Core:
             contextMenu = [(self.localize('Search Control Window'),
                             'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
             replaceMenu = False
-        if contextMenu:
-            listitem.addContextMenuItems(contextMenu, replaceItems=replaceMenu)
         if isFolder:
             listitem.setProperty("Folder", "true")
             listitem.setInfo(type='Video', infoLabels=info)
         else:
             listitem.setInfo(type='Video', infoLabels=info)
             listitem.setArt({'thumb': image})
+        if contextMenu:
+            listitem.addContextMenuItems(contextMenu, replaceItems=replaceMenu)
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=url, listitem=listitem, isFolder=isFolder)
 
     def getParameters(self, parameterString):
@@ -1615,8 +1615,8 @@ class Core:
                 (self.localize('Download via Libtorrent'),
                  'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
                  sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(link))),
-                (self.localize('Open (no return)'),
-                 'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
+                (self.localize('Open'),
+                 'XBMC.Container.Update(%s)' % ('%s?action=%s%s') % (
                  sys.argv[0], 'openTorrent', link_url)),
             ]
             title = self.titleMake(seeds, leechers, size, title)
@@ -1676,8 +1676,8 @@ class Core:
                         (self.localize('Add to %s') % return_name,
                          'XBMC.RunPlugin(%s)' % (back_url+'&stringdata=' + urllib.quote_plus(
                              json.dumps(sdata)))),
-                        (self.localize('Open (no return)'),
-                         'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
+                        (self.localize('Open'),
+                         'XBMC.Container.Update(%s)' % ('%s?action=%s%s') % (
                          sys.argv[0], 'openTorrent', link_url)),
                         (self.localize('Return to %s') % return_name,
                          'XBMC.ActivateWindow(%s)' % ('Videos,%s' % return_url)),
@@ -1694,7 +1694,7 @@ class Core:
 
     def context(self, params={}):
         xbmc.executebuiltin("Action(ContextMenu)")
-        return
+        sys.exit()
 
     def downloadFilesList(self, params={}):
         from resources.utorrent.net import Download
@@ -1815,13 +1815,10 @@ class Core:
         clAliceblue = '[COLOR FFF0F8FF]%s[/COLOR]'
         clRed = '[COLOR FFFF0000]%s[/COLOR]'
 
-        title = title.replace('720p', '[B]720p[/B]')
-        title = clWhite % title + chr(10)
-        second = '[I](%s) [S/L: %d/%d] [/I]' % (size, seeds, leechers) + chr(10)
-        space = ''
-        for i in range(0, 180 - len(second)):
-            space += ' '
-        title += space + second
+        title = title.replace('720p', '[B]720p[/B]').replace('1080p', '[B]1080p[/B]')
+        title = clWhite % title
+        second = '[I](%s) [S/L: %d/%d] [/I]' % (size, seeds, leechers)
+        title += '  ' + second
         return title
 
     def search(self, params={}):

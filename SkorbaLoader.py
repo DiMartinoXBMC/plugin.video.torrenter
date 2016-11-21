@@ -332,7 +332,7 @@ class SkorbaLoader:
             iterator = int(s.progress * 100)
             info['progress'] = iterator
             db.update(title, info)
-            self.debug()
+            #self.debug()
         self.session.remove_torrent(self.torrentHandle)
         return
 
