@@ -1676,8 +1676,8 @@ class Core:
                         (self.localize('Add to %s') % return_name,
                          'XBMC.RunPlugin(%s)' % (back_url+'&stringdata=' + urllib.quote_plus(
                              json.dumps(sdata)))),
-                        (self.localize('Open (no return)'),
-                         'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
+                        (self.localize('Open'),
+                         'XBMC.Container.Update(%s)' % ('%s?action=%s%s') % (
                          sys.argv[0], 'openTorrent', link_url)),
                         (self.localize('Return to %s') % return_name,
                          'XBMC.ActivateWindow(%s)' % ('Videos,%s' % return_url)),
