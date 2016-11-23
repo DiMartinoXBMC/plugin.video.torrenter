@@ -1693,8 +1693,28 @@ class Core:
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
     def context(self, params={}):
-        xbmc.executebuiltin("Action(ContextMenu)")
-        sys.exit()
+        if int(self.version_check()[:2]) < 17:
+            xbmc.executebuiltin("Action(ContextMenu)")
+            sys.exit()
+        else:
+            fixed = xbmcgui.Dialog().contextmenu(list=[(self.localize('Open')),
+                                                    (self.localize('Download via Libtorrent')),
+                                                    (self.localize('Download via T-client'))])
+            if fixed == 0:
+                xbmc.executebuiltin('XBMC.Container.Update(%s)' %
+                                    ('%s?action=%s&url=%s') %
+                                    (sys.argv[0], 'openTorrent', params['url']))
+            elif fixed == 1:
+                xbmc.executebuiltin('XBMC.RunPlugin(%s)' %
+                                    ('%s?action=%s&url=%s') %
+                                    (sys.argv[0], 'downloadLibtorrent', params['url']))
+            elif fixed == 2:
+                xbmc.executebuiltin('XBMC.RunPlugin(%s)' %
+                                    ('%s?action=%s&url=%s') %
+                                    (sys.argv[0], 'downloadFilesList', params['url']))
+
+    def version_check(self):
+        return xbmc.getInfoLabel( "System.BuildVersion" )
 
     def downloadFilesList(self, params={}):
         from resources.utorrent.net import Download
