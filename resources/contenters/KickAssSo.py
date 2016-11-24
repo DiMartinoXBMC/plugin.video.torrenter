@@ -143,7 +143,7 @@ class KickAssSo(Content.Content):
                                              'kinopoisk': ''}
             try:
                 img = result.find('a', {'class': 'movieCover'}).find('img').get('src')
-                movieInfo['poster'] = 'http:' + img
+                movieInfo['poster'] = img if img.startswith('http:') else 'http:' + img
             except:
                 pass
             try:
