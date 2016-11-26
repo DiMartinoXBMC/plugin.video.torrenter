@@ -1410,6 +1410,7 @@ class Core:
 
     def playTorrent(self, params={}):
         torrentUrl = self.__settings__.getSetting("lastTorrent")
+        #xbmc.executebuiltin('Action(Stop)')
         self.userStorage(params)
         if self.torrent_player == '0':
             from Player import TorrentPlayer
@@ -1693,7 +1694,7 @@ class Core:
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
     def context(self, params={}):
-        if int(self.version_check()[:2]) < 17:
+        if not self.version_check():
             xbmc.executebuiltin("Action(ContextMenu)")
             sys.exit()
         else:
@@ -1714,7 +1715,7 @@ class Core:
                                     (sys.argv[0], 'downloadFilesList', params['url']))
 
     def version_check(self):
-        return xbmc.getInfoLabel( "System.BuildVersion" )
+        return False if int(xbmc.getInfoLabel( "System.BuildVersion" )[:2]) < 17 else True
 
     def downloadFilesList(self, params={}):
         from resources.utorrent.net import Download
