@@ -82,21 +82,21 @@ class KickAssSo(Content.Content):
         return False
 
     def get_contentList(self, category, subcategory=None, apps_property=None):
+        self.debug = self.log
         contentList = []
         url = self.get_url(category, subcategory, apps_property)
 
         response = self.makeRequest(url, headers=self.headers)
 
         if None != response and 0 < len(response):
-            # print response
+            self.debug(response)
             if category:
                 contentList = self.mode(response)
-        # print str(contentList)
+        self.debug(str(contentList))
         return contentList
 
     def mode(self, response):
         contentList = []
-        # print str(result)
         num = 51
         good_forums = ['TV', 'Anime', 'Movies']
         regex = '''<tr class=".+?" id=.+?</tr>'''
@@ -129,6 +129,7 @@ class KickAssSo(Content.Content):
         return contentList
 
     def get_info(self, url):
+        self.debug = self.log
         movieInfo = {}
         color = '[COLOR blue]%s:[/COLOR] %s\r\n'
         response = self.makeRequest(url, headers=self.headers)
@@ -190,7 +191,5 @@ class KickAssSo(Content.Content):
                     if i == 'IMDb link':
                         movieInfo['kinopoisk'] = 'http://imdb.snick.ru/ratefor/02/tt%s.png' % info.get(i)
 
-
-                        # print str(info)
-
+        self.debug(str(movieInfo))
         return movieInfo

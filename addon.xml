@@ -8,6 +8,7 @@
         <import addon="script.module.torrent2http"/>
         <import addon="script.module.pyrrent2http"/>
         <import addon="script.module.chardet" />
+        <import addon="script.module.pyxbmct" version="1.2.0"/>
     </requires>
     <extension point="xbmc.python.pluginsource" provides="video" library="default.py">
         <provides>video</provides>

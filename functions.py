@@ -917,7 +917,6 @@ class HistoryDB:
         self.cur.execute('select providers from history where addtime="' + addtime + '"')
         x = self.cur.fetchone()
         self._close()
-        # print 'get_providers: '+str(x[0].split(',') if x and x[0]!='' else None)
         return x[0].split(',') if x and x[0] != '' else None
 
     def set_providers(self, addtime, providers):
@@ -934,7 +933,7 @@ class HistoryDB:
         self._close()
 
     def change_providers(self, addtime, searcher):
-        self._connect()
+        #self._connect()
         providers = self.get_providers(addtime)
         keys = Searchers().dic().keys()
         if providers and len(providers) > 0:
@@ -946,8 +945,8 @@ class HistoryDB:
                 if i not in keys:
                     providers.remove(i)
             self.set_providers(addtime, providers)
-            self.db.commit()
-            self._close()
+            #self.db.commit()
+            #self._close()
 
     def add(self, url):
         self._connect()
