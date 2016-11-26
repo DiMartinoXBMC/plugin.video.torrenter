@@ -17,17 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
-import os
+import sys, os
+
+import xbmcaddon
 import xbmc
 import xbmcgui
-import xbmcaddon
+from functions import getParameters, HistoryDB, Searchers, log
 import pyxbmct.addonwindow as pyxbmct
+import Localization
 
-_addon = xbmcaddon.Addon()
-_path = _addon.getAddonInfo("path")
 __settings__ = xbmcaddon.Addon(id='plugin.video.torrenter')
+__language__ = __settings__.getLocalizedString
 __version__ = __settings__.getAddonInfo('version')
 __plugin__ = __settings__.getAddonInfo('name') + " v." + __version__
+__root__ = __settings__.getAddonInfo('path')
+
+log('SYS ARGV: ' + str(sys.argv))
 
 
 class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
@@ -41,16 +46,21 @@ class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
         self.items()
         self.set_navigation()
 
+    def icon(self, icon):
+        return '%s/icons/%s.png' %(__root__, icon)
+
     def set_controls(self):
         self.input_search = pyxbmct.Edit("Search"+"...")
         self.placeControl(self.input_search, 0, 0, 1, 5)
         self.button_search = pyxbmct.Button("Search")
-        self.placeControl(self.button_search, 0, 5, 1, 1)
-        self.button_keyboard = pyxbmct.Button("keyboard")
-        self.placeControl(self.button_keyboard, 0, 6, 1, 1)
+        self.placeControl(self.button_search, 0, 5, 1, 2)
+        self.button_history = pyxbmct.Button("History")
+        self.placeControl(self.button_history, 0, 7, 1, 2)
+        self.button_open = pyxbmct.Button("Open")
+        self.placeControl(self.button_open, 1, 14, 1, 2)
 
         self.listing = pyxbmct.List(_imageWidth=40, _imageHeight=40, _itemTextXOffset=10, _itemTextYOffset=2, _itemHeight=40, _space=2, _alignmentY=4)
-        self.placeControl(self.listing, 1, 0, 8, 15)
+        self.placeControl(self.listing, 1, 0, 8, 14)
 
 
     def connect_controls(self):
@@ -59,27 +69,47 @@ class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
         #self.connect(self.cancel_button, self.close)
 
     def set_navigation(self):
-        self.listing.controlUp(self.input_search)
-        self.listing.controlDown(self.input_search)
-        self.input_search.setNavigation(self.listing, self.listing, self.button_keyboard, self.button_search)
-        self.button_search.setNavigation(self.listing, self.listing, self.input_search, self.button_keyboard)
-        self.button_keyboard.setNavigation(self.listing, self.listing, self.button_search, self.input_search)
+        #Top menu
+        self.input_search.setNavigation(self.listing, self.listing, self.button_history, self.button_search)
+        self.button_search.setNavigation(self.listing, self.listing, self.input_search, self.button_history)
+        self.button_history.setNavigation(self.listing, self.listing, self.button_search, self.input_search)
+        #Listing
+        self.listing.setNavigation(self.input_search, self.input_search, self.input_search, self.button_open)
+        #Right menu
+        self.button_open.setNavigation(self.button_history, self.listing, self.listing, self.input_search)
+
         if self.listing.size():
             self.setFocus(self.listing)
         else:
             self.setFocus(self.input_search)
 
+    def setAnimation(self, control):
+        # Set fade animation for all add-on window controls
+        control.setAnimations([('WindowOpen', 'effect=fade start=0 end=100 time=500',),
+                               ('WindowClose', 'effect=fade start=100 end=0 time=500',)])
+
     def items(self):
         self.listing.reset()
         for (order, seeds, leechers, size, title, link, image) in self.filesList:
             title = titleMake(seeds, leechers, size, title)
-            log(title)
-            list_item = xbmcgui.ListItem(title, "", image, '', '')
-            self.listing.addItem(list_item)
+            #log(title)
+            listitem = xbmcgui.ListItem(title, "", image, '', '')
+            contextMenu = [(self.localize('Search Control Window'),
+                            'xbmc.RunScript(%s,)' % os.path.join(__root__, 'controlcenter.py'))]
+            replaceMenu = True
+            listitem.addContextMenuItems(contextMenu, replaceItems=replaceMenu)
+            self.listing.addItem(listitem)
 
     def press(self):
-        self.filesList = sorted(self.filesList, key=lambda x: x[4], reverse=True)
-        self.items()
+        #self.filesList = sorted(self.filesList, key=lambda x: x[1], reverse=True)
+        #self.items()
+        log(self.listing.getSelectedItem().getLabel())
+
+    def localize(self, string):
+        try:
+            return Localization.localize(string)
+        except:
+            return string
 
 def log(msg):
     try:
@@ -94,15 +124,15 @@ def titleMake(seeds, leechers, size, title):
     #AARRGGBB
     clGreen = '[COLOR FF008000]%s[/COLOR]'
     clDodgerblue = '[COLOR FF1E90FF]%s[/COLOR]'
-    clDimgray = '[COLOR FF696969]%s[/COLOR]'
+    clDimgray = '[COLOR FF999999]%s[/COLOR]'
     clWhite = '[COLOR FFFFFFFF]%s[/COLOR]'
     clAliceblue = '[COLOR FFF0F8FF]%s[/COLOR]'
     clRed = '[COLOR FFFF0000]%s[/COLOR]'
 
     title = title.replace('720p', '[B]720p[/B]').replace('1080p', '[B]1080p[/B]')
     title = clWhite % title
-    second = '\r\n[I](%s) [S/L: %d/%d] [/I]' % (size, seeds, leechers)
-    title += '  ' + second
+    second = '[I](%s) [S/L: %d/%d] [/I]' % (size, seeds, leechers)
+    title += '\r\n' + clDimgray % second
     return title
 
 if __name__ == "__main__":

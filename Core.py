@@ -83,6 +83,9 @@ class Core:
         DLScontextMenu.append(
                 (self.localize('Clear %s') % self.localize('Download Status'), ListString % ('DownloadStatus', 'clear', 'addtime', '')))
         DLScontextMenu.extend(contextMenu)
+        if self.debug:
+            self.drawItem('< %s >' % self.localize('Search Window'), 'searchWindow',
+                          image=self.ROOT + '/icons/settings.png', isFolder=False)
         self.drawItem('< %s >' % self.localize('Download Status'), 'DownloadStatus', image=self.ROOT + '/icons/download.png',
                       contextMenu=DLScontextMenu, replaceMenu=False)
         self.drawItem('< %s >' % self.localize('Torrent-client Browser'), 'uTorrentBrowser',
@@ -1598,6 +1601,10 @@ class Core:
     def controlCenter(self, params={}):
         xbmc.executebuiltin(
             'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))
+
+    def searchWindow(self, params={}):
+        xbmc.executebuiltin(
+            'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'searchwindow.py'))
 
     def showFilesList(self, filesList, params={}):
         get = params.get
