@@ -1379,6 +1379,9 @@ class Core:
         if not url:
             action = xbmcgui.Dialog()
             url = action.browse(1, self.localize('Choose .torrent in video library'), 'video', '.torrent')
+            torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
+            self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
+            self.__settings__.setSetting("lastTorrentUrl", url)
             if url:
                 xbmc.executebuiltin(
                                 'XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.torrenter/?action=%s&url=%s'
