@@ -34,6 +34,9 @@ __root__ = __settings__.getAddonInfo('path')
 
 log('SYS ARGV: ' + str(sys.argv))
 
+#https://github.com/xbmc/xbmc/blob/8d4a5bba55638dfd0bdc5e7de34f3e5293f99933/xbmc/input/Key.h
+ACTION_STOP = 13
+ACTION_PLAYER_PLAY = 79
 
 class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
     __settings__ = sys.modules["__main__"].__settings__
@@ -48,7 +51,6 @@ class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
     def __init__(self, title=""):
         super(MultiChoiceDialog, self).__init__(title)
         self.setGeometry(1280, 720, 9, 16)
-        self.selected = []
         self.set_controls()
         self.connect_controls()
         self.set_navigation()
@@ -63,27 +65,30 @@ class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
         self.placeControl(self.button_search, 0, 5, 1, 2)
         self.button_history = pyxbmct.Button("History")
         self.placeControl(self.button_history, 0, 7, 1, 2)
+        self.button_controlcenter = pyxbmct.Button("Control\r\nCenter")
+        self.placeControl(self.button_controlcenter, 0, 9, 1, 2)
         self.right_menu()
 
         self.listing = pyxbmct.List(_imageWidth=40, _imageHeight=40, _itemTextXOffset=10, _itemTextYOffset=2, _itemHeight=40, _space=2, _alignmentY=4)
         self.placeControl(self.listing, 1, 0, 8, 14)
 
-
     def connect_controls(self):
-        self.connect(self.listing, self.press)
+        self.connect(self.listing, self.right_press1)
         self.connect(self.button_history, self.history)
         self.connect(self.button_search, self.search)
+        self.connect(self.button_controlcenter, self.controlCenter)
         #self.connectEventList([ACTION_ENTER], self.search)
 
     def set_navigation(self):
         #Top menu
         self.input_search.setNavigation(self.listing, self.listing, self.button_right1, self.button_search)
         self.button_search.setNavigation(self.listing, self.listing, self.input_search, self.button_history)
-        self.button_history.setNavigation(self.listing, self.listing, self.button_search, self.button_right1)
+        self.button_history.setNavigation(self.listing, self.listing, self.button_search, self.button_controlcenter)
+        self.button_controlcenter.setNavigation(self.listing, self.listing, self.button_history, self.button_right1)
         #Listing
         self.listing.setNavigation(self.input_search, self.input_search, self.input_search, self.button_right1)
         #Right menu
-        self.button_right1.setNavigation(self.button_history, self.button_right2, self.listing, self.input_search)
+        self.button_right1.setNavigation(self.button_controlcenter, self.button_right2, self.listing, self.input_search)
         self.button_right2.setNavigation(self.button_right1, self.button_right3, self.listing, self.input_search)
         self.button_right3.setNavigation(self.button_right2, self.button_right4, self.listing, self.input_search)
         self.button_right4.setNavigation(self.button_right3, self.button_right5, self.listing, self.input_search)
@@ -94,8 +99,6 @@ class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
             self.setFocus(self.listing)
         else:
             self.setFocus(self.input_search)
-
-
 
     def setAnimation(self, control):
         # Set fade animation for all add-on window controls
@@ -126,9 +129,10 @@ class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
                 #log(title)
                 self.drawItem(title, 'search_item', link, image)
 
-    def press(self):
+    def right_press1(self):
         item = self.listing.getSelectedItem()
         params = json.loads(item.getLabel2())
+        log('right_press1 params: ' + str(params))
         mode = params.get('mode')
         filename = item.getfilename()
         label = item.getLabel()
@@ -142,11 +146,34 @@ class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
             self.last_action()
         elif mode == 'torrent_play':
             action = 'playTorrent'
-            log('params: '+str(params))
             url = self.form_link(action, params)
             log('url: '+url)
             xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
             self.close()
+
+    def right_press2(self):
+        item = self.listing.getSelectedItem()
+        params = json.loads(item.getLabel2())
+        log('right_press2 params: ' + str(params))
+        mode = params.get('mode')
+        if mode == 'torrent_play':
+            action = 'downloadFilesList'
+            link = {'ind': str(params.get('url'))}
+            url = self.form_link(action, link)
+            log('url: ' + url)
+            xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
+
+    def right_press3(self):
+        item = self.listing.getSelectedItem()
+        params = json.loads(item.getLabel2())
+        log('right_press3 params: ' + str(params))
+        mode = params.get('mode')
+        if mode == 'torrent_play':
+            action = 'downloadLibtorrent'
+            link = {'ind': str(params.get('url'))}
+            url = self.form_link(action, link)
+            log('url: ' + url)
+            xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
 
     def open_torrent(self, link, tdir = None):
         #cache
@@ -194,20 +221,25 @@ class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
             self.button_right4 = pyxbmct.Button("Empty")
             self.button_right5 = pyxbmct.Button("Empty")
             self.button_right6 = pyxbmct.Button("Empty")
+            self.connect(self.button_right1, self.right_press1)
+            self.connect(self.button_right2, self.right_press2)
+            self.connect(self.button_right3, self.right_press3)
+            #self.connect(self.button_right4, self.right_press2)
+            #self.connect(self.button_right5, self.right_press2)
+            #self.connect(self.button_right6, self.right_press2)
 
         elif mode == 'search':
             self.right_buttons_count = 3
             self.button_right1.setLabel("Open")
-            self.connect(self.button_right1, self.press)
-            self.connect(self.button_right1, self.press)
-            self.button_right2.setLabel("Open2")
-            self.button_right3.setLabel("Open3")
+            self.connect(self.button_right1, self.right_press1)
+            self.button_right2.setLabel(self.localize('Download via T-client'))
+            self.connect(self.button_right2, self.right_press2)
+            self.button_right3.setLabel(self.localize('Download via Libtorrent'))
+            self.connect(self.button_right3, self.right_press3)
 
         elif mode == 'history':
             self.right_buttons_count = 5
             self.button_right1.setLabel("Search")
-            self.connect(self.button_right1, self.history_search)
-            self.connect(self.button_right1, self.history_search)
             self.button_right2.setLabel("Open2")
             self.button_right3.setLabel("Open3")
             self.button_right4.setLabel("Open2")
@@ -248,6 +280,10 @@ class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
             url = '%s?action=%s&url=%s' % ('plugin://plugin.video.torrenter/', action, urllib.quote_plus(link))
 
         return url
+
+    def controlCenter(self):
+        xbmc.executebuiltin(
+            'xbmc.RunScript(%s,)' % os.path.join(__root__, 'controlcenter.py'))
 
 def log(msg):
     try:
