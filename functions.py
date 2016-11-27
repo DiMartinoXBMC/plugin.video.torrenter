@@ -2147,6 +2147,11 @@ def encode_msg(msg):
         msg = ensure_str(msg)
     return msg
 
+def decode_str(string, encoding='utf-8'):
+    if not isinstance(string, unicode):
+        string = string.decode(encoding)
+    return string
+
 def get_platform():
     ret = {
         "arch": sys.maxsize > 2 ** 32 and "x64" or "x86",

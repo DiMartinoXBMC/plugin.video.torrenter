@@ -1793,11 +1793,15 @@ class Core:
             f = open(url, 'rb')
             torrent = f.read()
             f.close()
+            from python_libtorrent import get_libtorrent
+            libtorrent = get_libtorrent()
+            info = libtorrent.torrent_info(libtorrent.bdecode(torrent))
+            name = info.name()
             success = Download().add(torrent, dirname)
             if success:
                 showMessage(self.localize('Torrent-client Browser'), self.localize('Added!'), forced=True)
                 if ind:
-                    id = self.chooseHASH(Download().list())[0]
+                    id = self.chooseHASH(Download().list(), name)[0]
                     Download().setprio(id, ind)
 
     def downloadLibtorrent(self, params={}):
@@ -1877,7 +1881,7 @@ class Core:
         else:
             self.openSection(params)
 
-    def chooseHASH(self, list):
+    def chooseHASH(self, list, name = None):
         dialog_items, dialog_items_clean = [], []
         dialog_files = []
         dat = list
@@ -1887,14 +1891,30 @@ class Core:
         for data in dat:
             dialog_files.append((data['id'], data['dir'].encode('utf-8')))
             dialog_items.append('[' + str(data['progress']) + '%] ' + data['name'])
-        if len(dialog_items) > 1:
-            ret = xbmcgui.Dialog().select(self.localize('Choose in torrent-client:'), dialog_items)
-            if ret > -1 and ret < len(dialog_files):
-                hash = dialog_files[ret]
+            dialog_items_clean.append(data['name'])
+
+
+        log('[chooseHASH]: name %s ' % str(name))
+        for data in dat:
+            # Debug('[chooseHASH]: '+str((data['name'], data['id'], data['dir'].encode('utf-8'))))
+            dialog_files.append((data['id'], data['dir'].encode('utf-8')))
+            dialog_items.append('[' + str(data['progress']) + '%] ' + data['name'])
+            dialog_items_clean.append(data['name'])
+
+        if name:
+            if decode_str(name) in dialog_items_clean:
+                return dialog_files[dialog_items_clean.index(decode_str(name))]
+            elif name in dialog_items_clean:
+                return dialog_files[dialog_items_clean.index(name)]
+        else:
+            if len(dialog_items) > 1:
+                ret = xbmcgui.Dialog().select(self.localize('Choose in torrent-client:'), dialog_items)
+                if ret > -1 and ret < len(dialog_files):
+                    hash = dialog_files[ret]
+                    return hash
+            elif len(dialog_items) == 1:
+                hash = dialog_files[0]
                 return hash
-        elif len(dialog_items) == 1:
-            hash = dialog_files[0]
-            return hash
 
     def localize(self, string):
         try:
