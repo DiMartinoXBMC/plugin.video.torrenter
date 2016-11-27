@@ -44,6 +44,7 @@ __settings__ = xbmcaddon.Addon(id='plugin.video.torrenter')
 __language__ = __settings__.getLocalizedString
 ROOT = __settings__.getAddonInfo('path')  # .decode('utf-8').encode(sys.getfilesystemencoding())
 userStorageDirectory = __settings__.getSetting("storage")
+torrentFilesDirectory = 'torrents'
 USERAGENT = "Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0"
 __addonpath__ = __settings__.getAddonInfo('path')
 icon = os.path.join(__addonpath__, 'icon.png')
@@ -1309,6 +1310,62 @@ def search(url, searchersList, isApi=None):
         filesList.extend(result[k])
     return filesList
 
+def get_filesList(query, addtime = None):
+    if __settings__.getSetting('history')=='true':
+        HistoryDB().add(query)
+    searchersList = []
+    if addtime:
+        providers=HistoryDB().get_providers(addtime)
+        if providers:
+            for searcher in providers:
+                searchersList.append(searcher)
+    if not addtime or not searchersList:
+        searchersList = Searchers().get_active()
+
+    filesList=search(query, searchersList)
+    if __settings__.getSetting('sort_search')=='true':
+        __settings__.setSetting('sort_search','1')
+    if int(__settings__.getSetting('sort_search'))==0:
+        filesList = sorted(filesList, key=lambda x: x[0], reverse=True)
+    elif int(__settings__.getSetting('sort_search'))==2:
+        filesList = sorted(filesList, key=lambda x: x[4], reverse=False)
+
+    debug('get_filesList filesList: '+str(filesList))
+
+    return filesList
+
+def get_contentList(url):
+    import Downloader
+
+    url = urllib.unquote_plus(url)
+
+    __settings__.setSetting("lastTorrentUrl", url)
+    classMatch = re.search('(\w+)::(.+)', url)
+    if classMatch:
+        searcher = classMatch.group(1)
+        url = Searchers().downloadWithSearcher(classMatch.group(2), searcher)
+        __settings__.setSetting("lastTorrent", url)
+
+    torrent = Downloader.Torrent(userStorageDirectory, torrentFilesDirectory=torrentFilesDirectory)
+
+    __settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
+
+    append_filesize = __settings__.getSetting("append_filesize") == 'true'
+
+    contentList = []
+    for filedict in torrent.getContentList():
+        fileTitle = filedict.get('title')
+        size = filedict.get('size')
+        if size:
+            if append_filesize:
+                fileTitle += ' [%d MB]' % (size / 1024 / 1024)
+
+        contentList.append([unescape(fileTitle), str(filedict.get('ind')), size])
+    # contentList = sorted(contentList, key=lambda x: x[0])
+
+    debug('get_contentList contentList: ' + str(contentList))
+
+    return contentList
 
 def join_list(l, char=', ', replace=''):
     string=''
