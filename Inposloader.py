@@ -29,7 +29,7 @@ import xbmcgui
 import xbmcvfs
 import xbmcaddon
 import Localization
-from functions import encode_msg, isSubtitle, is_writable, file_url
+from functions import encode_msg, isSubtitle, is_writable, file_url, localize_path
 
 
 import os
@@ -166,7 +166,7 @@ class InposLoader:
             return self.torrentFile
         else:
             if not xbmcvfs.exists(self.torrentFilesPath): xbmcvfs.mkdirs(self.torrentFilesPath)
-            torrentFile = os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent')
+            torrentFile = localize_path(os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent'))
             try:
                 if not re.match("^http\:.+$", torrentUrl):
                     content = xbmcvfs.File(torrentUrl, "rb").read()
