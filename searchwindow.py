@@ -38,7 +38,7 @@ log('SYS ARGV: ' + str(sys.argv))
 ACTION_STOP = 13
 ACTION_PLAYER_PLAY = 79
 
-class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
+class SearchWindow(pyxbmct.AddonDialogWindow):
     __settings__ = sys.modules["__main__"].__settings__
     fileList = []
     contentList = []
@@ -47,9 +47,11 @@ class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
     last_link = None
     last_query = None
     last_action = None
+    last_top_button = None
+    last_right_button = None
 
     def __init__(self, title=""):
-        super(MultiChoiceDialog, self).__init__(title)
+        super(SearchWindow, self).__init__(title)
         self.setGeometry(1280, 720, 9, 16)
         self.set_controls()
         self.connect_controls()
@@ -67,33 +69,26 @@ class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
         self.placeControl(self.button_history, 0, 7, 1, 2)
         self.button_controlcenter = pyxbmct.Button("Control\r\nCenter")
         self.placeControl(self.button_controlcenter, 0, 9, 1, 2)
-        self.right_menu()
 
         self.listing = pyxbmct.List(_imageWidth=40, _imageHeight=40, _itemTextXOffset=10, _itemTextYOffset=2, _itemHeight=40, _space=2, _alignmentY=4)
         self.placeControl(self.listing, 1, 0, 8, 14)
+
+        self.right_menu()
 
     def connect_controls(self):
         self.connect(self.listing, self.right_press1)
         self.connect(self.button_history, self.history)
         self.connect(self.button_search, self.search)
         self.connect(self.button_controlcenter, self.controlCenter)
-        #self.connectEventList([ACTION_ENTER], self.search)
 
     def set_navigation(self):
         #Top menu
-        self.input_search.setNavigation(self.listing, self.listing, self.button_right1, self.button_search)
+        self.input_search.setNavigation(self.listing, self.listing, self.last_right_button, self.button_search)
         self.button_search.setNavigation(self.listing, self.listing, self.input_search, self.button_history)
         self.button_history.setNavigation(self.listing, self.listing, self.button_search, self.button_controlcenter)
-        self.button_controlcenter.setNavigation(self.listing, self.listing, self.button_history, self.button_right1)
+        self.button_controlcenter.setNavigation(self.listing, self.listing, self.button_history, self.last_right_button)
         #Listing
-        self.listing.setNavigation(self.input_search, self.input_search, self.input_search, self.button_right1)
-        #Right menu
-        self.button_right1.setNavigation(self.button_controlcenter, self.button_right2, self.listing, self.input_search)
-        self.button_right2.setNavigation(self.button_right1, self.button_right3, self.listing, self.input_search)
-        self.button_right3.setNavigation(self.button_right2, self.button_right4, self.listing, self.input_search)
-        self.button_right4.setNavigation(self.button_right3, self.button_right5, self.listing, self.input_search)
-        self.button_right5.setNavigation(self.button_right4, self.button_right6, self.listing, self.input_search)
-        self.button_right6.setNavigation(self.button_right5, self.button_right1, self.listing, self.input_search)
+        self.listing.setNavigation(self.input_search, self.input_search, self.input_search, self.last_right_button)
 
         if self.listing.size():
             self.setFocus(self.listing)
@@ -147,7 +142,7 @@ class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
         elif mode == 'torrent_play':
             action = 'playTorrent'
             url = self.form_link(action, params)
-            log('url: '+url)
+            log('right_press1 url: '+url)
             xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
             self.close()
 
@@ -156,24 +151,47 @@ class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
         params = json.loads(item.getLabel2())
         log('right_press2 params: ' + str(params))
         mode = params.get('mode')
+        filename = item.getfilename()
         if mode == 'torrent_play':
             action = 'downloadFilesList'
             link = {'ind': str(params.get('url'))}
             url = self.form_link(action, link)
-            log('url: ' + url)
+            log('right_press2 url: ' + url)
+            xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
+        elif mode == 'search_item':
+            action = 'downloadFilesList'
+            link = {'url': filename}
+            url = self.form_link(action, link)
+            log('right_press2 url: ' + url)
             xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
 
     def right_press3(self):
         item = self.listing.getSelectedItem()
         params = json.loads(item.getLabel2())
         log('right_press3 params: ' + str(params))
+        filename = item.getfilename()
         mode = params.get('mode')
         if mode == 'torrent_play':
             action = 'downloadLibtorrent'
             link = {'ind': str(params.get('url'))}
             url = self.form_link(action, link)
-            log('url: ' + url)
+            log('right_press3 url: ' + url)
             xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
+        elif mode == 'search_item':
+            action = 'downloadLibtorrent'
+            link = {'url': filename}
+            url = self.form_link(action, link)
+            log('right_press2 url: ' + url)
+            xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
+
+    def right_press4(self):
+        pass
+
+    def right_press5(self):
+        pass
+
+    def right_press6(self):
+        pass
 
     def open_torrent(self, link, tdir = None):
         #cache
@@ -211,46 +229,59 @@ class MultiChoiceDialog(pyxbmct.AddonDialogWindow):
         log('history_search: '+self.listing.getSelectedItem().getLabel())
 
     def right_menu(self, mode='place'):
+
+        log('self.actions_connected: ' + str(self.actions_connected))
+        log('self.controls_connected: ' + str(self.controls_connected))
+
         if not mode == 'place':
             self.last_right_buttons_count = self.right_buttons_count
+            remove_list = [getattr(self, "button_right" + str(index)) for index
+                           in range(1, self.last_right_buttons_count+1)]
+            self.disconnectEventList(remove_list)
+            self.removeControls(remove_list)
 
+        label_list = []
         if mode == 'place':
-            self.button_right1 = pyxbmct.Button("Empty")
-            self.button_right2 = pyxbmct.Button("Empty")
-            self.button_right3 = pyxbmct.Button("Empty")
-            self.button_right4 = pyxbmct.Button("Empty")
-            self.button_right5 = pyxbmct.Button("Empty")
-            self.button_right6 = pyxbmct.Button("Empty")
-            self.connect(self.button_right1, self.right_press1)
-            self.connect(self.button_right2, self.right_press2)
-            self.connect(self.button_right3, self.right_press3)
-            #self.connect(self.button_right4, self.right_press2)
-            #self.connect(self.button_right5, self.right_press2)
-            #self.connect(self.button_right6, self.right_press2)
+            label_list = ["Empty","Empty","Empty","Empty","Empty","Empty"]
 
         elif mode == 'search':
-            self.right_buttons_count = 3
-            self.button_right1.setLabel("Open")
-            self.connect(self.button_right1, self.right_press1)
-            self.button_right2.setLabel(self.localize('Download via T-client'))
-            self.connect(self.button_right2, self.right_press2)
-            self.button_right3.setLabel(self.localize('Download via Libtorrent'))
-            self.connect(self.button_right3, self.right_press3)
+            label_list = ["Open",
+                          self.localize('Download via T-client'),
+                          self.localize('Download via Libtorrent')]
 
         elif mode == 'history':
-            self.right_buttons_count = 5
-            self.button_right1.setLabel("Search")
-            self.button_right2.setLabel("Open2")
-            self.button_right3.setLabel("Open3")
-            self.button_right4.setLabel("Open2")
-            self.button_right5.setLabel("Open3")
+            label_list = ["Search",
+                          "Open2","Open2","Open2","Open2"]
 
-        control_list = [self.button_right1, self.button_right2, self.button_right3, self.button_right4, self.button_right5, self.button_right6]
-        if self.last_right_buttons_count > self.right_buttons_count:
-            self.removeControls(control_list[self.right_buttons_count:self.last_right_buttons_count])
-        elif self.last_right_buttons_count < self.right_buttons_count:
-            for button in control_list[self.last_right_buttons_count:self.right_buttons_count]:
-                self.placeControl(button, control_list.index(button)+1, 14, 1, 2)
+        self.right_buttons_count = len(label_list)
+        button_num_list = range(1, self.right_buttons_count+1)
+
+        for index in button_num_list:
+            setattr(self, "button_right" + str(index), pyxbmct.Button(label_list[index - 1]))
+            button = getattr(self, "button_right" + str(index))
+            self.connect(button, getattr(self, "right_press"+str(index)))
+            self.placeControl(button, index, 14, 1, 2)
+
+        #Navigation
+        self.last_right_button = self.button_right1
+        for index in button_num_list:
+            button = getattr(self, "button_right" + str(index))
+
+            if self.right_buttons_count == 1:
+                button.setNavigation(self.button_controlcenter, self.button_right1, self.listing, self.input_search)
+            else:
+                if index == button_num_list[0]:
+                    button.setNavigation(self.button_controlcenter, self.button_right2, self.listing, self.input_search)
+                elif index == button_num_list[-1]:
+                    button.setNavigation(getattr(self, "button_right" + str(index-1)), self.button_right1, self.listing,
+                                                     self.input_search)
+                else:
+                    button.setNavigation(getattr(self, "button_right" + str(index - 1)),
+                                         getattr(self, "button_right" + str(index + 1)),
+                                         self.listing,
+                                         self.input_search)
+
+        self.set_navigation()
 
     def localize(self, string):
         try:
@@ -311,7 +342,7 @@ def titleMake(seeds, leechers, size, title):
 
 if __name__ == "__main__":
 
-    dialog = MultiChoiceDialog("Torrenter Search Window")
+    dialog = SearchWindow("Torrenter Search Window")
     dialog.doModal()
     del dialog #You need to delete your instance when it is no longer needed
     #because underlying xbmcgui classes are not grabage-collected.
