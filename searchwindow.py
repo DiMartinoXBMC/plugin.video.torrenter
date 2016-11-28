@@ -22,7 +22,7 @@ import sys, os, urllib, json
 import xbmcaddon
 import xbmc
 import xbmcgui
-from functions import get_filesList, HistoryDB, get_contentList, log, cutFolder, get_ids_video
+from functions import get_filesList, HistoryDB, get_contentList, log, cutFolder, get_ids_video, showMessage
 import pyxbmct.addonwindow as pyxbmct
 import Localization
 
@@ -55,7 +55,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.setGeometry(1280, 720, 9, 16)
         self.set_controls()
         self.connect_controls()
-        self.set_navigation()
+        #self.set_navigation()
+        self.history()
 
     def icon(self, icon):
         return '%s/icons/%s.png' %(__root__, icon)
@@ -70,16 +71,21 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.button_controlcenter = pyxbmct.Button("Control\r\nCenter")
         self.placeControl(self.button_controlcenter, 0, 9, 1, 2)
 
-        self.listing = pyxbmct.List(_imageWidth=40, _imageHeight=40, _itemTextXOffset=10, _itemTextYOffset=2, _itemHeight=40, _space=2, _alignmentY=4)
+        self.listing = self.listing = pyxbmct.List(_imageWidth=60, _imageHeight=60, _itemTextXOffset=10,
+                                                   _itemTextYOffset=2, _itemHeight=60, _space=2, _alignmentY=4)
         self.placeControl(self.listing, 1, 0, 8, 14)
 
         self.right_menu()
+
 
     def connect_controls(self):
         self.connect(self.listing, self.right_press1)
         self.connect(self.button_history, self.history)
         self.connect(self.button_search, self.search)
         self.connect(self.button_controlcenter, self.controlCenter)
+
+        self.connect(pyxbmct.ACTION_NAV_BACK, self.close)
+        self.connect(pyxbmct.ACTION_PREVIOUS_MENU, self.close)
 
     def set_navigation(self):
         #Top menu
@@ -101,7 +107,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                                ('WindowClose', 'effect=fade start=100 end=0 time=500',)])
 
     def search(self, addtime=None):
-        self.last_action = self.search
+        self.reconnect(pyxbmct.ACTION_NAV_BACK, self.history)
         self.right_menu('search')
         self.listing.reset()
         query = self.input_search.getText()
@@ -124,10 +130,31 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 #log(title)
                 self.drawItem(title, 'search_item', link, image)
 
+    def history(self):
+        self.right_menu('history')
+        self.listing.reset()
+        self.reconnect(pyxbmct.ACTION_NAV_BACK, self.close)
+
+        db = HistoryDB()
+        items = db.get_all()
+        favlist = [(1, '[B]%s[/B]'), (0, '%s')]
+        if items:
+            for favbool, bbstring in favlist:
+                for addtime, string, fav in items:
+                    if favbool == int(fav):
+                        title = string.encode('utf-8')
+
+                        if int(fav) == 1:
+                            img = __root__ + '/icons/fav.png'
+                        else:
+                            img = __root__ + '/icons/unfav.png'
+
+                        link = {'mode': 'history_search_item', 'url': title, 'addtime': str(addtime), 'fav':str(fav)}
+                        self.drawItem(bbstring % title, link, title, img)
+
     def right_press1(self):
         item = self.listing.getSelectedItem()
         params = json.loads(item.getLabel2())
-        log('right_press1 params: ' + str(params))
         mode = params.get('mode')
         filename = item.getfilename()
         label = item.getLabel()
@@ -142,53 +169,69 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         elif mode == 'torrent_play':
             action = 'playTorrent'
             url = self.form_link(action, params)
-            log('right_press1 url: '+url)
             xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
             self.close()
+        elif mode == 'history_search_item':
+            self.input_search.setText(filename)
+            self.search()
 
     def right_press2(self):
         item = self.listing.getSelectedItem()
         params = json.loads(item.getLabel2())
-        log('right_press2 params: ' + str(params))
         mode = params.get('mode')
         filename = item.getfilename()
         if mode == 'torrent_play':
             action = 'downloadFilesList'
             link = {'ind': str(params.get('url'))}
             url = self.form_link(action, link)
-            log('right_press2 url: ' + url)
             xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
         elif mode == 'search_item':
             action = 'downloadFilesList'
             link = {'url': filename}
             url = self.form_link(action, link)
-            log('right_press2 url: ' + url)
             xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
+        elif mode == 'history_search_item':
+            self.input_search.setText(filename)
+            self.setFocus(self.input_search)
 
     def right_press3(self):
         item = self.listing.getSelectedItem()
         params = json.loads(item.getLabel2())
-        log('right_press3 params: ' + str(params))
         filename = item.getfilename()
         mode = params.get('mode')
         if mode == 'torrent_play':
             action = 'downloadLibtorrent'
             link = {'ind': str(params.get('url'))}
             url = self.form_link(action, link)
-            log('right_press3 url: ' + url)
             xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
         elif mode == 'search_item':
             action = 'downloadLibtorrent'
             link = {'url': filename}
             url = self.form_link(action, link)
-            log('right_press2 url: ' + url)
             xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
+        elif mode == 'history_search_item':
+            addtime = params.get('addtime')
+            url = (os.path.join(__root__, 'controlcenter.py,') +
+                   'addtime=%s&title=%s' % (str(addtime), filename))
+            xbmc.executebuiltin('xbmc.RunPlugin(%s)' % (url))
 
     def right_press4(self):
-        pass
+        item = self.listing.getSelectedItem()
+        params = json.loads(item.getLabel2())
+        mode = params.get('mode')
+        if mode == 'history_search_item':
+            addtime = params.get('addtime')
+            fav = params.get('fav')
+            self.history_action('fav', addtime, fav)
 
     def right_press5(self):
-        pass
+        item = self.listing.getSelectedItem()
+        params = json.loads(item.getLabel2())
+        mode = params.get('mode')
+        if mode == 'history_search_item':
+            addtime = params.get('addtime')
+            fav = params.get('fav')
+            self.history_action('delete', addtime, fav)
 
     def right_press6(self):
         pass
@@ -221,18 +264,23 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             params = {'mode': 'torrent_play', 'url': identifier, 'url2': ids_video.rstrip(',')}
             self.drawItem(title, params, link)
 
-    def history(self):
-        self.right_menu('history')
+    def history_action(self, action, addtime, fav):
+        db = HistoryDB()
 
-    def history_search(self):
-        xbmcgui.Dialog().ok('xxx','xxx')
-        log('history_search: '+self.listing.getSelectedItem().getLabel())
+        if action == 'delete':
+            db.delete(addtime)
+            showMessage(self.localize('Search History'), self.localize('Deleted!'))
+
+        if action == 'fav' and fav == '0':
+            db.fav(addtime)
+            showMessage(self.localize('Favourites'), self.localize('Added!'))
+        elif action == 'fav':
+            db.unfav(addtime)
+            showMessage(self.localize('Favourites'), self.localize('Deleted!'))
+
+        self.history()
 
     def right_menu(self, mode='place'):
-
-        log('self.actions_connected: ' + str(self.actions_connected))
-        log('self.controls_connected: ' + str(self.controls_connected))
-
         if not mode == 'place':
             self.last_right_buttons_count = self.right_buttons_count
             remove_list = [getattr(self, "button_right" + str(index)) for index
@@ -250,8 +298,11 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                           self.localize('Download via Libtorrent')]
 
         elif mode == 'history':
-            label_list = ["Search",
-                          "Open2","Open2","Open2","Open2"]
+            label_list = [self.localize('Open'),
+                          self.localize('Edit'),
+                          self.localize('Individual Tracker Options'),
+                          'Fav/Unfav',
+                          self.localize('Delete')]
 
         self.right_buttons_count = len(label_list)
         button_num_list = range(1, self.right_buttons_count+1)
@@ -315,6 +366,10 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     def controlCenter(self):
         xbmc.executebuiltin(
             'xbmc.RunScript(%s,)' % os.path.join(__root__, 'controlcenter.py'))
+
+    def reconnect(self, event, callable):
+        self.disconnect(event)
+        self.connect(event, callable)
 
 def log(msg):
     try:
