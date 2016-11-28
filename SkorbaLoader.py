@@ -156,14 +156,11 @@ class SkorbaLoader:
         }
         progressBar = xbmcgui.DialogProgress()
         progressBar.create(Localization.localize('Please Wait'), Localization.localize('Magnet-link is converting'))
-        #try:
         self.torrentHandle = self.session.add_torrent(magnetSettings)
-        #except:
-        #    self.torrentHandle = self.lt.add_magnet_uri(self.session, self.magnetLink, magnetSettings)
         iterator = 0
+        if self.enable_dht: self.torrentHandle.force_dht_announce()
         while iterator < 100:
             xbmc.sleep(500)
-            if self.enable_dht: self.torrentHandle.force_dht_announce()
             progressBar.update(iterator, Localization.localize('Please Wait'), Localization.localize('Magnet-link is converting')+'.' * (iterator % 4), ' ')
             iterator += 1
             if progressBar.iscanceled():
