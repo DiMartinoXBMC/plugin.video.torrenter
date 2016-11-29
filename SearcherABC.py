@@ -134,13 +134,14 @@ class SearcherABC:
                 self.log('[makeRequest]: HTTP Error, e.code=' + str(e.code))
                 return
         #self.cookieJar.extract_cookies(response, urllib2)
+        #self.log(response.info().get('Set-Cookie'))
         if response.info().get('Content-Encoding') == 'gzip':
             buf = StringIO(response.read())
             decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
-            response = decomp.decompress(buf.getvalue())
+            text = decomp.decompress(buf.getvalue())
         else:
-            response = response.read()
-        return response
+            text = response.read()
+        return text
 
     def askCaptcha(self, url):
         temp_dir = self.tempdir()
