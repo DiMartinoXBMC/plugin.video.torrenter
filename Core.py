@@ -1908,7 +1908,6 @@ class Core:
             dialog_items.append('[' + str(data['progress']) + '%] ' + data['name'])
             dialog_items_clean.append(data['name'])
 
-
         log('[chooseHASH]: name %s ' % str(name))
         for data in dat:
             # Debug('[chooseHASH]: '+str((data['name'], data['id'], data['dir'].encode('utf-8'))))

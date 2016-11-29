@@ -22,7 +22,7 @@ import sys, os, urllib, json
 import xbmcaddon
 import xbmc
 import xbmcgui
-from functions import get_filesList, HistoryDB, get_contentList, log, cutFolder, get_ids_video, showMessage
+from functions import get_filesList, HistoryDB, get_contentList, log, cutFolder, get_ids_video, showMessage, getParameters
 import pyxbmct.addonwindow as pyxbmct
 import Localization
 
@@ -37,6 +37,9 @@ log('SYS ARGV: ' + str(sys.argv))
 #https://github.com/xbmc/xbmc/blob/8d4a5bba55638dfd0bdc5e7de34f3e5293f99933/xbmc/input/Key.h
 ACTION_STOP = 13
 ACTION_PLAYER_PLAY = 79
+ACTION_MOUSE_RIGHT_CLICK = 101
+ACTION_CONTEXT_MENU = 117
+ACTION_SHOW_OSD = 24
 
 class SearchWindow(pyxbmct.AddonDialogWindow):
     __settings__ = sys.modules["__main__"].__settings__
@@ -71,8 +74,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.button_controlcenter = pyxbmct.Button("Control\r\nCenter")
         self.placeControl(self.button_controlcenter, 0, 9, 1, 2)
 
-        self.listing = self.listing = pyxbmct.List(_imageWidth=60, _imageHeight=60, _itemTextXOffset=10,
-                                                   _itemTextYOffset=2, _itemHeight=60, _space=2, _alignmentY=4)
+        self.listing = pyxbmct.List(_imageWidth=60, _imageHeight=60, _itemTextXOffset=1,
+                                    _itemTextYOffset=0, _itemHeight=50, _space=0, _alignmentY=4)
         self.placeControl(self.listing, 1, 0, 8, 14)
 
         self.right_menu()
@@ -85,6 +88,10 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         self.connect(pyxbmct.ACTION_NAV_BACK, self.close)
         self.connect(pyxbmct.ACTION_PREVIOUS_MENU, self.close)
+        self.connect(ACTION_MOUSE_RIGHT_CLICK, self.context)
+        self.connect(ACTION_CONTEXT_MENU, self.context)
+        self.connect(ACTION_SHOW_OSD, self.context)
+
 
     def set_navigation(self):
         #Top menu
@@ -196,6 +203,40 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             params = {'mode': 'torrent_play', 'url': identifier, 'url2': ids_video.rstrip(',')}
             self.drawItem(title, params, link)
 
+    def get_menulist(self, mode):
+
+        label_list = ["Empty","Empty","Empty","Empty","Empty","Empty"]
+
+        if mode in ['search', 'search_item', 'torrent_play']:
+            label_list = ["Open",
+                          self.localize('Download via T-client'),
+                          self.localize('Download via Libtorrent')]
+        elif mode in ['torrent_subfolder', 'torrent_moveup']:
+            label_list = ["Open"]
+        elif mode in ['history', 'history_search_item']:
+            label_list = [self.localize('Open'),
+                          self.localize('Edit'),
+                          self.localize('Individual Tracker Options'),
+                          'Fav/Unfav',
+                          self.localize('Delete')]
+
+        return label_list
+
+    def context(self):
+        if self.getFocus() == self.listing:
+            item = self.listing.getSelectedItem()
+            params = json.loads(item.getLabel2())
+            mode = params.get('mode')
+            label_list = self.get_menulist(mode)
+
+            if not self.version_check():
+                ret = xbmcgui.Dialog().select(self.localize('Context menu'), label_list)
+            else:
+                ret = xbmcgui.Dialog().contextmenu(list=[(x) for x in label_list])
+
+            if ret > -1 and ret < len(label_list):
+                getattr(self, "right_press" + str(ret + 1))()
+
     def right_menu(self, mode='place'):
         if not mode == 'place':
             self.last_right_buttons_count = self.right_buttons_count
@@ -204,21 +245,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             self.disconnectEventList(remove_list)
             self.removeControls(remove_list)
 
-        label_list = []
-        if mode == 'place':
-            label_list = ["Empty","Empty","Empty","Empty","Empty","Empty"]
-
-        elif mode == 'search':
-            label_list = ["Open",
-                          self.localize('Download via T-client'),
-                          self.localize('Download via Libtorrent')]
-
-        elif mode == 'history':
-            label_list = [self.localize('Open'),
-                          self.localize('Edit'),
-                          self.localize('Individual Tracker Options'),
-                          'Fav/Unfav',
-                          self.localize('Delete')]
+        label_list = self.get_menulist(mode)
 
         self.right_buttons_count = len(label_list)
         button_num_list = range(1, self.right_buttons_count+1)
@@ -374,6 +401,9 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.disconnect(event)
         self.connect(event, callable)
 
+    def version_check(self):
+        return False if int(xbmc.getInfoLabel( "System.BuildVersion" )[:2]) < 17 else True
+
 def log(msg):
     try:
         xbmc.log("### [%s]: %s" % (__plugin__,msg,), level=xbmc.LOGNOTICE )
@@ -398,9 +428,25 @@ def titleMake(seeds, leechers, size, title):
     title += '\r\n' + clDimgray % second
     return title
 
-if __name__ == "__main__":
 
+def main():
     dialog = SearchWindow("Torrenter Search Window")
     dialog.doModal()
     del dialog #You need to delete your instance when it is no longer needed
     #because underlying xbmcgui classes are not grabage-collected.
+
+
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        params = getParameters(sys.argv[1])
+    else:
+        params = {}
+
+    try:
+        main()
+    except Exception, e:
+        import xbmc
+        import traceback
+
+        map(xbmc.log, traceback.format_exc().split("\n"))
+        raise
