@@ -38,6 +38,7 @@ class Core:
     open_option = int(__settings__.getSetting('open_option'))
     language = {0: 'en', 1: 'ru', 2: 'uk', 3: 'he', 4: 'hu'}.get(int(__settings__.getSetting("language")))
     scrapperDB_ver = {'en':'1.1', 'ru':'1.3', 'he':'1.3'}
+    torrent_info_style = int(__settings__.getSetting('torrent_info_style'))
 
     log('SYS ARGV: ' + str(sys.argv))
 
@@ -1851,9 +1852,20 @@ class Core:
         clRed = '[COLOR FFFF0000]%s[/COLOR]'
 
         title = title.replace('720p', '[B]720p[/B]').replace('1080p', '[B]1080p[/B]')
-        title = clWhite % title
-        second = '[I](%s) [S/L: %d/%d] [/I]' % (size, seeds, leechers)
-        title += '  ' + second
+
+        if self.torrent_info_style == 0:
+            title = clWhite % title
+            second = '[I](%s) [S/L: %d/%d] [/I]' % (size, seeds, leechers)
+            title += '  ' + second
+        elif self.torrent_info_style == 1:
+            title = clWhite % title
+            second = '[I](%s) [S/L: %d/%d] [/I]' % (size, seeds, leechers)
+            title = second + '  ' + title
+        elif self.torrent_info_style == 2:
+            title = clWhite % title
+            second = '[I](%s) [S/L: %d/%d] [/I]' % (size, seeds, leechers)
+            title += '\r\n' + clDimgray % second
+
         return title
 
     def search(self, params={}):
