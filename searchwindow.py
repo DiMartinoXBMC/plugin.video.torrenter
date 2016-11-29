@@ -92,7 +92,6 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.connect(ACTION_CONTEXT_MENU, self.context)
         self.connect(ACTION_SHOW_OSD, self.context)
 
-
     def set_navigation(self):
         #Top menu
         self.input_search.setNavigation(self.listing, self.listing, self.last_right_button, self.button_search)
@@ -133,8 +132,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         if 1==1:
             for (order, seeds, leechers, size, title, link, image) in self.filesList:
                 title = titleMake(seeds, leechers, size, title)
-                #log(title)
-                self.drawItem(title, 'search_item', link, image)
+                self.drawItem(title, {'mode':'search_item', 'filename': link}, image)
 
     def history(self):
         self.right_menu('history')
@@ -155,8 +153,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                         else:
                             img = __root__ + '/icons/unfav.png'
 
-                        link = {'mode': 'history_search_item', 'url': title, 'addtime': str(addtime), 'fav':str(fav)}
-                        self.drawItem(bbstring % title, link, title, img)
+                        link = {'mode': 'history_search_item', 'filename': title, 'addtime': str(addtime), 'fav':str(fav)}
+                        self.drawItem(bbstring % title, link, img)
 
     def history_action(self, action, addtime, fav):
         db = HistoryDB()
@@ -184,13 +182,14 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         dirList, contentListNew = cutFolder(self.contentList, tdir)
 
         if not tdir:
-            self.drawItem('..', 'torrent_moveup', link, isFolder=True)
+            self.drawItem('..', {'mode': 'torrent_moveup', 'filename': link}, isFolder=True)
         else:
-            params = {'mode': 'torrent_subfolder'}
-            self.drawItem('..', params, link, isFolder=True)
+            params = {'mode': 'torrent_subfolder', 'filename': link}
+            self.drawItem('..', params, isFolder=True)
 
+        dirList = sorted(dirList, key=lambda x: x[0], reverse=False)
         for title in dirList:
-            self.drawItem(title, {'mode':'torrent_subfolder', 'tdir': title}, link, isFolder=True)
+            self.drawItem(title, {'mode':'torrent_subfolder', 'tdir': title, 'filename': link}, isFolder=True)
 
         ids_video_result = get_ids_video(contentListNew)
         ids_video=''
@@ -199,9 +198,10 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             for identifier in ids_video_result:
                 ids_video = ids_video + str(identifier) + ','
 
+        contentListNew = sorted(contentListNew, key=lambda x: x[0], reverse=False)
         for title, identifier, filesize in contentListNew:
-            params = {'mode': 'torrent_play', 'url': identifier, 'url2': ids_video.rstrip(',')}
-            self.drawItem(title, params, link)
+            params = {'mode': 'torrent_play', 'url': identifier, 'url2': ids_video.rstrip(','), 'filename': link}
+            self.drawItem(title, params)
 
     def get_menulist(self, mode):
 
@@ -225,8 +225,9 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     def context(self):
         if self.getFocus() == self.listing:
             item = self.listing.getSelectedItem()
-            params = json.loads(item.getLabel2())
+            params = json.loads(item.getfilename())
             mode = params.get('mode')
+            filename = params.get('filename')
             label_list = self.get_menulist(mode)
 
             if not self.version_check():
@@ -279,10 +280,9 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
     def right_press1(self):
         item = self.listing.getSelectedItem()
-        params = json.loads(item.getLabel2())
+        params = json.loads(item.getfilename())
         mode = params.get('mode')
-        filename = item.getfilename()
-        label = item.getLabel()
+        filename = params.get('filename')
         tdir = params.get('tdir')
         self.listing.reset()
         if mode == 'search_item':
@@ -304,9 +304,9 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
     def right_press2(self):
         item = self.listing.getSelectedItem()
-        params = json.loads(item.getLabel2())
+        params = json.loads(item.getfilename())
         mode = params.get('mode')
-        filename = item.getfilename()
+        filename = params.get('filename')
         if mode == 'torrent_play':
             action = 'downloadFilesList'
             link = {'ind': str(params.get('url'))}
@@ -323,9 +323,9 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
     def right_press3(self):
         item = self.listing.getSelectedItem()
-        params = json.loads(item.getLabel2())
-        filename = item.getfilename()
+        params = json.loads(item.getfilename())
         mode = params.get('mode')
+        filename = params.get('filename')
         if mode == 'torrent_play':
             action = 'downloadLibtorrent'
             link = {'ind': str(params.get('url'))}
@@ -345,8 +345,9 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
     def right_press4(self):
         item = self.listing.getSelectedItem()
-        params = json.loads(item.getLabel2())
+        params = json.loads(item.getfilename())
         mode = params.get('mode')
+        filename = params.get('filename')
         if mode == 'history_search_item':
             addtime = params.get('addtime')
             fav = params.get('fav')
@@ -354,8 +355,9 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
     def right_press5(self):
         item = self.listing.getSelectedItem()
-        params = json.loads(item.getLabel2())
+        params = json.loads(item.getfilename())
         mode = params.get('mode')
+        filename = params.get('filename')
         if mode == 'history_search_item':
             addtime = params.get('addtime')
             fav = params.get('fav')
@@ -370,7 +372,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         except:
             return string
 
-    def drawItem(self, title, params, link, image = None, isFolder = False):
+    def drawItem(self, title, params, image = None, isFolder = False):
         if isinstance(params, str):
             params = {'mode': params}
 
@@ -378,7 +380,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             image = 'DefaultFolder.png'
         elif not image:
             image = 'DefaultVideo.png'
-        listitem = xbmcgui.ListItem(title, json.dumps(params), image, image, link)
+        listitem = xbmcgui.ListItem(title, '', image, image, json.dumps(params))
         self.listing.addItem(listitem)
 
     def form_link(self, action, link):
