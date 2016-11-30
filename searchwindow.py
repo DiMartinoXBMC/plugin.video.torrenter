@@ -358,8 +358,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             self.history_action('fav', addtime, fav)
         else:
             cleanlabel = re.sub('\[[^\]]*\]', '', item.getLabel())
-            titlu, an = xbmc.getCleanMovieTitle(cleanlabel)
-            infoW = InfoWindow(titlu)
+            ttl, yr = xbmc.getCleanMovieTitle(cleanlabel)
+            infoW = InfoWindow(ttl, yr)
             infoW.doModal()
             del infoW
 
@@ -421,42 +421,51 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 class InfoWindow(pyxbmct.AddonDialogWindow):
     
     
-    def __init__(self, title=""):
+    def __init__(self, title="", year=""):
         super(InfoWindow, self).__init__(title)
         self.title = title
-        self.setGeometry(600, 600, 9, 16)
+        self.year = year
+        self.setGeometry(600, 600, 3, 3)
         self.set_controls()
         self.connect_controls()
         #self.set_navigation()
         
         
     def set_controls(self):
-        self.listing = pyxbmct.List(_imageWidth=40, _imageHeight=40, _itemTextXOffset=1,
-                                    _itemTextYOffset=0, _itemHeight=40, _space=0, _alignmentY=4)
-        self.placeControl(self.listing, 2, 0, 8, 14)
-        self.logoimg = pyxbmct.Image((__root__ + '/icons/fav.png'), aspectRatio=0)
-        self.placeControl(self.logoimg, 0, 5, 2, 5)
+        #pyxbmct.AddonWindow().setImage(__root__ + '/resources/skins/Default/media/ConfluenceDialogBack.png')
+        #self.placeControl(self.background, 0, 0, rowspan=3, columnspan=2)
+        self.listing = pyxbmct.List(_imageWidth=30, _imageHeight=30, _itemTextXOffset=1,
+                                    _itemTextYOffset=0, _itemHeight=30, _space=0, _alignmentY=0)
+        self.placeControl(self.listing, 0, 1, 2, 2)
+        self.logoimg = pyxbmct.Image('', aspectRatio=0)
+        self.placeControl(self.logoimg, 0, 0, rowspan=2)
+        self.plot = pyxbmct.TextBox()
+        self.placeControl(self.plot, 2, 0, 1, columnspan=3)
+        self.plot.autoScroll(1000, 1000, 1000)
         #self.button_search = pyxbmct.Button("Search")
         #self.placeControl(self.button_search, 0, 5, 1, 2)
 
 
     def connect_controls(self):
-        #this need script.module.metahandler
-        
-        from metahandler import metahandlers
-        mg = metahandlers.MetaData()
-        meta = mg.get_meta('movie', name=self.title)
+        from resources.scrapers.scrapers import Scrapers
+        self.Scraper = Scrapers()
+        meta = self.Scraper.scraper('tmdb', {'label': 'tmdb', 'search': self.title, 'year': ''}, 'en')
+        meta = meta.get('info')
         
         """
-        meta results for star wars
-        {'rating': 7.7999999999999998, 'year': 1983, 'duration': u'0', 'plot': u'N/A', 'votes': u'362', 'title': 'Star Wars', 'tagline': u'', 'writer': u'N/A', 'imgs_prepacked': u'false', 'backdrop_url': '', 'tmdb_id': u'', 'cover_url': u'https://images-na.ssl-images-amazon.com/images/M/MV5BMWJhYWQ3ZTEtYTVkOS00ZmNlLWIxZjYtODZjNTlhMjMzNGM2XkEyXkFqcGdeQXVyNzg5OTk2OA@@._V1_SX300.jpg', 'imdb_id': u'tt0251413', 'director': u'N/A', 'studio': u'', 'genre': u'Action, Adventure, Sci-Fi', 'thumb_url': u'', 'overlay': 6, 'premiered': u'1983-05-01', 'cast': [], 'mpaa': u'N/A', 'playcount': 0, 'trailer_url': u'', 'trailer': ''}
+        meta results for xXx
+        {'info': {'count': 7451, 'plot': u'Xander Cage is your standard adrenaline junkie with no fear and a lousy attitude. When the US Government "recruits" him to go on a mission, he\'s not exactly thrilled. His mission: to gather information on an organization that may just be planning the destruction of the world, led by the nihilistic Yorgi.', 'votes': u'809', 'code': u'tt0295701', 'rating': 5.7000000000000002, 'title': u'xXx', 'tagline': u'A New Breed Of Secret Agent.', 'director': u'Rob Cohen', 'premiered': u'2002-08-09', 'originaltitle': u'xXx', 'cast': [u'Vin Diesel', u'Asia Argento', u'Marton Csokas', u'Samuel L. Jackson', u'Michael Roof', u'Petr J\xe1kl Jr.', u'Richy M\xfcller', u'Joe Bucaro III', u'Eve', u'Leila Arcieri', u'William Hope', u'Ted Maynard', u'Martin Hub'], 'castandrole': [u'Vin Diesel|Xander Cage', u'Asia Argento|Yelena', u'Marton Csokas|Yorgi', u'Samuel L. Jackson|Agent Gibbons', u'Michael Roof|Agent Toby Lee Shavers', u'Petr J\xe1kl Jr.|Kolya', u'Richy M\xfcller|Milan Sova', u'Joe Bucaro III|Virg', u'Eve|J.J.', u'Leila Arcieri|Jordan King', u'William Hope|Agent Roger Donnan', u'Ted Maynard|James Tannick', u'Martin Hub|Ivan Podrov'], 'studio': u'Columbia Pictures, Original Film, Revolution Studios', 'year': 2002, 'genre': u'Action', 'runtime': u'124'}, 'thumbnail': u'http://image.tmdb.org/t/p/original/fPHNTG1OXFBQ6aEVO7Lv8tSgfrY.jpg', 'label': 'tmdb', 'properties': {'fanart_image': u'http://image.tmdb.org/t/p/original/oNQIcuvJssiK93TjrXVtbERaKE1.jpg'}, 'icon': u'http://image.tmdb.org/t/p/original/fPHNTG1OXFBQ6aEVO7Lv8tSgfrY.jpg'}
         """
         self.connect(pyxbmct.ACTION_NAV_BACK, self.close)
         self.connect(pyxbmct.ACTION_PREVIOUS_MENU, self.close)
-        self.listing.addItem ("genre: %s" % meta['genre'])
-        self.listing.addItem ("rating: %s" % meta['rating'])
-        self.listing.addItem ("year: %s" % meta['year'])
-        self.logoimg.setImage (meta['cover_url'])
+        self.listing.addItem ("Title: %s" % meta.get('title'))
+        self.listing.addItem ("genre: %s" % meta.get('genre'))
+        self.listing.addItem ("rating: %s" % meta.get('rating'))
+        self.listing.addItem ("year: %s" % meta.get('year'))
+        self.listing.addItem ("runtime: %sm" % meta.get('runtime'))
+        if meta.get('thumbnail'):
+            self.logoimg.setImage (meta.get('thumbnail'))
+        self.plot.setText(meta.get('plot'))
     
 def log(msg):
     try:
