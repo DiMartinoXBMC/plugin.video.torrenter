@@ -25,6 +25,7 @@ import xbmcgui
 from functions import get_filesList, HistoryDB, get_contentList, log, cutFolder, get_ids_video, showMessage, getParameters
 import pyxbmct.addonwindow as pyxbmct
 import Localization
+import re
 
 __settings__ = xbmcaddon.Addon(id='plugin.video.torrenter')
 __language__ = __settings__.getLocalizedString
@@ -75,8 +76,10 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.placeControl(self.button_controlcenter, 0, 9, 1, 2)
 
         self.listing = pyxbmct.List(_imageWidth=60, _imageHeight=60, _itemTextXOffset=1,
-                                    _itemTextYOffset=0, _itemHeight=50, _space=0, _alignmentY=4)
+                                    _itemTextYOffset=0, _itemHeight=60, _space=0, _alignmentY=4)
         self.placeControl(self.listing, 1, 0, 8, 14)
+        self.logoimg = pyxbmct.Image(__root__ + '/icons/fav.png')
+        self.placeControl(self.logoimg, 200, 300, 1, 5)
 
         self.right_menu()
 
@@ -210,7 +213,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         if mode in ['search', 'search_item', 'torrent_play']:
             label_list = ["Open",
                           self.localize('Download via T-client'),
-                          self.localize('Download via Libtorrent')]
+                          self.localize('Download via Libtorrent'),
+                          'Info']
         elif mode in ['torrent_subfolder', 'torrent_moveup']:
             label_list = ["Open"]
         elif mode in ['history', 'history_search_item']:
@@ -352,6 +356,12 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             addtime = params.get('addtime')
             fav = params.get('fav')
             self.history_action('fav', addtime, fav)
+        else:
+            cleanlabel = re.sub('\[[^\]]*\]', '', item.getLabel())
+            titlu, an = xbmc.getCleanMovieTitle(cleanlabel)
+            infoW = InfoWindow(titlu)
+            infoW.doModal()
+            del infoW
 
     def right_press5(self):
         item = self.listing.getSelectedItem()
@@ -406,6 +416,48 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     def version_check(self):
         return False if int(xbmc.getInfoLabel( "System.BuildVersion" )[:2]) < 17 else True
 
+
+
+class InfoWindow(pyxbmct.AddonDialogWindow):
+    
+    
+    def __init__(self, title=""):
+        super(InfoWindow, self).__init__(title)
+        self.title = title
+        self.setGeometry(600, 600, 9, 16)
+        self.set_controls()
+        self.connect_controls()
+        #self.set_navigation()
+        
+        
+    def set_controls(self):
+        self.listing = pyxbmct.List(_imageWidth=40, _imageHeight=40, _itemTextXOffset=1,
+                                    _itemTextYOffset=0, _itemHeight=40, _space=0, _alignmentY=4)
+        self.placeControl(self.listing, 2, 0, 8, 14)
+        self.logoimg = pyxbmct.Image((__root__ + '/icons/fav.png'), aspectRatio=0)
+        self.placeControl(self.logoimg, 0, 5, 2, 5)
+        #self.button_search = pyxbmct.Button("Search")
+        #self.placeControl(self.button_search, 0, 5, 1, 2)
+
+
+    def connect_controls(self):
+        #this need script.module.metahandler
+        
+        from metahandler import metahandlers
+        mg = metahandlers.MetaData()
+        meta = mg.get_meta('movie', name=self.title)
+        
+        """
+        meta results for star wars
+        {'rating': 7.7999999999999998, 'year': 1983, 'duration': u'0', 'plot': u'N/A', 'votes': u'362', 'title': 'Star Wars', 'tagline': u'', 'writer': u'N/A', 'imgs_prepacked': u'false', 'backdrop_url': '', 'tmdb_id': u'', 'cover_url': u'https://images-na.ssl-images-amazon.com/images/M/MV5BMWJhYWQ3ZTEtYTVkOS00ZmNlLWIxZjYtODZjNTlhMjMzNGM2XkEyXkFqcGdeQXVyNzg5OTk2OA@@._V1_SX300.jpg', 'imdb_id': u'tt0251413', 'director': u'N/A', 'studio': u'', 'genre': u'Action, Adventure, Sci-Fi', 'thumb_url': u'', 'overlay': 6, 'premiered': u'1983-05-01', 'cast': [], 'mpaa': u'N/A', 'playcount': 0, 'trailer_url': u'', 'trailer': ''}
+        """
+        self.connect(pyxbmct.ACTION_NAV_BACK, self.close)
+        self.connect(pyxbmct.ACTION_PREVIOUS_MENU, self.close)
+        self.listing.addItem ("genre: %s" % meta['genre'])
+        self.listing.addItem ("rating: %s" % meta['rating'])
+        self.listing.addItem ("year: %s" % meta['year'])
+        self.logoimg.setImage (meta['cover_url'])
+    
 def log(msg):
     try:
         xbmc.log("### [%s]: %s" % (__plugin__,msg,), level=xbmc.LOGNOTICE )
