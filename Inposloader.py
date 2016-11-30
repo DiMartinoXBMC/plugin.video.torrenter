@@ -541,7 +541,7 @@ class InposPlayer(xbmc.Player):
 
                     self.iterator = int(file_status.progress * 100)
 
-                    if pause and self.__settings__.getSetting("pause_onplay") == 'true':
+                    if pause and (self.__settings__.getSetting("pause_onplay") == 'true') and (self.getTime() > 0):
                         pause = False
                         xbmc.Player().pause()
                     xbmc.sleep(1000)
