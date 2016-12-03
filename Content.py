@@ -87,6 +87,7 @@ class Content:
                   'horror': ('Horror',),
                   'romance': ('Romance',),
                   'thriller': ('Thriller',),
+                  'sci_fi': ('Sci-Fi',),
         }
     }
 
