@@ -366,11 +366,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             url = self.form_link(action, link)
             xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
         elif mode == 'history_search_item':
-            addtime = params.get('addtime')
-            url = (os.path.join(__root__, 'controlcenter.py,') +
-                   'addtime=%s&title=%s' % (str(addtime), urllib.quote_plus(filename)))
-            log(url)
-            xbmc.executebuiltin('xbmc.RunScript(%s)' % (url))
+            params['title'] = params.get('filename')
+            self.controlCenter(params)
 
     def right_press4(self):
         item = self.listing.getSelectedItem()
@@ -430,9 +427,9 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         return url
 
-    def controlCenter(self):
-        xbmc.executebuiltin(
-            'xbmc.RunScript(%s,)' % os.path.join(__root__, 'controlcenter.py'))
+    def controlCenter(self, params={}):
+        import controlcenter
+        controlcenter.main(params)
 
     def reconnect(self, event, callable):
         self.disconnect(event)
