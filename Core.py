@@ -1606,9 +1606,9 @@ class Core:
         xbmc.executebuiltin(
             'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))
 
-    def searchWindow(self, params={}):
-        xbmc.executebuiltin(
-            'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'searchwindow.py'))
+    def search(self, params={}):
+        import searchwindow
+        searchwindow.main(params)
 
     def showFilesList(self, filesList, params={}):
         get = params.get
