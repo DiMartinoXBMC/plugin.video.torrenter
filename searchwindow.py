@@ -68,6 +68,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         return '%s/icons/%s.png' %(__root__, icon)
 
     def set_controls(self):
+        self.background.setImage('%s/icons/%s.png' %(__root__, 'ContentPanel'))
         self.input_search = pyxbmct.Edit("", _alignment=pyxbmct.ALIGN_CENTER_X | pyxbmct.ALIGN_CENTER_Y)
         self.placeControl(self.input_search, 0, 0, 1, 5)
         self.button_search = pyxbmct.Button("Search")
