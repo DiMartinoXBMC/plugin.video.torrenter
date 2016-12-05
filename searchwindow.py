@@ -22,7 +22,7 @@ import sys, os, urllib, json
 import xbmcaddon
 import xbmc
 import xbmcgui
-from functions import get_filesList, HistoryDB, get_contentList, log, cutFolder, get_ids_video, showMessage, getParameters
+from functions import get_filesList, HistoryDB, get_contentList, log, cutFolder, get_ids_video, showMessage, getParameters, unquote
 import pyxbmct.addonwindow as pyxbmct
 import Localization
 import re
@@ -54,18 +54,21 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     last_top_button = None
     last_right_button = None
 
-    def __init__(self, title=""):
+    def __init__(self, title="", s_param={}):
         super(SearchWindow, self).__init__(title)
         self.setGeometry(1280, 720, 9, 16)
         self.set_controls()
         self.connect_controls()
-        #self.set_navigation()
-        self.history()
+        if s_param:
+            self.search(s_param=s_param)
+        else:
+            self.history()
 
     def icon(self, icon):
         return '%s/icons/%s.png' %(__root__, icon)
 
     def set_controls(self):
+        self.background.setImage('%s/icons/%s.png' %(__root__, 'ContentPanel'))
         self.input_search = pyxbmct.Edit("", _alignment=pyxbmct.ALIGN_CENTER_X | pyxbmct.ALIGN_CENTER_Y)
         self.placeControl(self.input_search, 0, 0, 1, 5)
         self.button_search = pyxbmct.Button("Search")
@@ -114,11 +117,31 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         control.setAnimations([('WindowOpen', 'effect=fade start=0 end=100 time=500',),
                                ('WindowClose', 'effect=fade start=100 end=0 time=500',)])
 
-    def search(self, addtime=None):
+    def search(self, addtime=None, s_param={}):
         self.reconnect(pyxbmct.ACTION_NAV_BACK, self.history)
         self.right_menu('search')
         self.listing.reset()
-        query = self.input_search.getText()
+        if s_param:
+            if s_param.get('url'):
+                search = urllib.unquote_plus(s_param.get('url'))
+                external = s_param.get("return_name")
+                if external:
+                    searcher = 'landing from : %s ' % str(external)
+                else:
+                    searcher = ''
+                self.setWindowTitle(title='%s %s' % ('Torrenter Search Window', searcher))
+                if s_param.get('showKey') == 'true':
+                    self.input_search.setText(search)
+                    query = self.input_search.getText()
+                else:
+                    self.input_search.setText(search)
+                    query = search
+                #self.setFocus(self.listing)
+            else:
+                query = self.input_search.getText()
+                self.history()
+        else:
+            query = self.input_search.getText()
         log('Search query: '+str(query))
 
         #cache
@@ -126,16 +149,19 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             self.filesList = get_filesList(query, addtime)
             self.last_query = query
         elif len(query)==0:
-            self.filesList = [(1919, 1919, 52, u'102.66 MiB', u'South.Park.S20E06.HDTV.x264-FUM[ettv]',
-                  u'ThePirateBay::magnet:?xt=urn:btih:0792ea51bc16a19893871197fa927ecec7ca25aa&dn=South.Park.S20E06.HDTV.x264-FUM%5Bettv%5D&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fzer0day.ch%3A1337&tr=udp%3A%2F%2Fopen.demonii.com%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fexodus.desync.com%3A6969',
-                  'C:\\Users\\Admin\\AppData\\Roaming\\Kodi\\addons\\torrenter.searcher.ThePirateBay\\icon.png'),
-                    (1919, 1919, 52, u'102.66 MiB', u'Haruhi',
-                     u'D:\\htest.torrent',
-            'C:\\Users\\Admin\\AppData\\Roaming\\Kodi\\addons\\torrenter.searcher.ThePirateBay\\icon.png')   ]
+            self.filesList = []
+            #self.filesList = [(1919, 1919, 52, u'102.66 MiB', u'South.Park.S20E06.HDTV.x264-FUM[ettv]',
+                  #u'ThePirateBay::magnet:?xt=urn:btih:0792ea51bc16a19893871197fa927ecec7ca25aa&dn=South.Park.S20E06.HDTV.x264-FUM%5Bettv%5D&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fzer0day.ch%3A1337&tr=udp%3A%2F%2Fopen.demonii.com%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fexodus.desync.com%3A6969',
+                  #'C:\\Users\\Admin\\AppData\\Roaming\\Kodi\\addons\\torrenter.searcher.ThePirateBay\\icon.png'),
+                    #(1919, 1919, 52, u'102.66 MiB', u'Haruhi',
+                    # u'D:\\htest.torrent',
+           # 'C:\\Users\\Admin\\AppData\\Roaming\\Kodi\\addons\\torrenter.searcher.ThePirateBay\\icon.png')   ]
         if 1==1:
-            for (order, seeds, leechers, size, title, link, image) in self.filesList:
-                title = titleMake(seeds, leechers, size, title)
-                self.drawItem(title, {'mode':'search_item', 'filename': link}, image)
+            if self.filesList:
+                for (order, seeds, leechers, size, title, link, image) in self.filesList:
+                    title = titleMake(seeds, leechers, size, title)
+                    self.drawItem(title, {'mode':'search_item', 'filename': link}, image)
+                    self.setFocus(self.listing)
 
     def history(self):
         self.right_menu('history')
@@ -341,11 +367,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             url = self.form_link(action, link)
             xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
         elif mode == 'history_search_item':
-            addtime = params.get('addtime')
-            url = (os.path.join(__root__, 'controlcenter.py,') +
-                   'addtime=%s&title=%s' % (str(addtime), urllib.quote_plus(filename)))
-            log(url)
-            xbmc.executebuiltin('xbmc.RunScript(%s)' % (url))
+            params['title'] = params.get('filename')
+            self.controlCenter(params)
 
     def right_press4(self):
         item = self.listing.getSelectedItem()
@@ -405,9 +428,9 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         return url
 
-    def controlCenter(self):
-        xbmc.executebuiltin(
-            'xbmc.RunScript(%s,)' % os.path.join(__root__, 'controlcenter.py'))
+    def controlCenter(self, params={}):
+        import controlcenter
+        controlcenter.main(params)
 
     def reconnect(self, event, callable):
         self.disconnect(event)
@@ -492,19 +515,14 @@ def titleMake(seeds, leechers, size, title):
     return title
 
 
-def main():
-    dialog = SearchWindow("Torrenter Search Window")
+def main(params={}):
+    dialog = SearchWindow("Torrenter Search Window", params)
     dialog.doModal()
     del dialog #You need to delete your instance when it is no longer needed
     #because underlying xbmcgui classes are not grabage-collected.
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        params = getParameters(sys.argv[1])
-    else:
-        params = {}
-
     try:
         main()
     except Exception, e:
