@@ -290,7 +290,7 @@ def localize(text):
             'Play (from %s)':'Reproducir (desde %s)',
             'Play (from start)':'Reproducir (desde el inicio)',
         },
-	 'he': {
+	    'he': {
             'Seeds searching.': 'חיפוש זורעים',
             'Please Wait': 'המתן',
             'Information': 'מידע',
@@ -809,6 +809,7 @@ def localize(text):
             'Play (from start)':'Lejátszás (az elejétől)',
         },
         'ru': {
+            'Search Window': 'Окно поиска',
             'Seeds searching.': 'Идёт поиск сидов.',
             'Please Wait': 'Подождите',
             'Information': 'Информация',

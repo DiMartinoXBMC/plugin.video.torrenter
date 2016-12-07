@@ -64,26 +64,33 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         else:
             self.history()
 
-    def icon(self, icon):
-        return '%s/icons/%s.png' %(__root__, icon)
+    icon = __root__+'/icons/searchwindow/%s.png'
 
     def set_controls(self):
         self.background.setImage('%s/icons/%s.png' %(__root__, 'ContentPanel'))
-        self.input_search = pyxbmct.Edit("", _alignment=pyxbmct.ALIGN_CENTER_X | pyxbmct.ALIGN_CENTER_Y)
-        self.placeControl(self.input_search, 0, 0, 1, 5)
-        self.button_search = pyxbmct.Button("Search")
-        self.placeControl(self.button_search, 0, 5, 1, 2)
-        self.button_history = pyxbmct.Button("History")
-        self.placeControl(self.button_history, 0, 7, 1, 2)
-        self.button_controlcenter = pyxbmct.Button("Control\r\nCenter")
-        self.placeControl(self.button_controlcenter, 0, 9, 1, 2)
 
+        #Top menu
+        self.button_downloadstatus = pyxbmct.Button("OFF", textColor = '0xFF0000FF', focusTexture = self.icon % 'fdownloadstatus', noFocusTexture = self.icon % 'nfdownloadstatus')
+        self.placeControl(self.button_downloadstatus, 0, 2, 1, 1)
+        self.button_torrentclient = pyxbmct.Button("OFF", textColor = '0xFF0000FF', focusTexture = self.icon % 'ftorrentclient', noFocusTexture = self.icon % 'nftorrentclient')
+        self.placeControl(self.button_torrentclient, 0, 3, 1, 1)
+        self.button_keyboard = pyxbmct.Button("", focusTexture = self.icon % 'fkeyboard', noFocusTexture = self.icon % 'nfkeyboard')
+        self.placeControl(self.button_keyboard, 0, 4, 1, 1)
+        self.input_search = pyxbmct.Edit("", _alignment=pyxbmct.ALIGN_CENTER_X | pyxbmct.ALIGN_CENTER_Y)
+        self.placeControl(self.input_search, 0, 5, 1, 5)
+        self.button_search = pyxbmct.Button("", focusTexture = self.icon % 'fsearch', noFocusTexture = self.icon % 'nfsearch')
+        self.placeControl(self.button_search, 0, 10, 1, 1)
+        self.button_history = pyxbmct.Button("", focusTexture = self.icon % 'fhistory', noFocusTexture = self.icon % 'nfhistory')
+        self.placeControl(self.button_history, 0, 11, 1, 1)
+        self.button_controlcenter = pyxbmct.Button("", focusTexture = self.icon % 'fcontrolcenter', noFocusTexture = self.icon % 'nfcontrolcenter')
+        self.placeControl(self.button_controlcenter, 0, 12, 1, 1)
+
+        #Main
         self.listing = pyxbmct.List(_imageWidth=60, _imageHeight=60, _itemTextXOffset=1,
                                     _itemTextYOffset=0, _itemHeight=60, _space=0, _alignmentY=4)
         self.placeControl(self.listing, 1, 0, 8, 14)
-        self.logoimg = pyxbmct.Image(__root__ + '/icons/fav.png')
-        self.placeControl(self.logoimg, 200, 300, 1, 5)
 
+        #Right menu
         self.right_menu()
 
     def connect_controls(self):
@@ -100,11 +107,15 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
     def set_navigation(self):
         #Top menu
-        self.input_search.setNavigation(self.listing, self.listing, self.last_right_button, self.button_search)
+        self.button_downloadstatus.setNavigation(self.listing, self.listing, self.last_right_button, self.button_torrentclient)
+        self.button_torrentclient.setNavigation(self.listing, self.listing, self.button_downloadstatus, self.button_keyboard)
+        self.button_keyboard.setNavigation(self.listing, self.listing, self.button_torrentclient, self.input_search)
+        self.input_search.setNavigation(self.listing, self.listing, self.button_keyboard, self.button_search)
         self.button_search.setNavigation(self.listing, self.listing, self.input_search, self.button_history)
         self.button_history.setNavigation(self.listing, self.listing, self.button_search, self.button_controlcenter)
         self.button_controlcenter.setNavigation(self.listing, self.listing, self.button_history, self.last_right_button)
-        #Listing
+
+        #Main
         self.listing.setNavigation(self.input_search, self.input_search, self.input_search, self.last_right_button)
 
         if self.listing.size():
@@ -430,7 +441,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
     def controlCenter(self, params={}):
         import controlcenter
-        controlcenter.main(params)
+        controlcenter.main()
 
     def reconnect(self, event, callable):
         self.disconnect(event)

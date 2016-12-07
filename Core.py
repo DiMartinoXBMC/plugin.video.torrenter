@@ -65,6 +65,9 @@ class Core:
         contextMenu = [(self.localize('Search Control Window'),
                 'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
 
+        self.drawItem('< %s >' % self.localize('Search Window') + ' (BETA)', 'searchWindow',
+                      image=self.ROOT + '/icons/kodi.png', isFolder=False)
+
         if self.history_bool:
             HistorycontextMenu=[]
             HistorycontextMenu.extend(contextMenu)
@@ -84,9 +87,6 @@ class Core:
         DLScontextMenu.append(
                 (self.localize('Clear %s') % self.localize('Download Status'), ListString % ('DownloadStatus', 'clear', 'addtime', '')))
         DLScontextMenu.extend(contextMenu)
-        if self.debug:
-            self.drawItem('< %s >' % self.localize('Search Window'), 'searchWindow',
-                          image=self.ROOT + '/icons/settings.png', isFolder=False)
         self.drawItem('< %s >' % self.localize('Download Status'), 'DownloadStatus', image=self.ROOT + '/icons/download.png',
                       contextMenu=DLScontextMenu, replaceMenu=False)
         self.drawItem('< %s >' % self.localize('Torrent-client Browser'), 'uTorrentBrowser',
