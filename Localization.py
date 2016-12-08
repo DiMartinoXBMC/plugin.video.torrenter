@@ -810,6 +810,7 @@ def localize(text):
         },
         'ru': {
             'Search Window': 'Окно поиска',
+            'Context menu': 'Контекстное меню',
             'Seeds searching.': 'Идёт поиск сидов.',
             'Please Wait': 'Подождите',
             'Information': 'Информация',

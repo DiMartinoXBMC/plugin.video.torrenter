@@ -1310,17 +1310,9 @@ def search(url, searchersList, isApi=None):
         filesList.extend(result[k])
     return filesList
 
-def get_filesList(query, addtime = None):
+def get_filesList(query, searchersList, addtime = None):
     if __settings__.getSetting('history')=='true':
         HistoryDB().add(query)
-    searchersList = []
-    if addtime:
-        providers=HistoryDB().get_providers(addtime)
-        if providers:
-            for searcher in providers:
-                searchersList.append(searcher)
-    if not addtime or not searchersList:
-        searchersList = Searchers().get_active()
 
     filesList=search(query, searchersList)
     if __settings__.getSetting('sort_search')=='true':
@@ -1333,6 +1325,20 @@ def get_filesList(query, addtime = None):
     debug('get_filesList filesList: '+str(filesList))
 
     return filesList
+
+def get_searchersList(addtime = None):
+    searchersList = []
+    if addtime:
+        providers=HistoryDB().get_providers(addtime)
+        if providers:
+            for searcher in providers:
+                searchersList.append(searcher)
+    if not addtime or not searchersList:
+        searchersList = Searchers().get_active()
+
+    debug('get_searchersList: '+str(searchersList))
+
+    return searchersList
 
 def get_contentList(url):
     import Downloader
