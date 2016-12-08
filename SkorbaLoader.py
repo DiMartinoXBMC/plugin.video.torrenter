@@ -233,8 +233,9 @@ class SkorbaLoader:
 
     def getContentList(self):
         filelist = []
+        #from functions import decode_str
         for contentId, contentFile in enumerate(self.torrentFileInfo.files()):
-            stringdata = {"title": localize_path(contentFile.path), "size": contentFile.size, "ind": int(contentId),
+            stringdata = {"title": contentFile.path, "size": contentFile.size, "ind": int(contentId),
                           'offset': contentFile.offset}
             filelist.append(stringdata)
         return filelist

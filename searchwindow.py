@@ -45,6 +45,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     fileList = []
     contentList = []
     searchersList = []
+    addtime = None
     right_buttons_count = 6
     last_right_buttons_count = 0
     last_link = None
@@ -154,11 +155,15 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             query = self.input_search.getText()
         log('Search query: '+str(query))
 
+        if not addtime and query == self.last_query:
+            addtime = self.addtime
+
         searchersList = get_searchersList(addtime)
 
         #cache
         if (query != self.last_query or self.searchersList != searchersList) and len(query)>0:
             self.filesList = get_filesList(query, searchersList, addtime)
+            self.addtime = addtime
             self.searchersList = searchersList
             self.last_query = query
         elif len(query)==0:
