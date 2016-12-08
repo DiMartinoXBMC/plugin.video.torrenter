@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 import xbmcaddon
-import xbmc
+import xbmcvfs
 import xbmcgui
 from functions import *
 import pyxbmct.addonwindow as pyxbmct
@@ -53,6 +53,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     last_action = None
     last_top_button = None
     last_right_button = None
+    last_listing_mode = None
+    count = 0
 
     icon = __root__ + '/icons/searchwindow/%s.png'
 
@@ -98,12 +100,18 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.connect(self.button_history, self.history)
         self.connect(self.button_search, self.search)
         self.connect(self.button_controlcenter, self.controlCenter)
+        self.connect(self.button_torrentclient, self.browser)
 
         self.connect(pyxbmct.ACTION_NAV_BACK, self.close)
         self.connect(pyxbmct.ACTION_PREVIOUS_MENU, self.close)
         self.connect(ACTION_MOUSE_RIGHT_CLICK, self.context)
         self.connect(ACTION_CONTEXT_MENU, self.context)
         self.connect(ACTION_SHOW_OSD, self.context)
+
+        self.connect(pyxbmct.ACTION_MOVE_LEFT, self.right_menu_set_label)
+        self.connect(pyxbmct.ACTION_MOVE_RIGHT, self.right_menu_set_label)
+        self.connect(pyxbmct.ACTION_MOVE_UP, self.right_menu_set_label)
+        self.connect(pyxbmct.ACTION_MOVE_DOWN, self.right_menu_set_label)
 
     def set_navigation(self):
         #Top menu
@@ -215,13 +223,11 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
     def browser(self, params={}):
         from resources.utorrent.net import Download
-        self.right_menu('browser')
         self.listing.reset()
         menu, dirs = [], []
         contextMenustring = 'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (sys.argv[0], 'uTorrentBrowser', '%s')
 
         get = params.get
-
         action = get('action')
         hash = get('hash')
         ind = get('ind')
@@ -234,6 +240,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             return
 
         if not hash:
+            self.right_menu('browser')
             for data in DownloadList:
                 status = " "
                 img=''
@@ -242,26 +249,28 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 elif data['status'] in ('seeding', 'downloading'):
                     status = TextBB(' [>] ', 'b')
                 if data['status']   == 'seed_pending':
-                    img = os.path.join(self.ROOT, 'icons', 'pause-icon.png')
+                    img = os.path.join(__root__, 'icons', 'pause-icon.png')
                 elif data['status'] == 'stopped':
-                    img = os.path.join(self.ROOT, 'icons', 'stop-icon.png')
+                    img = os.path.join(__root__, 'icons', 'stop-icon.png')
                 elif data['status'] == 'seeding':
-                    img = os.path.join(self.ROOT, 'icons', 'upload-icon.png')
+                    img = os.path.join(__root__, 'icons', 'upload-icon.png')
                 elif data['status'] == 'downloading':
-                    img = os.path.join(self.ROOT, 'icons', 'download-icon.png')
+                    img = os.path.join(__root__, 'icons', 'download-icon.png')
+
+                title = '[%s%%]%s%s [%s]' % (str(data['progress']),status,data['name'],str(data['ratio']))
+                #title = '[' + str(data['progress']) + '%]' + status + data['name'] + ' [' + str(data['ratio']) + ']'
                 menu.append(
-                    {"title": '[' + str(data['progress']) + '%]' + status + data['name'] + ' [' + str(
-                        data['ratio']) + ']', "image":img,
-                     "argv": {'hash': str(data['id'])}})
+                    {"title": title, "image":img, "argv": {'mode':'browser_item', 'hash': str(data['id'])}})
         elif not tdir:
+            self.right_menu('browser_file')
             dllist = sorted(Download().listfiles(hash), key=lambda x: x[0])
             for name, percent, ind, size in dllist:
                 if '/' not in name:
-                    menu.append({"title": '[' + str(percent) + '%]' + '[' + str(size) + '] ' + name, "image":'',
-                                 "argv": {'hash': hash, 'ind': str(ind), 'action': 'context'}})
+                    title = '[%s%%][%s]%s' % (str(percent), str(size), name)
+                    menu.append({"title": title, "image":'',
+                                 "argv": {'mode':'browser_file', 'hash': hash, 'ind': str(ind)}})
                 else:
                     tdir = name.split('/')[0]
-                    # tfile=name[len(tdir)+1:]
                     if tdir not in dirs: dirs.append(tdir)
         elif tdir:
             dllist = sorted(Download().listfiles(hash), key=lambda x: x[0])
@@ -272,7 +281,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                          "argv": {'hash': hash, 'ind': str(ind), 'action': 'context'}})
 
         for i in dirs:
-            app = {'hash': hash, 'tdir': i}
+            app = {'mode':'browser_folder', 'hash': hash, 'tdir': i}
             link = json.dumps(app)
             popup = []
             folder = True
@@ -302,13 +311,14 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 app['action'] = a
                 popup.append((self.localize(title), contextMenustring % urllib.quote_plus(json.dumps(app))))
 
-            self.drawItem(i['title'], 'uTorrentBrowser', link, image=img, isFolder=folder)
+            self.drawItem(i['title'], link, image=img, isFolder=folder)
+            #def drawItem(self, title, params, image = None, isFolder = False):
 
         return
 
     def browser_action(self, params={}):
         from resources.utorrent.net import Download
-
+        menu = []
         get = params.get
 
         action = get('action')
@@ -446,8 +456,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                           self.localize('Play File')]
         elif mode in ['browser_folder']:
             label_list = [self.localize('High Priority Files'),
-                          self.localize('Copy Files in Root'),
-                          self.localize('Skip All Files')]
+                          self.localize('Skip All Files'),
+                          self.localize('Copy Files in Root'),]
 
         return label_list
 
@@ -505,7 +515,70 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                                          self.listing,
                                          self.input_search)
 
+        self.set_menulist(mode)
         self.set_navigation()
+
+    def right_menu_set_label(self):
+        debug('start right_menu_set_label'+str(self.getFocus()))
+        if self.getFocus() == self.listing:
+            item = self.listing.getSelectedItem()
+            params = json.loads(item.getfilename())
+            mode = params.get('mode')
+            debug('right_menu_set_label:' + str(mode))
+            if self.last_listing_mode != mode:
+                self.last_listing_mode = mode
+                debug('set_menulist right_menu_set_label:' + str(mode))
+                self.set_menulist(mode)
+
+    def set_menulist(self, mode):
+        self.count+=1
+        label_list = self.get_menulist(mode)
+        debug('set_menulist; '+str(label_list))
+
+        right_buttons_count = len(label_list)
+        button_num_list = range(1, right_buttons_count+1)
+        debug('set_menulist button_num_list: '+str(button_num_list))
+
+        for index in button_num_list:
+            button = getattr(self, "button_right" + str(index))
+            self.setlabel(button, (label_list[index - 1]))
+            button.setEnabled(True)
+
+        debug('set_menulist self.right_buttons_count: ' + str(right_buttons_count))
+        debug('set_menulist right_buttons_count: ' + str(right_buttons_count))
+        if self.right_buttons_count > right_buttons_count:
+            disable_button_num_list = range(right_buttons_count + 1, self.right_buttons_count + 1)
+            debug('set_menulist disable_button_num_list: ' + str(disable_button_num_list))
+            for index in disable_button_num_list:
+                button = getattr(self, "button_right" + str(index))
+                button.setLabel(' ')
+                button.setEnabled(False)
+
+    def setlabel(self, button, label):
+        label = label.decode('utf-8')
+
+        log(label+' '+str(len(label)))
+
+        if len(label) > 10:
+            spaces = label.count(' ')
+            log('spaces=' + str(spaces))
+            if spaces == 0:
+                words = [label[:10], label[10:]]
+                label = '%s-\r\n%s' % (words[0], words[1])
+            elif spaces == 1:
+                words = label.split(' ')
+                label = '%s\r\n%s' % (words[0], words[1])
+            elif spaces == 2:
+                words = label.split(' ')
+                if len(words[0]) <= len(words[2]):
+                    words[0] = words[0] + ' ' + words[1]
+                    words[1] = words[2]
+                else:
+                    words[1] = words[1] + ' ' + words[2]
+                label = '%s\r\n%s' % (words[0], words[1])
+
+        button.setLabel(label)
+
 
     def right_press1(self):
         item = self.listing.getSelectedItem()
@@ -530,6 +603,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             addtime = params.get('addtime')
             self.input_search.setText(filename)
             self.search(addtime)
+        elif mode == 'browser_item':
+            self.browser(params)
 
     def right_press2(self):
         item = self.listing.getSelectedItem()
@@ -631,9 +706,9 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         import controlcenter
         controlcenter.main()
 
-    def reconnect(self, event, callable):
+    def reconnect(self, event, callabel):
         self.disconnect(event)
-        self.connect(event, callable)
+        self.connect(event, callabel)
 
     def version_check(self):
         return False if int(xbmc.getInfoLabel( "System.BuildVersion" )[:2]) < 17 else True
