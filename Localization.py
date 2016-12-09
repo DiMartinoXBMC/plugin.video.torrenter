@@ -809,6 +809,7 @@ def localize(text):
             'Play (from start)':'Lejátszás (az elejétől)',
         },
         'ru': {
+            'Mass Control':'Массовое Управление',
             'Info':'Инфо',
             'Delete torrent with files?':'Вы уверены, что хотите удалить торрент с файлами?',
             'Fav. / Unfav.':'Доб./удал. Избранное',

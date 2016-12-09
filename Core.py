@@ -423,8 +423,6 @@ class Core:
                         self.drawItem(title, 'DownloadStatus', link, image=img, contextMenu=contextMenu, replaceMenu=False)
             view_style('DownloadStatus')
             xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
-            #xbmc.sleep(30000)
-            #xbmc.executebuiltin('Container.Refresh')
             return
 
     def History(self, params={}):

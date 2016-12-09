@@ -285,7 +285,7 @@ class SkorbaLoader:
         if len(ContentList) == 1 or contentId not in [None, -1]:
             if not contentId: contentId = 0
             title = os.path.basename(ContentList[contentId]['title'])
-            path = os.path.join(self.storageDirectory, ContentList[contentId]['title'])
+            path = os.path.join(self.storageDirectory, localize_path(ContentList[contentId]['title']))
             type = 'file'
         else:
             contentId = -1
