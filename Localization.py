@@ -809,6 +809,9 @@ def localize(text):
             'Play (from start)':'Lejátszás (az elejétől)',
         },
         'ru': {
+            'Info':'Инфо',
+            'Delete torrent with files?':'Вы уверены, что хотите удалить торрент с файлами?',
+            'Fav. / Unfav.':'Доб./удал. Избранное',
             'Search Window': 'Окно поиска',
             'Context menu': 'Контекстное меню',
             'Seeds searching.': 'Идёт поиск сидов.',
@@ -1011,6 +1014,7 @@ def localize(text):
             'Stop All':'Остановить Все',
             'Keyboard':'Клавиатура',
             'Copy Files in Root':'Скопировать файлы в Корень',
+            'Copy in Root': 'Скопировать в Корень',
             'Copied %d files!':'Скопировано %d файлов!',
             'Return to %s':'Вернуться в %s',
             'Search results:':'Результаты поиска:',

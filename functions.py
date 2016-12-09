@@ -2190,3 +2190,16 @@ def get_platform():
         ret["arch"] = "arm"
 
     return ret
+
+def getTorrentClientIcon():
+    client = __settings__.getSetting("torrent")
+    if client == '1':
+        return 'transmission.png'
+    elif client == '2':
+        return 'vuze.png'
+    elif client == '3':
+        return 'deluge.png'
+    elif client == '4':
+        return 'qbittorrent.png'
+    else:
+        return 'torrent-client.png'

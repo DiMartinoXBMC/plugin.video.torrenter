@@ -17,13 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
-import xbmcaddon
-import xbmcvfs
-import xbmcgui
-from functions import *
 import pyxbmct.addonwindow as pyxbmct
-import Localization
-import re
+import xbmcaddon
+import xbmcgui
+import xbmcvfs
+
+from functions import *
 
 __settings__ = xbmcaddon.Addon(id='plugin.video.torrenter')
 __language__ = __settings__.getLocalizedString
@@ -33,12 +32,13 @@ __root__ = __settings__.getAddonInfo('path')
 
 log('SYS ARGV: ' + str(sys.argv))
 
-#https://github.com/xbmc/xbmc/blob/8d4a5bba55638dfd0bdc5e7de34f3e5293f99933/xbmc/input/Key.h
+# https://github.com/xbmc/xbmc/blob/8d4a5bba55638dfd0bdc5e7de34f3e5293f99933/xbmc/input/Key.h
 ACTION_STOP = 13
 ACTION_PLAYER_PLAY = 79
 ACTION_MOUSE_RIGHT_CLICK = 101
 ACTION_CONTEXT_MENU = 117
 ACTION_SHOW_OSD = 24
+
 
 class SearchWindow(pyxbmct.AddonDialogWindow):
     __settings__ = sys.modules["__main__"].__settings__
@@ -57,6 +57,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     count = 0
 
     icon = __root__ + '/icons/searchwindow/%s.png'
+    icon_tc = __root__ + '/icons/searchwindow/%s' + getTorrentClientIcon()
 
     def __init__(self, title="", s_param={}):
         super(SearchWindow, self).__init__(title)
@@ -69,30 +70,40 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             self.history()
 
     def set_controls(self):
-        self.background.setImage('%s/icons/%s.png' %(__root__, 'ContentPanel'))
+        if not __settings__.getSetting('debug') == 'true':
+            self.background.setImage('%s/icons/%s.png' % (__root__, 'ContentPanel'))
 
-        #Top menu
-        self.button_downloadstatus = pyxbmct.Button("OFF", textColor = '0xFF0000FF', focusTexture = self.icon % 'fdownloadstatus', noFocusTexture = self.icon % 'nfdownloadstatus')
+        # Top menu
+        self.button_downloadstatus = pyxbmct.Button("OFF", textColor='0xFF0000FF',
+                                                    focusTexture=self.icon % 'fdownloadstatus',
+                                                    noFocusTexture=self.icon % 'nfdownloadstatus')
         self.placeControl(self.button_downloadstatus, 0, 2, 1, 1)
-        self.button_torrentclient = pyxbmct.Button("OFF", textColor = '0xFF0000FF', focusTexture = self.icon % 'ftorrentclient', noFocusTexture = self.icon % 'nftorrentclient')
+
+        self.button_torrentclient = pyxbmct.Button("",
+                                                   focusTexture=self.icon_tc % 'f',
+                                                   noFocusTexture=self.icon_tc % 'nf')
         self.placeControl(self.button_torrentclient, 0, 3, 1, 1)
-        self.button_keyboard = pyxbmct.Button("", focusTexture = self.icon % 'fkeyboard', noFocusTexture = self.icon % 'nfkeyboard')
+        self.button_keyboard = pyxbmct.Button("", focusTexture=self.icon % 'fkeyboard',
+                                              noFocusTexture=self.icon % 'nfkeyboard')
         self.placeControl(self.button_keyboard, 0, 4, 1, 1)
         self.input_search = pyxbmct.Edit("", _alignment=pyxbmct.ALIGN_CENTER_X | pyxbmct.ALIGN_CENTER_Y)
         self.placeControl(self.input_search, 0, 5, 1, 5)
-        self.button_search = pyxbmct.Button("", focusTexture = self.icon % 'fsearch', noFocusTexture = self.icon % 'nfsearch')
+        self.button_search = pyxbmct.Button("", focusTexture=self.icon % 'fsearch',
+                                            noFocusTexture=self.icon % 'nfsearch')
         self.placeControl(self.button_search, 0, 10, 1, 1)
-        self.button_history = pyxbmct.Button("", focusTexture = self.icon % 'fhistory', noFocusTexture = self.icon % 'nfhistory')
+        self.button_history = pyxbmct.Button("", focusTexture=self.icon % 'fhistory',
+                                             noFocusTexture=self.icon % 'nfhistory')
         self.placeControl(self.button_history, 0, 11, 1, 1)
-        self.button_controlcenter = pyxbmct.Button("", focusTexture = self.icon % 'fcontrolcenter', noFocusTexture = self.icon % 'nfcontrolcenter')
+        self.button_controlcenter = pyxbmct.Button("", focusTexture=self.icon % 'fcontrolcenter',
+                                                   noFocusTexture=self.icon % 'nfcontrolcenter')
         self.placeControl(self.button_controlcenter, 0, 12, 1, 1)
 
-        #Main
+        # Main
         self.listing = pyxbmct.List(_imageWidth=60, _imageHeight=60, _itemTextXOffset=1,
                                     _itemTextYOffset=0, _itemHeight=60, _space=0, _alignmentY=4)
         self.placeControl(self.listing, 1, 0, 8, 14)
 
-        #Right menu
+        # Right menu
         self.right_menu()
 
     def connect_controls(self):
@@ -114,17 +125,20 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.connect(pyxbmct.ACTION_MOVE_DOWN, self.right_menu_set_label)
 
     def set_navigation(self):
-        #Top menu
-        self.button_downloadstatus.setNavigation(self.listing, self.listing, self.last_right_button, self.button_torrentclient)
-        self.button_torrentclient.setNavigation(self.listing, self.listing, self.button_downloadstatus, self.button_keyboard)
+        # Top menu
+        self.button_downloadstatus.setNavigation(self.listing, self.listing, self.last_right_button,
+                                                 self.button_torrentclient)
+        self.button_torrentclient.setNavigation(self.listing, self.listing, self.button_downloadstatus,
+                                                self.button_keyboard)
         self.button_keyboard.setNavigation(self.listing, self.listing, self.button_torrentclient, self.input_search)
         self.input_search.setNavigation(self.listing, self.listing, self.button_keyboard, self.button_search)
         self.button_search.setNavigation(self.listing, self.listing, self.input_search, self.button_history)
         self.button_history.setNavigation(self.listing, self.listing, self.button_search, self.button_controlcenter)
         self.button_controlcenter.setNavigation(self.listing, self.listing, self.button_history, self.last_right_button)
 
-        #Main
-        self.listing.setNavigation(self.input_search, self.input_search, self.button_downloadstatus, self.last_right_button)
+        # Main
+        self.listing.setNavigation(self.input_search, self.input_search, self.button_downloadstatus,
+                                   self.last_right_button)
 
         if self.listing.size():
             self.setFocus(self.listing)
@@ -155,32 +169,32 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 else:
                     self.input_search.setText(search)
                     query = search
-                #self.setFocus(self.listing)
+                    # self.setFocus(self.listing)
             else:
                 query = self.input_search.getText()
                 self.history()
         else:
             query = self.input_search.getText()
-        log('Search query: '+str(query))
+        log('Search query: ' + str(query))
 
         if not addtime and query == self.last_query:
             addtime = self.addtime
 
         searchersList = get_searchersList(addtime)
 
-        #cache
-        if (query != self.last_query or self.searchersList != searchersList) and len(query)>0:
+        # cache
+        if (query != self.last_query or self.searchersList != searchersList) and len(query) > 0:
             self.filesList = get_filesList(query, searchersList, addtime)
             self.addtime = addtime
             self.searchersList = searchersList
             self.last_query = query
-        elif len(query)==0:
+        elif len(query) == 0:
             self.filesList = []
-        if 1==1:
+        if 1 == 1:
             if self.filesList:
                 for (order, seeds, leechers, size, title, link, image) in self.filesList:
                     title = titleMake(seeds, leechers, size, title)
-                    self.drawItem(title, {'mode':'search_item', 'filename': link}, image)
+                    self.drawItem(title, {'mode': 'search_item', 'filename': link}, image)
                     self.setFocus(self.listing)
 
     def history(self):
@@ -202,7 +216,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                         else:
                             img = __root__ + '/icons/unfav.png'
 
-                        link = {'mode': 'history_search_item', 'filename': title, 'addtime': str(addtime), 'fav':str(fav)}
+                        link = {'mode': 'history_search_item', 'filename': title, 'addtime': str(addtime),
+                                'fav': str(fav)}
                         self.drawItem(bbstring % title, link, img)
 
     def history_action(self, action, addtime, fav):
@@ -221,18 +236,11 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         self.history()
 
-    def browser(self, params={}):
+    def browser(self, hash = None, tdir = None):
         from resources.utorrent.net import Download
         self.listing.reset()
         menu, dirs = [], []
         contextMenustring = 'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (sys.argv[0], 'uTorrentBrowser', '%s')
-
-        get = params.get
-        action = get('action')
-        hash = get('hash')
-        ind = get('ind')
-        tdir = get('tdir')
-
 
         DownloadList = Download().list()
         if DownloadList == False:
@@ -241,14 +249,15 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         if not hash:
             self.right_menu('browser')
+            self.reconnect(pyxbmct.ACTION_NAV_BACK, self.history)
             for data in DownloadList:
                 status = " "
-                img=''
+                img = ''
                 if data['status'] in ('seed_pending', 'stopped'):
                     status = TextBB(' [||] ', 'b')
                 elif data['status'] in ('seeding', 'downloading'):
                     status = TextBB(' [>] ', 'b')
-                if data['status']   == 'seed_pending':
+                if data['status'] == 'seed_pending':
                     img = os.path.join(__root__, 'icons', 'pause-icon.png')
                 elif data['status'] == 'stopped':
                     img = os.path.join(__root__, 'icons', 'stop-icon.png')
@@ -257,74 +266,65 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 elif data['status'] == 'downloading':
                     img = os.path.join(__root__, 'icons', 'download-icon.png')
 
-                title = '[%s%%]%s%s [%s]' % (str(data['progress']),status,data['name'],str(data['ratio']))
-                #title = '[' + str(data['progress']) + '%]' + status + data['name'] + ' [' + str(data['ratio']) + ']'
+                title = '[%s%%]%s%s [%s]' % (str(data['progress']), status, data['name'], str(data['ratio']))
+                # title = '[' + str(data['progress']) + '%]' + status + data['name'] + ' [' + str(data['ratio']) + ']'
                 menu.append(
-                    {"title": title, "image":img, "argv": {'mode':'browser_item', 'hash': str(data['id'])}})
+                    {"title": title, "image": img, "argv": {'mode': 'browser_item', 'hash': str(data['id'])}})
         elif not tdir:
-            self.right_menu('browser_file')
+            self.right_menu('browser_subfolder')
+            self.reconnect(pyxbmct.ACTION_NAV_BACK, self.browser)
+            self.drawItem('..', {'mode': 'browser_moveup'}, isFolder=True)
             dllist = sorted(Download().listfiles(hash), key=lambda x: x[0])
             for name, percent, ind, size in dllist:
                 if '/' not in name:
                     title = '[%s%%][%s]%s' % (str(percent), str(size), name)
-                    menu.append({"title": title, "image":'',
-                                 "argv": {'mode':'browser_file', 'hash': hash, 'ind': str(ind)}})
+                    menu.append({"title": title, "image": '',
+                                 "argv": {'mode': 'browser_file', 'hash': hash, 'ind': str(ind)}})
                 else:
-                    tdir = name.split('/')[0]
-                    if tdir not in dirs: dirs.append(tdir)
+                    newtdir = name.split('/')[0]
+                    if newtdir not in dirs: dirs.append(newtdir)
         elif tdir:
+            self.right_menu('browser_subfolder')
+            tdir_up = tdir[:len(tdir)-len(tdir.split('/')[-1])-1] if '/' in tdir else None
+            self.drawItem('..', {'mode': 'browser_subfolder', 'hash': hash, 'tdir': tdir_up}, isFolder=True)
             dllist = sorted(Download().listfiles(hash), key=lambda x: x[0])
             for name, percent, ind, size in dllist:
-                if '/' in name and tdir in name:
-                    menu.append(
-                        {"title": '[' + str(percent) + '%]' + '[' + str(size) + '] ' + name[len(tdir) + 1:], "image":'',
-                         "argv": {'hash': hash, 'ind': str(ind), 'action': 'context'}})
 
-        for i in dirs:
-            app = {'mode':'browser_folder', 'hash': hash, 'tdir': i}
-            link = json.dumps(app)
-            popup = []
-            folder = True
-            actions = [('3', self.localize('High Priority Files')), ('copy', self.localize('Copy Files in Root')), ('0', self.localize('Skip All Files'))]
-            for a, title in actions:
-                app['action'] = a
-                popup.append((self.localize(title), contextMenustring % urllib.quote_plus(json.dumps(app))))
-            self.drawItem(i, 'uTorrentBrowser', link, isFolder=folder)
+                if name[:len(tdir)] == tdir:
+                    name = name[len(tdir) + 1:]
+                    if '/' not in name:
+                        title = '[%s%%][%s]%s' % (str(percent), str(size), name)
+                        menu.append({"title": title, "image": '',
+                                     "argv": {'mode': 'browser_file', 'hash': hash, 'ind': str(ind)}})
+                    else:
+                        newtdir = tdir+'/'+name.split('/')[0]
+                        if newtdir not in dirs: dirs.append(newtdir)
+
+        for tdir in dirs:
+            params = {'mode': 'browser_subfolder', 'hash': hash, 'tdir': tdir}
+            title = tdir.split('/')[-1] if '/' in tdir else tdir
+            self.drawItem(title, params, isFolder = True)
 
         for i in menu:
-            app = i['argv']
-            link = json.dumps(app)
+            params = i['argv']
             img = i['image']
             popup = []
             if not hash:
-                actions = [('start', self.localize('Start')), ('stop', self.localize('Stop')),
-                           ('remove', self.localize('Remove')),
-                           ('3', self.localize('High Priority Files')), ('0', self.localize('Skip All Files')),
-                           ('removedata', self.localize('Remove with files'))]
-
                 folder = True
             else:
-                actions = [('3', self.localize('High Priority')), ('0', self.localize('Skip File')),
-                           ('play', self.localize('Play File'))]
                 folder = False
-            for a, title in actions:
-                app['action'] = a
-                popup.append((self.localize(title), contextMenustring % urllib.quote_plus(json.dumps(app))))
 
-            self.drawItem(i['title'], link, image=img, isFolder=folder)
-            #def drawItem(self, title, params, image = None, isFolder = False):
-
+            self.drawItem(i['title'], params, image = img, isFolder = folder)
+            # def drawItem(self, title, params, image = None, isFolder = False):
+        if self.listing.size():
+            self.setFocus(self.listing)
+        else:
+            self.setFocus(self.button_torrentclient)
         return
 
-    def browser_action(self, params={}):
+    def browser_action(self, hash, action, tdir = None, ind = None):
         from resources.utorrent.net import Download
         menu = []
-        get = params.get
-
-        action = get('action')
-        hash = get('hash')
-        ind = get('ind')
-        tdir = get('tdir')
 
         DownloadList = Download().list()
         if DownloadList == False:
@@ -333,27 +333,27 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         if (ind or ind == 0) and action in ('0', '3'):
             Download().setprio_simple(hash, action, ind)
-        elif action in ['play','copy']:
+        elif action in ['play', 'copy']:
             p, dllist, i, folder, filename = DownloadList, Download().listfiles(hash), 0, None, None
             for data in p:
                 if data['id'] == hash:
                     folder = data['dir']
                     break
             if isRemoteTorr():
-                t_dir = self.__settings__.getSetting("torrent_dir")
+                torrent_dir = self.__settings__.getSetting("torrent_dir")
                 torrent_replacement = self.__settings__.getSetting("torrent_replacement")
                 empty = [None, '']
-                if t_dir in empty or torrent_replacement in empty:
+                if torrent_dir in empty or torrent_replacement in empty:
                     if xbmcgui.Dialog().yesno(
                             self.localize('Remote Torrent-client'),
                             self.localize('You didn\'t set up replacement path in setting.'),
                             self.localize('For example /media/dl_torr/ to smb://SERVER/dl_torr/. Setup now?')):
-                        if t_dir in empty:
+                        if torrent_dir in empty:
                             torrent_dir()
                         self.__settings__.openSettings()
                     return
 
-                folder = folder.replace(t_dir, torrent_replacement)
+                folder = folder.replace(torrent_dir, torrent_replacement)
             if (ind or ind == 0) and action == 'play':
                 for data in dllist:
                     if data[2] == int(ind):
@@ -362,28 +362,32 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 filename = os.path.join(folder, filename)
                 xbmc.executebuiltin('xbmc.PlayMedia("' + filename.encode('utf-8') + '")')
             elif tdir and action == 'copy':
-                path=os.path.join(folder, tdir)
-                dirs, files=xbmcvfs.listdir(path)
+                path = os.path.join(folder, tdir)
+                dirs, files = xbmcvfs.listdir(path)
                 if len(dirs) > 0:
                     dirs.insert(0, self.localize('./ (Root folder)'))
                     for dd in dirs:
                         dd = file_decode(dd)
-                        dds=xbmcvfs.listdir(os.path.join(path,dd))[0]
-                        if len(dds)>0:
+                        dds = xbmcvfs.listdir(os.path.join(path, dd))[0]
+                        if len(dds) > 0:
                             for d in dds:
-                                dirs.append(dd+os.sep+d)
+                                dirs.append(dd + os.sep + d)
                     ret = xbmcgui.Dialog().select(self.localize('Choose directory:'), dirs)
                     if ret > 0:
-                        path=os.path.join(path, dirs[ret])
-                        dirs, files=xbmcvfs.listdir(path)
+                        path = os.path.join(path, dirs[ret])
+                        dirs, files = xbmcvfs.listdir(path)
                 for file in files:
-                    if not xbmcvfs.exists(os.path.join(path,file)):
-                        xbmcvfs.delete(os.path.join(path,file))
-                    xbmcvfs.copy(os.path.join(path,file),os.path.join(folder,file))
-                    i=i+1
+                    if not xbmcvfs.exists(os.path.join(path, file)):
+                        xbmcvfs.delete(os.path.join(path, file))
+                    xbmcvfs.copy(os.path.join(path, file), os.path.join(folder, file))
+                    i = i + 1
                 showMessage(self.localize('Torrent-client Browser'), self.localize('Copied %d files!') % i, forced=True)
             return
         elif not tdir and action not in ('0', '3'):
+            if action == 'removedata':
+                ok = xbmcgui.Dialog().yesno(self.localize('Torrent-client Browser'),
+                                            self.localize('Delete torrent with files?'))
+                if not ok: sys.exit(1)
             Download().action_simple(action, hash)
         elif action in ('0', '3'):
             dllist = sorted(Download().listfiles(hash), key=lambda x: x[0])
@@ -395,11 +399,10 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                     menu.append((hash, action, str(ind)))
             Download().setprio_simple_multi(menu)
             return
-        xbmc.executebuiltin('Container.Refresh')
         return
 
-    def open_torrent(self, link, tdir = None):
-        #cache
+    def open_torrent(self, link, tdir=None):
+        # cache
         if link != self.last_link:
             self.contentList = get_contentList(link)
         self.last_link = link
@@ -408,19 +411,19 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         dirList, contentListNew = cutFolder(self.contentList, tdir)
 
         if not tdir:
-            self.drawItem('..', {'mode': 'torrent_moveup', 'filename': link}, isFolder=True)
+            params = {'mode': 'torrent_moveup', 'filename': link}
         else:
             params = {'mode': 'torrent_subfolder', 'filename': link}
-            self.drawItem('..', params, isFolder=True)
+        self.drawItem('..', params, isFolder=True)
 
         dirList = sorted(dirList, key=lambda x: x[0], reverse=False)
         for title in dirList:
-            self.drawItem(title, {'mode':'torrent_subfolder', 'tdir': title, 'filename': link}, isFolder=True)
+            self.drawItem(title, {'mode': 'torrent_subfolder', 'tdir': title, 'filename': link}, isFolder=True)
 
         ids_video_result = get_ids_video(contentListNew)
-        ids_video=''
+        ids_video = ''
 
-        if len(ids_video_result)>0:
+        if len(ids_video_result) > 0:
             for identifier in ids_video_result:
                 ids_video = ids_video + str(identifier) + ','
 
@@ -431,33 +434,35 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
     def get_menulist(self, mode):
 
-        label_list = ["Empty","Empty","Empty","Empty","Empty","Empty"]
+        label_list = ["Empty", "Empty", "Empty", "Empty", "Empty", "Empty", "Empty"]
 
         if mode in ['search', 'search_item', 'torrent_play']:
-            label_list = ["Open",
+            label_list = [self.localize('Open'),
                           self.localize('Download via T-client'),
                           self.localize('Download via Libtorrent'),
-                          'Info']
-        elif mode in ['torrent_subfolder', 'torrent_moveup']:
-            label_list = ["Open"]
+                          self.localize('Info'),]
+        elif mode in ['torrent_subfolder', 'torrent_moveup',
+                      'browser_moveup']:
+            label_list = [self.localize('Open'),]
         elif mode in ['history', 'history_search_item']:
             label_list = [self.localize('Open'),
                           self.localize('Edit'),
                           self.localize('Individual Tracker Options'),
-                          'Fav/Unfav',
+                          self.localize('Fav. / Unfav.'),
                           self.localize('Delete')]
 
         elif mode in ['browser', 'browser_item']:
-            label_list = [self.localize('Start'), self.localize('Stop'),
-                          self.localize('Remove'), self.localize('High Priority Files'),
+            label_list = [self.localize('Open'), self.localize('Start'), self.localize('Stop'),
+                          self.localize('Remove'), self.localize('High Priority'),
                           self.localize('Skip All Files'), self.localize('Remove with files')]
         elif mode in ['browser_file']:
-            label_list = [self.localize('High Priority'), self.localize('Skip File'),
-                          self.localize('Play File')]
-        elif mode in ['browser_folder']:
-            label_list = [self.localize('High Priority Files'),
+            label_list = [self.localize('Play File'),
+                          self.localize('High Priority'), self.localize('Skip File')]
+        elif mode in ['browser_subfolder']:
+            label_list = [self.localize('Open'),
+                          self.localize('High Priority'),
                           self.localize('Skip All Files'),
-                          self.localize('Copy Files in Root'),]
+                          self.localize('Copy in Root'), ]
 
         return label_list
 
@@ -481,34 +486,37 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         if not mode == 'place':
             self.last_right_buttons_count = self.right_buttons_count
             remove_list = [getattr(self, "button_right" + str(index)) for index
-                           in range(1, self.last_right_buttons_count+1)]
+                           in range(1, self.last_right_buttons_count + 1)]
             self.disconnectEventList(remove_list)
             self.removeControls(remove_list)
 
         label_list = self.get_menulist(mode)
 
         self.right_buttons_count = len(label_list)
-        button_num_list = range(1, self.right_buttons_count+1)
+        button_num_list = range(1, self.right_buttons_count + 1)
 
         for index in button_num_list:
             setattr(self, "button_right" + str(index), pyxbmct.Button(label_list[index - 1]))
             button = getattr(self, "button_right" + str(index))
-            self.connect(button, getattr(self, "right_press"+str(index)))
+            self.connect(button, getattr(self, "right_press" + str(index)))
             self.placeControl(button, index, 14, 1, 2)
 
-        #Navigation
+        # Navigation
         self.last_right_button = self.button_right1
         for index in button_num_list:
             button = getattr(self, "button_right" + str(index))
 
             if self.right_buttons_count == 1:
-                button.setNavigation(self.button_controlcenter, self.button_right1, self.listing, self.input_search)
+                button.setNavigation(self.button_controlcenter,
+                                     self.button_right1, self.listing, self.input_search)
             else:
                 if index == button_num_list[0]:
-                    button.setNavigation(self.button_controlcenter, self.button_right2, self.listing, self.input_search)
+                    button.setNavigation(getattr(self, "button_right" + str(self.right_buttons_count)),
+                                         self.button_right2, self.listing, self.input_search)
                 elif index == button_num_list[-1]:
-                    button.setNavigation(getattr(self, "button_right" + str(index-1)), self.button_right1, self.listing,
-                                                     self.input_search)
+                    button.setNavigation(getattr(self, "button_right" + str(index - 1)), self.button_right1,
+                                         self.listing,
+                                         self.input_search)
                 else:
                     button.setNavigation(getattr(self, "button_right" + str(index - 1)),
                                          getattr(self, "button_right" + str(index + 1)),
@@ -519,7 +527,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.set_navigation()
 
     def right_menu_set_label(self):
-        debug('start right_menu_set_label'+str(self.getFocus()))
+        debug('start right_menu_set_label' + str(self.getFocus()))
         if self.getFocus() == self.listing:
             item = self.listing.getSelectedItem()
             params = json.loads(item.getfilename())
@@ -531,13 +539,13 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 self.set_menulist(mode)
 
     def set_menulist(self, mode):
-        self.count+=1
+        self.count += 1
         label_list = self.get_menulist(mode)
-        debug('set_menulist; '+str(label_list))
+        debug('set_menulist; ' + str(label_list))
 
         right_buttons_count = len(label_list)
-        button_num_list = range(1, right_buttons_count+1)
-        debug('set_menulist button_num_list: '+str(button_num_list))
+        button_num_list = range(1, right_buttons_count + 1)
+        debug('set_menulist button_num_list: ' + str(button_num_list))
 
         for index in button_num_list:
             button = getattr(self, "button_right" + str(index))
@@ -557,11 +565,11 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     def setlabel(self, button, label):
         label = label.decode('utf-8')
 
-        log(label+' '+str(len(label)))
+        debug('setlabel: ' + label + ' ' + str(len(label)))
 
         if len(label) > 10:
             spaces = label.count(' ')
-            log('spaces=' + str(spaces))
+            debug('setlabel spaces=' + str(spaces))
             if spaces == 0:
                 words = [label[:10], label[10:]]
                 label = '%s-\r\n%s' % (words[0], words[1])
@@ -579,38 +587,45 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         button.setLabel(label)
 
-
     def right_press1(self):
         item = self.listing.getSelectedItem()
         params = json.loads(item.getfilename())
+        log('params ' + str(params))
         mode = params.get('mode')
         filename = params.get('filename')
+        hash = params.get('hash')
+        ind = params.get('ind')
         tdir = params.get('tdir')
         self.listing.reset()
-        if mode == 'search_item':
-            self.open_torrent(filename)
-        elif mode == 'torrent_subfolder':
+        if mode in ['search_item', 'torrent_subfolder']:
             self.open_torrent(filename, tdir)
         elif mode == 'torrent_moveup':
             self.search()
             self.setFocus(self.listing)
         elif mode == 'torrent_play':
-            action = 'playTorrent'
-            url = self.form_link(action, params)
+            url = self.form_link('playTorrent', params)
             xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
             self.close()
         elif mode == 'history_search_item':
             addtime = params.get('addtime')
             self.input_search.setText(filename)
             self.search(addtime)
-        elif mode == 'browser_item':
-            self.browser(params)
+        elif mode in ['browser_item', 'browser_subfolder']:
+            self.browser(hash, tdir)
+        elif mode == 'browser_moveup':
+            self.browser(hash, tdir)
+        elif mode == 'browser_file':
+            self.browser_action(hash, 'play', tdir = tdir, ind = ind)
+            self.close()
 
     def right_press2(self):
         item = self.listing.getSelectedItem()
         params = json.loads(item.getfilename())
         mode = params.get('mode')
         filename = params.get('filename')
+        hash = params.get('hash')
+        ind = params.get('ind')
+        tdir = params.get('tdir')
         if mode == 'torrent_play':
             action = 'downloadFilesList'
             link = {'ind': str(params.get('url'))}
@@ -624,12 +639,21 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         elif mode == 'history_search_item':
             self.input_search.setText(filename)
             self.setFocus(self.input_search)
+        elif mode == 'browser_item':
+            self.browser_action(hash, 'start')
+        elif mode == 'browser_subfolder':
+            self.browser_action(hash, '3', tdir=tdir, ind=ind)
+        elif mode == 'browser_file':
+            self.browser_action(hash, '3', tdir=tdir, ind=ind)
 
     def right_press3(self):
         item = self.listing.getSelectedItem()
         params = json.loads(item.getfilename())
         mode = params.get('mode')
         filename = params.get('filename')
+        hash = params.get('hash')
+        ind = params.get('ind')
+        tdir = params.get('tdir')
         if mode == 'torrent_play':
             action = 'downloadLibtorrent'
             link = {'ind': str(params.get('url'))}
@@ -643,35 +667,68 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         elif mode == 'history_search_item':
             params['title'] = params.get('filename')
             self.controlCenter(params)
+        elif mode == 'browser_item':
+            self.browser_action(hash, 'stop')
+        elif mode == 'browser_subfolder':
+            self.browser_action(hash, '0', tdir=tdir, ind=ind)
+        elif mode == 'browser_file':
+            self.browser_action(hash, '0', tdir=tdir, ind=ind)
 
     def right_press4(self):
         item = self.listing.getSelectedItem()
         params = json.loads(item.getfilename())
         mode = params.get('mode')
         filename = params.get('filename')
+        hash = params.get('hash')
+        ind = params.get('ind')
+        tdir = params.get('tdir')
         if mode == 'history_search_item':
             addtime = params.get('addtime')
             fav = params.get('fav')
             self.history_action('fav', addtime, fav)
-        else:
+        elif mode == 'search_item':
             cleanlabel = re.sub('\[[^\]]*\]', '', item.getLabel())
             ttl, yr = xbmc.getCleanMovieTitle(cleanlabel)
             infoW = InfoWindow(ttl, yr)
             infoW.doModal()
             del infoW
+        elif mode == 'browser_item':
+            self.browser_action(hash, 'remove')
+            self.browser()
+        elif mode == 'browser_subfolder':
+            self.browser_action(hash, 'copy', tdir=tdir, ind=ind)
 
     def right_press5(self):
         item = self.listing.getSelectedItem()
         params = json.loads(item.getfilename())
         mode = params.get('mode')
         filename = params.get('filename')
+        hash = params.get('hash')
         if mode == 'history_search_item':
             addtime = params.get('addtime')
             fav = params.get('fav')
             self.history_action('delete', addtime, fav)
+        elif mode == 'browser_item':
+            self.browser_action(hash, '3')
 
     def right_press6(self):
-        pass
+        item = self.listing.getSelectedItem()
+        params = json.loads(item.getfilename())
+        mode = params.get('mode')
+        filename = params.get('filename')
+        hash = params.get('hash')
+        if mode == 'browser_item':
+            self.browser_action(hash, '0')
+
+    def right_press7(self):
+        item = self.listing.getSelectedItem()
+        params = json.loads(item.getfilename())
+        mode = params.get('mode')
+        filename = params.get('filename')
+        hash = params.get('hash')
+        if mode == 'browser_item':
+            self.browser_action(hash, 'removedata')
+            self.browser()
 
     def localize(self, string):
         try:
@@ -679,7 +736,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         except:
             return string
 
-    def drawItem(self, title, params, image = None, isFolder = False):
+    def drawItem(self, title, params, image=None, isFolder=False):
         if isinstance(params, str):
             params = {'mode': params}
 
@@ -706,20 +763,18 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         import controlcenter
         controlcenter.main()
 
-    def reconnect(self, event, callabel):
+    def reconnect(self, event, callable):
         self.disconnect(event)
-        self.connect(event, callabel)
+        self.connect(event, callable)
 
     def version_check(self):
-        return False if int(xbmc.getInfoLabel( "System.BuildVersion" )[:2]) < 17 else True
+        return False if int(xbmc.getInfoLabel("System.BuildVersion")[:2]) < 17 else True
 
     def onFocus(self):
         log(str(self.getFocusId()))
 
 
 class InfoWindow(pyxbmct.AddonDialogWindow):
-
-
     def __init__(self, title="", year=""):
         super(InfoWindow, self).__init__(title)
         self.title = title
@@ -727,12 +782,11 @@ class InfoWindow(pyxbmct.AddonDialogWindow):
         self.setGeometry(600, 600, 3, 3)
         self.set_controls()
         self.connect_controls()
-        #self.set_navigation()
-
+        # self.set_navigation()
 
     def set_controls(self):
-        #pyxbmct.AddonWindow().setImage(__root__ + '/resources/skins/Default/media/ConfluenceDialogBack.png')
-        #self.placeControl(self.background, 0, 0, rowspan=3, columnspan=2)
+        # pyxbmct.AddonWindow().setImage(__root__ + '/resources/skins/Default/media/ConfluenceDialogBack.png')
+        # self.placeControl(self.background, 0, 0, rowspan=3, columnspan=2)
         self.listing = pyxbmct.List(_imageWidth=30, _imageHeight=30, _itemTextXOffset=1,
                                     _itemTextYOffset=0, _itemHeight=30, _space=0, _alignmentY=0)
         self.placeControl(self.listing, 0, 1, 2, 2)
@@ -741,42 +795,42 @@ class InfoWindow(pyxbmct.AddonDialogWindow):
         self.plot = pyxbmct.TextBox()
         self.placeControl(self.plot, 2, 0, 1, columnspan=3)
         self.plot.autoScroll(1000, 1000, 1000)
-        #self.button_search = pyxbmct.Button("Search")
-        #self.placeControl(self.button_search, 0, 5, 1, 2)
-
+        # self.button_search = pyxbmct.Button("Search")
+        # self.placeControl(self.button_search, 0, 5, 1, 2)
 
     def connect_controls(self):
         from resources.scrapers.scrapers import Scrapers
         self.Scraper = Scrapers()
         meta = self.Scraper.scraper('tmdb', {'label': 'tmdb', 'search': self.title, 'year': ''}, 'en')
         meta = meta.get('info')
-        
+
         """
         meta results for xXx
         {'info': {'count': 7451, 'plot': u'Xander Cage is your standard adrenaline junkie with no fear and a lousy attitude. When the US Government "recruits" him to go on a mission, he\'s not exactly thrilled. His mission: to gather information on an organization that may just be planning the destruction of the world, led by the nihilistic Yorgi.', 'votes': u'809', 'code': u'tt0295701', 'rating': 5.7000000000000002, 'title': u'xXx', 'tagline': u'A New Breed Of Secret Agent.', 'director': u'Rob Cohen', 'premiered': u'2002-08-09', 'originaltitle': u'xXx', 'cast': [u'Vin Diesel', u'Asia Argento', u'Marton Csokas', u'Samuel L. Jackson', u'Michael Roof', u'Petr J\xe1kl Jr.', u'Richy M\xfcller', u'Joe Bucaro III', u'Eve', u'Leila Arcieri', u'William Hope', u'Ted Maynard', u'Martin Hub'], 'castandrole': [u'Vin Diesel|Xander Cage', u'Asia Argento|Yelena', u'Marton Csokas|Yorgi', u'Samuel L. Jackson|Agent Gibbons', u'Michael Roof|Agent Toby Lee Shavers', u'Petr J\xe1kl Jr.|Kolya', u'Richy M\xfcller|Milan Sova', u'Joe Bucaro III|Virg', u'Eve|J.J.', u'Leila Arcieri|Jordan King', u'William Hope|Agent Roger Donnan', u'Ted Maynard|James Tannick', u'Martin Hub|Ivan Podrov'], 'studio': u'Columbia Pictures, Original Film, Revolution Studios', 'year': 2002, 'genre': u'Action', 'runtime': u'124'}, 'thumbnail': u'http://image.tmdb.org/t/p/original/fPHNTG1OXFBQ6aEVO7Lv8tSgfrY.jpg', 'label': 'tmdb', 'properties': {'fanart_image': u'http://image.tmdb.org/t/p/original/oNQIcuvJssiK93TjrXVtbERaKE1.jpg'}, 'icon': u'http://image.tmdb.org/t/p/original/fPHNTG1OXFBQ6aEVO7Lv8tSgfrY.jpg'}
         """
         self.connect(pyxbmct.ACTION_NAV_BACK, self.close)
         self.connect(pyxbmct.ACTION_PREVIOUS_MENU, self.close)
-        self.listing.addItem ("Title: %s" % meta.get('title'))
-        self.listing.addItem ("genre: %s" % meta.get('genre'))
-        self.listing.addItem ("rating: %s" % meta.get('rating'))
-        self.listing.addItem ("year: %s" % meta.get('year'))
-        self.listing.addItem ("runtime: %sm" % meta.get('runtime'))
+        self.listing.addItem("Title: %s" % meta.get('title'))
+        self.listing.addItem("genre: %s" % meta.get('genre'))
+        self.listing.addItem("rating: %s" % meta.get('rating'))
+        self.listing.addItem("year: %s" % meta.get('year'))
+        self.listing.addItem("runtime: %sm" % meta.get('runtime'))
         if meta.get('thumbnail'):
-            self.logoimg.setImage (meta.get('thumbnail'))
+            self.logoimg.setImage(meta.get('thumbnail'))
         self.plot.setText(meta.get('plot'))
-    
+
+
 def log(msg):
     try:
-        xbmc.log("### [%s]: %s" % (__plugin__,msg,), level=xbmc.LOGNOTICE )
+        xbmc.log("### [%s]: %s" % (__plugin__, msg,), level=xbmc.LOGNOTICE)
     except UnicodeEncodeError:
-        xbmc.log("### [%s]: %s" % (__plugin__,msg.encode("utf-8", "ignore"),), level=xbmc.LOGNOTICE )
+        xbmc.log("### [%s]: %s" % (__plugin__, msg.encode("utf-8", "ignore"),), level=xbmc.LOGNOTICE)
     except:
-        xbmc.log("### [%s]: %s" % (__plugin__,'ERROR LOG',), level=xbmc.LOGNOTICE )
+        xbmc.log("### [%s]: %s" % (__plugin__, 'ERROR LOG',), level=xbmc.LOGNOTICE)
+
 
 def titleMake(seeds, leechers, size, title):
-
-    #AARRGGBB
+    # AARRGGBB
     clGreen = '[COLOR FF008000]%s[/COLOR]'
     clDodgerblue = '[COLOR FF1E90FF]%s[/COLOR]'
     clDimgray = '[COLOR FF999999]%s[/COLOR]'
@@ -794,8 +848,8 @@ def titleMake(seeds, leechers, size, title):
 def main(params={}):
     dialog = SearchWindow("Torrenter Search Window", params)
     dialog.doModal()
-    del dialog #You need to delete your instance when it is no longer needed
-    #because underlying xbmcgui classes are not grabage-collected.
+    del dialog  # You need to delete your instance when it is no longer needed
+    # because underlying xbmcgui classes are not grabage-collected.
 
 
 if __name__ == '__main__':
