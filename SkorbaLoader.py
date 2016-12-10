@@ -32,7 +32,7 @@ import xbmcgui
 import xbmcvfs
 import Localization
 from functions import isSubtitle, DownloadDB, log, debug, is_writable,\
-    vista_check, windows_check, localize_path
+    vista_check, windows_check, localize_path, decode_str
 
 class SkorbaLoader:
     magnetLink = None
@@ -127,7 +127,7 @@ class SkorbaLoader:
                     return
                 if not xbmcvfs.exists(self.torrentFilesPath):
                     xbmcvfs.mkdirs(self.torrentFilesPath)
-                newFile = self.torrentFilesPath + self.md5(torrentUrl) + '.torrent'
+                newFile = localize_path(self.torrentFilesPath + self.md5(torrentUrl) + '.torrent')
                 if newFile != torrentFile:
                     if xbmcvfs.exists(newFile):
                         xbmcvfs.delete(newFile)
@@ -285,12 +285,12 @@ class SkorbaLoader:
         if len(ContentList) == 1 or contentId not in [None, -1]:
             if not contentId: contentId = 0
             title = os.path.basename(ContentList[contentId]['title'])
-            path = os.path.join(self.storageDirectory, localize_path(ContentList[contentId]['title']))
+            path = localize_path(os.path.join(self.storageDirectory, ContentList[contentId]['title']))
             type = 'file'
         else:
             contentId = -1
             title = ContentList[0]['title'].split('\\')[0]
-            path = os.path.join(self.storageDirectory, title)
+            path = localize_path(os.path.join(self.storageDirectory, title))
             type = 'folder'
 
         add = db.add(title, path, type, {'progress': 0}, 'downloading', self.torrentFile, contentId,
@@ -307,11 +307,18 @@ class SkorbaLoader:
             thread.start_new_thread(self.downloadLoop, (title,))
 
     def downloadLoop(self, title):
+        log(title)
         db = DownloadDB()
         status = 'downloading'
         while db.get(title) and status != 'stopped':
             xbmc.sleep(3000)
+            log('status 1 '+status)
             status = db.get_status(title)
+            log('status 2 ' + status)
+            if status == 'stopped':
+                xbmc.sleep(10000)
+                status = db.get_status(title)
+            log('status 3 ' + status)
             if not self.paused:
                 if status == 'pause':
                     self.paused = True
@@ -329,7 +336,9 @@ class SkorbaLoader:
             iterator = int(s.progress * 100)
             info['progress'] = iterator
             db.update(title, info)
-            #self.debug()
+            log(title+str(info))
+            self.debug()
+        log('out of downloadLoop')
         self.session.remove_torrent(self.torrentHandle)
         return
 

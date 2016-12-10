@@ -809,6 +809,8 @@ def localize(text):
             'Play (from start)':'Lejátszás (az elejétől)',
         },
         'ru': {
+            'Clear History': 'Очистить Историю',
+            'Play (with seek)': 'Играть (перемотка)',
             'Mass Control':'Массовое Управление',
             'Info':'Инфо',
             'Delete torrent with files?':'Вы уверены, что хотите удалить торрент с файлами?',
@@ -900,7 +902,7 @@ def localize(text):
             'Checking preloaded files...': 'Проверка файлов...',
             'Waiting for website response...': 'Ожидание ответа сайта...',
             'Search and cache information for:': 'Поиск и кэширование информации для:',
-            'Open Torrent': 'Открыть Список файлов',
+            'Open Torrent': 'Открыть Торрент',
             'Torrent list is empty.': 'Список раздач пуст.',
             'Content Lists': 'Списки Медиа',
             'Canceled by User': 'Отменено пользователем',

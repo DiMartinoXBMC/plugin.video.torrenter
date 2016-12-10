@@ -523,7 +523,7 @@ class Core:
                 self.__settings__.setSetting("lastTorrent", path)
             xbmc.executebuiltin(
                             'XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.torrenter/?action=%s&url=%s'
-            % ('torrentPlayer', path))
+            % ('torrentPlayer', path.encode('utf-8')))
 
         if action2 == 'playnoseek' or action2 == 'playwithseek':
             filename, path, url, seek, length, ind = db.get('filename, path, url, seek, length, ind', 'addtime', str(addtime))
@@ -1837,7 +1837,6 @@ class Core:
                 int(self.__settings__.getSetting("download_limit")) * 1000000 / 8)  #MBits/second
         torrent.downloadProcess(ind, encryption)
         showMessage(self.localize('Download Status'), self.localize('Added!'))
-        xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
     def titleMake(self, seeds, leechers, size, title):
 
