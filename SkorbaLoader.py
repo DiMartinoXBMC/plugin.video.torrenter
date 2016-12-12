@@ -285,12 +285,12 @@ class SkorbaLoader:
         if len(ContentList) == 1 or contentId not in [None, -1]:
             if not contentId: contentId = 0
             title = os.path.basename(ContentList[contentId]['title'])
-            path = localize_path(os.path.join(self.storageDirectory, ContentList[contentId]['title']))
+            path = os.path.join(self.storageDirectory, ContentList[contentId]['title'])
             type = 'file'
         else:
             contentId = -1
             title = ContentList[0]['title'].split('\\')[0]
-            path = localize_path(os.path.join(self.storageDirectory, title))
+            path = os.path.join(self.storageDirectory, title)
             type = 'folder'
 
         add = db.add(title, path, type, {'progress': 0}, 'downloading', self.torrentFile, contentId,
@@ -304,21 +304,14 @@ class SkorbaLoader:
             else:
                 for i in range(self.torrentFileInfo.num_pieces()):
                     self.torrentHandle.piece_priority(i, 6)
+            del db
             thread.start_new_thread(self.downloadLoop, (title,))
 
     def downloadLoop(self, title):
-        log(title)
         db = DownloadDB()
         status = 'downloading'
         while db.get(title) and status != 'stopped':
-            xbmc.sleep(3000)
-            log('status 1 '+status)
             status = db.get_status(title)
-            log('status 2 ' + status)
-            if status == 'stopped':
-                xbmc.sleep(10000)
-                status = db.get_status(title)
-            log('status 3 ' + status)
             if not self.paused:
                 if status == 'pause':
                     self.paused = True
@@ -336,8 +329,8 @@ class SkorbaLoader:
             iterator = int(s.progress * 100)
             info['progress'] = iterator
             db.update(title, info)
-            log(title+str(info))
-            self.debug()
+            #self.debug()
+            xbmc.sleep(3000)
         log('out of downloadLoop')
         self.session.remove_torrent(self.torrentHandle)
         return

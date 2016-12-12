@@ -80,7 +80,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         #self.background.setImage('%s/icons/%s.png' % (__root__, 'ContentPanel'))
 
         # Top menu
-        self.button_downloadstatus = pyxbmct.Button("OFF", textColor='0xFF0000FF',
+        self.button_downloadstatus = pyxbmct.Button("",
                                                     focusTexture=self.icon % 'fdownloadstatus',
                                                     noFocusTexture=self.icon % 'nfdownloadstatus')
         self.placeControl(self.button_downloadstatus, 0, 1, 1, 1)
@@ -560,23 +560,15 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             else:
                 torrent, ind = start[6], start[7]
 
-                from Core import Core
-                params = {'url': torrent.encode('utf-8'),
-                                             'ind': str(ind), 'storage': storage.encode('utf-8')}
-
                 del db
 
                 import SkorbaLoader
                 __settings__.setSetting("lastTorrent", torrent.encode('utf-8'))
-                torrent = SkorbaLoader.SkorbaLoader(storage.encode('utf-8'), torrent.encode('utf-8'))
+                torrent = SkorbaLoader.SkorbaLoader(storage.encode('utf-8'), torrent)
                 encryption = __settings__.getSetting('encryption') == 'true'
-                torrent.downloadProcess(str(ind), encryption)
-                #start_exec = self.form_link('downloadLibtorrent',
-                #                            {'url': torrent.encode('utf-8'),
-                #                             'ind': str(ind), 'storage': storage.encode('utf-8')})
-                #log(start_exec)
-                #xbmc.executebuiltin('XBMC.RunPlugin(%s)' % start_exec)
+                torrent.downloadProcess(ind, encryption)
                 showMessage(self.localize('Download Status'), self.localize('Started!'))
+                xbmc.sleep(1000)
 
         elif action == 'masscontrol':
             dialog_items = [self.localize('Start All'), self.localize('Stop All'),
@@ -584,14 +576,17 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             ret = xbmcgui.Dialog().select(self.localize('Mass Control'), dialog_items)
             if ret == 0:
                 items = db.get_all()
+                del db
                 if items:
+                    import SkorbaLoader
                     for addtime, title, path, type, info, status, torrent, ind, lastupdate, storage in items:
-                        start_exec = self.form_link('downloadLibtorrent',
-                                                    {'url':torrent.encode('utf-8'),
-                                                    'ind':str(ind), 'storage':storage.encode('utf-8')})
-                        log(start_exec)
-                        xbmc.executebuiltin('XBMC.RunScript(%s)' % start_exec)
+                        __settings__.setSetting("lastTorrent", torrent.encode('utf-8'))
+                        torrent = SkorbaLoader.SkorbaLoader(storage.encode('utf-8'), torrent)
+                        encryption = __settings__.getSetting('encryption') == 'true'
+                        torrent.downloadProcess(ind, encryption)
                         xbmc.sleep(1000)
+
+                    xbmc.sleep(2000)
                     showMessage(self.localize('Download Status'), self.localize('Started All!'))
             elif ret == 1:
                 items = db.get_all()

@@ -1235,7 +1235,7 @@ class Core:
                     filename = os.path.join(folder, filename)
                     xbmc.executebuiltin('xbmc.PlayMedia("' + filename.encode('utf-8') + '")')
                 elif tdir and action == 'copy':
-                    path=os.path.join(folder, tdir)
+                    path=os.path.join(localize_path(folder), localize_path(tdir))
                     dirs, files=xbmcvfs.listdir(path)
                     if len(dirs) > 0:
                         dirs.insert(0, self.localize('./ (Root folder)'))
@@ -1250,9 +1250,10 @@ class Core:
                             path=os.path.join(path, dirs[ret])
                             dirs, files=xbmcvfs.listdir(path)
                     for file in files:
-                        if not xbmcvfs.exists(os.path.join(path,file)):
+                        file = localize_path(file)
+                        if not xbmcvfs.exists(os.path.join(path, file)):
                             xbmcvfs.delete(os.path.join(path,file))
-                        xbmcvfs.copy(os.path.join(path,file),os.path.join(folder,file))
+                        xbmcvfs.copy(os.path.join(path, file),os.path.join(folder,file))
                         i=i+1
                     showMessage(self.localize('Torrent-client Browser'), self.localize('Copied %d files!') % i, forced=True)
                 return

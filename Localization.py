@@ -809,6 +809,7 @@ def localize(text):
             'Play (from start)':'Lejátszás (az elejétől)',
         },
         'ru': {
+            'Cancel': 'Отмена',
             'Clear History': 'Очистить Историю',
             'Play (with seek)': 'Играть (перемотка)',
             'Mass Control':'Массовое Управление',
