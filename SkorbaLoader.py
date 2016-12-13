@@ -95,21 +95,12 @@ class SkorbaLoader:
                 xbmcvfs.mkdirs(self.torrentFilesPath)
             torrentFile = localize_path(os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent'))
             try:
-                if not re.match("^http\:.+$", torrentUrl):
-                    contentFile = xbmcvfs.File(torrentUrl, "rb")
-                    content = contentFile.read()
-                    contentFile.close()
+                if not re.match("^[htps]+?://.+$|^://.+$", torrentUrl):
+                    log('xbmcvfs.File for %s' % torrentUrl)
+                    content = xbmcvfs.File(torrentUrl, "rb").read()
                 else:
-                    request = urllib2.Request(torrentUrl)
-                    request.add_header('Referer', torrentUrl)
-                    request.add_header('Accept-encoding', 'gzip')
-                    result = urllib2.urlopen(request)
-                    if result.info().get('Content-Encoding') == 'gzip':
-                        buf = StringIO(result.read())
-                        decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
-                        content = decomp.decompress(buf.getvalue())
-                    else:
-                        content = result.read()
+                    log('request for %s' % torrentUrl)
+                    content = self.makeRequest(torrentUrl)
 
                 localFile = xbmcvfs.File(torrentFile, "w+b")
                 localFile.write(content)
@@ -144,7 +135,30 @@ class SkorbaLoader:
                     self.torrentFileInfo = self.lt.torrent_info(e)
                 self.torrentFile = torrentFile
                 return self.torrentFile
- 
+
+    def makeRequest(self, torrentUrl):
+        torrentUrl = re.sub('^://', 'http://', torrentUrl)
+        x = re.search("://(.+?)/|://(.+?)$", torrentUrl)
+        if x:
+            baseurl = x.group(1) if x.group(1) else x.group(2)
+        else:
+            baseurl =''
+
+        headers = [('User-Agent',
+                    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 YaBrowser/14.10.2062.12061 Safari/537.36'),
+                   ('Referer', 'http://%s/' % baseurl), ('Accept-encoding', 'gzip'), ]
+
+        opener = urllib2.build_opener()
+        opener.addheaders = headers
+        result = opener.open(torrentUrl)
+        if result.info().get('Content-Encoding') == 'gzip':
+            buf = StringIO(result.read())
+            decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
+            content = decomp.decompress(buf.getvalue())
+        else:
+            content = result.read()
+        return content
+
     def getMagnetInfo(self):
         magnetSettings = {
             'url': self.magnetLink,
