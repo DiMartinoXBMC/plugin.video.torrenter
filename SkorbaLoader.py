@@ -54,7 +54,7 @@ class SkorbaLoader:
         if not is_writable(self.storageDirectory):
             xbmcgui.Dialog().ok(Localization.localize('Torrenter v2'),
                     Localization.localize('Your storage path is not writable or not local! Please change it in settings!'),
-                    Localization.localize(self.storageDirectory))
+                    self.storageDirectory)
 
             sys.exit(1)
 
