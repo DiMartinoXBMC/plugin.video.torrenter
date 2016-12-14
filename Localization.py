@@ -809,6 +809,7 @@ def localize(text):
             'Play (from start)':'Lejátszás (az elejétől)',
         },
         'ru': {
+            'Torrenter Search Window': 'Окно Поиска Torrenter',
             'Cancel': 'Отмена',
             'Clear History': 'Очистить Историю',
             'Play (with seek)': 'Играть (перемотка)',

@@ -1608,7 +1608,7 @@ class Core:
 
     def searchWindow(self, params={}):
         import searchwindow
-        searchwindow.main(params)
+        searchwindow.main()
 
     def showFilesList(self, filesList, params={}):
         get = params.get
