@@ -519,6 +519,10 @@ class AnteoPlayer(xbmc.Player):
             listitem.setThumbnailImage(urllib.unquote_plus(thumbnail))
         self.display_name = label
 
+        if self.get('listitem'):
+            listitem = self.get('listitem')
+            listitem.setPath(url)
+
         player = xbmc.Player()
         player.play(url, listitem)
 

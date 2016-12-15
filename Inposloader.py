@@ -499,9 +499,12 @@ class InposPlayer(xbmc.Player):
         self.display_name = label
         log(self.display_name)
 
+        if self.get('listitem'):
+            listitem = self.get('listitem')
+            listitem.setPath(url)
+
         player = xbmc.Player()
         player.play(url, listitem)
-        #xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
 
         xbmc.sleep(2000)  # very important, do not edit this, podavan
         i = 0

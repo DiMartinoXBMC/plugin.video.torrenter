@@ -2203,3 +2203,48 @@ def getTorrentClientIcon():
         return 'qbittorrent.png'
     else:
         return 'torrent-client.png'
+
+def get_item():
+    #some plugin.video.quasar magic
+    item = xbmcgui.ListItem(
+        path='',
+        label=xbmc.getInfoLabel("ListItem.Label"),
+        label2=xbmc.getInfoLabel("ListItem.label2"),
+        thumbnailImage=xbmc.getInfoLabel("ListItem.Art(thumb)"))
+    _infoLabels = {
+        "Title": xbmc.getInfoLabel("ListItem.Title"),
+        "OriginalTitle": xbmc.getInfoLabel("ListItem.OriginalTitle"),
+        "TVShowTitle": xbmc.getInfoLabel("ListItem.TVShowTitle"),
+        "Season": xbmc.getInfoLabel("ListItem.Season"),
+        "Episode": xbmc.getInfoLabel("ListItem.Episode"),
+        "Premiered": xbmc.getInfoLabel("ListItem.Premiered"),
+        "Plot": xbmc.getInfoLabel("ListItem.Plot"),
+        # "Date": xbmc.getInfoLabel("ListItem.Date"),
+        "VideoCodec": xbmc.getInfoLabel("ListItem.VideoCodec"),
+        "VideoResolution": xbmc.getInfoLabel("ListItem.VideoResolution"),
+        "VideoAspect": xbmc.getInfoLabel("ListItem.VideoAspect"),
+        "DBID": xbmc.getInfoLabel("ListItem.DBID"),
+        "DBTYPE": xbmc.getInfoLabel("ListItem.DBTYPE"),
+        "Writer": xbmc.getInfoLabel("ListItem.Writer"),
+        "Director": xbmc.getInfoLabel("ListItem.Director"),
+        "Rating": xbmc.getInfoLabel("ListItem.Rating"),
+        "Votes": xbmc.getInfoLabel("ListItem.Votes"),
+        "IMDBNumber": xbmc.getInfoLabel("ListItem.IMDBNumber"),
+    }
+    infoLabels = {}
+    for key, value in _infoLabels.iteritems():
+        if value:
+            infoLabels[key] = value
+
+    poster = xbmc.getInfoLabel("ListItem.Art(poster)")
+    if not poster:
+        poster = xbmc.getInfoLabel("ListItem.Art(tvshow.poster)")
+
+    item.setArt({
+        "poster": poster,
+        "banner": xbmc.getInfoLabel("ListItem.Art(banner)"),
+        "fanart": xbmc.getInfoLabel("ListItem.Art(fanart)")
+    })
+
+    item.setInfo(type='Video', infoLabels=infoLabels)
+    return item

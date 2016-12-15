@@ -338,12 +338,12 @@ class TorrentPlayer(xbmc.Player):
         response = json.loads(request)
         xbmc.sleep(1000)
 
+        if self.get('listitem'):
+            listitem = self.get('listitem')
+            listitem.setPath(path)
+
         if response:
             xbmc.Player().play(path, listitem)
-            #playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-            #playlist.clear()
-            #playlist.add(path, listitem)
-            #xbmc.Player().play(playlist)
 
             xbmc.sleep(2000)  # very important, do not edit this, podavan
             i = 0

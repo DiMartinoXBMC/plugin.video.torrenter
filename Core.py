@@ -1491,8 +1491,8 @@ class Core:
             self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
             if fileIndex==None: fileIndex = chooseFile(torrent.getContentList())
             if fileIndex:
-                self.playTorrent({'url': fileIndex})
-                #xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url='+fileIndex+'")')
+                item = get_item()
+                self.playTorrent({'url': fileIndex, 'listitem': item})
 
     def openTorrent(self, params={}):
         get = params.get
