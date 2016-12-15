@@ -221,9 +221,17 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             self.update_navigation()
 
     def navi_route(self, mode, params = None, last_listing_item = 0):
-        self.navi['route'].append({'mode': mode,
-                                   'params': {} if not params else params,
-                                   'last_listing_item': last_listing_item})
+        log('navi_route init')
+        if not params or not params.get('back'):
+            log('***** self.navi[\'route\'].append *****' + str(mode) + str(params) + str(last_listing_item))
+            if not params:
+                params = {'back': True}
+            else:
+                params['back'] = True
+
+            self.navi['route'].append({'mode': mode,
+                                       'params': params,
+                                       'last_listing_item': last_listing_item})
         self.right_menu(mode)
         self.listing.reset()
 
@@ -268,19 +276,20 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             self.last_query = query
         elif len(query) == 0:
             self.filesList = []
-        if 1 == 1:
-            if self.filesList:
-                for (order, seeds, leechers, size, title, link, image) in self.filesList:
-                    title = titleMake(seeds, leechers, size, title)
-                    self.drawItem(title, {'mode': 'search_item', 'filename': link}, image)
-                self.setFocus(self.listing)
+
+        if self.filesList:
+            for (order, seeds, leechers, size, title, link, image) in self.filesList:
+                title = titleMake(seeds, leechers, size, title)
+                self.drawItem(title, {'mode': 'search_item', 'filename': link}, image)
+            self.setFocus(self.listing)
 
     def history(self, params = None):
-        self.navi_route('history')
+        self.navi_route('history', params)
 
         db = HistoryDB()
         items = db.get_all()
         favlist = [(1, '[B]%s[/B]'), (0, '%s')]
+        last_listing_item = 0
         if items:
             for favbool, bbstring in favlist:
                 for addtime, string, fav in items:
@@ -289,12 +298,14 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
                         if int(fav) == 1:
                             img = __root__ + '/icons/fav.png'
+                            last_listing_item += 1
                         else:
                             img = __root__ + '/icons/unfav.png'
 
                         link = {'mode': 'history_search_item', 'filename': title, 'addtime': str(addtime),
                                 'fav': str(fav)}
                         self.drawItem(bbstring % title, link, img)
+            self.navi['route'][-1]['last_listing_item'] = last_listing_item
 
     def history_action(self, action, addtime, fav):
         db = HistoryDB()
