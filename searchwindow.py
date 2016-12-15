@@ -302,7 +302,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                         else:
                             img = __root__ + '/icons/unfav.png'
 
-                        link = {'mode': 'history_search_item', 'filename': title, 'addtime': str(addtime),
+                        link = {'mode': 'history_item', 'query': title, 'addtime': str(addtime),
                                 'fav': str(fav)}
                         self.drawItem(bbstring % title, link, img)
             self.navi['route'][-1]['last_listing_item'] = last_listing_item
@@ -362,8 +362,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         if action == 'open':
             filename, foldername, path, url, seek, length, ind = db.get('filename, foldername, path, url, seek, length, ind', 'addtime', str(addtime))
-            #self.reconnect(pyxbmct.ACTION_NAV_BACK, self.watched)
-            self.open_torrent(path.encode('utf-8'))
+            params = {'link': path.encode('utf-8')}
+            self.open_torrent(params)
 
         if action == 'playnoseek' or action == 'playwithseek':
             filename, path, url, seek, length, ind = db.get('filename, path, url, seek, length, ind', 'addtime', str(addtime))
@@ -707,7 +707,13 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             else:
                 self.setFocus(self.button_downloadstatus)
 
-    def open_torrent(self, link, tdir=None):
+    def open_torrent(self, params):
+        self.navi_route('open_torrent', params)
+        #    def open_torrent(self, link, tdir=None):
+        get = params.get
+        link = get('link')
+        tdir = get('tdir')
+
         # cache
         if link != self.last_link:
             self.contentList = get_contentList(link)
@@ -741,7 +747,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         label_list = ["Empty", "Empty", "Empty", "Empty", "Empty", "Empty", "Empty"]
 
-        if mode in ['search', 'search_item', 'torrent_play']:
+        if mode in ['search', 'search_item', 'torrent_play', 'open_torrent']:
             label_list = [self.localize('Open'),
                           self.localize('Download via T-client'),
                           self.localize('Download via Libtorrent'),
@@ -751,7 +757,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             label_list = [self.localize('Open'),]
         elif mode in ['file']:
             label_list = [self.localize('Play'), ]
-        elif mode in ['history', 'history_search_item']:
+        elif mode in ['history', 'history_item']:
             label_list = [self.localize('Open'),
                           self.localize('Edit'),
                           self.localize('Individual Tracker Options'),
@@ -892,177 +898,141 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         button.setLabel(label)
 
     def right_press1(self):
+        self.right_press(1)
+
+    def right_press2(self):
+        self.right_press(2)
+
+    def right_press3(self):
+        self.right_press(3)
+
+    def right_press4(self):
+        self.right_press(4)
+
+    def right_press5(self):
+        self.right_press(5)
+
+    def right_press6(self):
+        self.right_press(6)
+
+    def right_press7(self):
+        self.right_press(7)
+
+    def right_press(self, index):
         item = self.listing.getSelectedItem()
         params = json.loads(item.getfilename())
-        log('params ' + str(params))
+        log('right_press %d params %s' % (index, str(params)))
         mode = params.get('mode')
         filename = params.get('filename')
         hash = params.get('hash')
         ind = params.get('ind')
         tdir = params.get('tdir')
-        self.listing.reset()
+        action = None
+
         if mode in ['search_item', 'torrent_subfolder']:
-            #self.reconnect(pyxbmct.ACTION_NAV_BACK, self.search)
-            self.open_torrent(filename, tdir)
+            if index == 1:
+                params = {'link': filename, 'tdir': tdir}
+                self.open_torrent(params)
+            elif index == 2:
+                action = 'downloadFilesList'
+                link = {'url': filename}
+                url = self.form_link(action, link)
+                xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
+            elif index == 3:
+                action = 'downloadLibtorrent'
+                link = {'url': filename}
+                url = self.form_link(action, link)
+                xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
+            elif index == 4: #search_item
+                cleanlabel = re.sub('\[[^\]]*\]', '', item.getLabel())
+                ttl, yr = xbmc.getCleanMovieTitle(cleanlabel)
+                infoW = InfoWindow(ttl, yr)
+                infoW.doModal()
+                del infoW
         elif mode == 'torrent_moveup':
-            self.search()
-            self.setFocus(self.listing)
+            if index == 1:
+                self.search()
+                self.setFocus(self.listing)
         elif mode == 'torrent_play':
-            url = self.form_link('playTorrent', params)
-            xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
-            self.close()
-        elif mode == 'history_search_item':
+            if index == 1:
+                url = self.form_link('playTorrent', params)
+                xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
+                self.close()
+            elif index == 2:
+                action = 'downloadFilesList'
+                link = {'ind': str(params.get('url'))}
+                url = self.form_link(action, link)
+                xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
+            elif index == 3:
+                action = 'downloadLibtorrent'
+                link = {'ind': str(params.get('url'))}
+                url = self.form_link(action, link)
+                xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
+        elif mode == 'history_item':
             addtime = params.get('addtime')
-            self.input_search.setText(filename)
-            params = {'addtime': addtime}
-            self.search(params)
+            fav = params.get('fav')
+            query = params.get('query')
+            if index == 1:
+                self.input_search.setText(query)
+                self.search({'addtime': addtime})
+            elif index == 2:
+                self.input_search.setText(query)
+                self.setFocus(self.input_search)
+            elif index == 3:
+                params['title'] = params.get('query')
+                self.controlCenter(params)
+            else:
+                if index == 4: action = 'fav'
+                elif index == 5: action = 'delete'
+                self.history_action(action, addtime, fav)
         elif mode in ['browser_item', 'browser_subfolder', 'browser_moveup']:
-            self.browser(hash, tdir)
+            if index == 1:
+                self.browser(hash, tdir)
+            elif index in [2, 3, 4] and mode =='browser_subfolder':
+                if index == 2: action = '3'
+                elif index == 3: action = '0'
+                elif index == 4: action = 'copy'
+
+                self.browser_action(hash, action, tdir=tdir, ind=ind)
+            else:
+                if index == 2: action = 'start'
+                elif index == 3: action = 'stop'
+                elif index == 4: action = 'remove'
+                elif index == 5: action = '3'
+                elif index == 6: action = '0'
+                elif index == 7: action = 'removedata'
+
+                self.browser_action(hash, action)
+
+                if index in [4, 7]:
+                    self.browser()
         elif mode == 'browser_file':
-            self.browser_action(hash, 'play', tdir = tdir, ind = ind)
-            self.close()
+            if index == 1: action = 'play'
+            elif index == 2: action = '3'
+            elif index == 3: action = '0'
+
+            self.browser_action(hash, action, tdir = tdir, ind = ind)
+
+            if index == 1:
+                self.close()
         elif mode in ['downloadstatus', 'downloadstatus_subfolder', 'downloadstatus_file']:
-            self.downloadstatus_action('play', params.get('addtime'), params.get('path'),
+            if index == 1: action = 'play'
+            elif index == 2: action = 'start'
+            elif index == 3: action = 'pause'
+            elif index == 4: action = 'stop'
+            elif index == 5: action = 'delete'
+            elif index == 6: action = 'masscontrol'
+            self.downloadstatus_action(action, params.get('addtime'), params.get('path'),
                                        params.get('type'), params.get('progress'), params.get('storage'))
         elif mode in ['moveup', 'subfolder', 'file']:
             self.file_browser(params.get('type'), params.get('path'), tdir)
         elif mode == 'watched_item':
-            self.watched_action('open', params.get('addtime'))
-
-    def right_press2(self):
-        item = self.listing.getSelectedItem()
-        params = json.loads(item.getfilename())
-        mode = params.get('mode')
-        filename = params.get('filename')
-        hash = params.get('hash')
-        ind = params.get('ind')
-        tdir = params.get('tdir')
-        if mode == 'torrent_play':
-            action = 'downloadFilesList'
-            link = {'ind': str(params.get('url'))}
-            url = self.form_link(action, link)
-            xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
-        elif mode == 'search_item':
-            action = 'downloadFilesList'
-            link = {'url': filename}
-            url = self.form_link(action, link)
-            xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
-        elif mode == 'history_search_item':
-            self.input_search.setText(filename)
-            self.setFocus(self.input_search)
-        elif mode == 'browser_item':
-            self.browser_action(hash, 'start')
-        elif mode == 'browser_subfolder':
-            self.browser_action(hash, '3', tdir=tdir, ind=ind)
-        elif mode == 'browser_file':
-            self.browser_action(hash, '3', tdir=tdir, ind=ind)
-        elif mode in ['downloadstatus', 'downloadstatus_subfolder', 'downloadstatus_file']:
-            self.downloadstatus_action('start', params.get('addtime'), params.get('path'),
-                                       params.get('type'), params.get('progress'), params.get('storage'))
-        elif mode == 'watched_item':
-            self.watched_action('playnoseek', params.get('addtime'))
-
-    def right_press3(self):
-        item = self.listing.getSelectedItem()
-        params = json.loads(item.getfilename())
-        mode = params.get('mode')
-        filename = params.get('filename')
-        hash = params.get('hash')
-        ind = params.get('ind')
-        tdir = params.get('tdir')
-        if mode == 'torrent_play':
-            action = 'downloadLibtorrent'
-            link = {'ind': str(params.get('url'))}
-            url = self.form_link(action, link)
-            xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
-        elif mode == 'search_item':
-            action = 'downloadLibtorrent'
-            link = {'url': filename}
-            url = self.form_link(action, link)
-            xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
-        elif mode == 'history_search_item':
-            params['title'] = params.get('filename')
-            self.controlCenter(params)
-        elif mode == 'browser_item':
-            self.browser_action(hash, 'stop')
-        elif mode == 'browser_subfolder':
-            self.browser_action(hash, '0', tdir=tdir, ind=ind)
-        elif mode == 'browser_file':
-            self.browser_action(hash, '0', tdir=tdir, ind=ind)
-        elif mode in ['downloadstatus', 'downloadstatus_subfolder', 'downloadstatus_file']:
-            self.downloadstatus_action('pause', params.get('addtime'), params.get('path'),
-                                       params.get('type'), params.get('progress'), params.get('storage'))
-        elif mode == 'watched_item':
-            self.watched_action('playwithseek', params.get('addtime'))
-
-    def right_press4(self):
-        item = self.listing.getSelectedItem()
-        params = json.loads(item.getfilename())
-        mode = params.get('mode')
-        filename = params.get('filename')
-        hash = params.get('hash')
-        ind = params.get('ind')
-        tdir = params.get('tdir')
-        if mode == 'history_search_item':
-            addtime = params.get('addtime')
-            fav = params.get('fav')
-            self.history_action('fav', addtime, fav)
-        elif mode == 'search_item':
-            cleanlabel = re.sub('\[[^\]]*\]', '', item.getLabel())
-            ttl, yr = xbmc.getCleanMovieTitle(cleanlabel)
-            infoW = InfoWindow(ttl, yr)
-            infoW.doModal()
-            del infoW
-        elif mode == 'browser_item':
-            self.browser_action(hash, 'remove')
-            self.browser()
-        elif mode == 'browser_subfolder':
-            self.browser_action(hash, 'copy', tdir=tdir, ind=ind)
-        elif mode in ['downloadstatus', 'downloadstatus_subfolder', 'downloadstatus_file']:
-            self.downloadstatus_action('stop', params.get('addtime'), params.get('path'),
-                                       params.get('type'), params.get('progress'), params.get('storage'))
-        elif mode == 'watched_item':
-            self.watched_action('delete', params.get('addtime'))
-
-    def right_press5(self):
-        item = self.listing.getSelectedItem()
-        params = json.loads(item.getfilename())
-        mode = params.get('mode')
-        filename = params.get('filename')
-        hash = params.get('hash')
-        if mode == 'history_search_item':
-            addtime = params.get('addtime')
-            fav = params.get('fav')
-            self.history_action('delete', addtime, fav)
-        elif mode == 'browser_item':
-            self.browser_action(hash, '3')
-        elif mode in ['downloadstatus', 'downloadstatus_subfolder', 'downloadstatus_file']:
-            self.downloadstatus_action('delete', params.get('addtime'), params.get('path'),
-                                       params.get('type'), params.get('progress'), params.get('storage'))
-        elif mode == 'watched_item':
-            self.watched_action('clear', params.get('addtime'))
-
-    def right_press6(self):
-        item = self.listing.getSelectedItem()
-        params = json.loads(item.getfilename())
-        mode = params.get('mode')
-        filename = params.get('filename')
-        hash = params.get('hash')
-        if mode == 'browser_item':
-            self.browser_action(hash, '0')
-        elif mode in ['downloadstatus', 'downloadstatus_subfolder', 'downloadstatus_file']:
-            self.downloadstatus_action('masscontrol', params.get('addtime'), params.get('path'),
-                                       params.get('type'), params.get('progress'), params.get('storage'))
-
-    def right_press7(self):
-        item = self.listing.getSelectedItem()
-        params = json.loads(item.getfilename())
-        mode = params.get('mode')
-        filename = params.get('filename')
-        hash = params.get('hash')
-        if mode == 'browser_item':
-            self.browser_action(hash, 'removedata')
-            self.browser()
+            if index == 1: action = 'open'
+            elif index == 2: action = 'playnoseek'
+            elif index == 3: action = 'playwithseek'
+            elif index == 4: action = 'delete'
+            elif index == 5: action = 'clear'
+            self.watched_action(action, params.get('addtime'))
 
     def localize(self, string):
         try:
