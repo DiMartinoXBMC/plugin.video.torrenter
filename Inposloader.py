@@ -607,7 +607,7 @@ class InposPlayer(xbmc.Player):
 
     def _get_status_lines(self, s, f):
         return [
-            self.display_name.encode('utf-8'),
+            ensure_str(self.display_name),
             "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state])),
             "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate, self.localize('kb/s'),
                                              s.upload_rate, self.localize('kb/s'),

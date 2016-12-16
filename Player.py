@@ -30,7 +30,7 @@ import Downloader
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import calculate, showMessage, clearStorage, WatchedHistoryDB, DownloadDB, get_ids_video, log, debug, foldername
+from functions import calculate, showMessage, clearStorage, WatchedHistoryDB, DownloadDB, get_ids_video, log, debug, foldername, ensure_str
 
 ROOT = sys.modules["__main__"].__root__
 RESOURCES_PATH = os.path.join(ROOT, 'resources')
@@ -465,10 +465,10 @@ class TorrentPlayer(xbmc.Player):
 
     def _get_status_lines(self, s):
         return [
-            self.display_name+'; '+self.torrent.get_debug_info('dht_state'),
-            "%.2f%% %s; %s" % (s.progress * 100, self.localize(STATE_STRS[s.state]).decode('utf-8'), self.torrent.get_debug_info('trackers_sum')),
-            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate / 1024, self.localize('kb/s').decode('utf-8'),
-                                             s.upload_rate / 1024, self.localize('kb/s').decode('utf-8'),
+            ensure_str(self.display_name),
+            "%.2f%% %s" % (s.progress * 100, self.localize(STATE_STRS[s.state])),
+            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate / 1024, self.localize('kb/s'),
+                                             s.upload_rate / 1024, self.localize('kb/s'),
                                              s.num_seeds, s.num_peers)
         ]
 
