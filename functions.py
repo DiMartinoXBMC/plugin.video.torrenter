@@ -1352,7 +1352,7 @@ def get_contentList(url):
         url = Searchers().downloadWithSearcher(classMatch.group(2), searcher)
         __settings__.setSetting("lastTorrent", url)
 
-    torrent = Downloader.Torrent(userStorageDirectory, torrentFilesDirectory=torrentFilesDirectory)
+    torrent = Downloader.Torrent(userStorageDirectory, url, torrentFilesDirectory=torrentFilesDirectory)
 
     __settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
 
