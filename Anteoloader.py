@@ -320,21 +320,18 @@ class AnteoPlayer(xbmc.Player):
                         continue
 
                     log('[AnteoPlayer]: ************************************* NO! break')
+                    showMessage(self.localize('Information'),
+                                self.localize('Stopping the torrent2http process...'), forced=True)
                 break
 
-        xbmc.Player().stop()
+        self.stop()
 
         if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
             xbmc.sleep(1000)
             clearStorage(self.userStorageDirectory)
-        else:
-            #if self.seeding_status:
-            #showMessage(self.localize('Information'),
-            #            self.localize('Torrent is seeding. To stop it use Download Status.'), forced=True)
-            #else:
-            #if self.seeding: self.db_delete()
-            showMessage(self.localize('Information'),
-                        self.localize('Torrent downloading is stopped.'), forced=True)
+
+        showMessage(self.localize('Information'),
+                    self.localize('torrent2http process stopped.'), forced=True)
 
     def init(self):
         self.next_contentId = False
@@ -523,8 +520,7 @@ class AnteoPlayer(xbmc.Player):
             listitem = self.get('listitem')
             listitem.setPath(url)
 
-        player = xbmc.Player()
-        player.play(url, listitem)
+        self.play(url, listitem)
 
         xbmc.sleep(2000)  # very important, do not edit this, podavan
         i = 0
