@@ -184,6 +184,10 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     def navi_back(self):
         log('navi_back init')
         self.navi['route'].pop(-1)
+        self.navi_restore()
+
+    def navi_restore(self):
+        log('navi_restore init')
         route = self.navi['route'][-1]
         action = getattr(self, route['mode'])
         if route['params']:
@@ -227,7 +231,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             self.navi['last_right_button'] = self.navi['right_menu'].index(focused_control) + 1
             self.update_navigation()
 
-    def navi_route(self, mode, params = {}, last_listing_item = 0):
+    def navi_route(self, mode, params = {}, right_menu = None):
         log('navi_route init')
         try:
             focused_control = self.getFocus()
@@ -235,10 +239,11 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             focused_control = None
 
         if focused_control in self.navi['top_menu']:
+            log('focused_control in self.navi[\'top_menu\']')
             self.navi['route'] = [self.navi['route'][0]]
 
-        elif not params or not params.get('back'):
-            log('***** self.navi[\'route\'].append *****' + str(mode) + str(params) + str(last_listing_item))
+        if not params or not params.get('back'):
+            log('***** self.navi[\'route\'].append *****' + str(mode) + str(params))
             if not params:
                 params = {'back': True}
             else:
@@ -246,8 +251,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
             self.navi['route'].append({'mode': mode,
                                        'params': params,
-                                       'last_listing_item': last_listing_item})
-        self.right_menu(mode)
+                                       'last_listing_item': 0})
+        self.right_menu(mode if not right_menu else right_menu)
         self.listing.reset()
 
     def search(self, params = {}):
@@ -337,9 +342,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         self.history()
 
-    def watched(self):
-        self.right_menu('watched')
-        self.listing.reset()
+    def watched(self, params = {}):
+        self.navi_route('watched', params)
 
         db = WatchedHistoryDB()
 
@@ -401,10 +405,13 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             showMessage(self.localize('Watched History'), self.localize('Clear!'))
             self.watched()
 
-    def browser(self, hash = None, tdir = None):
+    def browser(self, params = {}):
         from resources.utorrent.net import Download
-        self.listing.reset()
         menu, dirs = [], []
+
+        get = params.get
+        hash = get('hash')
+        tdir = get('tdir')
 
         DownloadList = Download().list()
         if DownloadList == False:
@@ -412,8 +419,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             return
 
         if not hash:
-            self.right_menu('browser')
-            #self.reconnect(pyxbmct.ACTION_NAV_BACK, self.history)
+            self.navi_route('browser')
             for data in DownloadList:
                 status = " "
                 img = ''
@@ -431,12 +437,11 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                     img = os.path.join(__root__, 'icons', 'download-icon.png')
 
                 title = '[%s%%]%s%s [%s]' % (str(data['progress']), status, data['name'], str(data['ratio']))
-                # title = '[' + str(data['progress']) + '%]' + status + data['name'] + ' [' + str(data['ratio']) + ']'
                 menu.append(
                     {"title": title, "image": img, "argv": {'mode': 'browser_item', 'hash': str(data['id'])}})
+
         elif not tdir:
-            self.right_menu('browser_subfolder')
-            #self.reconnect(pyxbmct.ACTION_NAV_BACK, self.browser)
+            self.navi_route('browser', params, 'browser_subfolder')
             self.drawItem('..', {'mode': 'browser_moveup'}, image = 'DefaultFolderBack.png', isFolder = True)
             dllist = sorted(Download().listfiles(hash), key=lambda x: x[0])
             for name, percent, ind, size in dllist:
@@ -448,9 +453,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                     newtdir = name.split('/')[0]
                     if newtdir not in dirs: dirs.append(newtdir)
         elif tdir:
-            self.right_menu('browser_subfolder')
-            tdir_up = tdir[:len(tdir)-len(tdir.split('/')[-1])-1] if '/' in tdir else None
-            self.drawItem('..', {'mode': 'browser_subfolder', 'hash': hash, 'tdir': tdir_up}, isFolder=True)
+            self.navi_route('browser', params, 'browser_subfolder')
+            self.drawItem('..', {'mode': 'browser_moveup'}, isFolder=True)
             dllist = sorted(Download().listfiles(hash), key=lambda x: x[0])
             for name, percent, ind, size in dllist:
 
@@ -493,7 +497,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         DownloadList = Download().list()
         if DownloadList == False:
             showMessage(self.localize('Error'), self.localize('No connection! Check settings!'), forced=True)
-            return
+            return False
 
         if (ind or ind == 0) and action in ('0', '3'):
             Download().setprio_simple(hash, action, ind)
@@ -546,7 +550,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                     xbmcvfs.copy(os.path.join(path, file), os.path.join(folder, file))
                     i = i + 1
                 showMessage(self.localize('Torrent-client Browser'), self.localize('Copied %d files!') % i, forced=True)
-            return
+            return True
         elif not tdir and action not in ('0', '3'):
             if action == 'removedata':
                 ok = xbmcgui.Dialog().yesno(self.localize('Torrent-client Browser'),
@@ -562,8 +566,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 else:
                     menu.append((hash, action, str(ind)))
             Download().setprio_simple_multi(menu)
-            return
-        return
+            return True
+        return True
 
     def downloadstatus(self, params = {}):
         self.listing.reset()
@@ -688,12 +692,18 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         xbmc.sleep(1000)
         self.downloadstatus()
 
-    def file_browser(self, mode, path, tdir):
+    def file_browser(self, params):
+
+        self.navi_route('browser', params)
+
+        get = params.get
+        mode = get('mode')
+        path = get('path')
+        tdir = get('tdir')
 
         path = encode_msg(path)
         tdir = encode_msg(tdir)
 
-        self.listing.reset()
         if tdir == os.path.dirname(path):
             self.downloadstatus()
         elif mode == 'file':
@@ -962,10 +972,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 infoW = InfoWindow(ttl, yr)
                 infoW.doModal()
                 del infoW
-        elif mode == 'torrent_moveup':
-            if index == 1:
-                self.search()
-                self.setFocus(self.listing)
+        elif mode in ['torrent_moveup', 'browser_moveup', 'moveup']:
+            self.navi_back()
         elif mode == 'torrent_play':
             if index == 1:
                 url = self.form_link('playTorrent', params)
@@ -998,9 +1006,9 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 if index == 4: action = 'fav'
                 elif index == 5: action = 'delete'
                 self.history_action(action, addtime, fav)
-        elif mode in ['browser_item', 'browser_subfolder', 'browser_moveup']:
+        elif mode in ['browser_item', 'browser_subfolder']:
             if index == 1:
-                self.browser(hash, tdir)
+                self.browser(params)
             elif index in [2, 3, 4] and mode =='browser_subfolder':
                 if index == 2: action = '3'
                 elif index == 3: action = '0'
@@ -1015,10 +1023,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 elif index == 6: action = '0'
                 elif index == 7: action = 'removedata'
 
-                self.browser_action(hash, action)
-
-                if index in [4, 7]:
-                    self.browser()
+                if self.browser_action(hash, action):
+                    self.navi_restore()
         elif mode == 'browser_file':
             if index == 1: action = 'play'
             elif index == 2: action = '3'
@@ -1037,8 +1043,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             elif index == 6: action = 'masscontrol'
             self.downloadstatus_action(action, params.get('addtime'), params.get('path'),
                                        params.get('type'), params.get('progress'), params.get('storage'))
-        elif mode in ['moveup', 'subfolder', 'file']:
-            self.file_browser(params.get('type'), params.get('path'), tdir)
+        elif mode in ['subfolder', 'file']:
+            self.file_browser(params)
         elif mode == 'watched_item':
             if index == 1: action = 'open'
             elif index == 2: action = 'playnoseek'
