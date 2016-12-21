@@ -138,8 +138,9 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         self.connect(pyxbmct.ACTION_NAV_BACK, self.navi_back)
         self.connect(pyxbmct.ACTION_PREVIOUS_MENU, self.navi_back)
+        self.connect(xbmcgui.ACTION_BACKSPACE, self.navi_back)
+        self.connect(xbmcgui.KEY_BUTTON_BACK, self.navi_back)
 
-        self.connect(pyxbmct.ACTION_PREVIOUS_MENU, self.close)
         self.connect(ACTION_MOUSE_RIGHT_CLICK, self.context)
         self.connect(ACTION_CONTEXT_MENU, self.context)
         self.connect(ACTION_SHOW_OSD, self.context)
