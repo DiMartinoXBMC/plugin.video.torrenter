@@ -324,7 +324,7 @@ class AnteoPlayer(xbmc.Player):
                                 self.localize('Stopping the torrent2http process...'), forced=True)
                 break
 
-        self.stop()
+        xbmc.Player().stop()
 
         if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
             xbmc.sleep(1000)
@@ -520,7 +520,8 @@ class AnteoPlayer(xbmc.Player):
             listitem = self.get('listitem')
             listitem.setPath(url)
 
-        self.play(url, listitem)
+        player = xbmc.Player()
+        player.play(url, listitem)
 
         xbmc.sleep(2000)  # very important, do not edit this, podavan
         i = 0
