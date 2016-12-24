@@ -1324,7 +1324,8 @@ def search(url, searchersList, isApi=None):
         progressBar.close()
 
     for k in result.keys():
-        filesList.extend(result[k])
+        if result.get(k):
+            filesList.extend(result[k])
     return filesList
 
 def get_filesList(query, searchersList, addtime = None):
