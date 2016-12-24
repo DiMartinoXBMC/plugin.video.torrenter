@@ -590,8 +590,24 @@ def view_style(func):
     elif view_style == 5:
         styles['uTorrentBrowser'] = styles['torrentPlayer'] = 'wide'
         styles['openTorrent'] = styles['History'] = styles['DownloadStatus'] = 'wide'
-        styles['drawtrackerList'] = styles['drawContent'] = styles['List'] = styles['sectionMenu'] = 'icons'
+        styles['drawtrackerList'] = styles['drawContent'] = styles['List'] = styles['sectionMenu'] = 'list'
         styles['searchOption'] = 'info'
+
+    if view_style == 8:
+        styles['sectionMenu'] = 'thumbnails'  #меню
+        styles['List'] = 'biglist'
+        styles['Seasons'] = 'biglist'
+        styles['uTorrentBrowser'] = 'biglist'
+        styles['torrentPlayer'] = 'biglist'
+        styles['openTorrent'] = 'biglist'
+        styles['History'] = 'biglist' #история поиска
+        styles['DownloadStatus'] = 'biglist' #статус загрузки
+        styles['drawtrackerList'] = 'biglist'
+        styles['drawContent'] = 'list' #списки медиа
+        styles['drawcontentList'] = 'extrainfo' #списки медиа - лист
+        styles['searchOption'] = 'biglist'
+        styles['showFilesList'] = 'biglist'
+
 
     if view_style in [1, 3, 4, 5]:
         num_skin = 0
@@ -601,6 +617,8 @@ def view_style(func):
         num_skin = 2
     elif view_style == 7:
         num_skin = 3
+    if view_style == 8:
+        num_skin = 4
 
     style = styles.get(func)
     log('[view_style]: lock '+str(style)+' for '+str(func))
@@ -614,6 +632,7 @@ def lockView(viewId='info', num_skin=0):
         {'list': 50, 'info': 51, 'wide': 52, 'icons': 53, },  # Transperency!
         {'list': 55, 'info': 55, 'wide': 55, 'icons': 55, 'info3': 55, },  # Aeon Nox
         {'list': 50, 'info': 54, 'wide': 55, 'icons': 54, 'info3': 500, },  # Estuary
+        {'list': 50, 'bigwide': 51, 'biglist': 52, 'poster': 53, 'banner': 54, 'wall': 55, 'mediainfo': 56, 'extrainfo': 57, "cards":58, "bannerwall":59, 'thumbnails': 500, 'postersquare': 503, 'wallsquare': 505, },  # Arctic: Zephyr
     )
     try:
         if viewId == 'wide' and num_skin == 3:
@@ -633,19 +652,17 @@ def lockView(viewId='info', num_skin=0):
                 <include>View_501_Banner</include>
                 <include>View_502_FanArt</include>
     '''
-
-
     '''
-			<include>PosterWrapView2_Fanart</include> <!-- view id = 508 -->
-			<include>MediaListView3</include> <!-- view id = 503 -->
-			<include>MediaListView2</include> <!-- view id = 504 -->
-			<include>MediaListView4</include> <!-- view id = 515 -->
-			<include>WideIconView</include> <!-- view id = 505 -->
-			<include>MusicVideoInfoListView</include> <!-- view id = 511 -->
-			<include>AddonInfoListView1</include> <!-- view id = 550 -->
-			<include>AddonInfoThumbView1</include> <!-- view id = 551 -->
-			<include>LiveTVView1</include> <!-- view id = 560 -->
-	'''
+            <include>PosterWrapView2_Fanart</include> <!-- view id = 508 -->
+            <include>MediaListView3</include> <!-- view id = 503 -->
+            <include>MediaListView2</include> <!-- view id = 504 -->
+            <include>MediaListView4</include> <!-- view id = 515 -->
+            <include>WideIconView</include> <!-- view id = 505 -->
+            <include>MusicVideoInfoListView</include> <!-- view id = 511 -->
+            <include>AddonInfoListView1</include> <!-- view id = 550 -->
+            <include>AddonInfoThumbView1</include> <!-- view id = 551 -->
+            <include>LiveTVView1</include> <!-- view id = 560 -->
+    '''
 
 
 def torrent_dir():
@@ -1992,7 +2009,7 @@ def check_network_advancedsettings():
         file_cont='''<advancedsettings>
   <network>
     <buffermode>2</buffermode>
-	<curlclienttimeout>30</curlclienttimeout>
+    <curlclienttimeout>30</curlclienttimeout>
     <cachemembuffersize>252420</cachemembuffersize>
     <readbufferfactor>5</readbufferfactor>
   </network>
@@ -2009,7 +2026,7 @@ def check_network_advancedsettings():
 '''<advancedsettings>
   <network>
     <buffermode>2</buffermode>
-	<curlclienttimeout>30</curlclienttimeout>
+    <curlclienttimeout>30</curlclienttimeout>
     <cachemembuffersize>252420</cachemembuffersize>
     <readbufferfactor>5</readbufferfactor>
   </network>
