@@ -104,22 +104,23 @@ class KinoPoisk(Content.Content):
         return True
 
     def get_contentList(self, category, subcategory=None, apps_property=None):
+        #self.debug=self.log
         socket.setdefaulttimeout(15)
         contentList = []
         url = self.get_url(category, subcategory, apps_property)
 
-        #print url
+        self.debug('get_contentList: url = '+url)
         response = self.makeRequest(url, headers=self.headers)
 
         if None != response and 0 < len(response):
-            #print response
+            self.debug(str(response))
             if category in ['hot']:
                 contentList = self.popmode(response)
             elif url.startswith(self.baseurl + '/s/type/film/list/'):
                 contentList = self.infomode(response)
             else:
                 contentList = self.topmode(response)
-        #print str(contentList)
+        self.debug('get_contentList: contentList = '+str(contentList))
         return contentList
 
     def stripTtl(self, title):
@@ -132,12 +133,12 @@ class KinoPoisk(Content.Content):
         contentList = []
         Soup = BeautifulSoup(response)
         result = Soup.find('div', 'stat').findAll('div', 'el')
-        #print str(result)
+        self.debug('popmode: '+str(result))
         for tr in result:
             #main
             a = tr.findAll('a')
             num = a[0].text
-            #print num
+
             info = {}
             year = 0
             img = ''
@@ -152,12 +153,14 @@ class KinoPoisk(Content.Content):
                     img = self.id2img(id[0])
             try:
                 title, year = re.compile('(.+?) \((\d\d\d\d)\)', re.DOTALL).findall(a[1].text)[0]
+                #self.log('popmode 1'+str((title, year)))
             except:
                 pass
             if not year:
                 try:
                     title, year = re.compile('(.+?) \(.*(\d\d\d\d)').findall(a[1].text)[0]
                     info['tvshowtitle'] = title
+                    #self.log('popmode 2' + str((title, year)))
                 except:
                     pass
             title = self.stripHtml(self.stripTtl(title))
@@ -176,7 +179,7 @@ class KinoPoisk(Content.Content):
         contentList = []
         Soup = BeautifulSoup(response)
         result = Soup.find('table', {'cellpadding': '3'}).findAll('tr')[2:]
-        #print str(result)
+        self.debug('topmode: ' + str(result))
         for tr in result:
             #main
             td = tr.findAll('td')
@@ -198,8 +201,12 @@ class KinoPoisk(Content.Content):
                 year = re.compile('(.+) \((\d\d\d\d)\)').findall(a_all.text)
                 if not year:
                     try:
-                        title, year = re.compile('(.+) \(.*(\d\d\d\d)').findall(a_all.text)[0]
-                        info['tvshowtitle'] = title
+                        match = re.search(r"(.+) \((\d\d\d\d) &ndash;|(.+) \(.*(\d\d\d\d)", a_all.text,
+                                          re.IGNORECASE | re.MULTILINE)
+                        if match:
+                            title = match.group(1)
+                            year = match.group(2)
+                            info['tvshowtitle'] = title
                     except:
                         title = a_all.text
                 else:

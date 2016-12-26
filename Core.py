@@ -736,7 +736,7 @@ class Core:
                     elif keyboard.isConfirmed():
                         subcategory = query
                     if subcategory:
-                        apps['subcategory'] = subcategory
+                        apps['subcategory'] = subcategory.decode('utf-8')
                     else:
                         return
 
@@ -911,7 +911,7 @@ class Core:
 
                 progressBar.update(iterator, dialogText, title, scrapers[scraper])
                 meta = self.Scraper.scraper(scraper, {'label': title, 'search': search, 'year': year}, self.language)
-                #print 'meta:'+str(meta)
+                log('meta:'+str(meta))
                 if self.language == 'ru':
                     if not meta.get('info').get('title') or \
                             not meta.get('properties').get('fanart_image') or not meta.get('icon'):
