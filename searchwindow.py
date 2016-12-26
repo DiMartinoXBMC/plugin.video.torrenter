@@ -21,6 +21,7 @@ import pyxbmct.addonwindow as pyxbmct
 import xbmcaddon
 import xbmcgui
 import xbmcvfs
+import json
 
 from functions import *
 
@@ -42,10 +43,6 @@ ACTION_SHOW_OSD = 24
 
 class SearchWindow(pyxbmct.AddonDialogWindow):
     __settings__ = sys.modules["__main__"].__settings__
-    fileList = []
-    contentList = []
-    searchersList = []
-    addtime = None
     right_buttons_count = 7
     right_label_count = 7
     last_right_buttons_count = 0
@@ -55,11 +52,14 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     last_right_button = None
     last_listing_mode = None
     count = 0
+    navi_right_menu = []
+    navi_top_menu = []
     navi = {
         'last_top_button'   : 4,
         'last_right_button' : 1,
-        'right_menu'        : [],
-        'top_menu'          : [],
+        'contentList'       : [],
+        'searchersList'     : [],
+        'addtime'           : None,
         'route':[{'mode':'close', 'params':{}, 'last_listing_item': 0}]
     }
 
@@ -71,9 +71,13 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.setGeometry(1280, 720, 9, 16)
         self.set_controls()
         self.connect_controls()
-        if params:
-            self.search(params)
+        if params and params.get('mode'):
+            if params.get('mode') == 'load':
+                self.navi_load()
+            elif params.get('mode') == 'search':
+                self.search(params)
         else:
+            #self.navi_load()
             self.history()
 
         if self.listing.size():
@@ -120,7 +124,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                                     _itemTextYOffset=0, _itemHeight=60, _space=0, _alignmentY=4)
         self.placeControl(self.listing, 1, 0, 8, 14)
 
-        self.navi['top_menu'] = [self.button_downloadstatus, self.button_browser, self.button_keyboard,
+        self.navi_top_menu = [self.button_downloadstatus, self.button_browser, self.button_keyboard,
                                  self.input_search, self.button_search, self.button_history, self.button_watched,
                                  self.button_controlcenter]
 
@@ -163,10 +167,10 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.update_navigation()
 
     def update_navigation(self):
-        self.last_top_button = self.navi['top_menu'][self.navi['last_top_button'] - 1]
+        self.last_top_button = self.navi_top_menu[self.navi['last_top_button'] - 1]
         if self.navi['last_right_button'] > self.right_label_count:
             self.navi['last_right_button'] = self.right_label_count
-        self.last_right_button = self.navi['right_menu'][self.navi['last_right_button'] - 1]
+        self.last_right_button = self.navi_right_menu[self.navi['last_right_button'] - 1]
 
         # Top menu
         self.button_downloadstatus.setNavigation(self.listing, self.listing, self.last_right_button,
@@ -200,6 +204,36 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         if route['last_listing_item'] > 0:
             self.listing.selectItem(route['last_listing_item'])
 
+    def navi_load(self):
+        log('navi_load init')
+        __tmppath__ = os.path.join(xbmc.translatePath('special://temp'), 'xbmcup', 'plugin.video.torrenter')
+        if not xbmcvfs.exists(__tmppath__):
+            xbmcvfs.mkdirs(__tmppath__)
+        navi_file = os.path.join(__tmppath__, 'navi.txt')
+        read = xbmcvfs.File(navi_file, 'r')
+        navi = read.read()
+        read.close()
+
+        log('navi: '+str(navi))
+
+        if navi and len(navi) > 0:
+            self.navi = json.loads(urllib.unquote_plus(navi))
+            self.navi_restore()
+
+    def navi_save(self):
+        log('navi_save init')
+        navi = urllib.quote_plus(json.dumps(self.navi))
+
+        __tmppath__ = os.path.join(xbmc.translatePath('special://temp'), 'xbmcup', 'plugin.video.torrenter')
+        if not xbmcvfs.exists(__tmppath__):
+            xbmcvfs.mkdirs(__tmppath__)
+        navi_file = os.path.join(__tmppath__, 'navi.txt')
+        write = xbmcvfs.File(navi_file, 'w')
+        write.write(navi)
+        write.close()
+
+        #__settings__.setSetting("navi", navi)
+
     def navi_update(self):
         log('navi_update init')
         try:
@@ -224,12 +258,12 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 self.set_menulist(mode)
                 self.update_navigation()
 
-        elif focused_control in self.navi['top_menu']:
-            self.navi['last_top_button'] = self.navi['top_menu'].index(focused_control) + 1
+        elif focused_control in self.navi_top_menu:
+            self.navi['last_top_button'] = self.navi_top_menu.index(focused_control) + 1
             self.update_navigation()
 
-        elif focused_control in self.navi['right_menu']:
-            self.navi['last_right_button'] = self.navi['right_menu'].index(focused_control) + 1
+        elif focused_control in self.navi_right_menu:
+            self.navi['last_right_button'] = self.navi_right_menu.index(focused_control) + 1
             self.update_navigation()
 
     def navi_route(self, mode, params = {}, right_menu = None):
@@ -239,7 +273,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         except:
             focused_control = None
 
-        if focused_control in self.navi['top_menu']:
+        if focused_control in self.navi_top_menu:
             log('focused_control in self.navi[\'top_menu\']')
             self.navi['route'] = [self.navi['route'][0]]
 
@@ -283,16 +317,16 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         log('Search query: ' + str(query))
 
         if not addtime and query == self.last_query:
-            addtime = self.addtime
+            addtime = self.navi['addtime']
 
         searchersList = get_searchersList(addtime)
 
         # cache
         self.navi['route'][-1]['query'] = query
-        if (query != self.last_query or self.searchersList != searchersList) and len(query) > 0:
+        if (query != self.last_query or self.navi['searchersList'] != searchersList) and len(query) > 0:
             self.filesList = get_filesList(query, searchersList, addtime)
-            self.addtime = addtime
-            self.searchersList = searchersList
+            self.navi['addtime'] = addtime
+            self.navi['searchersList'] = searchersList
             self.last_query = query
         elif len(query) == 0:
             self.filesList = []
@@ -741,10 +775,10 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         # cache
         if link != self.last_link:
-            self.contentList = get_contentList(link)
+            self.navi['contentList'] = get_contentList(link)
         self.last_link = link
 
-        dirList, contentListNew = cutFolder(self.contentList, tdir)
+        dirList, contentListNew = cutFolder(self.navi['contentList'], tdir)
 
         if not tdir:
             params = {'mode': 'torrent_moveup', 'filename': link}
@@ -767,6 +801,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         for title, identifier, filesize in contentListNew:
             params = {'mode': 'torrent_play', 'url': identifier, 'url2': ids_video.rstrip(','), 'filename': link}
             self.drawItem(title, params)
+
+        self.navi_save()
 
     def get_menulist(self, mode):
 
@@ -838,7 +874,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             self.removeControls(remove_list)
 
         label_list = self.get_menulist(mode)
-        self.navi['right_menu'] = []
+        self.navi_right_menu = []
 
         self.right_buttons_count = len(label_list)
         button_num_list = range(1, self.right_buttons_count + 1)
@@ -853,7 +889,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.navi['last_right_button'] = 1
         for index in button_num_list:
             button = getattr(self, "button_right" + str(index))
-            self.navi['right_menu'].append(button)
+            self.navi_right_menu.append(button)
 
             if self.right_buttons_count == 1:
                 button.setNavigation(self.button_controlcenter,
