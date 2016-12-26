@@ -727,6 +727,19 @@ class Core:
         else:
             if provider:
                 self.Content = self.contenterObject[provider]
+                if category == 'search' and provider and subcategory == True:
+                    keyboard = xbmc.Keyboard('', self.localize('Search Phrase') + ':')
+                    keyboard.doModal()
+                    query = keyboard.getText()
+                    if not query:
+                        return
+                    elif keyboard.isConfirmed():
+                        subcategory = query
+                    if subcategory:
+                        apps['subcategory'] = subcategory
+                    else:
+                        return
+
                 if not self.Content.isTracker():
                     self.draw(apps, mode='content')
                 else:
@@ -742,6 +755,7 @@ class Core:
         page = apps.get('page') if apps.get('page') else 1
         sort = apps.get('sort') if apps.get('sort') else 0
         apps_property={'page':page, 'sort':sort}
+        log('draw: '+str((category, subcategory)))
         property = self.Content.get_property(category, subcategory)
         contentList = self.Content.get_contentList(category, subcategory, apps_property)
         if property and property.get('page'):

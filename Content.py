@@ -132,7 +132,8 @@ class Content:
         else:
             get = self.category_dict[category][subcategory]
 
-        if category == 'search': get = (get[0], get[1] % urllib.quote_plus(subcategory.encode('utf-8')))
+        if category == 'search' and subcategory != True:
+            get = (get[0], get[1] % urllib.quote_plus(subcategory.encode('utf-8')))
 
         property = self.get_property(category, subcategory)
 
@@ -173,8 +174,8 @@ class Content:
                         except:
                             pass
         if has_property:
-            if category == 'search': property['page'] = property['page'] % urllib.quote_plus(
-                subcategory.encode('utf-8'))
+            if category == 'search' and subcategory != True:
+                property['page'] = property['page'] % urllib.quote_plus(subcategory.encode('utf-8'))
             return property
 
 
