@@ -26,6 +26,7 @@ import re
 from StringIO import StringIO
 import gzip
 import HTMLParser
+import ssl
 from datetime import date
 
 import Localization
@@ -182,6 +183,12 @@ class Content:
     def makeRequest(self, url, data={}, headers=[]):
         self.cookieJar = cookielib.CookieJar()
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookieJar))
+        # python ssl Context support - PEP 0466
+        if hasattr(ssl, '_create_unverified_context'):
+            ssl_context = ssl._create_unverified_context()
+            opener.add_handler(urllib2.HTTPSHandler(context=ssl_context))
+        else:
+            opener.add_handler(urllib2.HTTPSHandler())
         opener.addheaders = headers
         if 0 < len(data):
             encodedData = urllib.urlencode(data)

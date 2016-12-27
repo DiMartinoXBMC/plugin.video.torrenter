@@ -35,6 +35,7 @@ import xbmc
 import Localization
 from functions import log, debug, showMessage
 
+import ssl
 
 class SearcherABC:
     searchIcon = '/icons/video.png'
@@ -103,19 +104,24 @@ class SearcherABC:
 
     def makeRequest(self, url, data={}, headers={}):
         self.load_cookie()
-        opener = None
+        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookieJar))
         if self.proxy == 1:
             try:
                 from resources.proxy import antizapret
-                opener = urllib2.build_opener(antizapret.AntizapretProxyHandler(), urllib2.HTTPCookieProcessor(self.cookieJar))
+                opener.add_handler(antizapret.AntizapretProxyHandler())
                 config = antizapret.config()
                 self.debug('[antizapret]: '+str(config["domains"]))
                 self.debug('[antizapret]: '+str(config["server"]))
             except:
                 showMessage('AntiZapret', Localization.localize('Error'))
                 self.debug('[antizapret]: OFF!')
-        if not opener:
-            opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookieJar))
+        # python ssl Context support - PEP 0466
+        if hasattr(ssl, '_create_unverified_context'):
+            ssl_context = ssl._create_unverified_context()
+            opener.add_handler(urllib2.HTTPSHandler(context=ssl_context))
+        else:
+            opener.add_handler(urllib2.HTTPSHandler())
+
         opener.addheaders = headers
         if 0 < len(data):
             encodedData = urllib.urlencode(data)
