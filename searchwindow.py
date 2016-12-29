@@ -49,6 +49,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     last_top_button = None
     last_right_button = None
     last_listing_mode = None
+    route = None
     count = 0
     navi_right_menu = []
     navi_top_menu = []
@@ -71,11 +72,6 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         else:
             self.navi_load()
             #self.history()
-
-        if self.listing.size():
-            self.setFocus(self.listing)
-        else:
-            self.setFocus(self.input_search)
 
     def set_navi(self):
         self.navi = {
@@ -193,22 +189,31 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     def navi_back(self):
         log('navi_back init')
         self.navi['route'].pop(-1)
-        self.navi['route'][-1]['params']['back'] = True
         self.navi_restore()
+
+    def navi_route_reset(self):
+        log('navi_route_reset init')
+        self.navi['route'] = [self.navi['route'][0]]
+
+    def navi_route_pop(self):
+        log('navi_route_pop init')
+        self.navi['route'].pop(-1)
 
     def navi_restore(self):
         log('navi_restore init')
-        route = self.navi['route'][-1]
-        action = getattr(self, route['mode'])
+        self.route = self.navi['route'].pop(-1)
+        action = getattr(self, self.route['mode'])
         try:
-            if route['params']:
-                action(route['params'])
+            if self.route['params']:
+                action(self.route['params'])
             else:
                 action()
-            self.setFocus(self.listing)
-            log('route[last_listing_item]: ' + str(route['last_listing_item']))
-            if route['last_listing_item'] > 0:
-                self.listing.selectItem(route['last_listing_item'])
+
+            self.set_focus(self.route['mode'])
+
+            log('self.route[last_listing_item]: ' + str(self.route['last_listing_item']))
+            if self.route['last_listing_item'] > 0:
+                self.listing.selectItem(self.route['last_listing_item'])
         except:
             import traceback
             log('navi_restore ERROR '+traceback.format_exc())
@@ -231,8 +236,11 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             self.navi = json.loads(navi)
             self.navi_restore()
 
-    def navi_save(self):
+    def navi_save(self, mode = None):
         log('navi_save init')
+
+        if mode: self.set_focus(mode)
+
         navi = json.dumps(self.navi)
 
         __tmppath__ = os.path.join(xbmc.translatePath('special://temp'), 'xbmcup', 'plugin.video.torrenter')
@@ -284,27 +292,22 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         if focused_control in self.navi_top_menu:
             log('focused_control in self.navi[\'top_menu\']')
-            self.navi['route'] = [self.navi['route'][0]]
+            self.navi_route_reset()
 
-        if not params or not params.get('back'):
-            log('***** self.navi[\'route\'].append *****' + str(mode) + str(params))
-            if not params:
-                params = {'back': True}
-            else:
-                params['back'] = True
+        log('***** self.navi[\'route\'].append *****' + str(mode) + str(params))
 
-            if focused_control == self.listing:
-                item_index = self.listing.getSelectedPosition()
-            else:
-                item_index = 0
-            self.navi['route'][-1]['last_listing_item'] == item_index
-
-            self.navi['route'].append({'mode': mode,
-                                       'params': params,
-                                       'last_listing_item': 0})
+        self.navi['route'].append({'mode': mode,
+                                   'params': params,
+                                   'last_listing_item': 0})
 
         self.right_menu(mode if not right_menu else right_menu)
         self.listing.reset()
+
+    def set_focus(self, mode):
+        if mode and not self.listing.size() and hasattr(self, "button_" + mode):
+            self.setFocus(getattr(self, "button_" + mode))
+        else:
+            self.setFocus(self.listing)
 
     def search(self, params = {}):
         log('search init params: ' + str(params))
@@ -351,6 +354,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         items = db.get_all()
         favlist = [(1, '[B]%s[/B]'), (0, '%s')]
         last_listing_item = 0
+        last_addtime_fav = False
         if items:
             for favbool, bbstring in favlist:
                 for addtime, string, fav in items:
@@ -359,14 +363,18 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
                         if int(fav) == 1:
                             img = __root__ + '/icons/fav.png'
-                            last_listing_item += 1
+                            if str(self.navi['last_addtime']) == str(addtime):
+                                last_addtime_fav = True
+                            if not last_addtime_fav:
+                                last_listing_item += 1
                         else:
                             img = __root__ + '/icons/unfav.png'
 
                         link = {'mode': 'history_item', 'query': title, 'addtime': str(addtime),
                                 'fav': str(fav)}
                         self.drawItem(bbstring % title, link, img)
-            self.navi['route'][-1]['last_listing_item'] = last_listing_item
+            self.route['last_listing_item'] = last_listing_item
+        self.navi_save('history')
 
     def history_action(self, action, addtime, fav):
         db = HistoryDB()
@@ -382,7 +390,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             db.unfav(addtime)
             showMessage(self.localize('Favourites'), self.localize('Deleted!'))
 
-        self.history()
+        self.navi_restore()
 
     def watched(self, params = {}):
         self.navi_route('watched', params)
@@ -411,6 +419,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
                 link = {'mode': 'watched_item', 'addtime': str(addtime)}
                 self.drawItem(title, link, image=img)
+        self.navi_save('watched')
 
     def watched_action(self, action, addtime):
         db = WatchedHistoryDB()
@@ -418,7 +427,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         if action == 'delete':
             db.delete(addtime)
             showMessage(self.localize('Watched History'), self.localize('Deleted!'))
-            self.watched()
+            self.navi_restore()
 
         if action == 'open':
             filename, foldername, path, url, seek, length, ind = db.get('filename, foldername, path, url, seek, length, ind', 'addtime', str(addtime))
@@ -445,7 +454,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         if action == 'clear':
             db.clear()
             showMessage(self.localize('Watched History'), self.localize('Clear!'))
-            self.watched()
+            self.navi_restore()
 
     def browser(self, params = {}):
         from resources.utorrent.net import Download
@@ -481,7 +490,6 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 title = '[%s%%]%s%s [%s]' % (str(data['progress']), status, data['name'], str(data['ratio']))
                 menu.append(
                     {"title": title, "image": img, "argv": {'mode': 'browser_item', 'hash': str(data['id'])}})
-
         elif not tdir:
             self.navi_route('browser', params, 'browser_subfolder')
             self.drawItem('..', {'mode': 'browser_moveup'}, image = 'DefaultFolderBack.png', isFolder = True)
@@ -525,12 +533,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 folder = False
 
             self.drawItem(i['title'], params, image = img, isFolder = folder)
-            # def drawItem(self, title, params, image = None, isFolder = False):
-        if self.listing.size():
-            self.setFocus(self.listing)
-        else:
-            self.setFocus(self.button_browser)
-        return
+
+        self.navi_save('browser')
 
     def browser_action(self, hash, action, tdir = None, ind = None):
         from resources.utorrent.net import Download
@@ -612,9 +616,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         return True
 
     def downloadstatus(self, params = {}):
-        self.listing.reset()
-        self.right_menu('downloadstatus')
-        #self.reconnect(pyxbmct.ACTION_NAV_BACK, self.history)
+        self.navi_route('downloadstatus', params)
 
         db = DownloadDB()
         items = db.get_all()
@@ -656,11 +658,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 self.drawItem(title, params, image=img, isFolder=type == 'folder')
 
             # def drawItem(self, title, params, image = None, isFolder = False):
-        if self.listing.size():
-            self.setFocus(self.listing)
-        else:
-            self.setFocus(self.button_downloadstatus)
-        return
+
+        self.navi_save('downloadstatus')
 
     def downloadstatus_action(self, action, addtime, path, type, progress, storage):
 
@@ -735,8 +734,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.downloadstatus()
 
     def file_browser(self, params):
-
-        self.navi_route('browser', params)
+        self.navi_route('file_browser', params)
 
         get = params.get
         mode = get('mode')
@@ -752,8 +750,6 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             xbmc.Player().play(localize_path(tdir))
             self.close()
         else:
-            self.right_menu('file_browser')
-            #self.reconnect(pyxbmct.ACTION_NAV_BACK, self.downloadstatus)
 
             self.drawItem('..', {'mode': 'moveup', 'path': path,
                                  'tdir': os.path.dirname(tdir)}, image = 'DefaultFolderBack.png', isFolder=True)
@@ -768,10 +764,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 link = {'mode': 'file', 'path': path, 'type': 'file',
                         'tdir': os.path.join(tdir, file)}
                 self.drawItem(file, link, isFolder=False)
-            if self.listing.size():
-                self.setFocus(self.listing)
-            else:
-                self.setFocus(self.button_downloadstatus)
+
+        self.navi_save('file_browser')
 
     def open_torrent(self, params):
         self.navi_route('open_torrent', params)
@@ -806,7 +800,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             params = {'mode': 'torrent_play', 'url': identifier, 'url2': ids_video.rstrip(','), 'filename': link}
             self.drawItem(title, params)
 
-        self.navi_save()
+        self.navi_save('open_torrent')
 
     def get_menulist(self, mode):
 
@@ -1181,11 +1175,11 @@ class InfoWindow(pyxbmct.AddonDialogWindow):
 
 def log(msg):
     try:
-        xbmc.log("### [%s]: %s" % (__plugin__, msg,), level=xbmc.LOGNOTICE)
+        xbmc.log("#SW# [%s]: %s" % (__plugin__, msg,), level=xbmc.LOGNOTICE)
     except UnicodeEncodeError:
-        xbmc.log("### [%s]: %s" % (__plugin__, msg.encode("utf-8", "ignore"),), level=xbmc.LOGNOTICE)
+        xbmc.log("#SW# [%s]: %s" % (__plugin__, msg.encode("utf-8", "ignore"),), level=xbmc.LOGNOTICE)
     except:
-        xbmc.log("### [%s]: %s" % (__plugin__, 'ERROR LOG',), level=xbmc.LOGNOTICE)
+        xbmc.log("#SW# [%s]: %s" % (__plugin__, 'ERROR LOG',), level=xbmc.LOGNOTICE)
 
 def titleMake(seeds, leechers, size, title):
     # AARRGGBB
@@ -1209,7 +1203,6 @@ def dlstat_titleMake(title, second):
     title = clWhite % title
     title += '\r\n' + clDimgray % second
     return title
-
 
 def main(params = None):
     dialog = SearchWindow(params)
