@@ -1397,6 +1397,7 @@ class Core:
             self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
             self.__settings__.setSetting("lastTorrentUrl", url)
             if url:
+                xbmc.executebuiltin("Dialog.Close(all,true)")
                 xbmc.executebuiltin(
                                 'XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.torrenter/?action=%s&url=%s'
                 % ('torrentPlayer', url))
