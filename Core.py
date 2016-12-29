@@ -30,7 +30,7 @@ class Core:
     __plugin__ = sys.modules["__main__"].__plugin__
     __settings__ = sys.modules["__main__"].__settings__
     ROOT = sys.modules["__main__"].__root__
-    userStorageDirectory = localize_path(__settings__.getSetting("storage"))#file_encode(__settings__.getSetting("storage"))
+    userStorageDirectory = localize_path(xbmc.translatePath(__settings__.getSetting("storage")))#file_encode(__settings__.getSetting("storage"))
     torrentFilesDirectory = 'torrents'
     debug = __settings__.getSetting('debug') == 'true'
     torrent_player = __settings__.getSetting("torrent_player")
@@ -1456,9 +1456,9 @@ class Core:
             #xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.yatp/?action=play&torrent=%s&file_index=%s")' % (urllib.quote_plus(torrentUrl), params['url']))
         elif self.torrent_player == '1':
             __ASsettings__ = xbmcaddon.Addon(id='script.module.torrent.ts')
-            folder=__ASsettings__.getSetting("folder")
+            folder=__ASsettings__.getSetting("path")
             save=__ASsettings__.getSetting("save")
-            __ASsettings__.setSetting("folder", self.__settings__.getSetting("storage"))
+            __ASsettings__.setSetting("path", xbmc.translatePath(self.__settings__.getSetting("storage")))
             __ASsettings__.setSetting("save", self.__settings__.getSetting("keep_files"))
             xbmc.sleep(1000)
             torrent = Downloader.Torrent(self.userStorageDirectory, torrentUrl, self.torrentFilesDirectory)
@@ -1469,7 +1469,7 @@ class Core:
             label = unquote(get("label"), os.path.basename(path))
             torrent.play_url_ind(int(ind), label, icon)
             torrent.__exit__()
-            __ASsettings__.setSetting("folder", folder)
+            __ASsettings__.setSetting("path", folder)
             __ASsettings__.setSetting("save", save)
 
     def saveUrlTorrent(self, url):
