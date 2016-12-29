@@ -43,7 +43,7 @@ except:
 __settings__ = xbmcaddon.Addon(id='plugin.video.torrenter')
 __language__ = __settings__.getLocalizedString
 ROOT = __settings__.getAddonInfo('path')  # .decode('utf-8').encode(sys.getfilesystemencoding())
-userStorageDirectory = __settings__.getSetting("storage")
+userStorageDirectory = xbmc.translatePath(__settings__.getSetting("storage"))
 torrentFilesDirectory = 'torrents'
 USERAGENT = "Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0"
 __addonpath__ = __settings__.getAddonInfo('path')
