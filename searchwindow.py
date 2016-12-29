@@ -46,29 +46,21 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     right_buttons_count = 7
     right_label_count = 7
     last_right_buttons_count = 0
-    last_link = None
-    last_query = None
     last_top_button = None
     last_right_button = None
     last_listing_mode = None
     count = 0
     navi_right_menu = []
     navi_top_menu = []
-    navi = {
-        'last_top_button'   : 4,
-        'last_right_button' : 1,
-        'contentList'       : [],
-        'searchersList'     : [],
-        'addtime'           : None,
-        'route':[{'mode':'close', 'params':{}, 'last_listing_item': 0}]
-    }
 
     icon = __root__ + '/icons/searchwindow/%s.png'
     icon_tc = __root__ + '/icons/searchwindow/%s' + getTorrentClientIcon()
 
     def __init__(self, params = None):
+        log('SearchWindow init params: '+str(params))
         super(SearchWindow, self).__init__(self.localize('Torrenter Search Window'))
         self.setGeometry(1280, 720, 9, 16)
+        self.set_navi()
         self.set_controls()
         self.connect_controls()
         if params and params.get('mode'):
@@ -77,13 +69,26 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             elif params.get('mode') == 'search':
                 self.search(params)
         else:
-            #self.navi_load()
-            self.history()
+            self.navi_load()
+            #self.history()
 
         if self.listing.size():
             self.setFocus(self.listing)
         else:
             self.setFocus(self.input_search)
+
+    def set_navi(self):
+        self.navi = {
+            'last_top_button': 4,
+            'last_right_button': 1,
+            'contentList': [],
+            'searchersList': [],
+            'filesList': [],
+            'last_addtime': None,
+            'last_query': None,
+            'last_link': None,
+            'route': [{'mode': 'close', 'params': {}, 'last_listing_item': 0}]
+        }
 
     def set_controls(self):
         if not __settings__.getSetting('debug') == 'true':
@@ -95,38 +100,37 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.button_downloadstatus = pyxbmct.Button("",
                                                     focusTexture=self.icon % 'fdownloadstatus',
                                                     noFocusTexture=self.icon % 'nfdownloadstatus')
-        self.placeControl(self.button_downloadstatus, 0, 1, 1, 1)
+        self.placeControl(self.button_downloadstatus, 0, 2, 1, 1)
 
         self.button_browser = pyxbmct.Button("",
                                                    focusTexture=self.icon_tc % 'f',
                                                    noFocusTexture=self.icon_tc % 'nf')
-        self.placeControl(self.button_browser, 0, 2, 1, 1)
-        self.button_keyboard = pyxbmct.Button("", focusTexture=self.icon % 'fkeyboard',
-                                              noFocusTexture=self.icon % 'nfkeyboard')
-        self.placeControl(self.button_keyboard, 0, 3, 1, 1)
-        self.input_search = pyxbmct.Edit("", _alignment=pyxbmct.ALIGN_CENTER_X | pyxbmct.ALIGN_CENTER_Y)
-        self.placeControl(self.input_search, 0, 4, 1, 5)
-        self.button_search = pyxbmct.Button("", focusTexture=self.icon % 'fsearch',
-                                            noFocusTexture=self.icon % 'nfsearch')
-        self.placeControl(self.button_search, 0, 9, 1, 1)
-        self.button_history = pyxbmct.Button("", focusTexture=self.icon % 'fhistory',
-                                             noFocusTexture=self.icon % 'nfhistory')
-        self.placeControl(self.button_history, 0, 10, 1, 1)
-        self.button_watched = pyxbmct.Button("", focusTexture=self.icon % 'fwatched',
-                                             noFocusTexture=self.icon % 'nfwatched')
-        self.placeControl(self.button_watched, 0, 11, 1, 1)
+        self.placeControl(self.button_browser, 0, 3, 1, 1)
         self.button_controlcenter = pyxbmct.Button("", focusTexture=self.icon % 'fcontrolcenter',
                                                    noFocusTexture=self.icon % 'nfcontrolcenter')
-        self.placeControl(self.button_controlcenter, 0, 12, 1, 1)
+        self.placeControl(self.button_controlcenter, 0, 4, 1, 1)
+        #self.button_keyboard = pyxbmct.Button("", focusTexture=self.icon % 'fkeyboard',
+        #                                      noFocusTexture=self.icon % 'nfkeyboard')
+        #self.placeControl(self.button_keyboard, 0, 3, 1, 1)
+        self.input_search = pyxbmct.Edit("", _alignment=pyxbmct.ALIGN_CENTER_X | pyxbmct.ALIGN_CENTER_Y)
+        self.placeControl(self.input_search, 0, 5, 1, 6)
+        self.button_search = pyxbmct.Button("", focusTexture=self.icon % 'fsearch',
+                                            noFocusTexture=self.icon % 'nfsearch')
+        self.placeControl(self.button_search, 0, 11, 1, 1)
+        self.button_history = pyxbmct.Button("", focusTexture=self.icon % 'fhistory',
+                                             noFocusTexture=self.icon % 'nfhistory')
+        self.placeControl(self.button_history, 0, 12, 1, 1)
+        self.button_watched = pyxbmct.Button("", focusTexture=self.icon % 'fwatched',
+                                             noFocusTexture=self.icon % 'nfwatched')
+        self.placeControl(self.button_watched, 0, 13, 1, 1)
 
         # Main
         self.listing = pyxbmct.List(_imageWidth=60, _imageHeight=60, _itemTextXOffset=1,
                                     _itemTextYOffset=0, _itemHeight=60, _space=0, _alignmentY=4)
         self.placeControl(self.listing, 1, 0, 8, 14)
 
-        self.navi_top_menu = [self.button_downloadstatus, self.button_browser, self.button_keyboard,
-                                 self.input_search, self.button_search, self.button_history, self.button_watched,
-                                 self.button_controlcenter]
+        self.navi_top_menu = [self.button_downloadstatus, self.button_browser, self.button_controlcenter,
+                                 self.input_search, self.button_search, self.button_history, self.button_watched]
 
         # Right menu
         self.right_menu()
@@ -157,12 +161,12 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     def set_navigation(self):
         # Top menu
         self.button_browser.setNavigation(self.listing, self.listing, self.button_downloadstatus,
-                                                self.button_keyboard)
-        self.button_keyboard.setNavigation(self.listing, self.listing, self.button_browser, self.input_search)
-        self.input_search.setNavigation(self.listing, self.listing, self.button_keyboard, self.button_search)
+                                          self.button_controlcenter)
+        self.button_controlcenter.setNavigation(self.listing, self.listing, self.button_browser, self.input_search)
+        #self.button_keyboard.setNavigation(self.listing, self.listing, self.button_browser, self.input_search)
+        self.input_search.setNavigation(self.listing, self.listing, self.button_controlcenter, self.button_search)
         self.button_search.setNavigation(self.listing, self.listing, self.input_search, self.button_history)
         self.button_history.setNavigation(self.listing, self.listing, self.button_search, self.button_watched)
-        self.button_watched.setNavigation(self.listing, self.listing, self.button_history, self.button_controlcenter)
 
         self.update_navigation()
 
@@ -175,7 +179,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         # Top menu
         self.button_downloadstatus.setNavigation(self.listing, self.listing, self.last_right_button,
                                                  self.button_browser)
-        self.button_controlcenter.setNavigation(self.listing, self.listing, self.button_watched, self.last_right_button)
+        self.button_watched.setNavigation(self.listing, self.listing, self.button_history, self.last_right_button)
 
         # Main
         self.listing.setNavigation(self.last_top_button, self.input_search, self.button_downloadstatus,
@@ -189,20 +193,27 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     def navi_back(self):
         log('navi_back init')
         self.navi['route'].pop(-1)
+        self.navi['route'][-1]['params']['back'] = True
         self.navi_restore()
 
     def navi_restore(self):
         log('navi_restore init')
         route = self.navi['route'][-1]
         action = getattr(self, route['mode'])
-        if route['params']:
-            action(route['params'])
-        else:
-            action()
-        self.setFocus(self.listing)
-        log('route[last_listing_item]: '+str(route['last_listing_item']))
-        if route['last_listing_item'] > 0:
-            self.listing.selectItem(route['last_listing_item'])
+        try:
+            if route['params']:
+                action(route['params'])
+            else:
+                action()
+            self.setFocus(self.listing)
+            log('route[last_listing_item]: ' + str(route['last_listing_item']))
+            if route['last_listing_item'] > 0:
+                self.listing.selectItem(route['last_listing_item'])
+        except:
+            import traceback
+            log('navi_restore ERROR '+traceback.format_exc())
+            self.set_navi()
+            self.history()
 
     def navi_load(self):
         log('navi_load init')
@@ -214,15 +225,15 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         navi = read.read()
         read.close()
 
-        log('navi: '+str(navi))
+        log('navi_load navi: '+str(navi))
 
         if navi and len(navi) > 0:
-            self.navi = json.loads(urllib.unquote_plus(navi))
+            self.navi = json.loads(navi)
             self.navi_restore()
 
     def navi_save(self):
         log('navi_save init')
-        navi = urllib.quote_plus(json.dumps(self.navi))
+        navi = json.dumps(self.navi)
 
         __tmppath__ = os.path.join(xbmc.translatePath('special://temp'), 'xbmcup', 'plugin.video.torrenter')
         if not xbmcvfs.exists(__tmppath__):
@@ -231,8 +242,6 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         write = xbmcvfs.File(navi_file, 'w')
         write.write(navi)
         write.close()
-
-        #__settings__.setSetting("navi", navi)
 
     def navi_update(self):
         log('navi_update init')
@@ -246,7 +255,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         if focused_control == self.listing:
             item_index = self.listing.getSelectedPosition()
             self.navi['route'][-1]['last_listing_item'] = item_index
-            debug('self.listing getSelectedPosition ' + str(item_index))
+            log('self.listing getSelectedPosition ' + str(item_index))
 
             item = self.listing.getSelectedItem()
             params = json.loads(item.getfilename())
@@ -284,55 +293,53 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             else:
                 params['back'] = True
 
+            if focused_control == self.listing:
+                item_index = self.listing.getSelectedPosition()
+            else:
+                item_index = 0
+            self.navi['route'][-1]['last_listing_item'] == item_index
+
             self.navi['route'].append({'mode': mode,
                                        'params': params,
                                        'last_listing_item': 0})
+
         self.right_menu(mode if not right_menu else right_menu)
         self.listing.reset()
 
     def search(self, params = {}):
+        log('search init params: ' + str(params))
         self.navi_route('search', params)
 
         get = params.get
         addtime = get('addtime')
         query = get('query')
+        route = self.navi['route'][-1]
 
         if query:
-            search = urllib.unquote_plus(query)
-            external = get("return_name")
-            if external:
-                searcher = 'landing from : %s ' % str(external)
-            else:
-                searcher = ''
-            #self.setWindowTitle(title='%s %s' % ('Torrenter Search Window', searcher))
-            if get('showKey') == 'true':
-                self.input_search.setText(search)
-                self.setFocus(self.input_search)
-                return
-            else:
-                self.input_search.setText(search)
-                query = search
+            self.input_search.setText(query)
         else:
             query = self.input_search.getText()
+            
         log('Search query: ' + str(query))
 
-        if not addtime and query == self.last_query:
-            addtime = self.navi['addtime']
+        if not addtime and query == self.navi['last_query']:
+            addtime = self.navi['last_addtime']
 
         searchersList = get_searchersList(addtime)
 
         # cache
-        self.navi['route'][-1]['query'] = query
-        if (query != self.last_query or self.navi['searchersList'] != searchersList) and len(query) > 0:
-            self.filesList = get_filesList(query, searchersList, addtime)
-            self.navi['addtime'] = addtime
+        route['params']['query'] = query
+        if (query != self.navi['last_query'] or self.navi['searchersList'] != searchersList) and len(query) > 0:
+            self.navi['filesList'] = get_filesList(query, searchersList, addtime)
+            route['params']['addtime'] = addtime
+            self.navi['last_addtime'] = addtime
             self.navi['searchersList'] = searchersList
-            self.last_query = query
+            self.navi['last_query'] = query
         elif len(query) == 0:
-            self.filesList = []
+            self.navi['filesList'] = []
 
-        if self.filesList:
-            for (order, seeds, leechers, size, title, link, image) in self.filesList:
+        if self.navi['filesList']:
+            for (order, seeds, leechers, size, title, link, image) in self.navi['filesList']:
                 title = titleMake(seeds, leechers, size, title)
                 self.drawItem(title, {'mode': 'search_item', 'filename': link}, image)
             self.setFocus(self.listing)
@@ -768,23 +775,20 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
     def open_torrent(self, params):
         self.navi_route('open_torrent', params)
-        #    def open_torrent(self, link, tdir=None):
+
         get = params.get
         link = get('link')
         tdir = get('tdir')
 
         # cache
-        if link != self.last_link:
+        if link != self.navi['last_link']:
             self.navi['contentList'] = get_contentList(link)
-        self.last_link = link
+        self.navi['last_link'] = link
 
         dirList, contentListNew = cutFolder(self.navi['contentList'], tdir)
 
-        if not tdir:
-            params = {'mode': 'torrent_moveup', 'filename': link}
-        else:
-            params = {'mode': 'torrent_subfolder', 'filename': link}
-        self.drawItem('..', params, image = 'DefaultFolderBack.png', isFolder=True)
+        self.drawItem('..', {'mode': 'torrent_moveup', 'filename': link},
+                      image = 'DefaultFolderBack.png', isFolder=True)
 
         dirList = sorted(dirList, key=lambda x: x[0], reverse=False)
         for title in dirList:
