@@ -156,14 +156,13 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
     def set_navigation(self):
         # Top menu
-        self.button_browser.setNavigation(self.listing, self.listing, self.button_downloadstatus,
+        self.button_browser.setNavigation(self.window_close_button, self.listing, self.button_downloadstatus,
                                           self.button_controlcenter)
-        self.button_controlcenter.setNavigation(self.listing, self.listing, self.button_browser, self.input_search)
+        self.button_controlcenter.setNavigation(self.window_close_button, self.listing, self.button_browser, self.input_search)
         #self.button_keyboard.setNavigation(self.listing, self.listing, self.button_browser, self.input_search)
-        self.input_search.setNavigation(self.listing, self.listing, self.button_controlcenter, self.button_search)
-        self.button_search.setNavigation(self.listing, self.listing, self.input_search, self.button_history)
-        self.button_history.setNavigation(self.listing, self.listing, self.button_search, self.button_watched)
-
+        self.input_search.setNavigation(self.window_close_button, self.listing, self.button_controlcenter, self.button_search)
+        self.button_search.setNavigation(self.window_close_button, self.listing, self.input_search, self.button_history)
+        self.button_history.setNavigation(self.window_close_button, self.listing, self.button_search, self.button_watched)
         self.update_navigation()
 
     def update_navigation(self):
@@ -173,10 +172,11 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.last_right_button = self.navi_right_menu[self.navi['last_right_button'] - 1]
 
         # Top menu
-        self.button_downloadstatus.setNavigation(self.listing, self.listing, self.last_right_button,
+        self.button_downloadstatus.setNavigation(self.window_close_button, self.listing, self.last_right_button,
                                                  self.button_browser)
-        self.button_watched.setNavigation(self.listing, self.listing, self.button_history, self.last_right_button)
-
+        self.button_watched.setNavigation(self.window_close_button, self.listing, self.button_history, self.last_right_button)
+        self.window_close_button.setNavigation(self.listing, self.last_top_button, self.button_watched,
+                                               self.button_downloadstatus)
         # Main
         self.listing.setNavigation(self.last_top_button, self.input_search, self.button_downloadstatus,
                                    self.last_right_button)

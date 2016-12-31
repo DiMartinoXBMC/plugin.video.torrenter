@@ -1502,6 +1502,10 @@ class Core:
         fileIndex = unquote(get("index"), None)
         if url:
             self.__settings__.setSetting("lastTorrentUrl", url)
+            classMatch = re.search('(\w+)::(.+)', url)
+            if classMatch:
+                searcher = classMatch.group(1)
+                url = Searchers().downloadWithSearcher(classMatch.group(2), searcher)
             torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
             self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
             if fileIndex==None: fileIndex = chooseFile(torrent.getContentList())
