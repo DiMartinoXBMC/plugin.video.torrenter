@@ -28,7 +28,7 @@ from StringIO import StringIO
 import zlib
 
 from functions import file_decode, file_encode
-from functions import magnet_alert, log, debug
+from functions import magnet_alert, log, loadsw_onstop
 import xbmcvfs
 
 
@@ -81,6 +81,7 @@ class AceStream:
 
     def __exit__(self):
         self.TSplayer.end()
+        loadsw_onstop()  # Reload Search Window
 
     def play_url_ind(self, ind, label, icon):
         self.TSplayer.play_url_ind(int(ind), label, str(icon), '')

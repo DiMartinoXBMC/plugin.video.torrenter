@@ -6,6 +6,7 @@
         <setting id="sort_search"       type="enum"     label="30061" default="0"   lvalues="30062|30063|30064"/>
         <setting id="skin_optimization" type="enum"     label="30002" default="1"   lvalues="30003|30018|30017|30016|30019|30066|30067|30071|30076"/>
         <setting id="open_option"       type="enum"     label="30034" default="0"   lvalues="30035|30036|30037|30038"/>
+        <setting id="searchwindowmode"  type="enum"     label="30106" default="1"   lvalues="30107|30108|30109|30110"/>
     </category>
     <category label="30103">
         <setting id="timeout"           type="enum"     lvalues="30026|30027|30028" label="30025" default="1"/>
@@ -72,5 +73,6 @@
         <setting id="enable_dht"            type="bool"     label="30070" default="true"    visible="!eq(-8,1)"/>
         <setting id="append_filesize"       type="bool"     label="30069" default="true"/>
         <setting id="torrent_info_style"    type="enum"     label="30072" default="0"       lvalues="30073|30074|30075"/>
+        <setting id="sw_transparent_back"   type="bool"     label="30111" default="false"/>
     </category>
 </settings>

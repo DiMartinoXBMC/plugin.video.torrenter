@@ -79,6 +79,12 @@
     <string id="30103">Advanced</string>
     <string id="30104">Torrent-client</string>
     <string id="30105">Hentai (fine-tuning)</string>
+    <string id="30106">Search Window Mode</string>
+    <string id="30107">Enabled, hide old style</string>
+    <string id="30108">Enabled, replace old style</string>
+    <string id="30109">Enabled, optional</string>
+    <string id="30110">Disabled</string>
+    <string id="30111">Search Window Transparent Background</string>
     <string id="50301">Save path</string>
     <string id="50302">Call dialog</string>
     <string id="50303">Default</string>

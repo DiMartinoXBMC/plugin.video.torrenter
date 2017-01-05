@@ -30,7 +30,7 @@ import xbmcvfs
 import xbmcaddon
 import xbmcplugin
 import Localization
-from functions import encode_msg, isSubtitle, is_writable, file_url, localize_path
+from functions import loadsw_onstop, isSubtitle, is_writable, file_url, localize_path
 
 
 import os
@@ -300,6 +300,8 @@ class InposPlayer(xbmc.Player):
             self.engine.close()
 
         xbmc.Player().stop()
+
+        loadsw_onstop()  # Reload Search Window
 
         if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
             xbmc.sleep(1000)

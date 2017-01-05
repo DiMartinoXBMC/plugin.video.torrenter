@@ -39,6 +39,7 @@ class Core:
     language = {0: 'en', 1: 'ru', 2: 'uk', 3: 'he', 4: 'hu'}.get(int(__settings__.getSetting("language")))
     scrapperDB_ver = {'en':'1.1', 'ru':'1.3', 'he':'1.3'}
     torrent_info_style = int(__settings__.getSetting('torrent_info_style'))
+    searchwindowmode = int(__settings__.getSetting('searchwindowmode'))
 
     log('SYS ARGV: ' + str(sys.argv))
 
@@ -53,7 +54,8 @@ class Core:
     def sectionMenu(self):
         if self.__settings__.getSetting('plugin_name') != self.__plugin__:
             #Every update run
-            first_run_250()
+            first_run_260()
+            self.__settings__.setSetting('first_run_260', 'True')
             self.__settings__.setSetting('plugin_name', self.__plugin__)
             #check_network_advancedsettings()
             check_download_dir()
@@ -65,52 +67,100 @@ class Core:
         contextMenu = [(self.localize('Search Control Window'),
                 'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
 
-        self.drawItem('< %s >' % self.localize('Search Window') + ' (BETA)', 'searchWindow',
-                      image=self.ROOT + '/icons/kodi.png', isFolder=False)
+        #Search Window
+        if self.searchwindowmode < 3:
+            self.drawItem('< %s >' % self.localize('Search Window'), 'searchWindow',
+                          image=self.ROOT + '/icons/kodi.png', isFolder=False)
 
-        if self.history_bool:
-            HistorycontextMenu=[]
+        #History
+        if self.history_bool and self.searchwindowmode > 0:
+            HistorycontextMenu = []
             HistorycontextMenu.extend(contextMenu)
             HistorycontextMenu.append(
-                (self.localize('Clear %s') % self.localize('Search History'), ListString % ('History', 'clear', 'addtime', '')))
-            self.drawItem('< %s >' % self.localize('Search History'), 'History',
-                          image=self.ROOT + '/icons/history2.png', contextMenu=HistorycontextMenu, replaceMenu=False)
-        self.drawItem('< %s >' % self.localize('Search'), 'search', image=self.ROOT + '/icons/search.png', )
+                (self.localize('Clear %s') % self.localize('Search History'),
+                 ListString % ('History', 'clear', 'addtime', '')))
+            if self.searchwindowmode == 1:
+                self.drawItem('< %s >' % self.localize('Search History'), 'swHistory',
+                              image=self.ROOT + '/icons/history2.png', contextMenu=HistorycontextMenu, replaceMenu=False)
+            else:
+                self.drawItem('< %s >' % self.localize('Search History'), 'History',
+                              image=self.ROOT + '/icons/history2.png', contextMenu=HistorycontextMenu, replaceMenu=False)
+
+        #Search
+        if self.searchwindowmode == 1:
+            self.drawItem('< %s >' % self.localize('Search'), 'swsearch', image=self.ROOT + '/icons/search.png',)
+        elif self.searchwindowmode > 1:
+            self.drawItem('< %s >' % self.localize('Search'), 'search', image=self.ROOT + '/icons/search.png', )
+
+        #Media
         CLcontextMenu=[]
         CLcontextMenu.extend(contextMenu)
         CLcontextMenu.append((self.localize('Reset All Cache DBs'),
                             ListString % ('full_download', '', 'url', json.dumps({'action': 'delete'}))))
         self.drawItem('< %s >' % self.localize('Content Lists'), 'openContent', image=self.ROOT + '/icons/media.png',
                       contextMenu=CLcontextMenu, replaceMenu=False)
+
+        #DL Status
         DLScontextMenu=[(self.localize('Start All'), ListString % ('DownloadStatus', 'startall', 'addtime', '')),
                         (self.localize('Stop All'), ListString % ('DownloadStatus', 'stopall', 'addtime', '')),]
         DLScontextMenu.append(
                 (self.localize('Clear %s') % self.localize('Download Status'), ListString % ('DownloadStatus', 'clear', 'addtime', '')))
         DLScontextMenu.extend(contextMenu)
-        self.drawItem('< %s >' % self.localize('Download Status'), 'DownloadStatus', image=self.ROOT + '/icons/download.png',
-                      contextMenu=DLScontextMenu, replaceMenu=False)
-        self.drawItem('< %s >' % self.localize('Torrent-client Browser'), 'uTorrentBrowser',
-                      image=self.ROOT + '/icons/' + getTorrentClientIcon())
-        if self.history_bool:
+
+        if self.searchwindowmode == 1:
+            self.drawItem('< %s >' % self.localize('Download Status'), 'swDownloadStatus',
+                          image=self.ROOT + '/icons/download.png',
+                          contextMenu=DLScontextMenu, replaceMenu=False)
+        elif self.searchwindowmode > 1:
+            self.drawItem('< %s >' % self.localize('Download Status'), 'DownloadStatus',
+                          image=self.ROOT + '/icons/download.png',
+                          contextMenu=DLScontextMenu, replaceMenu=False)
+
+        #Torrent-client
+        if self.searchwindowmode == 1:
+            self.drawItem('< %s >' % self.localize('Torrent-client Browser'), 'swuTorrentBrowser',
+                          image=self.ROOT + '/icons/' + getTorrentClientIcon())
+        elif self.searchwindowmode > 1:
+            self.drawItem('< %s >' % self.localize('Torrent-client Browser'), 'uTorrentBrowser',
+                          image=self.ROOT + '/icons/' + getTorrentClientIcon())
+
+        #Watched
+        if self.history_bool and self.searchwindowmode > 0:
             WatchedHistorycontextMenu=[]
             WatchedHistorycontextMenu.extend(contextMenu)
             WatchedHistorycontextMenu.append(
                 (self.localize('Clear %s') % self.localize('Watched History'), ListString % ('WatchedHistory', 'clear', 'addtime', '')))
-            self.drawItem('< %s >' % self.localize('Watched History'), 'WatchedHistory',
-                      image=self.ROOT + '/icons/watched.png', contextMenu=WatchedHistorycontextMenu, replaceMenu=False)
+            if self.searchwindowmode == 1:
+                self.drawItem('< %s >' % self.localize('Watched History'), 'swWatchedHistory',
+                              image=self.ROOT + '/icons/watched.png', contextMenu=WatchedHistorycontextMenu,
+                              replaceMenu=False)
+            else:
+                self.drawItem('< %s >' % self.localize('Watched History'), 'WatchedHistory',
+                      image=self.ROOT + '/icons/watched.png', contextMenu=WatchedHistorycontextMenu,
+                              replaceMenu=False)
+
+        #Torr player
         self.drawItem('< %s >' % self.localize('.torrent Player'), 'torrentPlayer',
-                      image=self.ROOT + '/icons/torrentPlayer.png')
+                      image=self.ROOT + '/icons/torrentPlayer.png', isFolder = False)
+
+        #Search Control Window
         self.drawItem('< %s >' % self.localize('Search Control Window'), 'controlCenter',
                       image=self.ROOT + '/icons/settings.png', isFolder=False)
+
+        #Magnet player
         self.drawItem('< %s >' % self.localize('Magnet-link Player'), 'magentPlayer',
-                      image=self.ROOT + '/icons/magnet.png')
+                      image=self.ROOT + '/icons/magnet.png', isFolder = False)
+
+        #Debug
         if self.debug:
             self.drawItem('full_download', 'full_download', image=self.ROOT + '/icons/magnet.png')
             self.drawItem('test', 'test', image=self.ROOT + '/icons/magnet.png', isFolder=False)
 
+        #Clear storage
         if '0' != self.__settings__.getSetting("keep_files"):
             self.drawItem('< %s >' % self.localize('Clear Storage'), 'clearStorage', isFolder=True,
                           image=self.ROOT + '/icons/clear.png')
+
         view_style('sectionMenu')
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
@@ -243,54 +293,43 @@ class Core:
         lockView('wide')
 
     def test(self, params={}):
-        #from Anteoloader import AnteoPlayer
-        #from python_libtorrent import get_libtorrent
-        #self.lt=get_libtorrent()
-        #self.torrentFile='D:\\test.torrent'
-        #self.session = self.lt.session()
-        #e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())
-        #self.torrentFileInfo = self.lt.torrent_info(e)
-        #torrent_info={'ti': self.torrentFileInfo,
-        #      'save_path': self.userStorageDirectory,
-        #      'flags': 0x300,
-        #       #'storage_mode': self.lt.storage_mode_t(1),
-        #       'paused': False,
-        #       #'auto_managed': False,
-        #       #'duplicate_is_error': True
-        #      }
-        #self.torrentHandle = self.session.add_torrent(torrent_info)
-        #log(self.torrentHandle.torrent_file())
-        #self.session.remove_torrent(self.torrentHandle)
+        import searchwindow
+        params = {'mode': 'file_browser', 'path':'D:\\', 'tdir':'D:\\FRAPS\\'}
+        searchwindow.main(params)
 
-        #params['url']='0'
-        #if not xbmcvfs.exists(torrentUrl):
-        #    action = xbmcgui.Dialog()
-        #    torrentUrl = action.browse(1, self.localize('Choose .torrent in video library'), 'video', '.torrent')
-        #if torrentUrl and xbmcvfs.exists(torrentUrl):
-        #    if 0 != len(torrentUrl):
-        #        self.Downloader = Downloader.Torrent(self.userStorageDirectory, torrentUrl)
-        #    else:
-        #        log(self.__plugin__ + " Unexpected access to method Anteoloader() without torrent content")
-        #if self.Downloader:
-        #    x=self.Downloader.getContentList()
-        #    print str(x)
-        #    xbmc.sleep(1000)
-        #    self.Downloader.__exit__()
-        #self.Player = AnteoPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
+    def swHistory(self, params={}):
+        import searchwindow
+        params = {'mode': 'history'}
+        searchwindow.main(params)
 
-        #xbmcgui.Dialog().ok('Dam Son!','Now send this shit to DiMartino')
-        from resources.proxy import antizapret
-        filename = os.path.join(tempdir(),"antizapret.pac_config")
-        import shelve
-        from contextlib import contextmanager, closing
-        with closing(shelve.open(filename, writeback=True)) as d:
-            import time
-            log(str(d))
-            log(str(time.time()))
-            log(str((time.time() - d["created_at"])))
-            ttl = 24*3600
-            if ttl > 0 and (time.time() - d["created_at"]) > ttl:
-                log('xxx')
+    def swDownloadStatus(self, params={}):
+        import searchwindow
+        params = {'mode': 'downloadstatus'}
+        searchwindow.main(params)
+
+    def swuTorrentBrowser(self, params={}):
+        import searchwindow
+        params = {'mode': 'browser'}
+        searchwindow.main(params)
+
+    def swWatchedHistory(self, params={}):
+        import searchwindow
+        params = {'mode': 'watched'}
+        searchwindow.main(params)
+
+
+    def swsearch(self, params={}):
+        if len(Searchers().get_active())<1:
+            noActiveSerachers()
+            return
+        keyboard = xbmc.Keyboard('', self.localize('Search Phrase'))
+        keyboard.doModal()
+        params["query"] = keyboard.getText()
+        if keyboard.isConfirmed():
+            params["mode"] = 'search'
+            import searchwindow
+            searchwindow.main(params)
+
 
     def DownloadStatus(self, params={}):
         db = DownloadDB()
@@ -1382,7 +1421,6 @@ class Core:
                 params["url"] = urllib.quote_plus(unescape(urllib.unquote_plus(query)))
         else:
             params["url"] = urllib.quote_plus(unescape(urllib.unquote_plus(defaultKeyword)))
-        #print str(params)
         self.torrentPlayer(params)
 
     def torrentPlayer(self, params={}):
@@ -1403,7 +1441,12 @@ class Core:
                 % ('torrentPlayer', url))
                 return
         if url:
-            self.openTorrent(params)
+            if self.searchwindowmode > 1:
+                self.openTorrent(params)
+            else:
+                import searchwindow
+                params = {'mode': 'open_torrent', 'link': url}
+                searchwindow.main(params)
 
     def userStorage(self, params):
         save=False

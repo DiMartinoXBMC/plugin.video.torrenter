@@ -809,6 +809,8 @@ def localize(text):
             'Play (from start)':'Lejátszás (az elejétől)',
         },
         'ru': {
+            'is recommended for Kodi 17 users and now out of beta.': 'рекомендовано пользователям Kodi 17 и вышло из беты.',
+            'You can disable it usage in Settings.':'Его можно отключить в настройках плагина.',
             'Move Up': 'Вверх',
             'Torrenter Search Window': 'Окно Поиска Torrenter',
             'Cancel': 'Отмена',

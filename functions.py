@@ -1870,6 +1870,18 @@ def first_run_250():
             #ok = xbmcgui.Dialog().ok('< %s >' % (Localization.localize('Torrenter Update ') + '2.4.2'),
             #                        Localization.localize('Torrent2HTTP enabled! Can be changed in Settings.'))
 
+def first_run_260():
+    if not __settings__.getSetting('first_run_260') == 'True':
+        yes=xbmcgui.Dialog().yesno('< %s >' % (Localization.localize('Torrenter Update ') + '2.6.0'),
+                                        Localization.localize('Torrenter Search Window')+' '
+                                   +Localization.localize('is recommended for Kodi 17 users and now out of beta.')
+                                   +Localization.localize('You can disable it usage in Settings.'),
+                                        Localization.localize('Would you like to try it?'),)
+        if yes:
+            import searchwindow
+            searchwindow.main()
+
+
 def seeking_warning(seek):
     if __settings__.getSetting('torrent_player')!='1':
         seek_point = '%02d:%02d:%02d' % ((seek / (60*60)), (seek / 60) % 60, seek % 60)
@@ -2266,3 +2278,9 @@ def get_item():
 
     item.setInfo(type='Video', infoLabels=infoLabels)
     return item
+
+def loadsw_onstop():
+    if __settings__.getSetting('loadsw_onstop') == 'true':
+        import searchwindow
+        params = {'mode': 'load'}
+        searchwindow.main(params)

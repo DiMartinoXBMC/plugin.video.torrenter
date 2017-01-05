@@ -30,7 +30,7 @@ import xbmcgui
 import xbmcvfs
 import xbmcaddon
 import Localization
-from functions import localize_path, isSubtitle, DownloadDB, log, debug, is_writable, unquote, file_url
+from functions import localize_path, isSubtitle, loadsw_onstop, is_writable, file_url
 
 
 import os
@@ -325,6 +325,8 @@ class AnteoPlayer(xbmc.Player):
                 break
 
         xbmc.Player().stop()
+
+        loadsw_onstop() # Reload Search Window
 
         if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
             xbmc.sleep(1000)

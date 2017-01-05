@@ -30,7 +30,7 @@ import Downloader
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import calculate, showMessage, clearStorage, WatchedHistoryDB, DownloadDB, get_ids_video, log, debug, foldername, ensure_str
+from functions import calculate, showMessage, clearStorage, WatchedHistoryDB, DownloadDB, get_ids_video, log, debug, foldername, ensure_str, loadsw_onstop
 
 ROOT = sys.modules["__main__"].__root__
 RESOURCES_PATH = os.path.join(ROOT, 'resources')
@@ -183,6 +183,8 @@ class TorrentPlayer(xbmc.Player):
                     continue
                 debug('************************************* NO! break')
                 break
+
+        loadsw_onstop()  # Reload Search Window
 
         self.torrent.stopSession()
         self.torrent.threadComplete = True
