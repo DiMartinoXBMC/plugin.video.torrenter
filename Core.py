@@ -55,6 +55,9 @@ class Core:
         if self.__settings__.getSetting('plugin_name') != self.__plugin__:
             #Every update run
             first_run_260()
+            if self.version_check():
+                estuary()
+
             self.__settings__.setSetting('first_run_260', 'True')
             self.__settings__.setSetting('plugin_name', self.__plugin__)
             #check_network_advancedsettings()
@@ -317,7 +320,6 @@ class Core:
         params = {'mode': 'watched'}
         searchwindow.main(params)
 
-
     def swsearch(self, params={}):
         if len(Searchers().get_active())<1:
             noActiveSerachers()
@@ -329,7 +331,6 @@ class Core:
             params["mode"] = 'search'
             import searchwindow
             searchwindow.main(params)
-
 
     def DownloadStatus(self, params={}):
         db = DownloadDB()

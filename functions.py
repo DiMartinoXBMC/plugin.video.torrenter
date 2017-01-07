@@ -1363,7 +1363,7 @@ def get_contentList(url):
     import Downloader
 
     url = urllib.unquote_plus(url)
-    log('0' + __settings__.getSetting("lastTorrent"))
+    debug('0' + __settings__.getSetting("lastTorrent"))
 
     __settings__.setSetting("lastTorrentUrl", url)
     classMatch = re.search('(\w+)::(.+)', url)
@@ -1374,9 +1374,9 @@ def get_contentList(url):
 
     torrent = Downloader.Torrent(userStorageDirectory, url, torrentFilesDirectory=torrentFilesDirectory)
 
-    log('1'+__settings__.getSetting("lastTorrent"))
+    debug('1'+__settings__.getSetting("lastTorrent"))
     __settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
-    log('2'+__settings__.getSetting("lastTorrent"))
+    debug('2'+__settings__.getSetting("lastTorrent"))
 
     append_filesize = __settings__.getSetting("append_filesize") == 'true'
 
@@ -1885,6 +1885,17 @@ def first_run_260():
             import searchwindow
             searchwindow.main()
 
+
+def estuary():
+    if __settings__.getSetting('skin_optimization') not in ['7', '0'] and \
+                    __settings__.getSetting('ask17_skin_optimization') != 'true':
+
+        yes = xbmcgui.Dialog().yesno('< %s >' % (Localization.localize('Torrenter Update ') + '2.6.0'),
+                                     Localization.localize('Torrenter has a better view style for Kodi 17 default skin.'),
+                                     Localization.localize('Would you like to try it?'), )
+        if yes:
+            __settings__.setSetting('skin_optimization', '7')
+    __settings__.setSetting('ask17_skin_optimization', 'true')
 
 def seeking_warning(seek):
     if __settings__.getSetting('torrent_player')!='1':

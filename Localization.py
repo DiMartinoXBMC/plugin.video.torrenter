@@ -809,6 +809,7 @@ def localize(text):
             'Play (from start)':'Lejátszás (az elejétől)',
         },
         'ru': {
+            'Torrenter has a better view style for Kodi 17 default skin.':'У Torrenter есть оптимизированный вид под новый скин Kodi 17.',
             'is recommended for Kodi 17 users and now out of beta.': 'рекомендовано пользователям Kodi 17 и вышло из беты.',
             'You can disable it usage in Settings.':'Его можно отключить в настройках плагина.',
             'Move Up': 'Вверх',
