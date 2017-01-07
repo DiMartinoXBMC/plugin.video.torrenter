@@ -93,10 +93,10 @@ def clearStorage(userStorageDirectory, force = False):
             if saved_bool:
                 shutil.move(saved_temp, saved)
 
-            showMessage(Localization.localize('Storage'), Localization.localize('Storage has been cleared'), forced=True)
+            showMessage(Localization.localize('Storage'), Localization.localize('Storage has been cleared'))
 
         else:
-            showMessage(Localization.localize('Storage'), Localization.localize('Does not exists'), forced=True)
+            showMessage(Localization.localize('Storage'), Localization.localize('Does not exists'))
             log('[clearStorage]: fail storage '+userStorageDirectory + os.sep)
 
         try:
@@ -152,8 +152,9 @@ def debug(msg, forced=False):
 
 
 def showMessage(heading, message, times=10000, forced=False):
-    xbmc.executebuiltin('XBMC.Notification("%s", "%s", %s, "%s")' % (
-        heading.replace('"', "'"), message.replace('"', "'"), times, icon))
+    if forced or not getSettingAsBool('disable_notifications'):
+        xbmc.executebuiltin('XBMC.Notification("%s", "%s", %s, "%s")' % (
+            heading.replace('"', "'"), message.replace('"', "'"), times, icon))
     debug(str((heading.replace('"', "'"), message.replace('"', "'"), times, icon)))
 
 
@@ -1362,6 +1363,7 @@ def get_contentList(url):
     import Downloader
 
     url = urllib.unquote_plus(url)
+    log('0' + __settings__.getSetting("lastTorrent"))
 
     __settings__.setSetting("lastTorrentUrl", url)
     classMatch = re.search('(\w+)::(.+)', url)
@@ -1372,7 +1374,9 @@ def get_contentList(url):
 
     torrent = Downloader.Torrent(userStorageDirectory, url, torrentFilesDirectory=torrentFilesDirectory)
 
+    log('1'+__settings__.getSetting("lastTorrent"))
     __settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
+    log('2'+__settings__.getSetting("lastTorrent"))
 
     append_filesize = __settings__.getSetting("append_filesize") == 'true'
 

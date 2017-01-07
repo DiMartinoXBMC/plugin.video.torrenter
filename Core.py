@@ -1473,7 +1473,10 @@ class Core:
                 self.userStorageDirectory=dirname
 
     def playTorrent(self, params={}):
-        torrentUrl = self.__settings__.getSetting("lastTorrent")
+        if params.get('filename'):
+            torrentUrl = params.get('filename')
+        else:
+            torrentUrl = self.__settings__.getSetting("lastTorrent")
         #xbmc.executebuiltin('Action(Stop)')
         self.userStorage(params)
         if self.torrent_player == '0':
@@ -1608,7 +1611,7 @@ class Core:
                  'XBMC.RunPlugin(%s)' % ('%s?action=%s&ind=%s') % (
                  sys.argv[0], 'downloadLibtorrent', str(identifier))),
             ]
-            link = {'url': identifier, 'thumbnail': thumbnail, 'save_folder':save_folder}
+            link = {'url': identifier, 'thumbnail': thumbnail, 'save_folder':save_folder, 'filename':url}
             self.drawItem(title, 'playTorrent', link, image=thumbnail, isFolder=False,
                           action2=ids_video.rstrip(','), contextMenu=contextMenu, replaceMenu=False, fileSize=filesize)
         view_style('openTorrent')

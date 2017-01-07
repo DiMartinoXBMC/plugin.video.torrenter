@@ -302,6 +302,9 @@ class AnteoPlayer(xbmc.Player):
                 if self.buffer():
                     log('[AnteoPlayer]: ************************************* GOING LOOP')
                     if self.setup_play():
+                        WatchedHistoryDB().add(self.basename,
+                                               foldername(self.getContentList()[self.contentId]['title']),
+                                               self.watchedTime, self.totalTime, self.contentId, self.fullSize)
                         self.setup_subs()
                         self.loop()
                         WatchedHistoryDB().add(self.basename, foldername(self.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize)
@@ -321,19 +324,19 @@ class AnteoPlayer(xbmc.Player):
 
                     log('[AnteoPlayer]: ************************************* NO! break')
                     showMessage(self.localize('Information'),
-                                self.localize('Stopping the torrent2http process...'), forced=True)
+                                self.localize('Stopping the torrent2http process...'))
                 break
 
         xbmc.Player().stop()
-
-        loadsw_onstop() # Reload Search Window
 
         if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
             xbmc.sleep(1000)
             clearStorage(self.userStorageDirectory)
 
         showMessage(self.localize('Information'),
-                    self.localize('torrent2http process stopped.'), forced=True)
+                    self.localize('torrent2http process stopped.'))
+
+        loadsw_onstop()  # Reload Search Window
 
     def init(self):
         self.next_contentId = False

@@ -273,6 +273,9 @@ class InposPlayer(xbmc.Player):
                 while True:
                     log('['+author+'Player]: ************************************* GOING LOOP')
                     if self.setup_play():
+                        WatchedHistoryDB().add(self.basename,
+                                               foldername(self.getContentList()[self.contentId]['title']),
+                                               self.watchedTime, self.totalTime, self.contentId, self.fullSize)
                         self.setup_subs()
                         self.loop()
                         WatchedHistoryDB().add(self.basename, foldername(self.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize)
@@ -301,8 +304,6 @@ class InposPlayer(xbmc.Player):
 
         xbmc.Player().stop()
 
-        loadsw_onstop()  # Reload Search Window
-
         if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
             xbmc.sleep(1000)
             clearStorage(self.userStorageDirectory)
@@ -313,7 +314,9 @@ class InposPlayer(xbmc.Player):
             #else:
             #if self.seeding: self.db_delete()
             showMessage(self.localize('Information'),
-                        self.localize('Torrent downloading is stopped.'), forced=True)
+                        self.localize('Torrent downloading is stopped.'))
+
+        loadsw_onstop()  # Reload Search Window
 
     def init(self):
         self.next_contentId = False
@@ -572,7 +575,7 @@ class InposPlayer(xbmc.Player):
                                                                                                     int) and self.next_contentId != False:
                         self.engine.activate_file(self.next_contentId)
                         showMessage(self.localize('Torrent Downloading'),
-                                    self.localize('Starting download next episode!'), forced=True)
+                                    self.localize('Starting download next episode!'))
                         log('[loop]: next_contentId '+str(self.next_contentId)+str(isinstance(self.next_contentId, int)))
                         file_status = self.engine.file_status(self.next_contentId)
                         self.basename = self.display_name = os.path.basename(file_status.name)

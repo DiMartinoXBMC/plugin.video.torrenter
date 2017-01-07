@@ -73,6 +73,7 @@
         <setting id="enable_dht"            type="bool"     label="30070" default="true"    visible="!eq(-8,1)"/>
         <setting id="append_filesize"       type="bool"     label="30069" default="true"/>
         <setting id="torrent_info_style"    type="enum"     label="30072" default="0"       lvalues="30073|30074|30075"/>
+        <setting id="disable_notifications" type="bool"     label="30112" default="false"/>
         <setting id="sw_transparent_back"   type="bool"     label="30111" default="false"/>
     </category>
 </settings>

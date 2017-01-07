@@ -240,8 +240,11 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         navi = read.read()
         read.close()
 
-        debug('navi_load navi: '+str(navi))
-        log('navi_load navi: ' + str(navi['route']))
+        try:
+            debug('navi_load navi: '+str(navi))
+            log('navi_load navi: ' + str(navi['route']))
+        except:
+            log('navi_load load error')
 
         if navi and len(navi) > 0:
             self.navi = json.loads(navi)
@@ -335,7 +338,11 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         if query:
             self.input_search.setText(query)
         else:
-            query = self.input_search.getText()
+            if self.input_search.getText() not in ['', None]:
+                query = self.input_search.getText()
+            elif self.navi['last_query'] not in ['', None]:
+                query = self.navi['last_query']
+                self.input_search.setText(self.navi['last_query'])
             
         log('Search query: ' + str(query))
 
@@ -814,7 +821,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         contentListNew = sorted(contentListNew, key=lambda x: x[0], reverse=False)
         for title, identifier, filesize in contentListNew:
-            params = {'mode': 'torrent_play', 'url': identifier, 'url2': ids_video.rstrip(','), 'filename': link}
+            params = {'mode': 'torrent_play', 'fileIndex': identifier, 'url2': ids_video.rstrip(','), 'url': link}
             self.drawItem(title, params)
 
         self.navi_save('open_torrent')
@@ -865,7 +872,11 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         return label_list
 
     def context(self):
-        if self.getFocus() == self.listing:
+        try:
+            focused_control = self.getFocus()
+        except:
+            focused_control = None
+        if focused_control == self.listing:
             item = self.listing.getSelectedItem()
             params = json.loads(item.getfilename())
             mode = params.get('mode')
@@ -879,6 +890,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
             if ret > -1 and ret < len(label_list):
                 getattr(self, "right_press" + str(ret + 1))()
+        elif focused_control == self.input_search:
+            self.input_search.setText('')
 
     def right_menu(self, mode='place'):
         if not mode == 'place':
@@ -1028,7 +1041,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             self.navi_back()
         elif mode == 'torrent_play':
             if index == 1:
-                url = self.form_link('playTorrent', params)
+                url = self.form_link('playSTRM', params)
                 xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
                 __settings__.setSetting('loadsw_onstop', 'true')
                 self.close()
@@ -1125,7 +1138,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             link_url = ''
             for key in link.keys():
                 if link.get(key) and key != 'mode':
-                    link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(link.get(key)))
+                    link_url = '%s&%s=%s' % (link_url, key, urllib.quote_plus(ensure_str(link.get(key))))
             url = '%s?action=%s' % ('plugin://plugin.video.torrenter/', action) + link_url
         else:
             url = '%s?action=%s&url=%s' % ('plugin://plugin.video.torrenter/', action, urllib.quote_plus(link))
