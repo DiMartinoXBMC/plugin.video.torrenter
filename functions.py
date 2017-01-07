@@ -1888,14 +1888,14 @@ def first_run_260():
 
 def estuary():
     if __settings__.getSetting('skin_optimization') not in ['7', '0'] and \
-                    __settings__.getSetting('ask17_skin_optimization') != 'true':
+                    __settings__.getSetting('ask17_skin_optimization') != 'True':
 
         yes = xbmcgui.Dialog().yesno('< %s >' % (Localization.localize('Torrenter Update ') + '2.6.0'),
                                      Localization.localize('Torrenter has a better view style for Kodi 17 default skin.'),
                                      Localization.localize('Would you like to try it?'), )
         if yes:
             __settings__.setSetting('skin_optimization', '7')
-    __settings__.setSetting('ask17_skin_optimization', 'true')
+    __settings__.setSetting('ask_skin_optimization', 'True')
 
 def seeking_warning(seek):
     if __settings__.getSetting('torrent_player')!='1':

@@ -1475,7 +1475,7 @@ class Core:
 
     def playTorrent(self, params={}):
         if params.get('filename'):
-            torrentUrl = params.get('filename')
+            torrentUrl = unquote(params.get('filename'))
         else:
             torrentUrl = self.__settings__.getSetting("lastTorrent")
         #xbmc.executebuiltin('Action(Stop)')

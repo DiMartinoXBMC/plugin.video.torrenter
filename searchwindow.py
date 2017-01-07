@@ -64,6 +64,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.setGeometry(1280, 720, 9, 16)
         self.set_navi()
         self.set_controls()
+        self.set_focus()
         self.connect_controls()
         if params and params.get('mode'):
             if params.get('mode') == 'load':
@@ -253,7 +254,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
     def navi_save(self, mode = None):
         debug('navi_save init')
 
-        if mode: self.set_focus(mode)
+        self.set_focus(mode)
 
         navi = json.dumps(self.navi)
 
@@ -317,7 +318,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.right_menu(mode if not right_menu else right_menu)
         self.listing.reset()
 
-    def set_focus(self, mode):
+    def set_focus(self, mode = None):
         if not self.listing.size():
             if mode and hasattr(self, "button_" + mode):
                 self.setFocus(getattr(self, "button_" + mode))
