@@ -237,6 +237,9 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         if not xbmcvfs.exists(__tmppath__):
             xbmcvfs.mkdirs(__tmppath__)
         navi_file = os.path.join(__tmppath__, 'navi.txt')
+        if not xbmcvfs.exists(navi_file):
+            nav_content = '{"last_link": null, "last_query": null, "filesList": [], "last_addtime": null, "last_top_button": 5, "route": [{"params": {}, "last_listing_item": 0, "mode": "close"}, {"last_listing_item": 0, "params": {}, "mode": "history"}], "contentList": [], "last_right_button": 1, "searchersList": []}'
+            with open(xbmc.translatePath(navi_file), 'wb') as f: f.write(nav_content)
         read = xbmcvfs.File(navi_file, 'r')
         navi = read.read()
         read.close()
