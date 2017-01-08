@@ -1375,7 +1375,8 @@ def get_contentList(url):
     torrent = Downloader.Torrent(userStorageDirectory, url, torrentFilesDirectory=torrentFilesDirectory)
 
     debug('1'+__settings__.getSetting("lastTorrent"))
-    __settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
+    filename = torrent.saveTorrent(url)
+    __settings__.setSetting("lastTorrent", filename)
     debug('2'+__settings__.getSetting("lastTorrent"))
 
     append_filesize = __settings__.getSetting("append_filesize") == 'true'
@@ -1393,7 +1394,7 @@ def get_contentList(url):
 
     debug('get_contentList contentList: ' + str(contentList))
 
-    return contentList
+    return contentList, filename
 
 def join_list(l, char=', ', replace=''):
     string=''

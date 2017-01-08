@@ -96,6 +96,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             'last_addtime': None,
             'last_query': None,
             'last_link': None,
+            'last_filename': None,
             'route': [{'mode': 'close', 'params': {}, 'last_listing_item': 0}]
         }
 
@@ -238,8 +239,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             xbmcvfs.mkdirs(__tmppath__)
         navi_file = os.path.join(__tmppath__, 'navi.txt')
         if not xbmcvfs.exists(navi_file):
-            nav_content = '{"last_link": null, "last_query": null, "filesList": [], "last_addtime": null, "last_top_button": 5, "route": [{"params": {}, "last_listing_item": 0, "mode": "close"}, {"last_listing_item": 0, "params": {}, "mode": "history"}], "contentList": [], "last_right_button": 1, "searchersList": []}'
-            with open(xbmc.translatePath(navi_file), 'wb') as f: f.write(nav_content)
+            self.set_navi()
+            with open(xbmc.translatePath(navi_file), 'wb') as f: f.write(str(self.navi))
         read = xbmcvfs.File(navi_file, 'r')
         navi = read.read()
         read.close()
@@ -804,8 +805,11 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         # cache
         if link != self.navi['last_link']:
-            self.navi['contentList'] = get_contentList(link)
+            self.navi['contentList'], filename = get_contentList(link)
+        else:
+            filename = self.navi['last_filename']
         self.navi['last_link'] = link
+        self.navi['last_filename'] = filename
 
         dirList, contentListNew = cutFolder(self.navi['contentList'], tdir)
 
@@ -825,7 +829,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         contentListNew = sorted(contentListNew, key=lambda x: x[0], reverse=False)
         for title, identifier, filesize in contentListNew:
-            params = {'mode': 'torrent_play', 'fileIndex': identifier, 'url2': ids_video.rstrip(','), 'url': link}
+            params = {'mode': 'torrent_play', 'fileIndex': identifier, 'url2': ids_video.rstrip(','), 'url': link,
+                      'filename': filename}
             self.drawItem(title, params)
 
         self.navi_save('open_torrent')
@@ -1045,6 +1050,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             self.navi_back()
         elif mode == 'torrent_play':
             if index == 1:
+                if filename and xbmcvfs.exists(filename):
+                    params['url'] = ensure_str(filename)
                 url = self.form_link('playSTRM', params)
                 xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
                 __settings__.setSetting('loadsw_onstop', 'true')

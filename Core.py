@@ -1554,10 +1554,13 @@ class Core:
                 searcher = classMatch.group(1)
                 url = Searchers().downloadWithSearcher(classMatch.group(2), searcher)
             torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
-            self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
-            if fileIndex==None: fileIndex = chooseFile(torrent.getContentList())
+            filename = torrent.saveTorrent(url)
+            self.__settings__.setSetting("lastTorrent", filename)
+            if fileIndex == None: fileIndex = chooseFile(torrent.getContentList())
             if fileIndex:
-                xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url='+fileIndex+'")')
+                params = {'url': fileIndex, 'filename': filename}
+                self.playTorrent(params)
+                #xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url=%s' % (fileIndex))
 
     def openTorrent(self, params={}):
         get = params.get
@@ -1576,7 +1579,8 @@ class Core:
         torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
         if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
                                                      torrentFilesDirectory=self.torrentFilesDirectory)
-        self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
+        filename = torrent.saveTorrent(url)
+        self.__settings__.setSetting("lastTorrent", filename)
     
         append_filesize = self.__settings__.getSetting("append_filesize") == 'true'
         hasSize = False
@@ -1612,9 +1616,11 @@ class Core:
                  'XBMC.RunPlugin(%s)' % ('%s?action=%s&ind=%s') % (
                  sys.argv[0], 'downloadLibtorrent', str(identifier))),
             ]
-            link = {'url': identifier, 'thumbnail': thumbnail, 'save_folder':save_folder, 'filename':url}
+            link = {'url': identifier, 'thumbnail': thumbnail, 'save_folder':save_folder,
+                    'filename':ensure_str(filename)}
             self.drawItem(title, 'playTorrent', link, image=thumbnail, isFolder=False,
-                          action2=ids_video.rstrip(','), contextMenu=contextMenu, replaceMenu=False, fileSize=filesize)
+                          action2=ids_video.rstrip(','), contextMenu=contextMenu,
+                          replaceMenu=False, fileSize=filesize)
         view_style('openTorrent')
         p_handle = int(sys.argv[1])
         try:
