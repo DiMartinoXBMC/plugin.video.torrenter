@@ -71,6 +71,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                 self.navi_load()
             elif params.get('mode') == 'search':
                 self.search(params)
+            elif params.get('mode') == 'externalsearch':
+                self.externalsearch(params)
             elif params.get('mode') == 'history':
                 self.history()
             elif params.get('mode') == 'downloadstatus':
@@ -371,6 +373,75 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             for (order, seeds, leechers, size, title, link, image) in self.navi['filesList']:
                 title = titleMake(seeds, leechers, size, title)
                 self.drawItem(title, {'mode': 'search_item', 'filename': link}, image)
+            self.setFocus(self.listing)
+
+    def externalsearch(self, params={}):
+        log('search init params: ' + str(params))
+
+        if hasattr(self, 'params'):
+            params = self.params
+
+        self.params = params
+        get = params.get
+        query = unquote(get('query'),'')
+        external = unquote(params.get("external"), 'torrenterall')
+        back_url = unquote(get("back_url"),'')
+        self.return_name = unquote(get("return_name"),'')
+        sdata = unquote(get("sdata"),'{}')
+
+        self.reconnect(self.button_search, self.externalsearch)
+        self.navi_route('externalsearch', params)
+
+        try:
+            sdata = json.loads(sdata)
+        except:
+            sdata = json.loads(urllib.unquote_plus(sdata))
+
+
+        if self.input_search.getText() not in ['', None]:
+            query = self.input_search.getText()
+        else:
+            self.input_search.setText(query)
+
+        #contextMenu = [
+        #    (self.localize('Add to %s') % return_name,
+        #     'XBMC.RunPlugin(%s)' % (back_url + '&stringdata=' + urllib.quote_plus(
+        #         json.dumps(sdata)))),
+
+
+        # url = 'plugin://plugin.video.torrenter/?action=searchWindow&mode=externalsearch&query=%s' \
+        #          '&sdata=%s&external=%s&back_url=%s&return_name=%s' % \
+        #          (urllib.quote_plus(query), urllib.quote_plus(json.dumps(sdata)),
+        #           self.externals[self.stype], urllib.quote_plus(back_self.url),
+        #           urllib.quote_plus(return_name))
+
+        log('Search query: ' + str(query))
+
+        searchersList = []
+
+        if not external or external == 'torrenterall':
+                searchersList = get_searchersList()
+        elif external == 'torrenterone':
+            slist = Searchers().list().keys()
+            ret = xbmcgui.Dialog().select(self.localize('Choose searcher')+':', slist)
+            if ret > -1 and ret < len(slist):
+                external = slist[ret]
+                searchersList.append(external)
+        else:
+            searchersList.append(external)
+
+        if len(query) > 0:
+            self.navi['filesList'] = get_filesList(query, searchersList)
+        else:
+            self.navi['filesList'] = []
+
+        if self.navi['filesList']:
+            for (order, seeds, leechers, size, title, link, image) in self.navi['filesList']:
+                title = titleMake(seeds, leechers, size, title)
+                sdata['filename'] = link
+                stringdata = json.dumps(sdata)
+                self.drawItem(title, {'mode': 'externalsearch_item', 'filename': link,
+                                      'stringdata': stringdata, 'back_url': back_url}, image)
             self.setFocus(self.listing)
 
     def history(self, params = {}):
@@ -844,6 +915,12 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
                           self.localize('Download via T-client'),
                           self.localize('Download via Libtorrent'),
                           self.localize('Info'),]
+        if mode in ['externalsearch', 'externalsearch_item']:
+            label_list = [self.localize('Add to %s') % self.return_name,
+                          self.localize('Open'),
+                          self.localize('Download via T-client'),
+                          self.localize('Download via Libtorrent'),
+                          self.localize('Info'),]
         elif mode in ['torrent_subfolder', 'file_browser', 'subfolder']:
             label_list = [self.localize('Open'),]
         elif mode in ['torrent_moveup', 'browser_moveup']:
@@ -1026,8 +1103,14 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         tdir = params.get('tdir')
         action = None
 
-        if mode in ['search_item', 'torrent_subfolder']:
-            if index == 1:
+        if mode in ['search_item', 'torrent_subfolder', 'externalsearch', 'externalsearch_item']:
+            if mode in ['externalsearch', 'externalsearch_item']:
+                index = index - 1
+
+            if index == 0:
+                url = params.get('back_url') + '&stringdata=' + urllib.quote_plus(params.get('stringdata'))
+                xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
+            elif index == 1:
                 params = {'link': filename, 'tdir': tdir}
                 self.open_torrent(params)
             elif index == 2:
