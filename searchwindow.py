@@ -240,7 +240,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         navi_file = os.path.join(__tmppath__, 'navi.txt')
         if not xbmcvfs.exists(navi_file):
             self.set_navi()
-            with open(xbmc.translatePath(navi_file), 'wb') as f: f.write(str(self.navi))
+            with open(xbmc.translatePath(navi_file), 'w') as f: f.write(json.dumps(self.navi))
         read = xbmcvfs.File(navi_file, 'r')
         navi = read.read()
         read.close()
