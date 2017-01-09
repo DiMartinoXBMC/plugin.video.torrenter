@@ -829,7 +829,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
         contentListNew = sorted(contentListNew, key=lambda x: x[0], reverse=False)
         for title, identifier, filesize in contentListNew:
-            params = {'mode': 'torrent_play', 'fileIndex': identifier, 'url2': ids_video.rstrip(','), 'url': link,
+            params = {'mode': 'torrent_play', 'index': identifier, 'url2': ids_video.rstrip(','), 'url': link,
                       'filename': filename}
             self.drawItem(title, params)
 
