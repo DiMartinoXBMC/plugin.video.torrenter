@@ -1546,6 +1546,7 @@ class Core:
         get = params.get
         xbmc.executebuiltin('xbmc.Playlist.Clear')
         url = unquote(get("url"), None)
+        url2 = unquote(get("url2"), None)
         fileIndex = unquote(get("index"), None)
         if url:
             self.__settings__.setSetting("lastTorrentUrl", url)
@@ -1559,6 +1560,7 @@ class Core:
             if fileIndex == None: fileIndex = chooseFile(torrent.getContentList())
             if fileIndex:
                 params = {'url': fileIndex, 'filename': filename}
+                if url2: params['url2'] = url2
                 self.playTorrent(params)
                 #xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url=%s' % (fileIndex))
 
