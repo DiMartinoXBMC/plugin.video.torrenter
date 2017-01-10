@@ -1072,7 +1072,10 @@ class WatchedHistoryDB:
         return x if x else None
 
     def add(self, filename, foldername = None, seek = 0, length = 1, ind = 0, size = 0):
-        watchedPercent = int((float(seek) / float(length)) * 100)
+        try:
+            watchedPercent = int((float(seek) / float(length)) * 100)
+        except:
+            watchedPercent = 0
         max_history_add = int(__settings__.getSetting('max_history_add'))
         if self.history_bool and watchedPercent <= max_history_add:
             self._connect()

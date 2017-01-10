@@ -350,16 +350,6 @@ class AnteoPlayer(xbmc.Player):
         self.torrentUrl = self.torrentUrl
 
     def setup_engine(self):
-        #uri=None, binaries_path=None, platform=None, download_path=".",
-        #bind_host='127.0.0.1', bind_port=5001, connections_limit=None, download_kbps=None, upload_kbps=None,
-        #enable_dht=True, enable_lsd=True, enable_natpmp=True, enable_upnp=True, enable_scrape=False,
-        #log_stats=False, encryption=Encryption.ENABLED, keep_complete=False, keep_incomplete=False,
-        #keep_files=False, log_files_progress=False, log_overall_progress=False, log_pieces_progress=False,
-        #listen_port=6881, use_random_port=False, max_idle_timeout=None, no_sparse=False, resume_file=None,
-        #user_agent=None, startup_timeout=5, state_file=None, enable_utp=True, enable_tcp=True,
-        #debug_alerts=False, logger=None, torrent_connect_boost=50, connection_speed=50,
-        #peer_connect_timeout=15, request_timeout=20, min_reconnect_time=60, max_failcount=3,
-        #dht_routers=None, trackers=None)
 
         encryption = Encryption.ENABLED if self.__settings__.getSetting('encryption') == 'true' else Encryption.DISABLED
         upload_limit = int(self.__settings__.getSetting("upload_limit"))*1024/8 if self.__settings__.getSetting(
@@ -400,16 +390,10 @@ class AnteoPlayer(xbmc.Player):
                              keep_files=keep_files, user_agent=user_agent, resume_file=resume_file, enable_dht=enable_dht)
 
     def buffer(self):
-        #self.pre_buffer_bytes = 30*1024*1024 #30 MB
         ready = False
         progressBar = xbmcgui.DialogProgress()
         progressBar.create('[%sPlayer v%s] ' % (author, __version__) + self.localize('Please Wait'),
                            self.localize('Seeds searching.'))
-        #if self.subs_dl:
-        #    subs = self.torrent.getSubsIds(os.path.basename(self.torrent.getFilePath(self.contentId)))
-        #    if len(subs) > 0:
-        #        for ind, title in subs:
-        #            self.torrent.continueSession(ind)
 
         while not xbmc.abortRequested and not ready:
             xbmc.sleep(500)
@@ -569,10 +553,10 @@ class AnteoPlayer(xbmc.Player):
                     status = self.engine.status()
                     file_status = self.engine.file_status(self.contentId)
                     self.watchedTime = xbmc.Player().getTime()
-                    self.totalTime = xbmc.Player().getTotalTime()
                     if self.iterator == 100 and debug_counter < 100:
                         debug_counter += 1
                     else:
+                        self.totalTime = xbmc.Player().getTotalTime()
                         self.print_debug(status)
                         debug_counter=0
 
@@ -585,12 +569,6 @@ class AnteoPlayer(xbmc.Player):
                         xbmc.Player().pause()
                         log('[loop]: xbmc.Player().pause()')
                     xbmc.sleep(1000)
-
-                    #if not self.seeding_run and self.iterator == 100 and self.seeding:
-                        #self.seeding_run = True
-                        #self.seed(self.contentId)
-                        #self.seeding_status = True
-                        # xbmc.sleep(7000)
 
     def onPlayBackStarted(self):
         for f in self.on_playback_started:
