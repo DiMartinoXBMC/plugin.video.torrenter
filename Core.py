@@ -1547,7 +1547,7 @@ class Core:
         xbmc.executebuiltin('xbmc.Playlist.Clear')
         url = unquote(get("url"), None)
         url2 = unquote(get("url2"), None)
-        fileIndex = unquote(get("index"), None)
+        index = unquote(get("index"), None)
         if url:
             self.__settings__.setSetting("lastTorrentUrl", url)
             classMatch = re.search('(\w+)::(.+)', url)
@@ -1557,12 +1557,18 @@ class Core:
             torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
             filename = torrent.saveTorrent(url)
             self.__settings__.setSetting("lastTorrent", filename)
-            if fileIndex == None: fileIndex = chooseFile(torrent.getContentList())
-            if fileIndex:
-                params = {'url': fileIndex, 'filename': filename}
-                if url2: params['url2'] = url2
-                self.playTorrent(params)
-                #xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url=%s' % (fileIndex))
+            if index == None: index = chooseFile(torrent.getContentList())
+            if index:
+                #params = {'url': index, 'filename': filename}
+                #if url2: params['url2'] = url2
+                #self.playTorrent(params)
+
+                url = 'plugin://plugin.video.torrenter/?action=playTorrent'
+                url += '&url=%s' % (str(index))
+                if url2: url += '&url2=%s' % (url2)
+                if filename: url += '&filename=%s' % (urllib.quote_plus(ensure_str(filename)))
+
+                xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
 
     def openTorrent(self, params={}):
         get = params.get
