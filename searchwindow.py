@@ -99,7 +99,8 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             'last_query': None,
             'last_link': None,
             'last_filename': None,
-            'route': [{'mode': 'close', 'params': {}, 'last_listing_item': 0}]
+            'route': [{'mode': 'close', 'params': {}, 'last_listing_item': 0},
+                      {"last_listing_item": 0, "params": {}, "mode": "history"}]
         }
 
     def set_controls(self):
