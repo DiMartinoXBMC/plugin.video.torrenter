@@ -99,8 +99,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
             'last_query': None,
             'last_link': None,
             'last_filename': None,
-            'route': [{'mode': 'close', 'params': {}, 'last_listing_item': 0},
-                      {"last_listing_item": 0, "params": {}, "mode": "history"}]
+            'route': [{'mode': 'close', 'params': {}, 'last_listing_item': 0}]
         }
 
     def set_controls(self):
@@ -243,6 +242,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         navi_file = os.path.join(__tmppath__, 'navi.txt')
         if not xbmcvfs.exists(navi_file):
             self.set_navi()
+            self.navi['route'].append({"last_listing_item": 0, "params": {}, "mode": "history"})
             with open(xbmc.translatePath(navi_file), 'w') as f: f.write(json.dumps(self.navi))
         read = xbmcvfs.File(navi_file, 'r')
         navi = read.read()
