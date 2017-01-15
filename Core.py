@@ -1876,10 +1876,14 @@ class Core:
             f = open(url, 'rb')
             torrent = f.read()
             f.close()
-            from python_libtorrent import get_libtorrent
-            libtorrent = get_libtorrent()
-            info = libtorrent.torrent_info(libtorrent.bdecode(torrent))
-            name = info.name()
+            try:
+                from python_libtorrent import get_libtorrent
+                libtorrent = get_libtorrent()
+                info = libtorrent.torrent_info(libtorrent.bdecode(torrent))
+                name = info.name()
+            except:
+                log('get_libtorrent import error, name = None')
+                name = None
             success = Download().add(torrent, dirname)
             if success:
                 showMessage(self.localize('Torrent-client Browser'), self.localize('Added!'), forced=True)
