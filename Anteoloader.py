@@ -302,12 +302,12 @@ class AnteoPlayer(xbmc.Player):
                 if self.buffer():
                     log('[AnteoPlayer]: ************************************* GOING LOOP')
                     if self.setup_play():
-                        WatchedHistoryDB().add(self.basename,
+                        WatchedHistoryDB().add(self.basename, self.torrentUrl,
                                                foldername(self.getContentList()[self.contentId]['title']),
                                                self.watchedTime, self.totalTime, self.contentId, self.fullSize)
                         self.setup_subs()
                         self.loop()
-                        WatchedHistoryDB().add(self.basename, foldername(self.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize)
+                        WatchedHistoryDB().add(self.basename, self.torrentUrl, foldername(self.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize)
                     else:
                         log('[AnteoPlayer]: ************************************* break')
                         break

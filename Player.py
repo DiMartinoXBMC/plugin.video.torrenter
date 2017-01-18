@@ -166,12 +166,12 @@ class TorrentPlayer(xbmc.Player):
                     debug('************************************* GOING LOOP')
                     self.torrent.startSession()
                     self.torrent.continueSession(self.contentId)
-                    WatchedHistoryDB().add(self.basename,
+                    WatchedHistoryDB().add(self.basename, self.torrentUrl,
                                            foldername(self.torrent.getContentList()[self.contentId]['title']),
                                            self.watchedTime, self.totalTime, self.contentId,
                                            self.fullSize / 1024 / 1024)
                     self.loop()
-                    WatchedHistoryDB().add(self.basename, foldername(self.torrent.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize / 1024 / 1024)
+                    WatchedHistoryDB().add(self.basename, self.torrentUrl, foldername(self.torrent.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize / 1024 / 1024)
                 else:
                     break
                 debug('************************************* GO NEXT?')

@@ -1071,7 +1071,14 @@ class WatchedHistoryDB:
         self._close()
         return x if x else None
 
-    def add(self, filename, foldername = None, seek = 0, length = 1, ind = 0, size = 0):
+    def getbypathind(self, path, ind):
+        self._connect()
+        self.cur.execute('select seek from history where path="' + path + '" AND ind=' + ind)
+        x = self.cur.fetchone()
+        self._close()
+        return x if x else None
+
+    def add(self, filename, path, foldername = None, seek = 0, length = 1, ind = 0, size = 0):
         try:
             watchedPercent = int((float(seek) / float(length)) * 100)
         except:
@@ -1080,7 +1087,7 @@ class WatchedHistoryDB:
         if self.history_bool and watchedPercent <= max_history_add:
             self._connect()
             url = __settings__.getSetting("lastTorrentUrl")
-            path = __settings__.getSetting("lastTorrent")
+            #path = __settings__.getSetting("lastTorrent")
             if not foldername:
                 foldername = ''
             self.cur.execute('delete from history where filename="' + decode(filename) + '"')
@@ -2303,3 +2310,20 @@ def loadsw_onstop():
         import searchwindow
         params = {'mode': 'load'}
         searchwindow.main(params)
+
+def watched_seek(filename, ind):
+    db = WatchedHistoryDB()
+    seek = db.getbypathind(filename, ind)
+    log('[watched_seek] seek - '+str(seek))
+    if seek:
+        seek = seek[0]
+        seek = int(seek) if int(seek) > 3 * 60 else 0
+        if seek > 0:
+                seek_text = '%02d:%02d:%02d' % ((seek / (60 * 60)), (seek / 60) % 60, seek % 60)
+                dialog_items = [Localization.localize('Play (from %s)') % seek_text,
+                               Localization.localize('Play (from start)')]
+                ret = xbmcgui.Dialog().select(Localization.localize('Play (with seek)'), dialog_items)
+                if ret == 0:
+                    return str(seek)
+                else:
+                    return '0'

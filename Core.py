@@ -1479,6 +1479,9 @@ class Core:
         else:
             torrentUrl = self.__settings__.getSetting("lastTorrent")
         #xbmc.executebuiltin('Action(Stop)')
+        if self.torrent_player != '1' and params.get('external') == '1' and not params.get('seek'):
+            params['seek'] = watched_seek(torrentUrl, params['url'])
+
         self.userStorage(params)
         if self.torrent_player == '0':
             from Player import TorrentPlayer
