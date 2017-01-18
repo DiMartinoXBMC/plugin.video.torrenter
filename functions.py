@@ -2325,5 +2325,4 @@ def watched_seek(filename, ind):
                 ret = xbmcgui.Dialog().select(Localization.localize('Play (with seek)'), dialog_items)
                 if ret == 0:
                     return str(seek)
-                else:
-                    return '0'
+    return '0'
