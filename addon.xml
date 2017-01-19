@@ -24,10 +24,14 @@
         </summary>
         <description lang='ru'>Так же плагин может добавлять, проигрывать и управлять скачками в торрент клиентах (uTorrent, Transmisson, Deluge и Vuse, qBittorrent) или средставми python-libtorrent.
         </description>
-        <disclaimer lang='ru'>GNU GPLv3 http://www.gnu.org/licenses/</disclaimer>
-		<forum>https://forums.tvaddons.ag/addon-releases/29224-torrenter-v2.html</forum>
-		<website>http://xbmc.ru/forum/showthread.php?t=6837</website>
-		<email>skype:kyonkodura</email>
-		<source>https://github.com/DiMartinoXBMC/plugin.video.torrenter</source>
+	<disclaimer lang='ru'>GNU GPLv3 http://www.gnu.org/licenses/</disclaimer>
+	<summary lang='es'>Complemento con el que se pueden reproducir archivos de vídeo que se comparten en redes BitTorrent, sin necesidad de descargarlos completamente.
+        </summary>
+        <description lang='es'>Además, gestiona torrents y reproduce los archivos descargados con su propio cliente o con otros clientes externos (uTorrent, Transmisson, Vuse, Deluge, qBittorrent).
+        </description>    	
+	<forum>https://forums.tvaddons.ag/addon-releases/29224-torrenter-v2.html</forum>
+	<website>http://xbmc.ru/forum/showthread.php?t=6837</website>
+	<email>skype:kyonkodura</email>
+	<source>https://github.com/DiMartinoXBMC/plugin.video.torrenter</source>
     </extension>
 </addon>
