@@ -51,7 +51,7 @@
     <string id="30051">Núm. máx. de conexiones (0 = ilimitadas)</string>
     <string id="30052">Utilizar puertos aleatorios</string>
     <string id="30053">Puerto para conexiones entrantes</string>
-    <string id="30054">Tamaño de carga previa para empezar a reproducir (MB)</string>
+    <string id="30054">Tamaño de precarga para empezar a reproducir (MB)</string>
     <string id="30055">Autoreproducir episodio siguiente (o preguntar)</string>
     <string id="30056">Configuración de dispositivo</string>
     <string id="30057">Promedio/Buen PC</string>
@@ -62,7 +62,7 @@
     <string id="30062">Por semillas</string>
     <string id="30063">No ordenar</string>
     <string id="30064">Por nombre</string>
-    <string id="30065">No añadir a historial de vistos si no se reprodujo más de (%)</string>
+    <string id="30065">No añadir a vistos si no se reprodujo más de (%)</string>
     <string id="30066">Confluence (de safonov_ivan)</string>
     <string id="30067">Aeon Nox (de joyrider)</string>
     <string id="30068">pyrrent2http (python-libtorrent vía HTTP)</string>
