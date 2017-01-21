@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.torrenter" name="Torrenter" version="2.6.2" provider-name="DiMartino">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
@@ -25,9 +25,9 @@
         <description lang='ru'>Так же плагин может добавлять, проигрывать и управлять скачками в торрент клиентах (uTorrent, Transmisson, Deluge и Vuse, qBittorrent) или средставми python-libtorrent.
         </description>
 	<disclaimer lang='ru'>GNU GPLv3 http://www.gnu.org/licenses/</disclaimer>
-	<summary lang='es'>Complemento con el que se pueden reproducir archivos de vídeo que se comparten en redes BitTorrent, sin necesidad de descargarlos completamente.
+	<summary lang='es'>Complemento con el que podemos reproducir archivos de vídeo que se comparten en redes BitTorrent, sin necesidad de descargarlos previamente por completo.
         </summary>
-        <description lang='es'>Además, gestiona torrents y reproduce los archivos descargados con su propio cliente o con otros clientes externos (uTorrent, Transmisson, Vuse, Deluge, qBittorrent).
+        <description lang='es'>También nos permite gestionar torrents y elegir entre su propio cliente interno y otros externos (μTorrent, Transmission, Deluge, Vuze, qBittorrent), el cliente para las descargas.
         </description>    	
 	<forum>https://forums.tvaddons.ag/addon-releases/29224-torrenter-v2.html</forum>
 	<website>http://xbmc.ru/forum/showthread.php?t=6837</website>
