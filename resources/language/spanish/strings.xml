@@ -5,7 +5,7 @@
     <string id="30003">No conservar</string>
     <string id="30004">Directorio de descarga de archivos (no FAT32)</string>
     <string id="30007">Utilizar enlaces magnet</string>
-    <string id="30008">Conserva de archivos descargados</string>
+    <string id="30008">Almacenaje de archivos descargados</string>
     <string id="30009">Seguir compartiendo archivos descargados</string>
     <string id="30010">Máx. vel. de subida en mbps (0 = ilimitada)</string>
     <string id="30011">Máx. vel. de descarga en mbps (0 = ilimitada)</string>
@@ -27,7 +27,7 @@
     <string id="30027">Normal (20 s)</string>
     <string id="30028">Larga (30 s)</string>
     <string id="30029">Descargar antes los subtítulos de todos los directorios</string>
-    <string id="30030">Seguir compartiendo después del visionado</string>
+    <string id="30030">Seguir compartiendo después de reproducir el vídeo</string>
     <string id="30031">Preguntar para cambiar de almacén antes de la reproducción</string>
     <string id="30032">Borrar material en ruso</string>
     <string id="30033">Restituir material en ruso</string>
@@ -62,14 +62,14 @@
     <string id="30062">Por semillas</string>
     <string id="30063">No ordenar</string>
     <string id="30064">Por nombre</string>
-    <string id="30065">No añadir al historial de vistos si se reprodujo más de (%)</string>
+    <string id="30065">No añadir a historial de vistos si no se reprodujo más de (%)</string>
     <string id="30066">Confluence (de safonov_ivan)</string>
     <string id="30067">Aeon Nox (de joyrider)</string>
     <string id="30068">pyrrent2http (python-libtorrent vía HTTP)</string>
     <string id="30069">Añadir tamaño al nombre del archivo</string>
     <string id="30070">Activar protocolo DHT</string>
     <string id="30071">Estuary (de DiMartino)</string>
-    <string id="30072">Presentación de la información</string>
+    <string id="30072">Modo presentación de datos</string>
     <string id="30073">Al final</string>
     <string id="30074">Al principio</string>
     <string id="30075">En segunda línea</string>
@@ -97,7 +97,7 @@
     <string id="50315">Usuario</string>
     <string id="50316">Contraseña</string>
     <string id="50311">Cliente de BitTorrent</string>
-    <string id="50317">URL (solo No SSL)</string>
+    <string id="50317">URL (no SSL)</string>
     <string id="30426">Sustitución de ruta (solo remoto)</string>
     <string id="30412">Cerrar</string>
     <string id="30413">Abrir ajustes</string>
@@ -106,5 +106,5 @@
     <string id="30416">Ajustes de trackers</string>
     <string id="30417">Vaciar almacén</string>
     <string id="30418">Seleccionar buscador</string>
-    <string id="30419">No hay buscador externo.Instale primero uno.</string>
+    <string id="30419">No hay buscador externo.Instale uno primero.</string>
 </strings>
