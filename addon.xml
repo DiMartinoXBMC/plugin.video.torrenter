@@ -1,110 +1,37 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>
-    <string id="30001">Idioma de la interfaz</string>
-    <string id="30002">Fijar estilo visual</string>
-    <string id="30003">No fijar</string>
-    <string id="30004">Directorio de descarga de archivos (no FAT32)</string>
-    <string id="30007">Utilizar enlaces magnet</string>
-    <string id="30008">Almacenaje de archivos descargados</string>
-    <string id="30009">Seguir compartiendo archivos descargados</string>
-    <string id="30010">Máx. vel. de subida en mbps (0 = ilimitada)</string>
-    <string id="30011">Máx. vel. de descarga en mbps (0 = ilimitada)</string>
-    <string id="30012">Utilizar solo libtorrent</string>
-    <string id="30013">Predescargar y reproducir episodio siguiente</string>
-    <string id="30014">Descargar metadatos de listas de contenido</string>
-    <string id="30015">Depuración (Modo desarrollador)</string>
-    <string id="30016">Confluence (de slng)</string>
-    <string id="30017">Transperency (de slng)</string>
-    <string id="30018">Confluence (de DiMartino)</string>
-    <string id="30019">Confluence (de RussakHH)</string>
-    <string id="30020">Habilitar historial de búsquedas</string>
-    <string id="30021">python-libtorrent</string>
-    <string id="30022">Ace Stream</string>
-    <string id="30023">Reproductor P2P</string>
-    <string id="30024">Restablecer ajustes en Add-ons de programas -- AceStream client</string>
-    <string id="30025">Duración de las búsquedas</string>
-    <string id="30026">Corta (10 s)</string>
-    <string id="30027">Normal (20 s)</string>
-    <string id="30028">Larga (30 s)</string>
-    <string id="30029">Descargar antes los subtítulos de todos los directorios</string>
-    <string id="30030">Seguir compartiendo después de reproducir el vídeo</string>
-    <string id="30031">Preguntar para cambiar de almacén antes de la descarga</string>
-    <string id="30032">Borrar material en ruso</string>
-    <string id="30033">Restituir material en ruso</string>
-    <string id="30034">Efecto de clic sobre torrent</string>
-    <string id="30035">Abrir archivo torrent</string>
-    <string id="30036">Abrir menú contextual</string>
-    <string id="30037">Descargar vía cliente BitTorrent</string>
-    <string id="30038">Descargar vía python-libtorrent</string>
-    <string id="30039">Ordenar resultados por semillas</string>
-    <string id="30040">Frase para búsqueda personalizada</string>
-    <string id="30041">Cifrado</string>
-    <string id="30042">Número de hilos de búsqueda</string>
-    <string id="30043">Borrar archivos</string>
-    <string id="30044">Guardar archivos</string>
-    <string id="30045">Preguntar para guardar</string>
-    <string id="30046">Torrent2HTTP (libtorrent vía HTTP)</string>
-    <string id="30047">Desbloqueo automático de proxy</string>
-    <string id="30048">Ninguno</string>
-    <string id="30049">Anti-zapret (antirestricción)</string>
-    <string id="30050">Inmunidad</string>
-    <string id="30051">Núm. máx. de conexiones (0 = ilimitadas)</string>
-    <string id="30052">Utilizar puertos aleatorios</string>
-    <string id="30053">Puerto para conexiones entrantes</string>
-    <string id="30054">Tamaño de precarga para empezar a reproducir (MB)</string>
-    <string id="30055">No autoreproducir episodio siguiente (o preguntar)</string>
-    <string id="30056">Configuración de dispositivo</string>
-    <string id="30057">Promedio/Buen PC</string>
-    <string id="30058">Por debajo de la media, PC/router</string>
-    <string id="30059">Tamaño mínimo de almacenaje para autoborrado (GB)</string>
-    <string id="30060">Pausar vídeo tras el inicio</string>
-    <string id="30061">Ordenar resultados de la búsqueda</string>
-    <string id="30062">Por semillas</string>
-    <string id="30063">No ordenar</string>
-    <string id="30064">Por nombre</string>
-    <string id="30065">Añadir a historial de vistos después del (%)</string>
-    <string id="30066">Confluence (de safonov_ivan)</string>
-    <string id="30067">Aeon Nox (de joyrider)</string>
-    <string id="30068">pyrrent2http (python-libtorrent vía HTTP)</string>
-    <string id="30069">Añadir tamaño a nombre de archivo</string>
-    <string id="30070">Activar protocolo DHT</string>
-    <string id="30071">Estuary (de DiMartino)</string>
-    <string id="30072">Modo presentación de datos</string>
-    <string id="30073">Al final</string>
-    <string id="30074">Al principio</string>
-    <string id="30075">En segunda línea</string>
-    <string id="30076">Arctic: Zephyr (de xbmc00)</string>
-    <string id="30101">Interfaz</string>
-    <string id="30102">Red P2P</string>
-    <string id="30103">Avanzado</string>
-    <string id="30104">Cliente de BitTorrent</string>
-    <string id="30105">Hentai (reajustes)</string>
-    <string id="30106">Modo ventana de búsqueda</string>
-    <string id="30107">Habilitar ocultar estilo anterior</string>
-    <string id="30108">Habilitar reponer estilo anterior</string>
-    <string id="30109">Habilitar optativo</string>
-    <string id="30110">Deshabilitar</string>
-    <string id="30111">Fondo transparente de ventana de búsqueda</string>
-    <string id="30112">Desactivar notificaciones</string>
-    <string id="50301">Ruta para guardar</string>
-    <string id="50302">Preguntar</string>
-    <string id="50303">Por defecto</string>
-    <string id="50304">Ruta</string>
-    <string id="50305">Crear subdirectorio para scrapper</string>
-    <string id="50312">Host</string>
-    <string id="50313">Puerto</string>
-    <string id="50314">URL</string>
-    <string id="50315">Usuario</string>
-    <string id="50316">Contraseña</string>
-    <string id="50311">Cliente de BitTorrent</string>
-    <string id="50317">URL (no SSL)</string>
-    <string id="30426">Sustitución de ruta (solo remoto)</string>
-    <string id="30412">Cerrar</string>
-    <string id="30413">Abrir ajustes</string>
-    <string id="30414">Navegador de cliente BitTorrent</string>
-    <string id="30415">Instalar trackers</string>
-    <string id="30416">Ajustes de trackers</string>
-    <string id="30417">Vaciar almacén</string>
-    <string id="30418">Seleccionar buscador</string>
-    <string id="30419">No hay buscador externo. Instale uno primero.</string>
-</strings>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.torrenter" name="Torrenter" version="2.6.2" provider-name="DiMartino">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+        <import addon="script.module.libtorrent"/>
+        <import addon="script.module.torrent.ts"/>
+        <import addon="script.module.requests"/>
+        <import addon="script.module.torrent2http"/>
+        <import addon="script.module.pyrrent2http"/>
+        <import addon="script.module.chardet" />
+        <import addon="script.module.pyxbmct"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" provides="video" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <summary lang='en'>Plugin helps you to watch videos from p2p torrent-networks, without full predownload.
+        </summary>
+        <description lang='en'>It also can add, control torrents and play downloaded files with external torrent-client (uTorrent, Transmisson, Vuse, Deluge, qBittorrent) or python-libtorrent.
+        </description>
+        <disclaimer lang='en'>GNU GPLv3 http://www.gnu.org/licenses/</disclaimer>
+        <summary lang='ru'>Плагин позволяет просматривать видео из пиринговых торрент-сетей, не дожидаясь полного скачивания.
+        </summary>
+        <description lang='ru'>Так же плагин может добавлять, проигрывать и управлять скачками в торрент клиентах (uTorrent, Transmisson, Deluge и Vuse, qBittorrent) или средставми python-libtorrent.
+        </description>
+	<disclaimer lang='ru'>GNU GPLv3 http://www.gnu.org/licenses/</disclaimer>
+	<summary lang='es'>Complemento que nos permite reproducir archivos de vídeo que se comparten en redes BitTorrent, sin necesidad de descargarlos previamente por completo.
+        </summary>
+        <description lang='es'>También gestiona torrents y nos deja elegir entre su propio cliente interno y otros externos (μTorrent, Transmission, Deluge, Vuze, qBittorrent), el cliente BitTorrent con el que realizar las descargas.
+        </description>    	
+	<forum>https://forums.tvaddons.ag/addon-releases/29224-torrenter-v2.html</forum>
+	<website>http://xbmc.ru/forum/showthread.php?t=6837</website>
+	<email>skype:kyonkodura</email>
+	<source>https://github.com/DiMartinoXBMC/plugin.video.torrenter</source>
+    </extension>
+</addon>
