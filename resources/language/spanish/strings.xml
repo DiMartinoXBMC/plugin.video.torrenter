@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
     <string id="30001">Idioma de la interfaz</string>
-    <string id="30002">Conservar estilo vista de directorios</string>
-    <string id="30003">No conservar</string>
+    <string id="30002">Fijar estilo visual</string>
+    <string id="30003">No fijar</string>
     <string id="30004">Directorio de descarga de archivos (no FAT32)</string>
     <string id="30007">Utilizar enlaces magnet</string>
     <string id="30008">Almacenaje de archivos descargados</string>
@@ -10,7 +10,7 @@
     <string id="30010">Máx. vel. de subida en mbps (0 = ilimitada)</string>
     <string id="30011">Máx. vel. de descarga en mbps (0 = ilimitada)</string>
     <string id="30012">Utilizar solo libtorrent</string>
-    <string id="30013">Predescargar y reproducir episodio siguiente</string>
+    <string id="30013">Lanzar descarga de episodio siguiente</string>
     <string id="30014">Descargar metadatos de listas de contenido</string>
     <string id="30015">Depuración (Modo desarrollador)</string>
     <string id="30016">Confluence (de slng)</string>
@@ -28,7 +28,7 @@
     <string id="30028">Larga (30 s)</string>
     <string id="30029">Descargar antes los subtítulos de todos los directorios</string>
     <string id="30030">Seguir compartiendo después de reproducir el vídeo</string>
-    <string id="30031">Preguntar para cambiar de almacén antes de la reproducción</string>
+    <string id="30031">Preguntar para cambiar de almacén antes de la descarga</string>
     <string id="30032">Borrar material en ruso</string>
     <string id="30033">Restituir material en ruso</string>
     <string id="30034">Efecto de clic sobre torrent</string>
@@ -52,7 +52,7 @@
     <string id="30052">Utilizar puertos aleatorios</string>
     <string id="30053">Puerto para conexiones entrantes</string>
     <string id="30054">Tamaño de precarga para empezar a reproducir (MB)</string>
-    <string id="30055">Autoreproducir episodio siguiente (o preguntar)</string>
+    <string id="30055">Autorreproducir episodio siguiente (o preguntar)</string>
     <string id="30056">Configuración de dispositivo</string>
     <string id="30057">Promedio/Buen PC</string>
     <string id="30058">Por debajo de la media, PC/router</string>
@@ -62,11 +62,11 @@
     <string id="30062">Por semillas</string>
     <string id="30063">No ordenar</string>
     <string id="30064">Por nombre</string>
-    <string id="30065">No añadir a vistos si no se reprodujo más de (%)</string>
+    <string id="30065">Añadir a historial de vistos después del (%)</string>
     <string id="30066">Confluence (de safonov_ivan)</string>
     <string id="30067">Aeon Nox (de joyrider)</string>
     <string id="30068">pyrrent2http (python-libtorrent vía HTTP)</string>
-    <string id="30069">Añadir tamaño al nombre del archivo</string>
+    <string id="30069">Añadir tamaño a nombre de archivo</string>
     <string id="30070">Activar protocolo DHT</string>
     <string id="30071">Estuary (de DiMartino)</string>
     <string id="30072">Modo presentación de datos</string>
