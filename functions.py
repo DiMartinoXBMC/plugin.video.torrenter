@@ -1080,7 +1080,7 @@ class WatchedHistoryDB:
 
     def add(self, filename, path, foldername = None, seek = 0, length = 1, ind = 0, size = 0):
         try:
-            watchedPercent = int((float(seek) / float(length)) * 100)
+            watchedPercent = int((float(seek) / float(length if length else 1)) * 100)
         except:
             watchedPercent = 0
         max_history_add = int(__settings__.getSetting('max_history_add'))

@@ -37,6 +37,7 @@ from functions import log, debug, showMessage
 
 import ssl
 
+#ssl._create_default_https_context = ssl._create_unverified_context
 class SearcherABC:
     searchIcon = '/icons/video.png'
     sourceWeight = 1
@@ -116,11 +117,12 @@ class SearcherABC:
                 showMessage('AntiZapret', Localization.localize('Error'))
                 self.debug('[antizapret]: OFF!')
         # python ssl Context support - PEP 0466
-        if hasattr(ssl, '_create_unverified_context'):
-            ssl_context = ssl._create_unverified_context()
+        if 'https:' in url:
+            ssl_context = ssl.create_default_context()
+            ssl_context.check_hostname = False
+            ssl_context.verify_mode = ssl.CERT_NONE
+            log('urllib2.HTTPSHandler(context=ssl_context)')
             opener.add_handler(urllib2.HTTPSHandler(context=ssl_context))
-        else:
-            opener.add_handler(urllib2.HTTPSHandler())
 
         opener.addheaders = headers
         if 0 < len(data):

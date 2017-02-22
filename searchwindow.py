@@ -110,18 +110,18 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.button_downloadstatus = pyxbmct.Button("",
                                                     focusTexture=self.icon % 'fdownloadstatus',
                                                     noFocusTexture=self.icon % 'nfdownloadstatus')
-        self.placeControl(self.button_downloadstatus, 0, 2, 1, 1)
+        self.placeControl(self.button_downloadstatus, 0, 1, 1, 1)
 
         self.button_browser = pyxbmct.Button("",
                                                    focusTexture=self.icon_tc % 'f',
                                                    noFocusTexture=self.icon_tc % 'nf')
-        self.placeControl(self.button_browser, 0, 3, 1, 1)
+        self.placeControl(self.button_browser, 0, 2, 1, 1)
         self.button_controlcenter = pyxbmct.Button("", focusTexture=self.icon % 'fcontrolcenter',
                                                    noFocusTexture=self.icon % 'nfcontrolcenter')
-        self.placeControl(self.button_controlcenter, 0, 4, 1, 1)
-        #self.button_keyboard = pyxbmct.Button("", focusTexture=self.icon % 'fkeyboard',
-        #                                      noFocusTexture=self.icon % 'nfkeyboard')
-        #self.placeControl(self.button_keyboard, 0, 3, 1, 1)
+        self.placeControl(self.button_controlcenter, 0, 3, 1, 1)
+        self.button_filter = pyxbmct.Button("", focusTexture=self.icon % 'fkeyboard',
+                                              noFocusTexture=self.icon % 'nfkeyboard')
+        self.placeControl(self.button_filter, 0, 4, 1, 1)
         self.input_search = pyxbmct.Edit("", _alignment=pyxbmct.ALIGN_CENTER_X | pyxbmct.ALIGN_CENTER_Y)
         self.placeControl(self.input_search, 0, 5, 1, 6)
         self.button_search = pyxbmct.Button("", focusTexture=self.icon % 'fsearch',
@@ -153,6 +153,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         self.connect(self.button_browser, self.browser)
         self.connect(self.button_downloadstatus, self.downloadstatus)
         self.connect(self.button_watched, self.watched)
+        self.connect(self.button_filter, self.filter)
 
         self.connect(pyxbmct.ACTION_NAV_BACK, self.navi_back)
         self.connect(pyxbmct.ACTION_PREVIOUS_MENU, self.navi_back)
@@ -172,9 +173,9 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         # Top menu
         self.button_browser.setNavigation(self.window_close_button, self.listing, self.button_downloadstatus,
                                           self.button_controlcenter)
-        self.button_controlcenter.setNavigation(self.window_close_button, self.listing, self.button_browser, self.input_search)
-        #self.button_keyboard.setNavigation(self.listing, self.listing, self.button_browser, self.input_search)
-        self.input_search.setNavigation(self.window_close_button, self.listing, self.button_controlcenter, self.button_search)
+        self.button_controlcenter.setNavigation(self.window_close_button, self.listing, self.button_browser, self.button_filter)
+        self.button_filter.setNavigation(self.window_close_button, self.listing, self.button_controlcenter, self.input_search)
+        self.input_search.setNavigation(self.window_close_button, self.listing, self.button_filter, self.button_search)
         self.button_search.setNavigation(self.window_close_button, self.listing, self.input_search, self.button_history)
         self.button_history.setNavigation(self.window_close_button, self.listing, self.button_search, self.button_watched)
         self.update_navigation()
@@ -243,10 +244,9 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         if not xbmcvfs.exists(navi_file):
             self.set_navi()
             self.navi['route'].append({"last_listing_item": 0, "params": {}, "mode": "history"})
-            with open(xbmc.translatePath(navi_file), 'w') as f: f.write(json.dumps(self.navi))
-        read = xbmcvfs.File(navi_file, 'r')
-        navi = read.read()
-        read.close()
+            with open(navi_file, 'w') as f: f.write(json.dumps(self.navi))
+
+        with open(navi_file, 'r') as read: navi = read.read()
 
         try:
             debug('navi_load navi: '+str(navi))
@@ -500,7 +500,7 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
         if items:
             for addtime, filename, foldername, path, url, seek, length, ind, size in items:
                 seek = int(seek) if int(seek) > 3*60 else 0
-                watchedPercent = int((float(seek) / float(length)) * 100)
+                watchedPercent = int((float(seek) / float(length if length else 1)) * 100)
                 duration = '%02d:%02d:%02d' % ((length / (60*60)), (length / 60) % 60, length % 60)
                 title = '[%d%%][%s] %s [%d MB]' %\
                         (watchedPercent, duration, filename.encode('utf-8'), int(size))
@@ -1250,6 +1250,14 @@ class SearchWindow(pyxbmct.AddonDialogWindow):
 
     def version_check(self):
         return False if int(xbmc.getInfoLabel("System.BuildVersion")[:2]) < 17 else True
+
+    def filter(self):
+        list = self.listing
+        self.listing.setPageControlVisible(True)
+        size = self.listing.size()
+        if size > 0:
+            for index in range(0, size):
+                listitem = self.listing.getListItem(index)
 
 class InfoWindow(pyxbmct.AddonDialogWindow):
     def __init__(self, title="", year=""):

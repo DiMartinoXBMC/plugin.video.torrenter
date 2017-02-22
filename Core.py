@@ -296,6 +296,7 @@ class Core:
         lockView('wide')
 
     def test(self, params={}):
+        pass
         import searchwindow
         params = {'mode': 'file_browser', 'path':'D:\\', 'tdir':'D:\\FRAPS\\'}
         searchwindow.main(params)
@@ -593,7 +594,7 @@ class Core:
                 #for favbool, bbstring in favlist:
                 for addtime, filename, foldername, path, url, seek, length, ind, size in items:
                     seek = int(seek) if int(seek) > 3*60 else 0
-                    watchedPercent = int((float(seek) / float(length)) * 100)
+                    watchedPercent = int((float(seek) / float(length if length else 1)) * 100)
                     duration = '%02d:%02d:%02d' % ((length / (60*60)), (length / 60) % 60, length % 60)
                     title = '[%d%%][%s] %s [%d MB]' %\
                             (watchedPercent, duration, filename.encode('utf-8'), int(size))
