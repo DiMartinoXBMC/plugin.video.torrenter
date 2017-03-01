@@ -37,7 +37,7 @@
     <string id="30037">Descargar vía cliente BitTorrent</string>
     <string id="30038">Descargar vía python-libtorrent</string>
     <string id="30039">Ordenar resultados por semillas</string>
-    <string id="30040">Frase para búsqueda personalizada</string>
+    <string id="30040">Términos para búsqueda personalizada</string>
     <string id="30041">Cifrado</string>
     <string id="30042">Número de hilos de búsqueda</string>
     <string id="30043">Borrar archivos</string>
@@ -102,8 +102,8 @@
     <string id="30412">Cerrar</string>
     <string id="30413">Abrir ajustes</string>
     <string id="30414">Navegador de cliente BitTorrent</string>
-    <string id="30415">Instalar trackers</string>
-    <string id="30416">Ajustes de trackers</string>
+    <string id="30415">Instalar rastreadores</string>
+    <string id="30416">Ajustes de rastreadores</string>
     <string id="30417">Vaciar almacén</string>
     <string id="30418">Seleccionar buscador</string>
     <string id="30419">No hay buscador externo. Instale uno primero.</string>
