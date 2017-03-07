@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
     <string id="30001">Idioma de la interfaz</string>
-    <string id="30002">Fijar estilo visual</string>
+    <string id="30002">Modo vista de carpetas</string>
     <string id="30003">No fijar</string>
-    <string id="30004">Directorio de descarga de archivos (no FAT32)</string>
+    <string id="30004">Carpeta en la que guardar archivos (no FAT32)</string>
     <string id="30007">Utilizar enlaces magnet</string>
     <string id="30008">Almacenaje de archivos descargados</string>
     <string id="30009">Seguir compartiendo archivos descargados</string>
-    <string id="30010">Máx. vel. de subida en mbps (0 = ilimitada)</string>
-    <string id="30011">Máx. vel. de descarga en mbps (0 = ilimitada)</string>
+    <string id="30010">Máx. vel. de subida en Mbit/s (0 = ilimitada)</string>
+    <string id="30011">Máx. vel. de descarga en Mbit/s (0 = ilimitada)</string>
     <string id="30012">Utilizar solo libtorrent</string>
     <string id="30013">Lanzar descarga de episodio siguiente</string>
-    <string id="30014">Descargar metadatos de listas de contenido</string>
+    <string id="30014">Descargar metadatos para listas de contenido</string>
     <string id="30015">Depuración (Modo desarrollador)</string>
     <string id="30016">Confluence (de slng)</string>
     <string id="30017">Transperency (de slng)</string>
     <string id="30018">Confluence (de DiMartino)</string>
     <string id="30019">Confluence (de RussakHH)</string>
-    <string id="30020">Habilitar historial de búsquedas</string>
+    <string id="30020">Habilitar el historial de búsquedas</string>
     <string id="30021">python-libtorrent</string>
     <string id="30022">Ace Stream</string>
     <string id="30023">Reproductor P2P</string>
     <string id="30024">Restablecer ajustes en Add-ons de programas -- AceStream client</string>
     <string id="30025">Duración de las búsquedas</string>
-    <string id="30026">Corta (10 s)</string>
+    <string id="30026">Breve (10 s)</string>
     <string id="30027">Normal (20 s)</string>
     <string id="30028">Larga (30 s)</string>
-    <string id="30029">Descargar antes los subtítulos de todos los directorios</string>
-    <string id="30030">Seguir compartiendo después de reproducir el vídeo</string>
+    <string id="30029">Predescargar los subtítulos de todas las carpetas</string>
+    <string id="30030">Seguir compartiendo después de ver el vídeo</string>
     <string id="30031">Preguntar para cambiar de almacén antes de la descarga</string>
-    <string id="30032">Borrar material en ruso</string>
-    <string id="30033">Restituir material en ruso</string>
+    <string id="30032">Eliminar material ruso</string>
+    <string id="30033">Restituir material ruso</string>
     <string id="30034">Efecto de clic sobre torrent</string>
     <string id="30035">Abrir archivo torrent</string>
     <string id="30036">Abrir menú contextual</string>
     <string id="30037">Descargar vía cliente BitTorrent</string>
     <string id="30038">Descargar vía python-libtorrent</string>
-    <string id="30039">Ordenar resultados por semillas</string>
+    <string id="30039">Ordenar resultados por fuentes</string>
     <string id="30040">Términos para búsqueda personalizada</string>
     <string id="30041">Cifrado</string>
     <string id="30042">Número de hilos de búsqueda</string>
-    <string id="30043">Borrar archivos</string>
+    <string id="30043">Eliminar archivos</string>
     <string id="30044">Guardar archivos</string>
     <string id="30045">Preguntar para guardar</string>
     <string id="30046">Torrent2HTTP (libtorrent vía HTTP)</string>
     <string id="30047">Desbloqueo automático de proxy</string>
     <string id="30048">Ninguno</string>
-    <string id="30049">Anti-zapret (antirestricción)</string>
+    <string id="30049">Anti-zapret (antirrestricción)</string>
     <string id="30050">Inmunidad</string>
     <string id="30051">Núm. máx. de conexiones (0 = ilimitadas)</string>
     <string id="30052">Utilizar puertos aleatorios</string>
@@ -57,12 +57,12 @@
     <string id="30057">Promedio/Buen PC</string>
     <string id="30058">Por debajo de la media, PC/router</string>
     <string id="30059">Tamaño mínimo de almacenaje para autoborrado (GB)</string>
-    <string id="30060">Pausar vídeo tras el inicio</string>
+    <string id="30060">Diferir inicio del reproductor</string>
     <string id="30061">Ordenar resultados de la búsqueda</string>
-    <string id="30062">Por semillas</string>
+    <string id="30062">Por fuentes</string>
     <string id="30063">No ordenar</string>
     <string id="30064">Por nombre</string>
-    <string id="30065">Añadir a historial de vistos después del (%)</string>
+    <string id="30065">Añadir al historial de vistos después del (%)</string>
     <string id="30066">Confluence (de safonov_ivan)</string>
     <string id="30067">Aeon Nox (de joyrider)</string>
     <string id="30068">pyrrent2http (python-libtorrent vía HTTP)</string>
@@ -79,12 +79,12 @@
     <string id="30103">Avanzado</string>
     <string id="30104">Cliente de BitTorrent</string>
     <string id="30105">Hentai (reajustes)</string>
-    <string id="30106">Modo ventana de búsqueda</string>
-    <string id="30107">Habilitar ocultar estilo anterior</string>
-    <string id="30108">Habilitar reponer estilo anterior</string>
-    <string id="30109">Habilitar optativo</string>
-    <string id="30110">Deshabilitar</string>
-    <string id="30111">Fondo transparente de ventana de búsqueda</string>
+    <string id="30106">Modo ventana de búsquedas</string>
+    <string id="30107">Activado ocultar estilo anterior</string>
+    <string id="30108">Activado remplazar estilo anterior</string>
+    <string id="30109">Activado opcional</string>
+    <string id="30110">Desactivado</string>
+    <string id="30111">Fondo transparente de ventana de búsquedas</string>
     <string id="30112">Desactivar notificaciones</string>
     <string id="50301">Ruta para guardar</string>
     <string id="50302">Preguntar</string>
@@ -98,14 +98,13 @@
     <string id="50316">Contraseña</string>
     <string id="50311">Cliente de BitTorrent</string>
     <string id="50317">URL (no SSL)</string>
-    <string id="30426">Sustitución de ruta (solo remoto)</string>
+    <string id="30426">Sustitución de ruta (Solo remoto)</string>
     <string id="30412">Cerrar</string>
-    <string id="30413">Abrir ajustes</string>
+    <string id="30413">Abrir "Ajustes"</string>
     <string id="30414">Navegador de cliente BitTorrent</string>
     <string id="30415">Instalar rastreadores</string>
     <string id="30416">Ajustes de rastreadores</string>
     <string id="30417">Vaciar almacén</string>
     <string id="30418">Seleccionar buscador</string>
     <string id="30419">No hay buscador externo. Instale uno primero.</string>
-
 </strings>
