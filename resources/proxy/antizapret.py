@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import os, re, fnmatch, threading, urllib2, time, shelve
+import os, re, fnmatch, threading, urllib2, time, shelve, anydbm
 from contextlib import contextmanager, closing
 from functions import log, debug, tempdir
 
-LOCKS = {}
 PAC_URL = "http://antizapret.prostovpn.org/proxy.pac"
 CACHE_DIR = tempdir()
 USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36"
@@ -20,7 +19,11 @@ def config():
     try:
         CONFIG_LOCK.acquire()
         filename = os.path.join(CACHE_DIR, "antizapret.pac_config2")
-        shelf = shelve.open(filename)
+        try:
+            shelf = shelve.open(filename)
+        except anydbm.error:
+            os.remove(filename)
+            shelf = shelve.open(filename)
 
         created_at = 0
         data = {}
@@ -109,4 +112,3 @@ def url_get(url, params={}, headers={}, post = None):
     except urllib2.HTTPError as e:
         log("[antizapret]: HTTP Error(%s): %s" % (e.errno, e.strerror))
         return None
-
