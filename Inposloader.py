@@ -28,8 +28,9 @@ import xbmc
 import xbmcgui
 import xbmcvfs
 import xbmcaddon
+import xbmcplugin
 import Localization
-from functions import encode_msg, isSubtitle, is_writable, file_url
+from functions import loadsw_onstop, isSubtitle, is_writable, file_url, localize_path
 
 
 import os
@@ -166,22 +167,14 @@ class InposLoader:
             return self.torrentFile
         else:
             if not xbmcvfs.exists(self.torrentFilesPath): xbmcvfs.mkdirs(self.torrentFilesPath)
-            torrentFile = os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent')
+            torrentFile = localize_path(os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent'))
             try:
-                if not re.match("^http\:.+$", torrentUrl):
+                if not re.match("^[htps]+?://.+$|^://.+$", torrentUrl):
+                    log('xbmcvfs.File for %s' % torrentUrl)
                     content = xbmcvfs.File(torrentUrl, "rb").read()
                 else:
-                    request = urllib2.Request(torrentUrl)
-                    request.add_header('Referer', torrentUrl)
-                    request.add_header('Accept-encoding', 'gzip')
-                    result = urllib2.urlopen(request)
-                    if result.info().get('Content-Encoding') == 'gzip':
-                        buf = StringIO(result.read())
-                        decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
-                        content = decomp.decompress(buf.getvalue())
-                    else:
-                        content = result.read()
-
+                    log('request for %s' % torrentUrl)
+                    content = self.makeRequest(torrentUrl)
                 localFile = xbmcvfs.File(torrentFile, "w+b")
                 localFile.write(content)
                 localFile.close()
@@ -196,6 +189,29 @@ class InposLoader:
         if os.path.exists(torrentFile):
             self.torrentFile = torrentFile
             return self.torrentFile
+
+    def makeRequest(self, torrentUrl):
+        torrentUrl = re.sub('^://', 'http://', torrentUrl)
+        x = re.search("://(.+?)/|://(.+?)$", torrentUrl)
+        if x:
+            baseurl = x.group(1) if x.group(1) else x.group(2)
+        else:
+            baseurl =''
+
+        headers = [('User-Agent',
+                    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 YaBrowser/14.10.2062.12061 Safari/537.36'),
+                   ('Referer', 'http://%s/' % baseurl), ('Accept-encoding', 'gzip'), ]
+
+        opener = urllib2.build_opener()
+        opener.addheaders = headers
+        result = opener.open(torrentUrl)
+        if result.info().get('Content-Encoding') == 'gzip':
+            buf = StringIO(result.read())
+            decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
+            content = decomp.decompress(buf.getvalue())
+        else:
+            content = result.read()
+        return content
 
     def md5(self, string):
         hasher = hashlib.md5()
@@ -257,9 +273,12 @@ class InposPlayer(xbmc.Player):
                 while True:
                     log('['+author+'Player]: ************************************* GOING LOOP')
                     if self.setup_play():
+                        WatchedHistoryDB().add(self.basename, self.torrentUrl,
+                                               foldername(self.getContentList()[self.contentId]['title']),
+                                               self.watchedTime, self.totalTime, self.contentId, self.fullSize)
                         self.setup_subs()
                         self.loop()
-                        WatchedHistoryDB().add(self.basename, foldername(self.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize)
+                        WatchedHistoryDB().add(self.basename, self.torrentUrl, foldername(self.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize)
                     else:
                         log('['+author+'Player]: ************************************* break')
                         break
@@ -295,7 +314,9 @@ class InposPlayer(xbmc.Player):
             #else:
             #if self.seeding: self.db_delete()
             showMessage(self.localize('Information'),
-                        self.localize('Torrent downloading is stopped.'), forced=True)
+                        self.localize('Torrent downloading is stopped.'))
+
+        loadsw_onstop()  # Reload Search Window
 
     def init(self):
         self.next_contentId = False
@@ -483,6 +504,10 @@ class InposPlayer(xbmc.Player):
         self.display_name = label
         log(self.display_name)
 
+        if self.get('listitem'):
+            listitem = self.get('listitem')
+            listitem.setPath(url)
+
         player = xbmc.Player()
         player.play(url, listitem)
 
@@ -541,7 +566,7 @@ class InposPlayer(xbmc.Player):
 
                     self.iterator = int(file_status.progress * 100)
 
-                    if pause and self.__settings__.getSetting("pause_onplay") == 'true':
+                    if pause and (self.__settings__.getSetting("pause_onplay") == 'true') and (self.getTime() > 0):
                         pause = False
                         xbmc.Player().pause()
                     xbmc.sleep(1000)
@@ -550,7 +575,7 @@ class InposPlayer(xbmc.Player):
                                                                                                     int) and self.next_contentId != False:
                         self.engine.activate_file(self.next_contentId)
                         showMessage(self.localize('Torrent Downloading'),
-                                    self.localize('Starting download next episode!'), forced=True)
+                                    self.localize('Starting download next episode!'))
                         log('[loop]: next_contentId '+str(self.next_contentId)+str(isinstance(self.next_contentId, int)))
                         file_status = self.engine.file_status(self.next_contentId)
                         self.basename = self.display_name = os.path.basename(file_status.name)
@@ -587,7 +612,7 @@ class InposPlayer(xbmc.Player):
 
     def _get_status_lines(self, s, f):
         return [
-            self.display_name.encode('utf-8'),
+            ensure_str(self.display_name),
             "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state])),
             "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate, self.localize('kb/s'),
                                              s.upload_rate, self.localize('kb/s'),

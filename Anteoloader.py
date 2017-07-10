@@ -30,7 +30,7 @@ import xbmcgui
 import xbmcvfs
 import xbmcaddon
 import Localization
-from functions import file_encode, isSubtitle, DownloadDB, log, debug, is_writable, unquote, file_url
+from functions import localize_path, isSubtitle, loadsw_onstop, is_writable, file_url
 
 
 import os
@@ -134,7 +134,7 @@ class AnteoLoader:
 
         dht_routers = ["router.bittorrent.com:6881", "router.utorrent.com:6881"]
         user_agent = 'uTorrent/2200(24683)'
-        self.engine = Engine(uri=file_url(self.torrentFile), download_path=self.storageDirectory,
+        self.engine = Engine(uri=file_url(localize_path(self.torrentFile)), download_path=self.storageDirectory,
                              connections_limit=connections_limit,
                              encryption=encryption, keep_complete=keep_complete, keep_incomplete=keep_incomplete,
                              dht_routers=dht_routers, use_random_port=use_random_port, listen_port=listen_port,
@@ -200,19 +200,12 @@ class AnteoLoader:
             if not xbmcvfs.exists(self.torrentFilesPath): xbmcvfs.mkdirs(self.torrentFilesPath)
             torrentFile = os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent')
             try:
-                if not re.match("^http\:.+$", torrentUrl):
+                if not re.match("^[htps]+?://.+$|^://.+$", torrentUrl):
+                    log('xbmcvfs.File for %s' % torrentUrl)
                     content = xbmcvfs.File(torrentUrl, "rb").read()
                 else:
-                    request = urllib2.Request(torrentUrl)
-                    request.add_header('Referer', torrentUrl)
-                    request.add_header('Accept-encoding', 'gzip')
-                    result = urllib2.urlopen(request)
-                    if result.info().get('Content-Encoding') == 'gzip':
-                        buf = StringIO(result.read())
-                        decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
-                        content = decomp.decompress(buf.getvalue())
-                    else:
-                        content = result.read()
+                    log('request for %s' % torrentUrl)
+                    content = self.makeRequest(torrentUrl)
 
                 localFile = xbmcvfs.File(torrentFile, "w+b")
                 localFile.write(content)
@@ -228,6 +221,29 @@ class AnteoLoader:
         if os.path.exists(torrentFile):
             self.torrentFile = torrentFile
             return self.torrentFile
+
+    def makeRequest(self, torrentUrl):
+        torrentUrl = re.sub('^://', 'http://', torrentUrl)
+        x = re.search("://(.+?)/|://(.+?)$", torrentUrl)
+        if x:
+            baseurl = x.group(1) if x.group(1) else x.group(2)
+        else:
+            baseurl =''
+
+        headers = [('User-Agent',
+                    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 YaBrowser/14.10.2062.12061 Safari/537.36'),
+                   ('Referer', 'http://%s/' % baseurl), ('Accept-encoding', 'gzip'), ]
+
+        opener = urllib2.build_opener()
+        opener.addheaders = headers
+        result = opener.open(torrentUrl)
+        if result.info().get('Content-Encoding') == 'gzip':
+            buf = StringIO(result.read())
+            decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
+            content = decomp.decompress(buf.getvalue())
+        else:
+            content = result.read()
+        return content
 
     def md5(self, string):
         hasher = hashlib.md5()
@@ -286,9 +302,12 @@ class AnteoPlayer(xbmc.Player):
                 if self.buffer():
                     log('[AnteoPlayer]: ************************************* GOING LOOP')
                     if self.setup_play():
+                        WatchedHistoryDB().add(self.basename, self.torrentUrl,
+                                               foldername(self.getContentList()[self.contentId]['title']),
+                                               self.watchedTime, self.totalTime, self.contentId, self.fullSize)
                         self.setup_subs()
                         self.loop()
-                        WatchedHistoryDB().add(self.basename, foldername(self.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize)
+                        WatchedHistoryDB().add(self.basename, self.torrentUrl, foldername(self.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize)
                     else:
                         log('[AnteoPlayer]: ************************************* break')
                         break
@@ -304,6 +323,8 @@ class AnteoPlayer(xbmc.Player):
                         continue
 
                     log('[AnteoPlayer]: ************************************* NO! break')
+                    showMessage(self.localize('Information'),
+                                self.localize('Stopping the torrent2http process...'))
                 break
 
         xbmc.Player().stop()
@@ -311,14 +332,11 @@ class AnteoPlayer(xbmc.Player):
         if '1' != self.__settings__.getSetting("keep_files") and 'Saved Files' not in self.userStorageDirectory:
             xbmc.sleep(1000)
             clearStorage(self.userStorageDirectory)
-        else:
-            #if self.seeding_status:
-            #showMessage(self.localize('Information'),
-            #            self.localize('Torrent is seeding. To stop it use Download Status.'), forced=True)
-            #else:
-            #if self.seeding: self.db_delete()
-            showMessage(self.localize('Information'),
-                        self.localize('Torrent downloading is stopped.'), forced=True)
+
+        showMessage(self.localize('Information'),
+                    self.localize('torrent2http process stopped.'))
+
+        loadsw_onstop()  # Reload Search Window
 
     def init(self):
         self.next_contentId = False
@@ -332,16 +350,6 @@ class AnteoPlayer(xbmc.Player):
         self.torrentUrl = self.torrentUrl
 
     def setup_engine(self):
-        #uri=None, binaries_path=None, platform=None, download_path=".",
-        #bind_host='127.0.0.1', bind_port=5001, connections_limit=None, download_kbps=None, upload_kbps=None,
-        #enable_dht=True, enable_lsd=True, enable_natpmp=True, enable_upnp=True, enable_scrape=False,
-        #log_stats=False, encryption=Encryption.ENABLED, keep_complete=False, keep_incomplete=False,
-        #keep_files=False, log_files_progress=False, log_overall_progress=False, log_pieces_progress=False,
-        #listen_port=6881, use_random_port=False, max_idle_timeout=None, no_sparse=False, resume_file=None,
-        #user_agent=None, startup_timeout=5, state_file=None, enable_utp=True, enable_tcp=True,
-        #debug_alerts=False, logger=None, torrent_connect_boost=50, connection_speed=50,
-        #peer_connect_timeout=15, request_timeout=20, min_reconnect_time=60, max_failcount=3,
-        #dht_routers=None, trackers=None)
 
         encryption = Encryption.ENABLED if self.__settings__.getSetting('encryption') == 'true' else Encryption.DISABLED
         upload_limit = int(self.__settings__.getSetting("upload_limit"))*1024/8 if self.__settings__.getSetting(
@@ -382,16 +390,10 @@ class AnteoPlayer(xbmc.Player):
                              keep_files=keep_files, user_agent=user_agent, resume_file=resume_file, enable_dht=enable_dht)
 
     def buffer(self):
-        #self.pre_buffer_bytes = 30*1024*1024 #30 MB
         ready = False
         progressBar = xbmcgui.DialogProgress()
         progressBar.create('[%sPlayer v%s] ' % (author, __version__) + self.localize('Please Wait'),
                            self.localize('Seeds searching.'))
-        #if self.subs_dl:
-        #    subs = self.torrent.getSubsIds(os.path.basename(self.torrent.getFilePath(self.contentId)))
-        #    if len(subs) > 0:
-        #        for ind, title in subs:
-        #            self.torrent.continueSession(ind)
 
         while not xbmc.abortRequested and not ready:
             xbmc.sleep(500)
@@ -503,6 +505,10 @@ class AnteoPlayer(xbmc.Player):
             listitem.setThumbnailImage(urllib.unquote_plus(thumbnail))
         self.display_name = label
 
+        if self.get('listitem'):
+            listitem = self.get('listitem')
+            listitem.setPath(url)
+
         player = xbmc.Player()
         player.play(url, listitem)
 
@@ -547,10 +553,10 @@ class AnteoPlayer(xbmc.Player):
                     status = self.engine.status()
                     file_status = self.engine.file_status(self.contentId)
                     self.watchedTime = xbmc.Player().getTime()
-                    self.totalTime = xbmc.Player().getTotalTime()
                     if self.iterator == 100 and debug_counter < 100:
                         debug_counter += 1
                     else:
+                        self.totalTime = xbmc.Player().getTotalTime()
                         self.print_debug(status)
                         debug_counter=0
 
@@ -563,12 +569,6 @@ class AnteoPlayer(xbmc.Player):
                         xbmc.Player().pause()
                         log('[loop]: xbmc.Player().pause()')
                     xbmc.sleep(1000)
-
-                    #if not self.seeding_run and self.iterator == 100 and self.seeding:
-                        #self.seeding_run = True
-                        #self.seed(self.contentId)
-                        #self.seeding_status = True
-                        # xbmc.sleep(7000)
 
     def onPlayBackStarted(self):
         for f in self.on_playback_started:
@@ -600,10 +600,10 @@ class AnteoPlayer(xbmc.Player):
 
     def _get_status_lines(self, s, f):
         return [
-            self.display_name,
-            "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state]).decode('utf-8')),
-            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate, self.localize('kb/s').decode('utf-8'),
-                                             s.upload_rate, self.localize('kb/s').decode('utf-8'),
+            ensure_str(self.display_name),
+            "%.2f%% %s" % (f.progress * 100, self.localize(STATE_STRS[s.state])),
+            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate, self.localize('kb/s'),
+                                             s.upload_rate, self.localize('kb/s'),
                                              s.num_seeds, s.num_peers)
         ]
 

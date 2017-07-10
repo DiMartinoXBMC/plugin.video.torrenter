@@ -1,11 +1,12 @@
 ﻿<settings>
     <category label="30101">
-        <setting id="language"          type="enum"     label="30001" default="1"   values="English|Russian|Ukrainian|Hebrew" />
+        <setting id="language"          type="enum"     label="30001" default="1"   values="English|Russian|Ukrainian|Hebrew|Spanish|Hungarian" />
         <setting id="metadata"          type="bool"     label="30014" default="false"/>
         <setting id="history"           type="bool"     label="30020" default="true"/>
         <setting id="sort_search"       type="enum"     label="30061" default="0"   lvalues="30062|30063|30064"/>
-        <setting id="skin_optimization" type="enum"     label="30002" default="1"   lvalues="30003|30018|30017|30016|30019|30066|30067"/>
+        <setting id="skin_optimization" type="enum"     label="30002" default="1"   lvalues="30003|30018|30017|30016|30019|30066|30067|30071|30076"/>
         <setting id="open_option"       type="enum"     label="30034" default="0"   lvalues="30035|30036|30037|30038"/>
+        <setting id="searchwindowmode"  type="enum"     label="30106" default="1"   lvalues="30107|30108|30109|30110"/>
     </category>
     <category label="30103">
         <setting id="timeout"           type="enum"     lvalues="30026|30027|30028" label="30025" default="1"/>
@@ -61,15 +62,18 @@
         <setting id="torrent_qbittorrent_password"  type="text"         label="50316" visible="eq(-21,4)" default="admin" option="hidden"/>
     </category>
     <category label="30105">
-        <setting id="torrent_player"    type="enum"     label="30023" default="2"       lvalues="30021|30022|30046|30068" />
-        <setting id="ask_dir"           type="bool"     label="30031" default="false"/>
-        <setting id="connections_limit" type="number"   label="30051" default="200"     visible=" eq(-2,2)"/>
-        <setting id="use_random_port"   type="bool"     label="30052" default="false"   visible=" eq(-3,2)"/>
-        <setting id="listen_port"       type="number"   label="30053" default="6881"    visible="!eq(-4,1)"/>
-        <setting id="min_storage_size"  type="slider"   label="30059" default="0"       visible="!eq(-5,1)"  range="0,2,100" option="int"/>
-        <setting id="pause_onplay"      type="bool"     label="30060" default="false"   visible="!eq(-6,1)"/>
-        <setting id="max_history_add"   type="slider"   label="30065" default="100"     visible="!eq(-7,1)"  range="0,2,100" option="int"/>
-        <setting id="enable_dht"        type="bool"     label="30070" default="true"    visible="!eq(-8,1)"/>
-        <setting id="append_filesize"   type="bool"     label="30069" default="true"/>
+        <setting id="torrent_player"        type="enum"     label="30023" default="2"       lvalues="30021|30022|30046|30068" />
+        <setting id="ask_dir"               type="bool"     label="30031" default="false"/>
+        <setting id="connections_limit"     type="number"   label="30051" default="200"     visible=" eq(-2,2)"/>
+        <setting id="use_random_port"       type="bool"     label="30052" default="false"   visible=" eq(-3,2)"/>
+        <setting id="listen_port"           type="number"   label="30053" default="6881"    visible="!eq(-4,1)"/>
+        <setting id="min_storage_size"      type="slider"   label="30059" default="0"       visible="!eq(-5,1)"  range="0,2,100" option="int"/>
+        <setting id="pause_onplay"          type="bool"     label="30060" default="false"   visible="!eq(-6,1)"/>
+        <setting id="max_history_add"       type="slider"   label="30065" default="100"     visible="!eq(-7,1)"  range="0,2,100" option="int"/>
+        <setting id="enable_dht"            type="bool"     label="30070" default="true"    visible="!eq(-8,1)"/>
+        <setting id="append_filesize"       type="bool"     label="30069" default="true"/>
+        <setting id="torrent_info_style"    type="enum"     label="30072" default="0"       lvalues="30073|30074|30075"/>
+        <setting id="disable_notifications" type="bool"     label="30112" default="false"/>
+        <setting id="sw_transparent_back"   type="bool"     label="30111" default="false"/>
     </category>
 </settings>

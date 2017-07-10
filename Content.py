@@ -26,6 +26,7 @@ import re
 from StringIO import StringIO
 import gzip
 import HTMLParser
+import ssl
 from datetime import date
 
 import Localization
@@ -87,6 +88,7 @@ class Content:
                   'horror': ('Horror',),
                   'romance': ('Romance',),
                   'thriller': ('Thriller',),
+                  'sci_fi': ('Sci-Fi',),
         }
     }
 
@@ -131,7 +133,8 @@ class Content:
         else:
             get = self.category_dict[category][subcategory]
 
-        if category == 'search': get = (get[0], get[1] % urllib.quote_plus(subcategory.encode('utf-8')))
+        if category == 'search' and subcategory != True:
+            get = (get[0], get[1] % urllib.quote_plus(subcategory.encode('utf-8')))
 
         property = self.get_property(category, subcategory)
 
@@ -172,14 +175,20 @@ class Content:
                         except:
                             pass
         if has_property:
-            if category == 'search': property['page'] = property['page'] % urllib.quote_plus(
-                subcategory.encode('utf-8'))
+            if category == 'search' and subcategory != True:
+                property['page'] = property['page'] % urllib.quote_plus(subcategory.encode('utf-8'))
             return property
 
 
     def makeRequest(self, url, data={}, headers=[]):
         self.cookieJar = cookielib.CookieJar()
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookieJar))
+        # python ssl Context support - PEP 0466
+        if hasattr(ssl, '_create_unverified_context'):
+            ssl_context = ssl._create_unverified_context()
+            opener.add_handler(urllib2.HTTPSHandler(context=ssl_context))
+        else:
+            opener.add_handler(urllib2.HTTPSHandler())
         opener.addheaders = headers
         if 0 < len(data):
             encodedData = urllib.urlencode(data)
@@ -211,6 +220,7 @@ class Content:
         ('>', '&gt;'),
         ('"', '&quot;'),
         ("'", '&#39;'),
+        ("'", '&#039;'),
         (' ', '&nbsp;',),
         ('"', '&laquo;', ),
         ('"', '&raquo;', ),
@@ -218,6 +228,7 @@ class Content:
         ('e', '&#233;',),
         ('e', '&#232;',),
         ('&', '&#38;',),
+        ('&', '&#038;',),
         ('u', '&#249;',),
         ('u', '&#250;',),
         ('o', '&#244;',),

@@ -48,7 +48,7 @@ class KickAssSo(Content.Content):
 
     }
 
-    baseurl = "http://kat.cr"
+    baseurl = "http://kat.am"
     headers = [('User-Agent',
                 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124' + \
                 ' YaBrowser/14.10.2062.12061 Safari/537.36'),
@@ -82,25 +82,25 @@ class KickAssSo(Content.Content):
         return False
 
     def get_contentList(self, category, subcategory=None, apps_property=None):
+        self.debug = self.log
         contentList = []
         url = self.get_url(category, subcategory, apps_property)
 
         response = self.makeRequest(url, headers=self.headers)
 
         if None != response and 0 < len(response):
-            # print response
+            self.debug(response)
             if category:
                 contentList = self.mode(response)
-        # print str(contentList)
+        self.debug(str(contentList))
         return contentList
 
     def mode(self, response):
         contentList = []
-        # print str(result)
         num = 51
         good_forums = ['TV', 'Anime', 'Movies']
         regex = '''<tr class=".+?" id=.+?</tr>'''
-        regex_tr = r'''title="Download torrent file" href="(.+?)" class=".+?"><i.+?<a.+?<a.+?<a href="(.+?html)" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>.+?<td class="nobr center">(.+?)</td>.+?<td class="center".+?>(\d+&nbsp;.+?)</td>.+?<td class="green center">(\d+?)</td>.+?<td class="red lasttd center">(\d+?)</td>'''
+        regex_tr = r'''<a data-download .+? href="(.+?)" class=".+?"><i.+?<a.+?<a.+?<a href="(.+?html)" class=".+?">(.+?)</a>.+? in <span.+?"><strong>.+?">(.+?)</a>.+?<td class="nobr center">(.+?)</td>.+?<td class="center".+?>(\d+&nbsp;.+?)</td>.+?<td class="green center">(\d+?)</td>.+?<td class="red lasttd center">(\d+?)</td>'''
         for tr in re.compile(regex, re.DOTALL).findall(response):
             result=re.compile(regex_tr, re.DOTALL).findall(tr)
             if result:
@@ -129,6 +129,7 @@ class KickAssSo(Content.Content):
         return contentList
 
     def get_info(self, url):
+        self.debug = self.log
         movieInfo = {}
         color = '[COLOR blue]%s:[/COLOR] %s\r\n'
         response = self.makeRequest(url, headers=self.headers)
@@ -143,7 +144,7 @@ class KickAssSo(Content.Content):
                                              'kinopoisk': ''}
             try:
                 img = result.find('a', {'class': 'movieCover'}).find('img').get('src')
-                movieInfo['poster'] = 'http:' + img
+                movieInfo['poster'] = img if img.startswith('http:') else 'http:' + img
             except:
                 pass
             try:
@@ -190,7 +191,5 @@ class KickAssSo(Content.Content):
                     if i == 'IMDb link':
                         movieInfo['kinopoisk'] = 'http://imdb.snick.ru/ratefor/02/tt%s.png' % info.get(i)
 
-
-                        # print str(info)
-
+        self.debug(str(movieInfo))
         return movieInfo

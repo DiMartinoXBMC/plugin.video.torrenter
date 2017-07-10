@@ -32,7 +32,7 @@ import xbmcgui
 import xbmcvfs
 import Localization
 from functions import isSubtitle, DownloadDB, log, debug, is_writable,\
-    vista_check, windows_check, localize_path
+    vista_check, windows_check, localize_path, decode_str
 
 class SkorbaLoader:
     magnetLink = None
@@ -54,7 +54,7 @@ class SkorbaLoader:
         if not is_writable(self.storageDirectory):
             xbmcgui.Dialog().ok(Localization.localize('Torrenter v2'),
                     Localization.localize('Your storage path is not writable or not local! Please change it in settings!'),
-                    Localization.localize(self.storageDirectory))
+                    self.storageDirectory)
 
             sys.exit(1)
 
@@ -93,24 +93,14 @@ class SkorbaLoader:
         else:
             if not xbmcvfs.exists(self.torrentFilesPath):
                 xbmcvfs.mkdirs(self.torrentFilesPath)
-            torrentFile = self.torrentFilesPath + self.md5(
-                torrentUrl) + '.torrent'
+            torrentFile = localize_path(os.path.join(self.torrentFilesPath, self.md5(torrentUrl) + '.torrent'))
             try:
-                if not re.match("^http\:.+$", torrentUrl):
-                    contentFile = xbmcvfs.File(torrentUrl, "rb")
-                    content = contentFile.read()
-                    contentFile.close()
+                if not re.match("^[htps]+?://.+$|^://.+$", torrentUrl):
+                    log('xbmcvfs.File for %s' % torrentUrl)
+                    content = xbmcvfs.File(torrentUrl, "rb").read()
                 else:
-                    request = urllib2.Request(torrentUrl)
-                    request.add_header('Referer', torrentUrl)
-                    request.add_header('Accept-encoding', 'gzip')
-                    result = urllib2.urlopen(request)
-                    if result.info().get('Content-Encoding') == 'gzip':
-                        buf = StringIO(result.read())
-                        decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
-                        content = decomp.decompress(buf.getvalue())
-                    else:
-                        content = result.read()
+                    log('request for %s' % torrentUrl)
+                    content = self.makeRequest(torrentUrl)
 
                 localFile = xbmcvfs.File(torrentFile, "w+b")
                 localFile.write(content)
@@ -128,7 +118,7 @@ class SkorbaLoader:
                     return
                 if not xbmcvfs.exists(self.torrentFilesPath):
                     xbmcvfs.mkdirs(self.torrentFilesPath)
-                newFile = self.torrentFilesPath + self.md5(torrentUrl) + '.torrent'
+                newFile = localize_path(self.torrentFilesPath + self.md5(torrentUrl) + '.torrent')
                 if newFile != torrentFile:
                     if xbmcvfs.exists(newFile):
                         xbmcvfs.delete(newFile)
@@ -145,7 +135,30 @@ class SkorbaLoader:
                     self.torrentFileInfo = self.lt.torrent_info(e)
                 self.torrentFile = torrentFile
                 return self.torrentFile
- 
+
+    def makeRequest(self, torrentUrl):
+        torrentUrl = re.sub('^://', 'http://', torrentUrl)
+        x = re.search("://(.+?)/|://(.+?)$", torrentUrl)
+        if x:
+            baseurl = x.group(1) if x.group(1) else x.group(2)
+        else:
+            baseurl =''
+
+        headers = [('User-Agent',
+                    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 YaBrowser/14.10.2062.12061 Safari/537.36'),
+                   ('Referer', 'http://%s/' % baseurl), ('Accept-encoding', 'gzip'), ]
+
+        opener = urllib2.build_opener()
+        opener.addheaders = headers
+        result = opener.open(torrentUrl)
+        if result.info().get('Content-Encoding') == 'gzip':
+            buf = StringIO(result.read())
+            decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
+            content = decomp.decompress(buf.getvalue())
+        else:
+            content = result.read()
+        return content
+
     def getMagnetInfo(self):
         magnetSettings = {
             'url': self.magnetLink,
@@ -157,14 +170,11 @@ class SkorbaLoader:
         }
         progressBar = xbmcgui.DialogProgress()
         progressBar.create(Localization.localize('Please Wait'), Localization.localize('Magnet-link is converting'))
-        #try:
         self.torrentHandle = self.session.add_torrent(magnetSettings)
-        #except:
-        #    self.torrentHandle = self.lt.add_magnet_uri(self.session, self.magnetLink, magnetSettings)
         iterator = 0
+        if self.enable_dht: self.torrentHandle.force_dht_announce()
         while iterator < 100:
             xbmc.sleep(500)
-            if self.enable_dht: self.torrentHandle.force_dht_announce()
             progressBar.update(iterator, Localization.localize('Please Wait'), Localization.localize('Magnet-link is converting')+'.' * (iterator % 4), ' ')
             iterator += 1
             if progressBar.iscanceled():
@@ -237,8 +247,9 @@ class SkorbaLoader:
 
     def getContentList(self):
         filelist = []
+        #from functions import decode_str
         for contentId, contentFile in enumerate(self.torrentFileInfo.files()):
-            stringdata = {"title": localize_path(contentFile.path), "size": contentFile.size, "ind": int(contentId),
+            stringdata = {"title": contentFile.path, "size": contentFile.size, "ind": int(contentId),
                           'offset': contentFile.offset}
             filelist.append(stringdata)
         return filelist
@@ -307,13 +318,13 @@ class SkorbaLoader:
             else:
                 for i in range(self.torrentFileInfo.num_pieces()):
                     self.torrentHandle.piece_priority(i, 6)
+            del db
             thread.start_new_thread(self.downloadLoop, (title,))
 
     def downloadLoop(self, title):
         db = DownloadDB()
         status = 'downloading'
         while db.get(title) and status != 'stopped':
-            xbmc.sleep(3000)
             status = db.get_status(title)
             if not self.paused:
                 if status == 'pause':
@@ -332,7 +343,9 @@ class SkorbaLoader:
             iterator = int(s.progress * 100)
             info['progress'] = iterator
             db.update(title, info)
-            self.debug()
+            #self.debug()
+            xbmc.sleep(3000)
+        log('out of downloadLoop')
         self.session.remove_torrent(self.torrentHandle)
         return
 

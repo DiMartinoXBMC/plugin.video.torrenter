@@ -30,14 +30,16 @@ class Core:
     __plugin__ = sys.modules["__main__"].__plugin__
     __settings__ = sys.modules["__main__"].__settings__
     ROOT = sys.modules["__main__"].__root__
-    userStorageDirectory = localize_path(__settings__.getSetting("storage"))#file_encode(__settings__.getSetting("storage"))
+    userStorageDirectory = localize_path(xbmc.translatePath(__settings__.getSetting("storage")))#file_encode(__settings__.getSetting("storage"))
     torrentFilesDirectory = 'torrents'
     debug = __settings__.getSetting('debug') == 'true'
     torrent_player = __settings__.getSetting("torrent_player")
     history_bool = __settings__.getSetting('history') == 'true'
     open_option = int(__settings__.getSetting('open_option'))
-    language = {0: 'en', 1: 'ru', 2: 'uk', 3: 'he'}.get(int(__settings__.getSetting("language")))
+    language = {0: 'en', 1: 'ru', 2: 'uk', 3: 'he', 4: 'hu'}.get(int(__settings__.getSetting("language")))
     scrapperDB_ver = {'en':'1.1', 'ru':'1.3', 'he':'1.3'}
+    torrent_info_style = int(__settings__.getSetting('torrent_info_style'))
+    searchwindowmode = int(__settings__.getSetting('searchwindowmode'))
 
     log('SYS ARGV: ' + str(sys.argv))
 
@@ -52,7 +54,11 @@ class Core:
     def sectionMenu(self):
         if self.__settings__.getSetting('plugin_name') != self.__plugin__:
             #Every update run
-            first_run_250()
+            first_run_260()
+            if self.version_check():
+                estuary()
+
+            self.__settings__.setSetting('first_run_260', 'True')
             self.__settings__.setSetting('plugin_name', self.__plugin__)
             #check_network_advancedsettings()
             check_download_dir()
@@ -64,49 +70,100 @@ class Core:
         contextMenu = [(self.localize('Search Control Window'),
                 'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
 
-        if self.history_bool:
-            HistorycontextMenu=[]
+        #Search Window
+        if self.searchwindowmode < 3:
+            self.drawItem('< %s >' % self.localize('Search Window'), 'searchWindow',
+                          image=self.ROOT + '/icons/kodi.png', isFolder=False)
+
+        #History
+        if self.history_bool and self.searchwindowmode > 0:
+            HistorycontextMenu = []
             HistorycontextMenu.extend(contextMenu)
             HistorycontextMenu.append(
-                (self.localize('Clear %s') % self.localize('Search History'), ListString % ('History', 'clear', 'addtime', '')))
-            self.drawItem('< %s >' % self.localize('Search History'), 'History',
-                          image=self.ROOT + '/icons/history2.png', contextMenu=HistorycontextMenu, replaceMenu=False)
-        self.drawItem('< %s >' % self.localize('Search'), 'search', image=self.ROOT + '/icons/search.png', )
+                (self.localize('Clear %s') % self.localize('Search History'),
+                 ListString % ('History', 'clear', 'addtime', '')))
+            if self.searchwindowmode == 1:
+                self.drawItem('< %s >' % self.localize('Search History'), 'swHistory',
+                              image=self.ROOT + '/icons/history2.png', contextMenu=HistorycontextMenu, replaceMenu=False)
+            else:
+                self.drawItem('< %s >' % self.localize('Search History'), 'History',
+                              image=self.ROOT + '/icons/history2.png', contextMenu=HistorycontextMenu, replaceMenu=False)
+
+        #Search
+        if self.searchwindowmode == 1:
+            self.drawItem('< %s >' % self.localize('Search'), 'swsearch', image=self.ROOT + '/icons/search.png',)
+        elif self.searchwindowmode > 1:
+            self.drawItem('< %s >' % self.localize('Search'), 'search', image=self.ROOT + '/icons/search.png', )
+
+        #Media
         CLcontextMenu=[]
         CLcontextMenu.extend(contextMenu)
         CLcontextMenu.append((self.localize('Reset All Cache DBs'),
                             ListString % ('full_download', '', 'url', json.dumps({'action': 'delete'}))))
         self.drawItem('< %s >' % self.localize('Content Lists'), 'openContent', image=self.ROOT + '/icons/media.png',
                       contextMenu=CLcontextMenu, replaceMenu=False)
+
+        #DL Status
         DLScontextMenu=[(self.localize('Start All'), ListString % ('DownloadStatus', 'startall', 'addtime', '')),
                         (self.localize('Stop All'), ListString % ('DownloadStatus', 'stopall', 'addtime', '')),]
         DLScontextMenu.append(
                 (self.localize('Clear %s') % self.localize('Download Status'), ListString % ('DownloadStatus', 'clear', 'addtime', '')))
         DLScontextMenu.extend(contextMenu)
-        self.drawItem('< %s >' % self.localize('Download Status'), 'DownloadStatus', image=self.ROOT + '/icons/download.png',
-                      contextMenu=DLScontextMenu, replaceMenu=False)
-        self.drawItem('< %s >' % self.localize('Torrent-client Browser'), 'uTorrentBrowser',
-                      image=self.ROOT + '/icons/' + self.getTorrentClientIcon())
-        if self.history_bool:
+
+        if self.searchwindowmode == 1:
+            self.drawItem('< %s >' % self.localize('Download Status'), 'swDownloadStatus',
+                          image=self.ROOT + '/icons/download.png',
+                          contextMenu=DLScontextMenu, replaceMenu=False)
+        elif self.searchwindowmode > 1:
+            self.drawItem('< %s >' % self.localize('Download Status'), 'DownloadStatus',
+                          image=self.ROOT + '/icons/download.png',
+                          contextMenu=DLScontextMenu, replaceMenu=False)
+
+        #Torrent-client
+        if self.searchwindowmode == 1:
+            self.drawItem('< %s >' % self.localize('Torrent-client Browser'), 'swuTorrentBrowser',
+                          image=self.ROOT + '/icons/' + getTorrentClientIcon())
+        elif self.searchwindowmode > 1:
+            self.drawItem('< %s >' % self.localize('Torrent-client Browser'), 'uTorrentBrowser',
+                          image=self.ROOT + '/icons/' + getTorrentClientIcon())
+
+        #Watched
+        if self.history_bool and self.searchwindowmode > 0:
             WatchedHistorycontextMenu=[]
             WatchedHistorycontextMenu.extend(contextMenu)
             WatchedHistorycontextMenu.append(
                 (self.localize('Clear %s') % self.localize('Watched History'), ListString % ('WatchedHistory', 'clear', 'addtime', '')))
-            self.drawItem('< %s >' % self.localize('Watched History'), 'WatchedHistory',
-                      image=self.ROOT + '/icons/watched.png', contextMenu=WatchedHistorycontextMenu, replaceMenu=False)
+            if self.searchwindowmode == 1:
+                self.drawItem('< %s >' % self.localize('Watched History'), 'swWatchedHistory',
+                              image=self.ROOT + '/icons/watched.png', contextMenu=WatchedHistorycontextMenu,
+                              replaceMenu=False)
+            else:
+                self.drawItem('< %s >' % self.localize('Watched History'), 'WatchedHistory',
+                      image=self.ROOT + '/icons/watched.png', contextMenu=WatchedHistorycontextMenu,
+                              replaceMenu=False)
+
+        #Torr player
         self.drawItem('< %s >' % self.localize('.torrent Player'), 'torrentPlayer',
-                      image=self.ROOT + '/icons/torrentPlayer.png')
+                      image=self.ROOT + '/icons/torrentPlayer.png', isFolder = False)
+
+        #Search Control Window
         self.drawItem('< %s >' % self.localize('Search Control Window'), 'controlCenter',
                       image=self.ROOT + '/icons/settings.png', isFolder=False)
+
+        #Magnet player
         self.drawItem('< %s >' % self.localize('Magnet-link Player'), 'magentPlayer',
-                      image=self.ROOT + '/icons/magnet.png')
+                      image=self.ROOT + '/icons/magnet.png', isFolder = False)
+
+        #Debug
         if self.debug:
             self.drawItem('full_download', 'full_download', image=self.ROOT + '/icons/magnet.png')
             self.drawItem('test', 'test', image=self.ROOT + '/icons/magnet.png', isFolder=False)
 
+        #Clear storage
         if '0' != self.__settings__.getSetting("keep_files"):
             self.drawItem('< %s >' % self.localize('Clear Storage'), 'clearStorage', isFolder=True,
                           image=self.ROOT + '/icons/clear.png')
+
         view_style('sectionMenu')
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
@@ -239,54 +296,42 @@ class Core:
         lockView('wide')
 
     def test(self, params={}):
-        #from Anteoloader import AnteoPlayer
-        #from python_libtorrent import get_libtorrent
-        #self.lt=get_libtorrent()
-        #self.torrentFile='D:\\test.torrent'
-        #self.session = self.lt.session()
-        #e=self.lt.bdecode(xbmcvfs.File(self.torrentFile,'rb').read())
-        #self.torrentFileInfo = self.lt.torrent_info(e)
-        #torrent_info={'ti': self.torrentFileInfo,
-        #      'save_path': self.userStorageDirectory,
-        #      'flags': 0x300,
-        #       #'storage_mode': self.lt.storage_mode_t(1),
-        #       'paused': False,
-        #       #'auto_managed': False,
-        #       #'duplicate_is_error': True
-        #      }
-        #self.torrentHandle = self.session.add_torrent(torrent_info)
-        #log(self.torrentHandle.torrent_file())
-        #self.session.remove_torrent(self.torrentHandle)
+        pass
+        import searchwindow
+        params = {'mode': 'file_browser', 'path':'D:\\', 'tdir':'D:\\FRAPS\\'}
+        searchwindow.main(params)
 
-        #params['url']='0'
-        #if not xbmcvfs.exists(torrentUrl):
-        #    action = xbmcgui.Dialog()
-        #    torrentUrl = action.browse(1, self.localize('Choose .torrent in video library'), 'video', '.torrent')
-        #if torrentUrl and xbmcvfs.exists(torrentUrl):
-        #    if 0 != len(torrentUrl):
-        #        self.Downloader = Downloader.Torrent(self.userStorageDirectory, torrentUrl)
-        #    else:
-        #        log(self.__plugin__ + " Unexpected access to method Anteoloader() without torrent content")
-        #if self.Downloader:
-        #    x=self.Downloader.getContentList()
-        #    print str(x)
-        #    xbmc.sleep(1000)
-        #    self.Downloader.__exit__()
-        #self.Player = AnteoPlayer(userStorageDirectory=self.userStorageDirectory, torrentUrl=torrentUrl, params=params)
+    def swHistory(self, params={}):
+        import searchwindow
+        params = {'mode': 'history'}
+        searchwindow.main(params)
 
-        #xbmcgui.Dialog().ok('Dam Son!','Now send this shit to DiMartino')
-        from resources.proxy import antizapret
-        filename = os.path.join(tempdir(),"antizapret.pac_config")
-        import shelve
-        from contextlib import contextmanager, closing
-        with closing(shelve.open(filename, writeback=True)) as d:
-            import time
-            log(str(d))
-            log(str(time.time()))
-            log(str((time.time() - d["created_at"])))
-            ttl = 24*3600
-            if ttl > 0 and (time.time() - d["created_at"]) > ttl:
-                log('xxx')
+    def swDownloadStatus(self, params={}):
+        import searchwindow
+        params = {'mode': 'downloadstatus'}
+        searchwindow.main(params)
+
+    def swuTorrentBrowser(self, params={}):
+        import searchwindow
+        params = {'mode': 'browser'}
+        searchwindow.main(params)
+
+    def swWatchedHistory(self, params={}):
+        import searchwindow
+        params = {'mode': 'watched'}
+        searchwindow.main(params)
+
+    def swsearch(self, params={}):
+        if len(Searchers().get_active())<1:
+            noActiveSerachers()
+            return
+        keyboard = xbmc.Keyboard('', self.localize('Search Phrase'))
+        keyboard.doModal()
+        params["query"] = keyboard.getText()
+        if keyboard.isConfirmed():
+            params["mode"] = 'search'
+            import searchwindow
+            searchwindow.main(params)
 
     def DownloadStatus(self, params={}):
         db = DownloadDB()
@@ -419,8 +464,6 @@ class Core:
                         self.drawItem(title, 'DownloadStatus', link, image=img, contextMenu=contextMenu, replaceMenu=False)
             view_style('DownloadStatus')
             xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
-            #xbmc.sleep(30000)
-            #xbmc.executebuiltin('Container.Refresh')
             return
 
     def History(self, params={}):
@@ -521,7 +564,7 @@ class Core:
                 self.__settings__.setSetting("lastTorrent", path)
             xbmc.executebuiltin(
                             'XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.torrenter/?action=%s&url=%s'
-            % ('torrentPlayer', path))
+            % ('torrentPlayer', path.encode('utf-8')))
 
         if action2 == 'playnoseek' or action2 == 'playwithseek':
             filename, path, url, seek, length, ind = db.get('filename, path, url, seek, length, ind', 'addtime', str(addtime))
@@ -551,7 +594,7 @@ class Core:
                 #for favbool, bbstring in favlist:
                 for addtime, filename, foldername, path, url, seek, length, ind, size in items:
                     seek = int(seek) if int(seek) > 3*60 else 0
-                    watchedPercent = int((float(seek) / float(length)) * 100)
+                    watchedPercent = int((float(seek) / float(length if length else 1)) * 100)
                     duration = '%02d:%02d:%02d' % ((length / (60*60)), (length / 60) % 60, length % 60)
                     title = '[%d%%][%s] %s [%d MB]' %\
                             (watchedPercent, duration, filename.encode('utf-8'), int(size))
@@ -725,6 +768,19 @@ class Core:
         else:
             if provider:
                 self.Content = self.contenterObject[provider]
+                if category == 'search' and provider and subcategory == True:
+                    keyboard = xbmc.Keyboard('', self.localize('Search Phrase') + ':')
+                    keyboard.doModal()
+                    query = keyboard.getText()
+                    if not query:
+                        return
+                    elif keyboard.isConfirmed():
+                        subcategory = query
+                    if subcategory:
+                        apps['subcategory'] = subcategory.decode('utf-8')
+                    else:
+                        return
+
                 if not self.Content.isTracker():
                     self.draw(apps, mode='content')
                 else:
@@ -740,6 +796,7 @@ class Core:
         page = apps.get('page') if apps.get('page') else 1
         sort = apps.get('sort') if apps.get('sort') else 0
         apps_property={'page':page, 'sort':sort}
+        log('draw: '+str((category, subcategory)))
         property = self.Content.get_property(category, subcategory)
         contentList = self.Content.get_contentList(category, subcategory, apps_property)
         if property and property.get('page'):
@@ -895,7 +952,7 @@ class Core:
 
                 progressBar.update(iterator, dialogText, title, scrapers[scraper])
                 meta = self.Scraper.scraper(scraper, {'label': title, 'search': search, 'year': year}, self.language)
-                #print 'meta:'+str(meta)
+                log('meta:'+str(meta))
                 if self.language == 'ru':
                     if not meta.get('info').get('title') or \
                             not meta.get('properties').get('fanart_image') or not meta.get('icon'):
@@ -991,7 +1048,7 @@ class Core:
                 title = title.encode('utf-8', 'ignore')
             except:
                 continue
-            label = info.get('label').encode('utf-8', 'ignore')
+            log(str(info))
 
             if info.get('link'):
                 if isinstance(info.get('link'), tuple):
@@ -1112,7 +1169,7 @@ class Core:
         images = {'icon':image, 'thumb':image}
         images = {'icon': image, 'thumb': image,
                   'poster': image, 'banner': image,
-                  'fanart': image, 'landscape': image,
+                  #'fanart': image, 'landscape': image,
                   #'clearart': image, 'clearlogo': image,
                   }
         listitem.setArt(images)
@@ -1148,14 +1205,14 @@ class Core:
             contextMenu = [(self.localize('Search Control Window'),
                             'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))]
             replaceMenu = False
-        if contextMenu:
-            listitem.addContextMenuItems(contextMenu, replaceItems=replaceMenu)
         if isFolder:
             listitem.setProperty("Folder", "true")
             listitem.setInfo(type='Video', infoLabels=info)
         else:
             listitem.setInfo(type='Video', infoLabels=info)
             listitem.setArt({'thumb': image})
+        if contextMenu:
+            listitem.addContextMenuItems(contextMenu, replaceItems=replaceMenu)
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=url, listitem=listitem, isFolder=isFolder)
 
     def getParameters(self, parameterString):
@@ -1233,7 +1290,7 @@ class Core:
                     filename = os.path.join(folder, filename)
                     xbmc.executebuiltin('xbmc.PlayMedia("' + filename.encode('utf-8') + '")')
                 elif tdir and action == 'copy':
-                    path=os.path.join(folder, tdir)
+                    path = os.path.join(localize_path(folder), localize_path(tdir))
                     dirs, files=xbmcvfs.listdir(path)
                     if len(dirs) > 0:
                         dirs.insert(0, self.localize('./ (Root folder)'))
@@ -1248,9 +1305,10 @@ class Core:
                             path=os.path.join(path, dirs[ret])
                             dirs, files=xbmcvfs.listdir(path)
                     for file in files:
-                        if not xbmcvfs.exists(os.path.join(path,file)):
-                            xbmcvfs.delete(os.path.join(path,file))
-                        xbmcvfs.copy(os.path.join(path,file),os.path.join(folder,file))
+                        file = localize_path(file)
+                        if not xbmcvfs.exists(os.path.join(path, file)):
+                            xbmcvfs.delete(os.path.join(path, file))
+                        xbmcvfs.copy(os.path.join(path, file),os.path.join(folder, file))
                         i=i+1
                     showMessage(self.localize('Torrent-client Browser'), self.localize('Copied %d files!') % i, forced=True)
                 return
@@ -1365,7 +1423,6 @@ class Core:
                 params["url"] = urllib.quote_plus(unescape(urllib.unquote_plus(query)))
         else:
             params["url"] = urllib.quote_plus(unescape(urllib.unquote_plus(defaultKeyword)))
-        #print str(params)
         self.torrentPlayer(params)
 
     def torrentPlayer(self, params={}):
@@ -1376,13 +1433,22 @@ class Core:
         if not url:
             action = xbmcgui.Dialog()
             url = action.browse(1, self.localize('Choose .torrent in video library'), 'video', '.torrent')
+            torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
+            self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
+            self.__settings__.setSetting("lastTorrentUrl", url)
             if url:
+                xbmc.executebuiltin("Dialog.Close(all,true)")
                 xbmc.executebuiltin(
                                 'XBMC.ActivateWindow(%s)' % 'Videos,plugin://plugin.video.torrenter/?action=%s&url=%s'
                 % ('torrentPlayer', url))
                 return
         if url:
-            self.openTorrent(params)
+            if self.searchwindowmode > 1:
+                self.openTorrent(params)
+            else:
+                import searchwindow
+                params = {'mode': 'open_torrent', 'link': url}
+                searchwindow.main(params)
 
     def userStorage(self, params):
         save=False
@@ -1409,7 +1475,14 @@ class Core:
                 self.userStorageDirectory=dirname
 
     def playTorrent(self, params={}):
-        torrentUrl = self.__settings__.getSetting("lastTorrent")
+        if params.get('filename'):
+            torrentUrl = unquote(params.get('filename'))
+        else:
+            torrentUrl = self.__settings__.getSetting("lastTorrent")
+        #xbmc.executebuiltin('Action(Stop)')
+        if self.torrent_player != '1' and params.get('external') == '1' and not params.get('seek'):
+            params['seek'] = watched_seek(torrentUrl, params['url'])
+
         self.userStorage(params)
         if self.torrent_player == '0':
             from Player import TorrentPlayer
@@ -1434,9 +1507,9 @@ class Core:
             #xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.yatp/?action=play&torrent=%s&file_index=%s")' % (urllib.quote_plus(torrentUrl), params['url']))
         elif self.torrent_player == '1':
             __ASsettings__ = xbmcaddon.Addon(id='script.module.torrent.ts')
-            folder=__ASsettings__.getSetting("folder")
+            folder=__ASsettings__.getSetting("path")
             save=__ASsettings__.getSetting("save")
-            __ASsettings__.setSetting("folder", self.__settings__.getSetting("storage"))
+            __ASsettings__.setSetting("path", xbmc.translatePath(self.__settings__.getSetting("storage")))
             __ASsettings__.setSetting("save", self.__settings__.getSetting("keep_files"))
             xbmc.sleep(1000)
             torrent = Downloader.Torrent(self.userStorageDirectory, torrentUrl, self.torrentFilesDirectory)
@@ -1447,7 +1520,7 @@ class Core:
             label = unquote(get("label"), os.path.basename(path))
             torrent.play_url_ind(int(ind), label, icon)
             torrent.__exit__()
-            __ASsettings__.setSetting("folder", folder)
+            __ASsettings__.setSetting("path", folder)
             __ASsettings__.setSetting("save", save)
 
     def saveUrlTorrent(self, url):
@@ -1477,14 +1550,29 @@ class Core:
         get = params.get
         xbmc.executebuiltin('xbmc.Playlist.Clear')
         url = unquote(get("url"), None)
-        fileIndex = unquote(get("index"), None)
+        url2 = unquote(get("url2"), None)
+        index = unquote(get("index"), None)
         if url:
             self.__settings__.setSetting("lastTorrentUrl", url)
+            classMatch = re.search('(\w+)::(.+)', url)
+            if classMatch:
+                searcher = classMatch.group(1)
+                url = Searchers().downloadWithSearcher(classMatch.group(2), searcher)
             torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
-            self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
-            if fileIndex==None: fileIndex = chooseFile(torrent.getContentList())
-            if fileIndex:
-                xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url='+fileIndex+'")')
+            filename = torrent.saveTorrent(url)
+            self.__settings__.setSetting("lastTorrent", filename)
+            if index == None: index = chooseFile(torrent.getContentList())
+            if index:
+                #params = {'url': index, 'filename': filename}
+                #if url2: params['url2'] = url2
+                #self.playTorrent(params)
+
+                url = 'plugin://plugin.video.torrenter/?action=playTorrent'
+                url += '&url=%s' % (str(index))
+                if url2: url += '&url2=%s' % (url2)
+                if filename: url += '&filename=%s' % (urllib.quote_plus(ensure_str(filename)))
+
+                xbmc.executebuiltin('xbmc.RunPlugin("%s")' % (url))
 
     def openTorrent(self, params={}):
         get = params.get
@@ -1503,7 +1591,8 @@ class Core:
         torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
         if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
                                                      torrentFilesDirectory=self.torrentFilesDirectory)
-        self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
+        filename = torrent.saveTorrent(url)
+        self.__settings__.setSetting("lastTorrent", filename)
     
         append_filesize = self.__settings__.getSetting("append_filesize") == 'true'
         hasSize = False
@@ -1539,9 +1628,11 @@ class Core:
                  'XBMC.RunPlugin(%s)' % ('%s?action=%s&ind=%s') % (
                  sys.argv[0], 'downloadLibtorrent', str(identifier))),
             ]
-            link = {'url': identifier, 'thumbnail': thumbnail, 'save_folder':save_folder}
+            link = {'url': identifier, 'thumbnail': thumbnail, 'save_folder':save_folder,
+                    'filename':ensure_str(filename)}
             self.drawItem(title, 'playTorrent', link, image=thumbnail, isFolder=False,
-                          action2=ids_video.rstrip(','), contextMenu=contextMenu, replaceMenu=False, fileSize=filesize)
+                          action2=ids_video.rstrip(','), contextMenu=contextMenu,
+                          replaceMenu=False, fileSize=filesize)
         view_style('openTorrent')
         p_handle = int(sys.argv[1])
         try:
@@ -1598,6 +1689,10 @@ class Core:
         xbmc.executebuiltin(
             'xbmc.RunScript(%s,)' % os.path.join(ROOT, 'controlcenter.py'))
 
+    def searchWindow(self, params={}):
+        import searchwindow
+        searchwindow.main(params)
+
     def showFilesList(self, filesList, params={}):
         get = params.get
         thumbnail = unquote(get("thumbnail"),'')
@@ -1615,8 +1710,8 @@ class Core:
                 (self.localize('Download via Libtorrent'),
                  'XBMC.RunPlugin(%s)' % ('%s?action=%s&url=%s') % (
                  sys.argv[0], 'downloadLibtorrent', urllib.quote_plus(link))),
-                (self.localize('Open (no return)'),
-                 'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
+                (self.localize('Open'),
+                 'XBMC.Container.Update(%s)' % ('%s?action=%s%s') % (
                  sys.argv[0], 'openTorrent', link_url)),
             ]
             title = self.titleMake(seeds, leechers, size, title)
@@ -1676,8 +1771,8 @@ class Core:
                         (self.localize('Add to %s') % return_name,
                          'XBMC.RunPlugin(%s)' % (back_url+'&stringdata=' + urllib.quote_plus(
                              json.dumps(sdata)))),
-                        (self.localize('Open (no return)'),
-                         'XBMC.ActivateWindow(Videos,%s)' % ('%s?action=%s%s') % (
+                        (self.localize('Open'),
+                         'XBMC.Container.Update(%s)' % ('%s?action=%s%s') % (
                          sys.argv[0], 'openTorrent', link_url)),
                         (self.localize('Return to %s') % return_name,
                          'XBMC.ActivateWindow(%s)' % ('Videos,%s' % return_url)),
@@ -1693,8 +1788,28 @@ class Core:
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
     def context(self, params={}):
-        xbmc.executebuiltin("Action(ContextMenu)")
-        return
+        if not self.version_check():
+            xbmc.executebuiltin("Action(ContextMenu)")
+            sys.exit()
+        else:
+            fixed = xbmcgui.Dialog().contextmenu(list=[(self.localize('Open')),
+                                                    (self.localize('Download via Libtorrent')),
+                                                    (self.localize('Download via T-client'))])
+            if fixed == 0:
+                xbmc.executebuiltin('XBMC.Container.Update(%s)' %
+                                    ('%s?action=%s&url=%s') %
+                                    (sys.argv[0], 'openTorrent', params['url']))
+            elif fixed == 1:
+                xbmc.executebuiltin('XBMC.RunPlugin(%s)' %
+                                    ('%s?action=%s&url=%s') %
+                                    (sys.argv[0], 'downloadLibtorrent', params['url']))
+            elif fixed == 2:
+                xbmc.executebuiltin('XBMC.RunPlugin(%s)' %
+                                    ('%s?action=%s&url=%s') %
+                                    (sys.argv[0], 'downloadFilesList', params['url']))
+
+    def version_check(self):
+        return False if int(xbmc.getInfoLabel( "System.BuildVersion" )[:2]) < 17 else True
 
     def downloadFilesList(self, params={}):
         from resources.utorrent.net import Download
@@ -1765,11 +1880,19 @@ class Core:
             f = open(url, 'rb')
             torrent = f.read()
             f.close()
+            try:
+                from python_libtorrent import get_libtorrent
+                libtorrent = get_libtorrent()
+                info = libtorrent.torrent_info(libtorrent.bdecode(torrent))
+                name = info.name()
+            except:
+                log('get_libtorrent import error, name = None')
+                name = None
             success = Download().add(torrent, dirname)
             if success:
                 showMessage(self.localize('Torrent-client Browser'), self.localize('Added!'), forced=True)
                 if ind:
-                    id = self.chooseHASH(Download().list())[0]
+                    id = self.chooseHASH(Download().list(), name)[0]
                     Download().setprio(id, ind)
 
     def downloadLibtorrent(self, params={}):
@@ -1803,7 +1926,6 @@ class Core:
                 int(self.__settings__.getSetting("download_limit")) * 1000000 / 8)  #MBits/second
         torrent.downloadProcess(ind, encryption)
         showMessage(self.localize('Download Status'), self.localize('Added!'))
-        xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
     def titleMake(self, seeds, leechers, size, title):
 
@@ -1815,13 +1937,21 @@ class Core:
         clAliceblue = '[COLOR FFF0F8FF]%s[/COLOR]'
         clRed = '[COLOR FFFF0000]%s[/COLOR]'
 
-        title = title.replace('720p', '[B]720p[/B]')
-        title = clWhite % title + chr(10)
-        second = '[I](%s) [S/L: %d/%d] [/I]' % (size, seeds, leechers) + chr(10)
-        space = ''
-        for i in range(0, 180 - len(second)):
-            space += ' '
-        title += space + second
+        title = title.replace('720p', '[B]720p[/B]').replace('1080p', '[B]1080p[/B]')
+
+        if self.torrent_info_style == 0:
+            title = clWhite % title
+            second = '[I](%s) [S/L: %d/%d] [/I]' % (size, seeds, leechers)
+            title += '  ' + second
+        elif self.torrent_info_style == 1:
+            title = clWhite % title
+            second = '[I](%s) [S/L: %d/%d] [/I]' % (size, seeds, leechers)
+            title = second + '  ' + title
+        elif self.torrent_info_style == 2:
+            title = clWhite % title
+            second = '[I](%s) [S/L: %d/%d] [/I]' % (size, seeds, leechers)
+            title += '\r\n' + clDimgray % second
+
         return title
 
     def search(self, params={}):
@@ -1852,7 +1982,7 @@ class Core:
         else:
             self.openSection(params)
 
-    def chooseHASH(self, list):
+    def chooseHASH(self, list, name = None):
         dialog_items, dialog_items_clean = [], []
         dialog_files = []
         dat = list
@@ -1862,14 +1992,29 @@ class Core:
         for data in dat:
             dialog_files.append((data['id'], data['dir'].encode('utf-8')))
             dialog_items.append('[' + str(data['progress']) + '%] ' + data['name'])
-        if len(dialog_items) > 1:
-            ret = xbmcgui.Dialog().select(self.localize('Choose in torrent-client:'), dialog_items)
-            if ret > -1 and ret < len(dialog_files):
-                hash = dialog_files[ret]
+            dialog_items_clean.append(data['name'])
+
+        log('[chooseHASH]: name %s ' % str(name))
+        for data in dat:
+            # Debug('[chooseHASH]: '+str((data['name'], data['id'], data['dir'].encode('utf-8'))))
+            dialog_files.append((data['id'], data['dir'].encode('utf-8')))
+            dialog_items.append('[' + str(data['progress']) + '%] ' + data['name'])
+            dialog_items_clean.append(data['name'])
+
+        if name:
+            if decode_str(name) in dialog_items_clean:
+                return dialog_files[dialog_items_clean.index(decode_str(name))]
+            elif name in dialog_items_clean:
+                return dialog_files[dialog_items_clean.index(name)]
+        else:
+            if len(dialog_items) > 1:
+                ret = xbmcgui.Dialog().select(self.localize('Choose in torrent-client:'), dialog_items)
+                if ret > -1 and ret < len(dialog_files):
+                    hash = dialog_files[ret]
+                    return hash
+            elif len(dialog_items) == 1:
+                hash = dialog_files[0]
                 return hash
-        elif len(dialog_items) == 1:
-            hash = dialog_files[0]
-            return hash
 
     def localize(self, string):
         try:
@@ -1880,19 +2025,6 @@ class Core:
     def returnRussian(self, params={}):
         i=delete_russian(ok=True, action='return')
         showMessage(self.localize('Return Russian stuff'),self.localize('%d files have been returned')%i)
-
-    def getTorrentClientIcon(self):
-        client = self.__settings__.getSetting("torrent")
-        if client == '1':
-            return 'transmission.png'
-        elif client == '2':
-            return 'vuze.png'
-        elif client == '3':
-            return 'deluge.png'
-        elif client == '4':
-            return 'qbittorrent.png'
-        else:
-            return 'torrent-client.png'
 
     def callback(self, params={}):
         get = params.get

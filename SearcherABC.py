@@ -35,7 +35,9 @@ import xbmc
 import Localization
 from functions import log, debug, showMessage
 
+import ssl
 
+#ssl._create_default_https_context = ssl._create_unverified_context
 class SearcherABC:
     searchIcon = '/icons/video.png'
     sourceWeight = 1
@@ -103,19 +105,25 @@ class SearcherABC:
 
     def makeRequest(self, url, data={}, headers={}):
         self.load_cookie()
-        opener = None
+        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookieJar))
         if self.proxy == 1:
             try:
                 from resources.proxy import antizapret
-                opener = urllib2.build_opener(antizapret.AntizapretProxyHandler(), urllib2.HTTPCookieProcessor(self.cookieJar))
+                opener.add_handler(antizapret.AntizapretProxyHandler())
                 config = antizapret.config()
                 self.debug('[antizapret]: '+str(config["domains"]))
                 self.debug('[antizapret]: '+str(config["server"]))
             except:
                 showMessage('AntiZapret', Localization.localize('Error'))
                 self.debug('[antizapret]: OFF!')
-        if not opener:
-            opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookieJar))
+        # python ssl Context support - PEP 0466
+        if 'https:' in url:
+            ssl_context = ssl.create_default_context()
+            ssl_context.check_hostname = False
+            ssl_context.verify_mode = ssl.CERT_NONE
+            log('urllib2.HTTPSHandler(context=ssl_context)')
+            opener.add_handler(urllib2.HTTPSHandler(context=ssl_context))
+
         opener.addheaders = headers
         if 0 < len(data):
             encodedData = urllib.urlencode(data)
@@ -134,13 +142,14 @@ class SearcherABC:
                 self.log('[makeRequest]: HTTP Error, e.code=' + str(e.code))
                 return
         #self.cookieJar.extract_cookies(response, urllib2)
+        #self.log(response.info().get('Set-Cookie'))
         if response.info().get('Content-Encoding') == 'gzip':
             buf = StringIO(response.read())
             decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
-            response = decomp.decompress(buf.getvalue())
+            text = decomp.decompress(buf.getvalue())
         else:
-            response = response.read()
-        return response
+            text = response.read()
+        return text
 
     def askCaptcha(self, url):
         temp_dir = self.tempdir()

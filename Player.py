@@ -30,7 +30,7 @@ import Downloader
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import calculate, showMessage, clearStorage, WatchedHistoryDB, DownloadDB, get_ids_video, log, debug, foldername
+from functions import calculate, showMessage, clearStorage, WatchedHistoryDB, DownloadDB, get_ids_video, log, debug, foldername, ensure_str, loadsw_onstop
 
 ROOT = sys.modules["__main__"].__root__
 RESOURCES_PATH = os.path.join(ROOT, 'resources')
@@ -166,8 +166,12 @@ class TorrentPlayer(xbmc.Player):
                     debug('************************************* GOING LOOP')
                     self.torrent.startSession()
                     self.torrent.continueSession(self.contentId)
+                    WatchedHistoryDB().add(self.basename, self.torrentUrl,
+                                           foldername(self.torrent.getContentList()[self.contentId]['title']),
+                                           self.watchedTime, self.totalTime, self.contentId,
+                                           self.fullSize / 1024 / 1024)
                     self.loop()
-                    WatchedHistoryDB().add(self.basename, foldername(self.torrent.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize / 1024 / 1024)
+                    WatchedHistoryDB().add(self.basename, self.torrentUrl, foldername(self.torrent.getContentList()[self.contentId]['title']), self.watchedTime, self.totalTime, self.contentId, self.fullSize / 1024 / 1024)
                 else:
                     break
                 debug('************************************* GO NEXT?')
@@ -193,11 +197,13 @@ class TorrentPlayer(xbmc.Player):
         else:
             if self.seeding_status:
                 showMessage(self.localize('Information'),
-                            self.localize('Torrent is seeding. To stop it use Download Status.'), forced=True)
+                            self.localize('Torrent is seeding. To stop it use Download Status.'))
             else:
                 if self.seeding: self.db_delete()
                 showMessage(self.localize('Information'),
-                            self.localize('Torrent downloading is stopped.'), forced=True)
+                            self.localize('Torrent downloading is stopped.'))
+
+        loadsw_onstop()  # Reload Search Window
 
     def init(self):
         self.next_dl = True if self.__settings__.getSetting('next_dl') == 'true' and self.ids_video else False
@@ -338,12 +344,12 @@ class TorrentPlayer(xbmc.Player):
         response = json.loads(request)
         xbmc.sleep(1000)
 
+        if self.get('listitem'):
+            listitem = self.get('listitem')
+            listitem.setPath(path)
+
         if response:
             xbmc.Player().play(path, listitem)
-            #playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-            #playlist.clear()
-            #playlist.add(path, listitem)
-            #xbmc.Player().play(playlist)
 
             xbmc.sleep(2000)  # very important, do not edit this, podavan
             i = 0
@@ -367,7 +373,7 @@ class TorrentPlayer(xbmc.Player):
         if len(subs) > 0:
             self.torrent.startSession()
             showMessage(self.localize('Information'),
-                        self.localize('Downloading and copy subtitles. Please wait.'), forced=True)
+                        self.localize('Downloading and copy subtitles. Please wait.'))
             for ind, title in subs:
                 self.torrent.continueSession(ind)
             while iterator < 100:
@@ -455,7 +461,7 @@ class TorrentPlayer(xbmc.Player):
                     if self.iterator == 100 and self.next_dl and not self.next_dling and isinstance(self.next_contentId,
                                                                                                     int) and self.next_contentId != False:
                         showMessage(self.localize('Torrent Downloading'),
-                                    self.localize('Starting download next episode!'), forced=True)
+                                    self.localize('Starting download next episode!'))
                         self.torrent.stopSession()
                         # xbmc.sleep(1000)
                         path = self.torrent.getFilePath(self.next_contentId)
@@ -465,10 +471,10 @@ class TorrentPlayer(xbmc.Player):
 
     def _get_status_lines(self, s):
         return [
-            self.display_name+'; '+self.torrent.get_debug_info('dht_state'),
-            "%.2f%% %s; %s" % (s.progress * 100, self.localize(STATE_STRS[s.state]).decode('utf-8'), self.torrent.get_debug_info('trackers_sum')),
-            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate / 1024, self.localize('kb/s').decode('utf-8'),
-                                             s.upload_rate / 1024, self.localize('kb/s').decode('utf-8'),
+            ensure_str(self.display_name),
+            "%.2f%% %s" % (s.progress * 100, self.localize(STATE_STRS[s.state])),
+            "D:%.2f%s U:%.2f%s S:%d P:%d" % (s.download_rate / 1024, self.localize('kb/s'),
+                                             s.upload_rate / 1024, self.localize('kb/s'),
                                              s.num_seeds, s.num_peers)
         ]
 

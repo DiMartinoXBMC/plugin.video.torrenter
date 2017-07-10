@@ -24,7 +24,7 @@ import xbmcaddon
 import xbmc
 import xbmcgui
 from functions import getParameters, HistoryDB, Searchers, log
-from resources.pyxbmct.addonwindow import *
+import pyxbmct
 
 __settings__ = xbmcaddon.Addon(id='plugin.video.torrenter')
 __language__ = __settings__.getLocalizedString
@@ -39,7 +39,7 @@ if len(sys.argv) > 1:
 else:
     params = {}
 
-class ControlCenter(AddonDialogWindow):
+class ControlCenter(pyxbmct.AddonDialogWindow):
     def __init__(self, title, addtime=None):
         super(ControlCenter, self).__init__(title)
 
@@ -57,18 +57,17 @@ class ControlCenter(AddonDialogWindow):
                 if not providers:
                     self.db.set_providers(addtime, self.dic)
                 else:
-                    for searcher in self.keys:
+                    for searcher in self.dic.keys():
                         self.dic[searcher] = False
                     for searcher in providers:
                         try:
-                            if searcher in self.keys:
+                            if searcher in self.dic.keys():
                                 self.dic[searcher] = True
                         except:
-                            pass
+                            log('self.dic[searcher] except')
 
             self.keys = self.dic.keys()
             self.placed, self.button_columns, self.last_column_row = self.place()
-            #print str((self.placed, self.button_columns, self.last_column_row))
         else:
             self.button_columns=0
 
@@ -78,7 +77,7 @@ class ControlCenter(AddonDialogWindow):
         self.set_active_controls()
         self.set_navigation()
         # Connect a key action (Backspace) to close the window.
-        self.connect(ACTION_NAV_BACK, self.close)
+        self.connect(pyxbmct.ACTION_NAV_BACK, self.close)
 
     def place(self):
         placed = {}
@@ -90,7 +89,6 @@ class ControlCenter(AddonDialogWindow):
             else:
                 i += 1
             placed[item] = (j, i)
-            #print item+str((j, i))
         return placed, j, i
 
     def set_info_controls(self):
@@ -103,7 +101,7 @@ class ControlCenter(AddonDialogWindow):
             self.radiobutton_top, self.radiobutton_bottom = [None, None, None], [None, None, None]
             for searcher in self.keys:
                 place = self.placed[searcher]
-                self.radiobutton[searcher] = RadioButton(searcher)
+                self.radiobutton[searcher] = pyxbmct.RadioButton(searcher)
                 self.placeControl(self.radiobutton[searcher], place[0], place[1])
                 self.radiobutton[searcher].setSelected(self.dic[searcher])
                 self.connect(self.radiobutton[searcher], self.radio_update)
@@ -112,32 +110,32 @@ class ControlCenter(AddonDialogWindow):
                 self.radiobutton_bottom[place[1]] = self.radiobutton[searcher]
 
         # Button
-        self.button_install = Button(__language__(30415))
+        self.button_install = pyxbmct.Button(__language__(30415))
         self.placeControl(self.button_install, 2 + self.button_columns, 0)
         self.connect(self.button_install, self.installSearcher)
 
         # Button
-        self.button_openserchset = Button(__language__(30416))
+        self.button_openserchset = pyxbmct.Button(__language__(30416))
         self.placeControl(self.button_openserchset, 2 + self.button_columns, 1)
         self.connect(self.button_openserchset, self.openSearcherSettings)
 
         # Button
-        self.button_clearstor = Button(__language__(30417))
+        self.button_clearstor = pyxbmct.Button(__language__(30417))
         self.placeControl(self.button_clearstor, 2 + self.button_columns, 2)
         self.connect(self.button_clearstor, self.clearStorage)
 
         # Button
-        self.button_openset = Button(__language__(30413))
+        self.button_openset = pyxbmct.Button(__language__(30413))
         self.placeControl(self.button_openset, 3 + self.button_columns, 0)
         self.connect(self.button_openset, self.openSettings)
 
         # Button
-        self.button_utorrent = Button(__language__(30414))
+        self.button_utorrent = pyxbmct.Button(__language__(30414))
         self.placeControl(self.button_utorrent, 3 + self.button_columns, 1)
         self.connect(self.button_utorrent, self.openUtorrent)
 
         # Button
-        self.button_close = Button(__language__(30412))
+        self.button_close = pyxbmct.Button(__language__(30412))
         self.placeControl(self.button_close, 3 + self.button_columns, 2)
         self.connect(self.button_close, self.close)
 
@@ -171,8 +169,6 @@ class ControlCenter(AddonDialogWindow):
                         ser = placed_keys[placed_values.index((place[0], place[1] - 1))]
                     self.radiobutton[searcher].controlLeft(self.radiobutton[ser])
 
-                    #print str((self.button_columns, self.last_column_row))
-                    #print searcher
                     if self.more_two_searcher:
                         if place == (self.button_columns, self.last_column_row) and self.last_column_row < 2:
                             ser = placed_keys[placed_values.index((place[0] - 1, place[1] + 1))]
@@ -247,7 +243,10 @@ class ControlCenter(AddonDialogWindow):
     def openSearcherSettings(self):
         slist=Searchers().activeExternal()
         if len(slist)>0:
-            ret = xbmcgui.Dialog().select(__language__(30418), slist)
+            if len(slist) == 1:
+                ret = 0
+            else:
+                ret = xbmcgui.Dialog().select(__language__(30418), slist)
             if ret > -1 and ret < len(slist):
                 sid = slist[ret]
                 Searcher=xbmcaddon.Addon(id='torrenter.searcher.'+sid)

@@ -99,27 +99,28 @@ class IMDB(Content.Content):
         return True
 
     def get_contentList(self, category, subcategory=None, apps_property=None):
+        self.debug = self.log
         contentList = []
         url = self.get_url(category, subcategory, apps_property)
 
         response = self.makeRequest(url, headers=self.headers)
 
         if None != response and 0 < len(response):
-            #print response
+            self.debug(response)
             if category in ['top']:
                 contentList = self.topmode(response)
             elif category == 'search':
                 contentList = self.searchmode(response)
             else:  #if category in ['genre']:
                 contentList = self.genremode(response)
-        #print str(contentList)
+        self.debug(str(contentList))
         return contentList
 
     def searchmode(self, response):
         contentList = []
         pars = HTMLParser.HTMLParser()
         Soup = BeautifulSoup(response)
-        result = Soup.findAll('tr', {'class': ['findResult odd', 'findResult even']})
+        result = Soup.findAll('tr', {'class': 'lister-item mode-advanced'})
         num = 250
         for tr in result:
             #main
@@ -147,7 +148,7 @@ class IMDB(Content.Content):
                 int(int(self.sourceWeight) * (251 - int(num))),
                 originaltitle, title, int(year), img, info,
             ))
-        #print result
+        self.debug(str(result))
         return contentList
 
     def genremode(self, response):
@@ -181,7 +182,7 @@ class IMDB(Content.Content):
                 int(int(self.sourceWeight) * (251 - int(num))),
                 originaltitle, title, int(year), img, info,
             ))
-        #print result
+        self.debug(str(result))
         return contentList
 
     def biggerImg(self, img):

@@ -43,7 +43,8 @@ except:
 __settings__ = xbmcaddon.Addon(id='plugin.video.torrenter')
 __language__ = __settings__.getLocalizedString
 ROOT = __settings__.getAddonInfo('path')  # .decode('utf-8').encode(sys.getfilesystemencoding())
-userStorageDirectory = __settings__.getSetting("storage")
+userStorageDirectory = xbmc.translatePath(__settings__.getSetting("storage"))
+torrentFilesDirectory = 'torrents'
 USERAGENT = "Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0"
 __addonpath__ = __settings__.getAddonInfo('path')
 icon = os.path.join(__addonpath__, 'icon.png')
@@ -92,10 +93,10 @@ def clearStorage(userStorageDirectory, force = False):
             if saved_bool:
                 shutil.move(saved_temp, saved)
 
-            showMessage(Localization.localize('Storage'), Localization.localize('Storage has been cleared'), forced=True)
+            showMessage(Localization.localize('Storage'), Localization.localize('Storage has been cleared'))
 
         else:
-            showMessage(Localization.localize('Storage'), Localization.localize('Does not exists'), forced=True)
+            showMessage(Localization.localize('Storage'), Localization.localize('Does not exists'))
             log('[clearStorage]: fail storage '+userStorageDirectory + os.sep)
 
         try:
@@ -151,8 +152,9 @@ def debug(msg, forced=False):
 
 
 def showMessage(heading, message, times=10000, forced=False):
-    xbmc.executebuiltin('XBMC.Notification("%s", "%s", %s, "%s")' % (
-        heading.replace('"', "'"), message.replace('"', "'"), times, icon))
+    if forced or not getSettingAsBool('disable_notifications'):
+        xbmc.executebuiltin('XBMC.Notification("%s", "%s", %s, "%s")' % (
+            heading.replace('"', "'"), message.replace('"', "'"), times, icon))
     debug(str((heading.replace('"', "'"), message.replace('"', "'"), times, icon)))
 
 
@@ -575,22 +577,38 @@ def view_style(func):
         styles['sectionMenu'] = styles['Seasons'] = 'list'
         styles['uTorrentBrowser'] = styles['torrentPlayer'] = styles['openTorrent'] = 'wide'
         styles['showFilesList'] = styles['DownloadStatus'] = 'wide'
-    elif view_style in [1, 4, 5]:
+    elif view_style in [1, 4, 5, 7]:
         styles['searchOption'] = 'info'
         styles['drawContent'] = styles['torrentPlayer'] = styles['openTorrent'] = styles['drawtrackerList'] = 'info'
         styles['uTorrentBrowser'] = styles['History'] = styles['DownloadStatus'] = 'wide'
         styles['showFilesList'] = styles['sectionMenu'] = 'wide'
         styles['List'] = styles['drawcontentList'] = 'info3'
 
-    if view_style == 1:
+    if view_style in [1, 7]:
         styles['uTorrentBrowser'] = styles['torrentPlayer'] = 'wide'
         styles['openTorrent'] = styles['History'] = styles['DownloadStatus'] = 'wide'
         styles['sectionMenu'] = 'icons'
     elif view_style == 5:
         styles['uTorrentBrowser'] = styles['torrentPlayer'] = 'wide'
         styles['openTorrent'] = styles['History'] = styles['DownloadStatus'] = 'wide'
-        styles['drawtrackerList'] = styles['drawContent'] = styles['List'] = styles['sectionMenu'] = 'icons'
+        styles['drawtrackerList'] = styles['drawContent'] = styles['List'] = styles['sectionMenu'] = 'list'
         styles['searchOption'] = 'info'
+
+    if view_style == 8:
+        styles['sectionMenu'] = 'thumbnails'  #меню
+        styles['List'] = 'biglist'
+        styles['Seasons'] = 'biglist'
+        styles['uTorrentBrowser'] = 'biglist'
+        styles['torrentPlayer'] = 'biglist'
+        styles['openTorrent'] = 'biglist'
+        styles['History'] = 'biglist' #история поиска
+        styles['DownloadStatus'] = 'biglist' #статус загрузки
+        styles['drawtrackerList'] = 'biglist'
+        styles['drawContent'] = 'list' #списки медиа
+        styles['drawcontentList'] = 'extrainfo' #списки медиа - лист
+        styles['searchOption'] = 'biglist'
+        styles['showFilesList'] = 'biglist'
+
 
     if view_style in [1, 3, 4, 5]:
         num_skin = 0
@@ -598,9 +616,13 @@ def view_style(func):
         num_skin = 1
     elif view_style == 6:
         num_skin = 2
+    elif view_style == 7:
+        num_skin = 3
+    if view_style == 8:
+        num_skin = 4
 
     style = styles.get(func)
-    # debug('[view_style]: lock '+str(style))
+    log('[view_style]: lock '+str(style)+' for '+str(func))
     lockView(style, num_skin)
 
 
@@ -610,23 +632,38 @@ def lockView(viewId='info', num_skin=0):
         {'list': 50, 'info': 50, 'wide': 51, 'icons': 500, 'info3': 515, },  # Confluence
         {'list': 50, 'info': 51, 'wide': 52, 'icons': 53, },  # Transperency!
         {'list': 55, 'info': 55, 'wide': 55, 'icons': 55, 'info3': 55, },  # Aeon Nox
+        {'list': 50, 'info': 54, 'wide': 55, 'icons': 54, 'info3': 500, },  # Estuary
+        {'list': 50, 'bigwide': 51, 'biglist': 52, 'poster': 53, 'banner': 54, 'wall': 55, 'mediainfo': 56, 'extrainfo': 57, "cards":58, "bannerwall":59, 'thumbnails': 500, 'postersquare': 503, 'wallsquare': 505, },  # Arctic: Zephyr
     )
     try:
+        if viewId == 'wide' and num_skin == 3:
+            xbmcplugin.setContent(int(sys.argv[1]), 'files')
         xbmc.executebuiltin("Container.SetViewMode(%s)" % str(skinOptimizations[num_skin][viewId]))
     except:
         return
 
+    ''' Estuary
+                <include>View_50_List</include>
+                <include>View_51_Poster</include>
+                <include>View_52_IconWall</include>
+                <include>View_53_Shift</include>
+                <include>View_54_InfoWall</include>
+                <include>View_55_WideList</include>
+                <include>View_500_SmallThumb</include>
+                <include>View_501_Banner</include>
+                <include>View_502_FanArt</include>
     '''
-			<include>PosterWrapView2_Fanart</include> <!-- view id = 508 -->
-			<include>MediaListView3</include> <!-- view id = 503 -->
-			<include>MediaListView2</include> <!-- view id = 504 -->
-			<include>MediaListView4</include> <!-- view id = 515 -->
-			<include>WideIconView</include> <!-- view id = 505 -->
-			<include>MusicVideoInfoListView</include> <!-- view id = 511 -->
-			<include>AddonInfoListView1</include> <!-- view id = 550 -->
-			<include>AddonInfoThumbView1</include> <!-- view id = 551 -->
-			<include>LiveTVView1</include> <!-- view id = 560 -->
-	'''
+    '''
+            <include>PosterWrapView2_Fanart</include> <!-- view id = 508 -->
+            <include>MediaListView3</include> <!-- view id = 503 -->
+            <include>MediaListView2</include> <!-- view id = 504 -->
+            <include>MediaListView4</include> <!-- view id = 515 -->
+            <include>WideIconView</include> <!-- view id = 505 -->
+            <include>MusicVideoInfoListView</include> <!-- view id = 511 -->
+            <include>AddonInfoListView1</include> <!-- view id = 550 -->
+            <include>AddonInfoThumbView1</include> <!-- view id = 551 -->
+            <include>LiveTVView1</include> <!-- view id = 560 -->
+    '''
 
 
 def torrent_dir():
@@ -899,7 +936,6 @@ class HistoryDB:
         self.cur.execute('select providers from history where addtime="' + addtime + '"')
         x = self.cur.fetchone()
         self._close()
-        # print 'get_providers: '+str(x[0].split(',') if x and x[0]!='' else None)
         return x[0].split(',') if x and x[0] != '' else None
 
     def set_providers(self, addtime, providers):
@@ -916,7 +952,7 @@ class HistoryDB:
         self._close()
 
     def change_providers(self, addtime, searcher):
-        self._connect()
+        #self._connect()
         providers = self.get_providers(addtime)
         keys = Searchers().dic().keys()
         if providers and len(providers) > 0:
@@ -928,8 +964,8 @@ class HistoryDB:
                 if i not in keys:
                     providers.remove(i)
             self.set_providers(addtime, providers)
-            self.db.commit()
-            self._close()
+            #self.db.commit()
+            #self._close()
 
     def add(self, url):
         self._connect()
@@ -1035,13 +1071,23 @@ class WatchedHistoryDB:
         self._close()
         return x if x else None
 
-    def add(self, filename, foldername = None, seek = 0, length = 1, ind = 0, size = 0):
-        watchedPercent = int((float(seek) / float(length)) * 100)
+    def getbypathind(self, path, ind):
+        self._connect()
+        self.cur.execute('select seek from history where path="' + path + '" AND ind=' + ind)
+        x = self.cur.fetchone()
+        self._close()
+        return x if x else None
+
+    def add(self, filename, path, foldername = None, seek = 0, length = 1, ind = 0, size = 0):
+        try:
+            watchedPercent = int((float(seek) / float(length if length else 1)) * 100)
+        except:
+            watchedPercent = 0
         max_history_add = int(__settings__.getSetting('max_history_add'))
         if self.history_bool and watchedPercent <= max_history_add:
             self._connect()
             url = __settings__.getSetting("lastTorrentUrl")
-            path = __settings__.getSetting("lastTorrent")
+            #path = __settings__.getSetting("lastTorrent")
             if not foldername:
                 foldername = ''
             self.cur.execute('delete from history where filename="' + decode(filename) + '"')
@@ -1289,9 +1335,76 @@ def search(url, searchersList, isApi=None):
         progressBar.close()
 
     for k in result.keys():
-        filesList.extend(result[k])
+        if result.get(k):
+            filesList.extend(result[k])
     return filesList
 
+def get_filesList(query, searchersList, addtime = None):
+    if __settings__.getSetting('history')=='true':
+        HistoryDB().add(query)
+
+    filesList=search(query, searchersList)
+    if __settings__.getSetting('sort_search')=='true':
+        __settings__.setSetting('sort_search','1')
+    if int(__settings__.getSetting('sort_search'))==0:
+        filesList = sorted(filesList, key=lambda x: x[0], reverse=True)
+    elif int(__settings__.getSetting('sort_search'))==2:
+        filesList = sorted(filesList, key=lambda x: x[4], reverse=False)
+
+    debug('get_filesList filesList: '+str(filesList))
+
+    return filesList
+
+def get_searchersList(addtime = None):
+    searchersList = []
+    if addtime:
+        providers=HistoryDB().get_providers(addtime)
+        if providers:
+            for searcher in providers:
+                searchersList.append(searcher)
+    if not addtime or not searchersList:
+        searchersList = Searchers().get_active()
+
+    debug('get_searchersList: '+str(searchersList))
+
+    return searchersList
+
+def get_contentList(url):
+    import Downloader
+
+    url = urllib.unquote_plus(url)
+    debug('0' + __settings__.getSetting("lastTorrent"))
+
+    __settings__.setSetting("lastTorrentUrl", url)
+    classMatch = re.search('(\w+)::(.+)', url)
+    if classMatch:
+        searcher = classMatch.group(1)
+        url = Searchers().downloadWithSearcher(classMatch.group(2), searcher)
+        __settings__.setSetting("lastTorrent", url)
+
+    torrent = Downloader.Torrent(userStorageDirectory, url, torrentFilesDirectory=torrentFilesDirectory)
+
+    debug('1'+__settings__.getSetting("lastTorrent"))
+    filename = torrent.saveTorrent(url)
+    __settings__.setSetting("lastTorrent", filename)
+    debug('2'+__settings__.getSetting("lastTorrent"))
+
+    append_filesize = __settings__.getSetting("append_filesize") == 'true'
+
+    contentList = []
+    for filedict in torrent.getContentList():
+        fileTitle = filedict.get('title')
+        size = filedict.get('size')
+        if size:
+            if append_filesize:
+                fileTitle += ' [%d MB]' % (size / 1024 / 1024)
+
+        contentList.append([unescape(fileTitle), str(filedict.get('ind')), size])
+    # contentList = sorted(contentList, key=lambda x: x[0])
+
+    debug('get_contentList contentList: ' + str(contentList))
+
+    return contentList, filename
 
 def join_list(l, char=', ', replace=''):
     string=''
@@ -1306,6 +1419,8 @@ class Contenters():
 
     def first_time(self, scrapperDB_ver, language='ru'):
         from resources.scrapers.scrapers import Scrapers
+        if language not in ['en','ru','he']:
+            language = 'ru'
         searcher = 'metadata'
         redl = False
         scrapperDB_ver = scrapperDB_ver[language]
@@ -1358,7 +1473,7 @@ class Contenters():
         searchersList = []
         dirList = os.listdir(ROOT + os.sep + 'resources' + os.sep + 'contenters')
         for searcherFile in dirList:
-            if re.match('^(\w+)\.py$', searcherFile):
+            if re.match('^(\w+)\.py$', searcherFile) and searcherFile != '__init__.py':
                 searchersList.append(searcherFile.replace('.py', ''))
         return searchersList
 
@@ -1770,6 +1885,29 @@ def first_run_250():
             #ok = xbmcgui.Dialog().ok('< %s >' % (Localization.localize('Torrenter Update ') + '2.4.2'),
             #                        Localization.localize('Torrent2HTTP enabled! Can be changed in Settings.'))
 
+def first_run_260():
+    if not __settings__.getSetting('first_run_260') == 'True':
+        yes=xbmcgui.Dialog().yesno('< %s >' % (Localization.localize('Torrenter Update ') + '2.6.0'),
+                                        Localization.localize('Torrenter Search Window')+' '
+                                   +Localization.localize('is recommended for Kodi 17 users and now out of beta.')
+                                   +Localization.localize('You can disable it usage in Settings.'),
+                                        Localization.localize('Would you like to try it?'),)
+        if yes:
+            import searchwindow
+            searchwindow.main()
+
+
+def estuary():
+    if __settings__.getSetting('skin_optimization') not in ['7', '0'] and \
+                    __settings__.getSetting('ask17_skin_optimization') != 'True':
+
+        yes = xbmcgui.Dialog().yesno('< %s >' % (Localization.localize('Torrenter Update ') + '2.6.0'),
+                                     Localization.localize('Torrenter has a better view style for Kodi 17 default skin.'),
+                                     Localization.localize('Would you like to try it?'), )
+        if yes:
+            __settings__.setSetting('skin_optimization', '7')
+    __settings__.setSetting('ask_skin_optimization', 'True')
+
 def seeking_warning(seek):
     if __settings__.getSetting('torrent_player')!='1':
         seek_point = '%02d:%02d:%02d' % ((seek / (60*60)), (seek / 60) % 60, seek % 60)
@@ -1910,7 +2048,7 @@ def check_network_advancedsettings():
         file_cont='''<advancedsettings>
   <network>
     <buffermode>2</buffermode>
-	<curlclienttimeout>30</curlclienttimeout>
+    <curlclienttimeout>30</curlclienttimeout>
     <cachemembuffersize>252420</cachemembuffersize>
     <readbufferfactor>5</readbufferfactor>
   </network>
@@ -1927,7 +2065,7 @@ def check_network_advancedsettings():
 '''<advancedsettings>
   <network>
     <buffermode>2</buffermode>
-	<curlclienttimeout>30</curlclienttimeout>
+    <curlclienttimeout>30</curlclienttimeout>
     <cachemembuffersize>252420</cachemembuffersize>
     <readbufferfactor>5</readbufferfactor>
   </network>
@@ -2063,12 +2201,18 @@ def localize_path(path):
 
 def encode_msg(msg):
     try:
-        msg = isinstance(msg, unicode) and msg.encode('utf-8') or msg
+        msg = isinstance(msg, unicode) and msg.encode(
+            (sys.getfilesystemencoding() not in ('ascii', 'ANSI_X3.4-1968')) and sys.getfilesystemencoding() or 'utf-8') or msg
     except:
         import traceback
         log(traceback.format_exc())
         msg = ensure_str(msg)
     return msg
+
+def decode_str(string, encoding='utf-8'):
+    if not isinstance(string, unicode):
+        string = string.decode(encoding)
+    return string
 
 def get_platform():
     ret = {
@@ -2102,3 +2246,83 @@ def get_platform():
         ret["arch"] = "arm"
 
     return ret
+
+def getTorrentClientIcon():
+    client = __settings__.getSetting("torrent")
+    if client == '1':
+        return 'transmission.png'
+    elif client == '2':
+        return 'vuze.png'
+    elif client == '3':
+        return 'deluge.png'
+    elif client == '4':
+        return 'qbittorrent.png'
+    else:
+        return 'torrent-client.png'
+
+def get_item():
+    #some plugin.video.quasar magic
+    item = xbmcgui.ListItem(
+        path='',
+        label=xbmc.getInfoLabel("ListItem.Label"),
+        label2=xbmc.getInfoLabel("ListItem.label2"),
+        thumbnailImage=xbmc.getInfoLabel("ListItem.Art(thumb)"))
+    _infoLabels = {
+        "Title": xbmc.getInfoLabel("ListItem.Title"),
+        "OriginalTitle": xbmc.getInfoLabel("ListItem.OriginalTitle"),
+        "TVShowTitle": xbmc.getInfoLabel("ListItem.TVShowTitle"),
+        "Season": xbmc.getInfoLabel("ListItem.Season"),
+        "Episode": xbmc.getInfoLabel("ListItem.Episode"),
+        "Premiered": xbmc.getInfoLabel("ListItem.Premiered"),
+        "Plot": xbmc.getInfoLabel("ListItem.Plot"),
+        # "Date": xbmc.getInfoLabel("ListItem.Date"),
+        "VideoCodec": xbmc.getInfoLabel("ListItem.VideoCodec"),
+        "VideoResolution": xbmc.getInfoLabel("ListItem.VideoResolution"),
+        "VideoAspect": xbmc.getInfoLabel("ListItem.VideoAspect"),
+        "DBID": xbmc.getInfoLabel("ListItem.DBID"),
+        "DBTYPE": xbmc.getInfoLabel("ListItem.DBTYPE"),
+        "Writer": xbmc.getInfoLabel("ListItem.Writer"),
+        "Director": xbmc.getInfoLabel("ListItem.Director"),
+        "Rating": xbmc.getInfoLabel("ListItem.Rating"),
+        "Votes": xbmc.getInfoLabel("ListItem.Votes"),
+        "IMDBNumber": xbmc.getInfoLabel("ListItem.IMDBNumber"),
+    }
+    infoLabels = {}
+    for key, value in _infoLabels.iteritems():
+        if value:
+            infoLabels[key] = value
+
+    poster = xbmc.getInfoLabel("ListItem.Art(poster)")
+    if not poster:
+        poster = xbmc.getInfoLabel("ListItem.Art(tvshow.poster)")
+
+    item.setArt({
+        "poster": poster,
+        "banner": xbmc.getInfoLabel("ListItem.Art(banner)"),
+        "fanart": xbmc.getInfoLabel("ListItem.Art(fanart)")
+    })
+
+    item.setInfo(type='Video', infoLabels=infoLabels)
+    return item
+
+def loadsw_onstop():
+    if __settings__.getSetting('loadsw_onstop') == 'true':
+        import searchwindow
+        params = {'mode': 'load'}
+        searchwindow.main(params)
+
+def watched_seek(filename, ind):
+    db = WatchedHistoryDB()
+    seek = db.getbypathind(filename, ind)
+    log('[watched_seek] seek - '+str(seek))
+    if seek:
+        seek = seek[0]
+        seek = int(seek) if int(seek) > 3 * 60 else 0
+        if seek > 0:
+                seek_text = '%02d:%02d:%02d' % ((seek / (60 * 60)), (seek / 60) % 60, seek % 60)
+                dialog_items = [Localization.localize('Play (from %s)') % seek_text,
+                               Localization.localize('Play (from start)')]
+                ret = xbmcgui.Dialog().select(Localization.localize('Play (with seek)'), dialog_items)
+                if ret == 0:
+                    return str(seek)
+    return '0'
