@@ -144,12 +144,13 @@ class Movies(Core):
         return self.movies["total_results"]
 
     def iter_results(self):
-        if 'results' in self.movies.keys():
-            res = self.movies["results"]
-        else:
-            log('self.movies: %s' % (repr(self.movies)))
-            res = []
-        for i in res:
+#        if 'results' in self.movies.keys():
+#            res = self.movies["results"]
+#        else:
+#            log('self.movies: %s' % (repr(self.movies)))
+#            res = []
+        log('self.movies: %s' % (repr(self.movies)))
+        for i in self.movies["results"]:
             yield i
 
     def get_ordered_matches(self):
