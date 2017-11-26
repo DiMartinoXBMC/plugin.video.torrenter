@@ -145,10 +145,11 @@ class Movies(Core):
 
     def iter_results(self):
         if 'results' in self.movies.keys():
-            for i in self.movies["results"]:
-                yield i
+            res = self.movies["results"]
         else:
-            return []
+            res = []
+        for i in self.movies["results"]:
+            yield i
 
     def get_ordered_matches(self):
         """
