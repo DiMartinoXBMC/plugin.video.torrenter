@@ -144,7 +144,7 @@ class Movies(Core):
         return self.movies["total_results"]
 
     def iter_results(self):
-        log('movies.keys: %s' % (repr(self.mofies.keys())))
+        log('movies.keys: %s' % (repr(self.movies.keys())))
         for i in self.movies["results"]:
             yield i
 
