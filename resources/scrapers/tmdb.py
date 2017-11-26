@@ -18,7 +18,9 @@ except:
 
 import fuzzywuzzy.fuzz
 import requests
-
+###
+from functions import log
+###
 config = {}
 
 
@@ -142,6 +144,7 @@ class Movies(Core):
         return self.movies["total_results"]
 
     def iter_results(self):
+        log('movies.keys: %s' % (repr(self.mofies.keys())))
         for i in self.movies["results"]:
             yield i
 
