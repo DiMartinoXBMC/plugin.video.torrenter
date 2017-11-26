@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.torrenter" name="Torrenter" version="2.6.2" provider-name="DiMartino">
+<addon id="plugin.video.torrenter" name="Torrenter" version="2.6.3" provider-name="inpos">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
         <import addon="script.module.libtorrent"/>
@@ -31,7 +31,6 @@
         </description>    	
 	<forum>https://forums.tvaddons.ag/addon-releases/29224-torrenter-v2.html</forum>
 	<website>http://xbmc.ru/forum/showthread.php?t=6837</website>
-	<email>skype:kyonkodura</email>
-	<source>https://github.com/DiMartinoXBMC/plugin.video.torrenter</source>
+	<source>https://github.com/inpos/plugin.video.torrenter</source>
     </extension>
 </addon>
