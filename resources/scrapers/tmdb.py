@@ -148,7 +148,7 @@ class Movies(Core):
             res = self.movies["results"]
         else:
             res = []
-        for i in self.movies["results"]:
+        for i in res:
             yield i
 
     def get_ordered_matches(self):
