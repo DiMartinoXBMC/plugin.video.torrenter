@@ -147,6 +147,7 @@ class Movies(Core):
         if 'results' in self.movies.keys():
             res = self.movies["results"]
         else:
+            log('self.movies: %s' % (repr(self.movies)))
             res = []
         for i in res:
             yield i
