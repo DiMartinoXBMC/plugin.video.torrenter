@@ -12,7 +12,7 @@
         <setting id="timeout"           type="enum"     lvalues="30026|30027|30028" label="30025" default="1"/>
         <setting id="search_phrase"     type="text"     label="30040"/>
         <setting id="num_threads"       type="slider"   label="30042" default="3" range="1,1,9" option="int"/>
-        <setting id="proxy"             type="enum"     lvalues="30048|30049|" label="30047" default="0"/>
+        <setting id="proxy"             type="enum"     lvalues="30048|30049|31050" label="30047" default="0"/>
         <setting id="debug"             type="bool"     label="30015" default="false"/>
     </category>
     <category label="30102">

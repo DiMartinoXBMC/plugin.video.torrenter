@@ -18,9 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import urllib
-import urllib2
-import cookielib
 import re
 import tempfile
 import hashlib
@@ -30,6 +27,14 @@ import zlib
 import socket
 import sys
 
+proxy = int(sys.modules["__main__"].__settings__.getSetting("proxy"))
+if proxy == 2:
+    from resources import socks
+    socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9050)
+    socket.socket = socks.socksocket
+import urllib
+import urllib2
+import cookielib
 import xbmcgui
 import xbmc
 import Localization
@@ -43,7 +48,6 @@ class SearcherABC:
     sourceWeight = 1
     cookieJar = None
     timeout_multi=int(sys.modules["__main__"].__settings__.getSetting("timeout"))
-    proxy=int(sys.modules["__main__"].__settings__.getSetting("proxy"))
     __plugin__='Empty v 0 0 0'
     baseurl = 'site.com'
 
@@ -106,7 +110,7 @@ class SearcherABC:
     def makeRequest(self, url, data={}, headers={}):
         self.load_cookie()
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookieJar))
-        if self.proxy == 1:
+        if proxy == 1:
             try:
                 from resources.proxy import antizapret
                 opener.add_handler(antizapret.AntizapretProxyHandler())
