@@ -19,6 +19,13 @@
 '''
 
 import abc
+import sys
+proxy = int(sys.modules["__main__"].__settings__.getSetting("proxy"))
+if proxy == 2:
+    import socket
+    from resources import socks
+    socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9050)
+    socket.socket = socks.socksocket
 import urllib
 import urllib2
 import cookielib
