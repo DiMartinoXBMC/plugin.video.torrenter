@@ -22,6 +22,7 @@ import abc
 import sys
 proxy = int(sys.modules["__main__"].__settings__.getSetting("cl_proxy"))
 if proxy == 1:
+    socks_ip = sys.modules["__main__"].__settings__.getSetting("socks_ip")
     import socket
     from resources import socks
     socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9050)
