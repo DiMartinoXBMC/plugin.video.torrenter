@@ -44,9 +44,12 @@
     <string id="30044">Save files</string>
     <string id="30045">Ask to save</string>
     <string id="30046">Torrent2HTTP (libtorrent via http)</string>
-    <string id="30047">Auto-unblocking proxy</string>
+    <string id="30047">Proxy for Search</string>
+    <string id="31047">Proxy for Content Lists</string>
+    <string id="32047">SOCKS-proxy IP</string>
     <string id="30048">None</string>
     <string id="30049">Anti-zapret</string>
+    <string id="31050">Tor</string>
     <string id="30050">Immunicity</string>
     <string id="30051">Max. connections (0 - unlimited)</string>
     <string id="30052">Use random ports</string>

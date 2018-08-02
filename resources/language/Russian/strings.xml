@@ -44,9 +44,12 @@
     <string id="30044">Сохранять файлы</string>
     <string id="30045">Спросить о сохранении</string>
     <string id="30046">Torrent2HTTP (libtorrent по http)</string>
-    <string id="30047">Антизапрет (прокси)</string>
+    <string id="30047">Прокси для поиска</string>
+    <string id="31047">Прокси для списков медиа</string>
+    <string id="32047">IP SOCKS-прокси</string>
     <string id="30048">Не использовать</string>
     <string id="30049">Anti-zapret</string>
+    <string id="31050">Tor</string>
     <string id="30050">Immunicity</string>
     <string id="30051">Макс. соединений (0 - безлимит)</string>
     <string id="30052">Использовать случайные порты</string>

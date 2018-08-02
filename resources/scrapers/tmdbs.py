@@ -19,7 +19,7 @@ class TmDb:
     """
 
     def __init__(self, language='en'):
-        tmdb.configure("f7f51775877e0bb6703520952b3c7840", language=language)
+        tmdb.configure("33dd11cb87f2b5fd9ecaff4a81d47edb", language=language)
         dbname='tmdb.%s.db' % language
         self.cache = Cache(dbname, 1.0)
 
