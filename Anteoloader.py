@@ -668,7 +668,8 @@ class OverlayText(object):
         self._shown = False
         self._text = ""
         self._label = xbmcgui.ControlLabel(x, y, w, h, self._text, *args, **kwargs)
-        self._background = xbmcgui.ControlImage(x, y, w, h, os.path.join(RESOURCES_PATH, "images", "black.png"))
+        filename = os.path.join(RESOURCES_PATH, "images", "black.png")
+        self._background = xbmcgui.ControlImage(x, y, w, h, filename)
         self._background.setColorDiffuse("0xD0000000")
 
     def show(self):
@@ -702,5 +703,10 @@ class OverlayText(object):
 
         skin_path = xbmc.translatePath("special://skin/")
         tree = ET.parse(os.path.join(skin_path, "addon.xml"))
-        res = tree.findall("./extension/res")[0]
+        res = None
+        for element in tree.findall("./extension/res"):
+            if element.attrib["default"] == 'true':
+                res = element
+                break
+        if res is None: res = tree.findall("./extension/res")[0]
         return int(res.attrib["width"]), int(res.attrib["height"])

@@ -297,9 +297,17 @@ class Core:
 
     def test(self, params={}):
         pass
-        import searchwindow
-        params = {'mode': 'file_browser', 'path':'D:\\', 'tdir':'D:\\FRAPS\\'}
-        searchwindow.main(params)
+        xbmc.Player().play('D:\\filmz\\The Missing (2014).mp4')
+        from Anteoloader import OverlayText, OVERLAY_WIDTH, OVERLAY_HEIGHT, XBFONT_CENTER_X,XBFONT_CENTER_Y
+        overlay = OverlayText(w=OVERLAY_WIDTH, h=OVERLAY_HEIGHT,
+                    alignment=XBFONT_CENTER_X | XBFONT_CENTER_Y)
+        overlay.show()
+        overlay.text = 'XXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXX\r\n' \
+                       'YYyyyYyYYyYyY'
+        time.sleep(5)
+        overlay.hide()
+        time.sleep(1)
+        xbmc.Player().stop()
 
     def swHistory(self, params={}):
         import searchwindow
