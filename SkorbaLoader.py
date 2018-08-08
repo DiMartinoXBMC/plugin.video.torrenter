@@ -243,7 +243,7 @@ class SkorbaLoader:
         return self.getContentList()[contentId]['size']
 
     def getFilePath(self, contentId=0):
-        return os.path.join(self.storageDirectory, self.getContentList()[contentId]['title'])  # .decode('utf8')
+        return os.path.join(self.storageDirectory, decode_str(self.getContentList()[contentId]['title']))
 
     def getContentList(self):
         filelist = []

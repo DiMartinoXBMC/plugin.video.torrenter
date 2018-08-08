@@ -47,6 +47,7 @@
     <string id="30047">Proxy for Search</string>
     <string id="31047">Proxy for Content Lists</string>
     <string id="32047">SOCKS-proxy IP</string>
+    <string id="32048">SOCKS-proxy Port</string>
     <string id="30048">None</string>
     <string id="30049">Anti-zapret</string>
     <string id="31050">Tor</string>

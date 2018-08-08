@@ -13,8 +13,9 @@
         <setting id="search_phrase"     type="text"     label="30040"/>
         <setting id="num_threads"       type="slider"   label="30042" default="3" range="1,1,9" option="int"/>
         <setting id="proxy"             type="enum"     lvalues="30048|30049|31050" label="30047" default="0"/>
-		<setting id="cl_proxy"             type="enum"     lvalues="30048|31050" label="31047" default="0"/>
+		<setting id="cl_proxy"          type="enum"     lvalues="30048|31050" label="31047" default="0"/>
         <setting id="socks_ip"			type="ipaddress" label="32047" default="127.0.0.1"  visible="eq(-2,2)|eq(-1,1)"/>
+        <setting id="socks_port"		type="number"    label="32048" default="9050"  visible="eq(-3,2)|eq(-2,1)"/>
         <setting id="debug"             type="bool"     label="30015" default="false"/>
     </category>
     <category label="30102">

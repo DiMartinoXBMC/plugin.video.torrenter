@@ -47,6 +47,7 @@
     <string id="30047">Прокси для поиска</string>
     <string id="31047">Прокси для списков медиа</string>
     <string id="32047">IP SOCKS-прокси</string>
+    <string id="32048">Порт SOCKS-прокси</string>
     <string id="30048">Не использовать</string>
     <string id="30049">Anti-zapret</string>
     <string id="31050">Tor</string>

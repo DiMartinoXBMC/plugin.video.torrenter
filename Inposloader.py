@@ -253,6 +253,12 @@ class InposPlayer(xbmc.Player):
     def __init__(self, userStorageDirectory, torrentUrl, params={}):
         self.userStorageDirectory = userStorageDirectory
         self.torrentUrl = torrentUrl
+        if not is_writable(self.userStorageDirectory):
+            xbmcgui.Dialog().ok(Localization.localize('Torrenter v2'),
+                    Localization.localize('Your storage path is not writable or not local! Please change it in settings!'),
+                    self.storageDirectory)
+
+            sys.exit(1)
         xbmc.Player.__init__(self)
         log("["+author+"Player] Initalized v"+__version__)
         self.params = params
