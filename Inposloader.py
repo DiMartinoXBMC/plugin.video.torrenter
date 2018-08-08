@@ -140,7 +140,7 @@ class InposLoader:
 
         enable_dht = self.__settings__.getSetting("enable_dht") == 'true'
         dht_routers = ["router.bittorrent.com:6881", "router.utorrent.com:6881"]
-        user_agent = 'uTorrent/2200(24683)'
+        user_agent = ''
         self.engine = Engine(uri=file_url(self.torrentFile), download_path=self.storageDirectory,
                              connections_limit=connections_limit,
                              encryption=encryption, keep_complete=keep_complete, keep_incomplete=keep_incomplete,
@@ -375,7 +375,7 @@ class InposPlayer(xbmc.Player):
             resume_file=os.path.join(self.userStorageDirectory, 'torrents', os.path.basename(self.torrentUrl)+'.resume_data')
 
         dht_routers = ["router.bittorrent.com:6881","router.utorrent.com:6881"]
-        user_agent = 'uTorrent/2200(24683)'
+        user_agent = ''
         self.pre_buffer_bytes = int(self.__settings__.getSetting("pre_buffer_bytes"))*1024*1024
         if self.__settings__.getSetting('debug') == 'true':
             showMessage('[%sPlayer v%s] ' % (author, __version__), self.localize('Please Wait'))

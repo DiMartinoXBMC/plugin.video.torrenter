@@ -381,7 +381,7 @@ class SkorbaLoader:
             session_settings['rate_limit_ip_overhead'] = True
             session_settings['request_timeout'] = 1
             session_settings['torrent_connect_boost'] = 50
-            session_settings['user_agent'] = 'uTorrent/2200(24683)'
+            session_settings['user_agent'] = ''
             if pc_config == 0:
                 #good pc
                 session_settings['connections_limit'] = 200
@@ -412,7 +412,7 @@ class SkorbaLoader:
             session_settings.rate_limit_ip_overhead = True
             session_settings.request_timeout = 1
             session_settings.torrent_connect_boost = 100
-            session_settings.user_agent = 'uTorrent/2200(24683)'
+            session_settings.user_agent = ''
         #
         self.session.set_settings(session_settings)
 

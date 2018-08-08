@@ -30,7 +30,7 @@ import Downloader
 import xbmcgui
 import xbmcvfs
 import Localization
-from functions import calculate, showMessage, clearStorage, WatchedHistoryDB, DownloadDB, get_ids_video, log, debug, foldername, ensure_str, loadsw_onstop
+from functions import calculate, showMessage, clearStorage, WatchedHistoryDB, DownloadDB, get_ids_video, log, debug, foldername, ensure_str, loadsw_onstop, decode_str
 
 ROOT = sys.modules["__main__"].__root__
 RESOURCES_PATH = os.path.join(ROOT, 'resources')
@@ -388,10 +388,11 @@ class TorrentPlayer(xbmc.Player):
                 addition = os.path.dirname(title).lstrip(folder + os.sep).replace(os.sep, '.').replace(' ', '_').strip()
                 ext = temp.split('.')[-1]
                 temp = temp[:len(temp) - len(ext) - 1] + '.' + addition + '.' + ext
-                newFileName = os.path.join(os.path.dirname(path), temp)
-                debug('[setup_subs]: '+str((os.path.join(os.path.dirname(os.path.dirname(path)),title),newFileName)))
+                newFileName = os.path.join(ensure_str(os.path.dirname(decode_str(path))), ensure_str(temp))
+                debug('[setup_subs]: {} {}'.format(newFileName, title))
                 if not xbmcvfs.exists(newFileName):
-                    xbmcvfs.copy(os.path.join(os.path.dirname(os.path.dirname(path)), title), newFileName)
+                    fileName = os.path.join(ensure_str(os.path.dirname(os.path.dirname(decode_str(path)))), ensure_str(title))
+                    xbmcvfs.copy(fileName, newFileName)
 
     def onPlayBackStarted(self):
         for f in self.on_playback_started:

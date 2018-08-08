@@ -1085,28 +1085,6 @@ class Core:
                 self.drawItem(title, 'downloadLibtorrent', link, image=img, info=info, contextMenu=contextMenu, replaceMenu=False)
             #self.drawItem(title, 'openTorrent', link, img, info=info, contextMenu=contextMenu, replaceMenu=False)
 
-    def ActionInfo(self, params={}):
-        from resources.skins.DialogXml import DialogXml
-        get = params.get
-        contenter=get('provider')
-        infolink=get('url')
-        link=get('link')
-        if ROOT + os.sep + 'resources' + os.sep + 'contenters' not in sys.path:
-            sys.path.insert(0, ROOT + os.sep + 'resources' + os.sep + 'contenters')
-        try:
-            self.Content = getattr(__import__(contenter), contenter)()
-        except Exception, e:
-            log('Unable to use contenter: ' + contenter + ' at ' + ' ActionInfo(). Exception: ' + str(e))
-
-        movieInfo=self.Content.get_info(infolink)
-        if movieInfo:
-            w = DialogXml("movieinfo.xml", ROOT, "Default")
-            w.doModal(movieInfo, link)
-            del w
-            del movieInfo
-        else:
-            showMessage(self.localize('Information'),self.localize('Information not found!'))
-
     def searchOption(self, params={}):
         try:
             apps = json.loads(urllib.unquote_plus(params.get("url")))

@@ -67,7 +67,7 @@ from base64 import b64encode
 
 if os.name == "nt" and sys.version_info < (3, 0):
     try:
-        from resources import win_inet_pton
+        from resources.proxy import win_inet_pton
     except ImportError:
         raise ImportError("To run PySocks on Windows you must install win_inet_pton")
 

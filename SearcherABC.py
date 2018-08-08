@@ -30,7 +30,7 @@ import sys
 proxy = int(sys.modules["__main__"].__settings__.getSetting("proxy"))
 if proxy == 2:
     socks_ip = sys.modules["__main__"].__settings__.getSetting("socks_ip")
-    from resources import socks
+    from resources.proxy import socks
     socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, socks_ip,
                           int(sys.modules["__main__"].__settings__.getSetting("socks_port")))
     socket.socket = socks.socksocket

@@ -1270,8 +1270,6 @@ class InfoWindow(pyxbmct.AddonDialogWindow):
         # self.set_navigation()
 
     def set_controls(self):
-        # pyxbmct.AddonWindow().setImage(__root__ + '/resources/skins/Default/media/ConfluenceDialogBack.png')
-        # self.placeControl(self.background, 0, 0, rowspan=3, columnspan=2)
         self.listing = pyxbmct.List(_imageWidth=30, _imageHeight=30, _itemTextXOffset=1,
                                     _itemTextYOffset=0, _itemHeight=30, _space=0, _alignmentY=0)
         self.placeControl(self.listing, 0, 1, 2, 2)
