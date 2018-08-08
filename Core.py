@@ -556,11 +556,9 @@ class Core:
 
         if action2 == 'open':
             filename, foldername, path, url, seek, length, ind = db.get('filename, foldername, path, url, seek, length, ind', 'addtime', str(addtime))
-            if os.path.exists(path) and os.path.getsize(path) > 0:
+            if os.path.exists(path):
                 self.__settings__.setSetting("lastTorrent", path)
             else:
-                if os.path.exists(path):
-                    os.unlink(path)
                 torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
                 path = torrent.saveTorrent(url)
                 self.__settings__.setSetting("lastTorrent", path)
@@ -576,11 +574,9 @@ class Core:
                 seek = int(seek)
             else:
                 seek = 0
-            if os.path.exists(path) and os.path.getsize(path) > 0:
+            if os.path.exists(path):
                 self.__settings__.setSetting("lastTorrent", path)
             else:
-                if os.path.exists(path):
-                    os.unlink(path)
                 torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
                 self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
             xbmc.executebuiltin('xbmc.RunPlugin("plugin://plugin.video.torrenter/?action=playTorrent&url='+str(ind)+'&seek='+str(seek)+'")')

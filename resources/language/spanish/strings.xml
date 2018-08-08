@@ -17,7 +17,7 @@
     <string id="30017">Transperency (de slng)</string>
     <string id="30018">Confluence (de DiMartino)</string>
     <string id="30019">Confluence (de RussakHH)</string>
-    <string id="30020">Habilitar historial de búsquedas</string>
+    <string id="30020">Habilitar el historial de búsquedas</string>
     <string id="30021">python-libtorrent</string>
     <string id="30022">Ace Stream</string>
     <string id="30023">Reproductor P2P</string>
@@ -44,11 +44,9 @@
     <string id="30044">Guardar archivos</string>
     <string id="30045">Preguntar para guardar</string>
     <string id="30046">Torrent2HTTP (libtorrent vía HTTP)</string>
-    <string id="30047">Proxy para búsquedas</string>
-    <string id="31047">Proxy para listas de contenido</string>
-    <string id="32047">Dirección IP de proxy SOCKS</string>
+    <string id="30047">Proxy</string>
     <string id="30048">Ninguno</string>
-    <string id="30049">Anti-zapret (antirrestricción)</string>
+    <string id="30049">Anti-zapret (antirestricción)</string>
     <string id="31050">Tor</string>
     <string id="30050">Inmunidad</string>
     <string id="30051">Núm. máx. de conexiones (0 = ilimitadas)</string>
@@ -60,12 +58,12 @@
     <string id="30057">Promedio/Buen PC</string>
     <string id="30058">Por debajo de la media, PC/router</string>
     <string id="30059">Tamaño mínimo de almacenaje para autoborrado (GB)</string>
-    <string id="30060">Diferir inicio de reproductor</string>
+    <string id="30060">Diferir inicio del reproductor</string>
     <string id="30061">Ordenar resultados de la búsqueda</string>
     <string id="30062">Por fuentes</string>
     <string id="30063">No ordenar</string>
     <string id="30064">Por nombre</string>
-    <string id="30065">Añadir a historial de vistos después del (%)</string>
+    <string id="30065">Añadir al historial de vistos después del (%)</string>
     <string id="30066">Confluence (de safonov_ivan)</string>
     <string id="30067">Aeon Nox (de joyrider)</string>
     <string id="30068">pyrrent2http (python-libtorrent vía HTTP)</string>
@@ -101,7 +99,7 @@
     <string id="50316">Contraseña</string>
     <string id="50311">Cliente de BitTorrent</string>
     <string id="50317">URL (no SSL)</string>
-    <string id="30426">Sustitución de ruta (solo remoto)</string>
+    <string id="30426">Sustitución de ruta (Solo remoto)</string>
     <string id="30412">Cerrar</string>
     <string id="30413">Abrir "Ajustes"</string>
     <string id="30414">Navegador de cliente BitTorrent</string>
