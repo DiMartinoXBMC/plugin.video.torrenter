@@ -103,7 +103,7 @@ class RuTorOrg(Content.Content):
         return False
 
     def get_contentList(self, category, subcategory=None, apps_property=None):
-        self.debug = self.log
+        #self.debug = self.log
         contentList = []
         url = 'http://%s' % self.get_url(category, subcategory, apps_property)
         self.debug(url)

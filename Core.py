@@ -1433,6 +1433,7 @@ class Core:
         if not url:
             action = xbmcgui.Dialog()
             url = action.browse(1, self.localize('Choose .torrent in video library'), 'video', '.torrent')
+            url = urllib.quote_plus(url)
             torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
             self.__settings__.setSetting("lastTorrent", torrent.saveTorrent(url))
             self.__settings__.setSetting("lastTorrentUrl", url)
@@ -1588,7 +1589,8 @@ class Core:
             url = Searchers().downloadWithSearcher(classMatch.group(2), searcher)
             self.__settings__.setSetting("lastTorrent", url)
 
-        torrent = Downloader.Torrent(self.userStorageDirectory, torrentFilesDirectory=self.torrentFilesDirectory)
+        torrent = Downloader.Torrent(self.userStorageDirectory,
+                                     torrentFilesDirectory=self.torrentFilesDirectory)
         if not torrent: torrent = Downloader.Torrent(self.userStorageDirectory,
                                                      torrentFilesDirectory=self.torrentFilesDirectory)
         filename = torrent.saveTorrent(url)
